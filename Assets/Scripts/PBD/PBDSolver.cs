@@ -55,7 +55,7 @@ namespace PBD
             foreach (GrassBody body in Bodies)
             {
                 #region ApplyForce And Calculate NewPosition
-                for (int i = 0; i < body.GrassMesh.vertexCount; i++)
+                for (int i = 0; i < body.Counts; i++)
                 {
                     // air friction
                     body.Velocities[i] -= body.Velocities[i] * Friction * dt;
@@ -97,22 +97,22 @@ namespace PBD
                 }
                 #endregion
 
-                #region Floor Checking
+                #region Floor Checking(Disabled)
                 // bounds checking
-                for (int i = 0; i < body.NewPositions.Length; ++i)
+                /*for (int i = 0; i < body.NewPositions.Length; ++i)
                 {
                     if (body.NewPositions[i].y < 0)
                     {
                         body.NewPositions[i].y = 0.1f;
                         body.Positions[i].y = 0.1f;
                     }
-                }
+                }*/
                 #endregion
 
                 #region Update Velocities
                 float threshold2 = StopThreshold * dt;
                 threshold2 *= threshold2;
-                for (int i = 0; i < body.GrassMesh.vertexCount; i++)
+                for (int i = 0; i < body.Counts; i++)
                 {
                     Vector3 dist = body.NewPositions[i] - body.Positions[i];
                     body.Velocities[i] = dist / dt;
@@ -122,13 +122,20 @@ namespace PBD
                 #endregion
 
                 #region Save NewPosition to Position
-                for (int i = 0; i < body.GrassMesh.vertexCount; i++)
+                for (int i = 0; i < body.Counts; i++)
                     body.Positions[i] = body.NewPositions[i];
                 #endregion
 
                 // save calculated positions to mesh
                 body.UpdateMesh();
             }
+
+            SumMesh();
+        }
+
+        private void SumMesh()
+        { 
+            
         }
     }
 }

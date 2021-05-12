@@ -154,7 +154,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &683257266
 MeshFilter:
@@ -218,7 +218,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5d428a8f968cb247851cafdf23c32c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Segments: 2
+  Segments: 3
   windForce: {x: 0, y: 10, z: 0}
   material: {fileID: 2100000, guid: dc61b5b31f4d1dc46bf5449929b422c9, type: 2}
   CollisionRadius: 1
@@ -387,7 +387,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1031959126
 GameObject:

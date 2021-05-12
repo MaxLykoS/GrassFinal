@@ -21,7 +21,7 @@ namespace PBD
             {
                 GrassBody grassBody = bodies[j];
 
-                int numParticles = grassBody.GrassMesh.vertexCount;
+                int numParticles = grassBody.Counts;
 
                 for (int i = 0; i < numParticles; ++i)
                 {
@@ -29,7 +29,9 @@ namespace PBD
                     float offset = b2g.magnitude - Radius;
 
                     if (offset <= 0)
-                        contacts.Add(new BodySphereContact(grassBody, i, -offset, b2g.normalized));
+                    {
+                        contacts.Add(new BodySphereContact(grassBody, i, Tr.position + b2g.normalized * Radius));
+                    }
                 }
             }
         }

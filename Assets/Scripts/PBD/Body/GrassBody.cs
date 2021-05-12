@@ -6,23 +6,28 @@ namespace PBD
 {
     public class GrassBody
     {
-        const float Stiffness = 1;
+        const float Stiffness = 0.2f;
         public Mesh GrassMesh { get; private set; }
 
         public Vector3[] Positions { get; set; }
         public Vector3[] NewPositions { get; set; }
         public Vector3[] Velocities { get; set; }
         public Vector3[] OriginPos { get; set; }
+        public Vector3[] Offset { get; set; }
 
         public List<FixedConstraint> Fcons { get; private set; }
         public List<DistanceConstraint> Dcons { get; private set; }
 
         public float Mass { get; set; }
         public float Height { get; private set; }
+        public int Segments { get; private set; }
+        public int Counts { get; private set; }
 
         public GrassBody(Vector3 root, int segments, float h, float w, float f, float mass)
         {
             this.Mass = mass;
+            this.Segments = segments;
+            this.Counts = segments + 1;
 
             GrassMesh = CreateGrassMesh(root, segments, h, w, f);
 
@@ -36,45 +41,48 @@ namespace PBD
 
         void InitPositionsAndConstraints(int segments)
         {
-            Positions = new Vector3[segments * 2 + 1];
-            NewPositions = new Vector3[segments * 2 + 1];
-            Velocities = new Vector3[segments * 2 + 1];
-            OriginPos = new Vector3[segments * 2 + 1];
+            Positions = new Vector3[segments + 1];
+            NewPositions = new Vector3[segments + 1];
+            Velocities = new Vector3[segments + 1];
+            OriginPos = new Vector3[segments + 1];
+            Offset = new Vector3[segments];
 
             Fcons = new List<FixedConstraint>();
             Dcons = new List<DistanceConstraint>();
 
-            for (int i = 0; i < GrassMesh.vertexCount; i++)
+            int index = 0;
+            for (int i = 0; i < GrassMesh.vertexCount - 2; i+=2)
             {
-                NewPositions[i].x = Positions[i].x = OriginPos[i].x = GrassMesh.vertices[i].x;
-                NewPositions[i].y = Positions[i].y = OriginPos[i].y = GrassMesh.vertices[i].y;
-                NewPositions[i].z = Positions[i].z = OriginPos[i].z = GrassMesh.vertices[i].z;
+                Vector3 midPoint = (GrassMesh.vertices[i] + GrassMesh.vertices[i + 1])/ 2;
+                NewPositions[index] = Positions[index] = OriginPos[index] = midPoint;
+                Offset[index] = (GrassMesh.vertices[i] - GrassMesh.vertices[i + 1]) / 2;
+                ++index;
             }
+            NewPositions[index] = Positions[index] = OriginPos[index] = GrassMesh.vertices[segments * 2];
 
             // pinned
             Fcons.Add(new FixedConstraint(0, this));
-            Fcons.Add(new FixedConstraint(1, this));
 
             // distance
-            for (int i = 2; i < GrassMesh.vertexCount - 2; i += 2)
+            for (int i = 1; i <= segments; ++i)
             {
-                Dcons.Add(new DistanceConstraint(i - 2, i, Stiffness, this));
-                Dcons.Add(new DistanceConstraint(i + 1, i - 1, Stiffness, this));
+                Dcons.Add(new DistanceConstraint(i, i - 1, Stiffness, this));
             }
-            if (segments != 1)
-            {
-                for (int i = 2; i < GrassMesh.vertexCount - 2; i += 2)
-                {
-                    Dcons.Add(new DistanceConstraint(i, i + 1, Stiffness, this)); // middle
-                }
-            }
-            Dcons.Add(new DistanceConstraint(GrassMesh.vertexCount - 1, GrassMesh.vertexCount - 3, Stiffness, this));
-            Dcons.Add(new DistanceConstraint(GrassMesh.vertexCount - 1, GrassMesh.vertexCount - 2, Stiffness, this));
         }
 
         public void UpdateMesh()
         {
-            GrassMesh.vertices = Positions;
+            Vector3[] t = GrassMesh.vertices;
+            int index = 0;
+            for (int i = 0; i < GrassMesh.vertexCount - 2; i+=2)
+            {
+                t[i] = Positions[index] + Offset[index];
+                t[i + 1] = Positions[index] - Offset[index];
+                ++index;
+            }
+            t[GrassMesh.vertexCount - 1] = Positions[index];
+
+            GrassMesh.vertices = t;
         }
 
         public static Mesh CreateGrassMesh(Vector3 root, int segments, float h, float w, float f)
