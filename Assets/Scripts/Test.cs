@@ -8,6 +8,6 @@ public class Test : MonoBehaviour
     void Start()
     {
         float angle = Vector3.Angle(t.position, Vector3.forward);
-        t.position = MathUtl.AngleAxis3x3(Mathf.Deg2Rad * (angle - 80.0f), Vector3.right) * t.position;
+        t.position = MathUtility.AngleAxis3x3(Mathf.Deg2Rad * (angle - 80.0f), Vector3.right) * t.position;
     }
 }

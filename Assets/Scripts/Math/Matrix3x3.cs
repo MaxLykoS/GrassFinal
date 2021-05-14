@@ -68,7 +68,7 @@ public class Matrix3x3
             m10 * m21 - m11 * m20, m01 * m20 - m00 * m21, m00 * m11 - m01 * m10);
         float iterator = m00 * invMatrix.m00 + m01 * invMatrix.m10 + m02 * invMatrix.m20;
         //迭代系数太小，没有逆矩阵
-        if (Math.Abs(iterator) <= 1e-06)
+        if (System.Math.Abs(iterator) <= 1e-06)
         {
             return new Matrix3x3(1, 0, 0, 0, 1, 0, 0, 0, 1);
         }

@@ -25,7 +25,7 @@ namespace PBD
         internal void ResolveContact(float di)
         {
             body.Positions[i0] = targetPos;
-            body.NewPositions[i0] = targetPos;
+            body.Predicted[i0] = targetPos;
             body.Velocities[i0] = Vector3.zero;
 
             Dispose();

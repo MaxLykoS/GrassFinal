@@ -5,14 +5,16 @@ using PBD;
 
 public class GrassDemo : MonoBehaviour
 {
-    public int Segments = 3;
+    const int GrassPatchWidth = 10;
+    const int GrassPatchLength = 10;
+    const int GrassBodyCounts = 100;
+
     public Vector3 windForce;
     public Material material;
     public float CollisionRadius;
     public List<Transform> colliders;
 
     private PBDSolver solver;
-    private GrassBody grassBody;
 
     void Start()
     {
@@ -25,9 +27,9 @@ public class GrassDemo : MonoBehaviour
             WindForce = windForce
         };
 
-        grassBody = new GrassBody(Vector3.zero, Segments, 0.5f, 0.05f, 0.38f, 1.0f);
-        solver.AddGrass(grassBody);
-        GetComponent<MeshFilter>().sharedMesh = grassBody.GrassMesh;
+        GrassPatch patch1 = new GrassPatch(Vector3.zero, GrassPatchWidth, GrassPatchLength, GrassBodyCounts);
+        solver.AddGrassPatch(patch1);
+        GetComponent<MeshFilter>().sharedMesh = patch1.PatchMesh;
 
         foreach (Transform tr in colliders)
         {

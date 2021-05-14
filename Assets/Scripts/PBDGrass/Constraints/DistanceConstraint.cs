@@ -26,15 +26,15 @@ namespace PBD
             float invMass = 1.0f / body.Mass;
             float sum = body.Mass * 2.0f;
 
-            Vector3 n = body.NewPositions[i1] - body.NewPositions[i0];
+            Vector3 n = body.Predicted[i1] - body.Predicted[i0];
             float d = n.magnitude;
             n.Normalize();
 
             Vector3 corr = ElasticModulus * n * (d - RestLength) * sum;
 
-            body.NewPositions[i0] += invMass * corr * dt;
+            body.Predicted[i0] += invMass * corr * dt;
 
-            body.NewPositions[i1] -= invMass * corr * dt;
+            body.Predicted[i1] -= invMass * corr * dt;
 
         }
     }

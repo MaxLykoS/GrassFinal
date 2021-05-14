@@ -17,7 +17,7 @@ namespace PBD
         public override void DoConstraint(float dt)
         {
             body.Positions[i0] = fixedPos;
-            body.NewPositions[i0] = fixedPos;
+            body.Predicted[i0] = fixedPos;
         }
     }
 }

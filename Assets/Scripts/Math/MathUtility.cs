@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class MathUtl
+public static class MathUtility
 {
     public static float Rand(Vector3 co)
     {

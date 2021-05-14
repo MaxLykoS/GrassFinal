@@ -21,11 +21,11 @@ namespace PBD
             {
                 GrassBody grassBody = bodies[j];
 
-                int numParticles = grassBody.Counts;
+                int numParticles = grassBody.BoneCounts;
 
                 for (int i = 0; i < numParticles; ++i)
                 {
-                    Vector3 b2g = grassBody.NewPositions[i] - Tr.position;
+                    Vector3 b2g = grassBody.Predicted[i] - Tr.position;
                     float offset = b2g.magnitude - Radius;
 
                     if (offset <= 0)
