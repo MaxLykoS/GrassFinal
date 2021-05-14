@@ -110,7 +110,7 @@ namespace PBD
             List<BodySphereContact> contacts = new List<BodySphereContact>();
 
             for (int i = 0; i < Collisions.Count; ++i)
-                Collisions[i].FindContacts(patch.Bodies, contacts);
+                Collisions[i].FindContacts(patch.QueryNearBodies(Collisions[i].GetPos()), contacts);
 
             float di = 1.0f / CollisionIterations;
 

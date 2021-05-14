@@ -14,15 +14,17 @@ namespace PBD
 
         public GrassBody[] Bodies;
 
+        public Vector3 Root { get; private set; }
         public Mesh PatchMesh { get; private set; }
-        //public SpaceHash Hash;
+        public SpaceHash Hash;
 
         private Vector3[] vertices;
 
         public GrassPatch(Vector3 root, int width, int length, int points)
         {
-            Bodies = new GrassBody[points];
-            vertices = new Vector3[points * (SEGMENTS * 2 + 1)];
+            this.Root = root;
+            this.Bodies = new GrassBody[points];
+            this.vertices = new Vector3[points * (SEGMENTS * 2 + 1)];
 
             float xOffset = 0.5f * width;
             float maxX = root.x + xOffset;
@@ -52,7 +54,7 @@ namespace PBD
                 triIndexOffset += triIndexOffsetIncreasment;
             }
 
-            //Hash = new SpaceHash(root, width, length, ref Bodies);
+            Hash = new SpaceHash(root, width, length, ref Bodies);
 
             PatchMesh = new Mesh()
             {
@@ -70,6 +72,11 @@ namespace PBD
             }
 
             PatchMesh.vertices = vertices;
+        }
+
+        public List<GrassBody> QueryNearBodies(Vector3 pos)
+        {
+            return Hash.QueryPossibleBones(pos);
         }
     }
 }

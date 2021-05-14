@@ -26,19 +26,36 @@ namespace PBD
             this.Width = w;
             this.Length = l;
             this.root = root;
+            this.Hash = new Dictionary<Vector2I, List<GrassBody>>();
 
             foreach (GrassBody body in bodies)
-            { 
-                
+            {
+                Vector2I key = GenCoord(ref body.OriginPos[0]);
+
+                if (Hash.ContainsKey(key))
+                {
+                    Hash[key].Add(body);
+                }
+                else
+                {           
+                    List<GrassBody> newList = new List<GrassBody>();
+                    newList.Add(body);
+                    Hash.Add(key, newList);
+                }
             }
         }
 
-        public IList<GrassBody> QueryPossibleBones(ref Vector3 place)
+        public List<GrassBody> QueryPossibleBones(Vector3 place)
         {
-            return null;
+            Vector2I key = GenCoord(ref place);
+            List<GrassBody> possibleBones;
+            if (Hash.TryGetValue(key, out possibleBones))
+                return possibleBones;
+            else
+                return null;
         }
 
-        public static Vector2I GenCoord(Vector3 root)
+        public static Vector2I GenCoord(ref Vector3 root)
         {
             int x = Mathf.FloorToInt(root.x);
             int z = Mathf.FloorToInt(root.z);

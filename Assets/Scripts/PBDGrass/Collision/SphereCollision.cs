@@ -14,12 +14,13 @@ namespace PBD
             this.Radius = r;
         }
 
-        // TODO 用哈希优化
-        internal void FindContacts(IList<GrassBody> bodies, List<BodySphereContact> contacts)
+        internal void FindContacts(List<GrassBody> possibleBodies, List<BodySphereContact> contacts)
         {
-            for (int j = 0; j < bodies.Count; j++)
+            if (possibleBodies == null)
+                return;
+            for (int j = 0; j < possibleBodies.Count; j++)
             {
-                GrassBody grassBody = bodies[j];
+                GrassBody grassBody = possibleBodies[j];
 
                 int numParticles = grassBody.BoneCounts;
 
@@ -34,6 +35,11 @@ namespace PBD
                     }
                 }
             }
+        }
+
+        public Vector3 GetPos()
+        {
+            return Tr.position;
         }
     }
 }
