@@ -3,16 +3,6 @@ using UnityEngine;
 
 namespace PBD
 {
-    public struct Vector2I
-    {
-        int X, Z;
-
-        public Vector2I(int x, int z)
-        {
-            this.X = x;
-            this.Z = z;
-        }
-    }
     public class SpaceHash
     {
         public Dictionary<Vector2I, List<GrassBody>> Hash;

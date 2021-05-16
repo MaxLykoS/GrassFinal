@@ -7,47 +7,161 @@ public class GrassDemo : MonoBehaviour
 {
     const int GrassPatchWidth = 10;
     const int GrassPatchLength = 10;
-    const int GrassBodyCounts = 100;
+    const int GrassBodyCounts = 1;
     const float CollisionRadius = 1.0f;
+
+    //const int MapSize = 30;
+
+    const float GeoDistance2 = 11 * 11 * 2;
+    const float StarDistance = 100;
+
     Vector3 WindForce = Vector3.up * 1000;
 
-    public Mesh GroundMesh;
     public Material GrassMaterial;
+    public Material StarMaterial;
+    public Material BillboardMaterial;
     public Material GroundMaterial;
     public List<Transform> colliders;
 
-    private PBDSolver solver;
-    private List<GrassPatchRenderer> renderers;
-    private List<GrassPatch> patches;
+    private PBDSolver GEOsolver;
+    private Dictionary<Vector2I, GrassPatchRenderer> renderers;
+    private Dictionary<Vector2I, GeoGrassPatch> patches;
+    private Mesh GroundMesh;
+
+    private Transform camTr;
 
     void Start()
     {
         Application.targetFrameRate = 60;
-        renderers = new List<GrassPatchRenderer>();
-        patches = new List<GrassPatch>();
+        GroundMesh = GenGroundMesh();
+        renderers = new Dictionary<Vector2I, GrassPatchRenderer>();
+        patches = new Dictionary<Vector2I, GeoGrassPatch>();
+        //camTr = Camera.main.transform;
+        camTr = colliders[0].transform;
 
-        solver = new PBDSolver(3.0f)
+        GEOsolver = new PBDSolver(3.0f)
         {
             Gravity = Vector3.down * 9.8f,
             WindForce = WindForce
         };
 
-        patches.Add(new GrassPatch(Vector3.zero, GrassPatchWidth, GrassPatchLength, GrassBodyCounts));
-        patches.Add(new GrassPatch(Vector3.left * 10, GrassPatchWidth, GrassPatchLength, GrassBodyCounts));
-        foreach (GrassPatch patch in patches)
-        {
-            solver.AddGrassPatch(patch);
-            renderers.Add(new GrassPatchRenderer(patch.Root, transform, GrassMaterial, GroundMaterial, patch.PatchMesh, GroundMesh));
-        }
+
+        InitGrassPatchRenderer();
 
         foreach (Transform tr in colliders)
         {
-            solver.AddCollider(new SphereCollision(tr, CollisionRadius));
+            GEOsolver.AddCollider(new SphereCollision(tr, CollisionRadius));
         }
     }
 
     void FixedUpdate()
     {
-        solver.Update((float)(1.0 / 60.0 / 3.0));
+        UpdateDrawPatches();
+
+        GEOsolver.Update((float)(1.0 / 60.0 / 3.0));
+    }
+
+
+    private void Update()
+    {
+        // geo
+        foreach (var kv in patches)
+        {
+            kv.Value.Renderer.DrawGeoGrass();
+        }
+        // star billboard and billboard
+        GrassPatchRenderer.DrawInstancing();
+    }
+
+    private static Mesh GenGroundMesh()
+    {
+        Mesh mesh = new Mesh();
+        Vector3[] vertices = new Vector3[4];
+        vertices[0] = new Vector3(-5, 0, 5);
+        vertices[1] = new Vector3(5, 0, 5);
+        vertices[2] = new Vector3(5, 0, -5);
+        vertices[3] = new Vector3(-5, 0, -5);
+        mesh.vertices = vertices;
+
+        Vector2[] uvs = new Vector2[4];
+        uvs[0] = new Vector2(0, 1);
+        uvs[1] = new Vector2(1, 1);
+        uvs[2] = new Vector2(1, 0);
+        uvs[3] = new Vector2(0, 0);
+        mesh.uv = uvs;
+
+        Vector3[] normals = new Vector3[4];
+        normals[0] = normals[1] = normals[2] = normals[3] = Vector3.up;
+        mesh.normals = normals;
+
+        int[] indexs = new int[6];
+        indexs[0] = 0; indexs[1] = 1; indexs[2] = 2;
+        indexs[4] = 0; indexs[4] = 2; indexs[5] = 3;
+        mesh.triangles = indexs;
+
+        return mesh;
+    }
+
+    private void InitGrassPatchRenderer()
+    {
+        GrassPatchRenderer.SetMatAndMesh(GrassMaterial, StarMaterial, BillboardMaterial, GroundMaterial, GroundMesh);
+        for (int i = -100; i <= 100; i += 10)
+        {
+            for (int j = -100; j <= 100; j += 10)
+            {
+                renderers.Add(new Vector2I(i, j), new GrassPatchRenderer(new Vector2I(i, j)));
+            }
+        }
+    }
+
+    private void UpdateDrawPatches()
+    {
+        foreach (KeyValuePair<Vector2I, GrassPatchRenderer> kv in renderers)
+        {
+            Vector3 rendererRoot = kv.Key.ToVector3();
+            Vector3 dist = camTr.position - rendererRoot;
+            if (dist.sqrMagnitude <= GeoDistance2) // should be geo
+            {
+                if (!kv.Value.isGeo)
+                {
+                    GeoGrassPatch patch = new GeoGrassPatch(rendererRoot, GrassPatchWidth, GrassPatchLength, GrassBodyCounts, kv.Value);
+                    patches.Add(kv.Key, patch);
+                    kv.Value.SwitchType(GrassType.Geo, patch.PatchMesh);
+                    GEOsolver.AddGrassPatch(patch);
+                }
+            }
+            else if (dist.magnitude <= StarDistance)  // should be star
+            {
+                if (kv.Value.isGeo)  // geo to star
+                {
+                    GEOsolver.RemoveGrassPatch(patches[kv.Key]);
+                    patches.Remove(kv.Key);
+                    kv.Value.SwitchType(GrassType.StarBillboard, GroundMesh);
+                }
+                else if (kv.Value.isStar)
+                {
+                    continue;
+                }
+                else 
+                { 
+                    // bill to star
+                }
+            }
+            else // should be billboard
+            {
+                if (kv.Value.isGeo)// geo to star
+                {
+                    GEOsolver.RemoveGrassPatch(patches[kv.Key]);
+                    patches.Remove(kv.Key);
+                    kv.Value.SwitchType(GrassType.Billboard, GroundMesh);
+                }
+                else if (kv.Value.isStar) // star to billboard
+                {
+
+                }
+                else
+                    continue;
+            }
+        }
     }
 }

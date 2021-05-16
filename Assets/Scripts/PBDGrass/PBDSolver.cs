@@ -13,7 +13,7 @@ namespace PBD
         public int SolverIteration { get; private set; }
         public int CollisionIterations { get; private set; }
 
-        public List<GrassPatch> Patches { get; private set; }
+        public List<GeoGrassPatch> Patches { get; private set; }
         public List<SphereCollision> Collisions { get; private set; } // balls
 
         public PBDSolver(float friction, int solverIteration = 4, int collisionIterations = 1)
@@ -23,16 +23,16 @@ namespace PBD
             this.Friction = friction;
             this.StopThreshold = 0.1f;
 
-            this.Patches = new List<GrassPatch>();
+            this.Patches = new List<GeoGrassPatch>();
             this.Collisions = new List<SphereCollision>();
         }
 
-        public void AddGrassPatch(GrassPatch patch)
+        public void AddGrassPatch(GeoGrassPatch patch)
         {
             if(!Patches.Contains(patch))
                 Patches.Add(patch);
         }
-        public void RemoveGrassPatch(GrassPatch patch)
+        public void RemoveGrassPatch(GeoGrassPatch patch)
         {
             Patches.Remove(patch);
         }
@@ -52,7 +52,7 @@ namespace PBD
         {
             if (dt == 0)
                 return;
-            foreach (GrassPatch patch in Patches)
+            foreach (GeoGrassPatch patch in Patches)
             {
                 ApplyForce(patch, dt);
 
@@ -72,7 +72,7 @@ namespace PBD
             }
         }
 
-        private void ApplyForce(GrassPatch patch, float dt)
+        private void ApplyForce(GeoGrassPatch patch, float dt)
         {
             foreach (GrassBody body in patch.Bodies)
             {
@@ -93,7 +93,7 @@ namespace PBD
             }
         }
 
-        private void EstimatePositions(GrassPatch patch, float dt)
+        private void EstimatePositions(GeoGrassPatch patch, float dt)
         {
             foreach (GrassBody body in patch.Bodies)
             {
@@ -105,12 +105,16 @@ namespace PBD
             }
         }
 
-        private void ResolveCollisions(GrassPatch patch)
+        private void ResolveCollisions(GeoGrassPatch patch)
         {
             List<BodySphereContact> contacts = new List<BodySphereContact>();
 
             for (int i = 0; i < Collisions.Count; ++i)
-                Collisions[i].FindContacts(patch.QueryNearBodies(Collisions[i].GetPos()), contacts);
+            {
+                float dist2 = (Collisions[i].GetPos() - patch.Root).sqrMagnitude;
+                if(dist2 < patch.Width* patch.Width + patch.Length * patch.Length)
+                    Collisions[i].FindContacts(patch.QueryNearBodies(Collisions[i].GetPos()), contacts);
+            }
 
             float di = 1.0f / CollisionIterations;
 
@@ -119,7 +123,7 @@ namespace PBD
                     contacts[j].ResolveContact(di);
         }
 
-        private void DoConstraints(GrassPatch patch)
+        private void DoConstraints(GeoGrassPatch patch)
         {
             foreach (GrassBody body in patch.Bodies)
             {
@@ -133,7 +137,7 @@ namespace PBD
             }
         }
 
-        private void FloorChecking(GrassPatch patch)
+        private void FloorChecking(GeoGrassPatch patch)
         {
             foreach (GrassBody body in patch.Bodies)
             {
@@ -149,7 +153,7 @@ namespace PBD
             }
         }
 
-        private void UpdateVelocities(GrassPatch patch, float dt)
+        private void UpdateVelocities(GeoGrassPatch patch, float dt)
         {
             float threshold2 = StopThreshold * dt;
             threshold2 *= threshold2;
@@ -165,7 +169,7 @@ namespace PBD
             }
         }
 
-        private void UpdatePositions(GrassPatch patch)
+        private void UpdatePositions(GeoGrassPatch patch)
         {
             foreach (GrassBody body in patch.Bodies)
             {

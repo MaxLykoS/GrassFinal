@@ -133,6 +133,7 @@ GameObject:
   m_Component:
   - component: {fileID: 683257265}
   - component: {fileID: 683257268}
+  - component: {fileID: 683257264}
   m_Layer: 0
   m_Name: GrassPatchMgr
   m_TagString: Untagged
@@ -140,6 +141,20 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &683257264
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 683257263}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6523fe6871841344ca02a00ab343e99a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  mat: {fileID: 2100000, guid: dbdf90aecf4d47943b6b8e6bb9c24c3c, type: 2}
 --- !u!4 &683257265
 Transform:
   m_ObjectHideFlags: 0
@@ -166,8 +181,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5d428a8f968cb247851cafdf23c32c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GroundMesh: {fileID: 4300002, guid: 3bce7d3885866b04ca1f005ad982a633, type: 3}
   GrassMaterial: {fileID: 2100000, guid: 16b601adbca261f47811bea2f0b70fb7, type: 2}
+  StarMaterial: {fileID: 0}
+  BillboardMaterial: {fileID: 0}
   GroundMaterial: {fileID: 2100000, guid: dbdf90aecf4d47943b6b8e6bb9c24c3c, type: 2}
   colliders:
   - {fileID: 910008394}
@@ -247,8 +263,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 765890049}
-  m_LocalRotation: {x: -0.16435707, y: -0.7524576, z: 0.20492102, w: -0.60398823}
-  m_LocalPosition: {x: -1.2233939, y: 0.86067843, z: 0.47496238}
+  m_LocalRotation: {x: -0.0512003, y: 0.037825823, z: 0.002813369, w: 0.9979679}
+  m_LocalPosition: {x: 12.150245, y: 10.080436, z: -33.48679}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -279,7 +295,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 910008390}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -330,7 +346,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 910008390}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.167, y: 0.5, z: -1.375}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
