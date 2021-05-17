@@ -26,6 +26,8 @@ public class GrassPatchRenderer
     private static List<Matrix4x4> starBillboards;
     private static List<Matrix4x4> billboards;
     private static HashSet<Matrix4x4> geoGrounds;
+    private static HashSet<Matrix4x4> starGrounds;
+    private static HashSet<Matrix4x4> billGrounds;
 
     private static MaterialPropertyBlock geoGroundsBlock;
 
@@ -50,6 +52,8 @@ public class GrassPatchRenderer
         starBillboards = new List<Matrix4x4>();
         billboards = new List<Matrix4x4>();
         geoGrounds = new HashSet<Matrix4x4>();
+        starGrounds = new HashSet<Matrix4x4>();
+        billGrounds = new HashSet<Matrix4x4>();
 
         geoGroundsBlock = new MaterialPropertyBlock();
         //geoGroundsBlock.SetColor("_Color", new Vector4(16.0f / 255.0f, 96.0f / 255.0f, 18.0f / 255.0f, 1.0f));
@@ -61,20 +65,33 @@ public class GrassPatchRenderer
         Matrix4x4 m = Matrix4x4.Translate(Root.ToVector3());
         if (type == GrassType.Geo)
         {
-            if (!geoGrounds.Contains(m))
-            {
+            if(DrawingType!=GrassType.Geo)
                 geoGrounds.Add(m);
-            }
+            
+            if (DrawingType == GrassType.StarBillboard)
+                starGrounds.Remove(m);
+            else if (DrawingType == GrassType.Billboard)
+                billGrounds.Remove(m);
         }
         else if (type == GrassType.StarBillboard)
         {
+            if (DrawingType != GrassType.StarBillboard)
+                starGrounds.Add(m);
+
             if (DrawingType == GrassType.Geo)
                 geoGrounds.Remove(m);
+            else if (DrawingType == GrassType.Billboard)
+                billGrounds.Remove(m);
         }
-        else
+        else if(type == GrassType.Billboard)
         {
+            if (DrawingType != GrassType.Billboard)
+                billGrounds.Add(m);
+
             if (DrawingType == GrassType.Geo)
                 geoGrounds.Remove(m);
+            else if (DrawingType == GrassType.StarBillboard)
+                starGrounds.Remove(m);
         }
 
         DrawingType = type;
@@ -90,21 +107,33 @@ public class GrassPatchRenderer
 
     public static void DrawInstancing()
     {
-        // geo grass ground
-        Matrix4x4[] geoGroundArray = new Matrix4x4[geoGrounds.Count];
-        geoGrounds.CopyTo(geoGroundArray);
-
-        #region for differentiate all grass patches(delete this in the future)
-        Vector4[] colors = new Vector4[geoGrounds.Count];
-        for (int i = 0; i < colors.Length; ++i)
-            colors[i].x = colors[i].y = colors[i].z = (float)i / (float)colors.Length;
-        geoGroundsBlock.SetVectorArray("_Color", colors);
-        #endregion
-
-        Graphics.DrawMeshInstanced(GroundMesh, 0, GroundMaterial, geoGroundArray, geoGrounds.Count, geoGroundsBlock);
+        // draw all grass patches' grounds
+        DrawInstancingGrounds();
 
         // star billboard
 
         // billboard
+    }
+
+    private static void DrawInstancingGrounds()
+    {
+        int groundsCount = geoGrounds.Count + starGrounds.Count + billGrounds.Count;
+        Matrix4x4[] grounds = new Matrix4x4[groundsCount];
+        geoGrounds.CopyTo(grounds, 0);
+        starGrounds.CopyTo(grounds, geoGrounds.Count);
+        billGrounds.CopyTo(grounds, geoGrounds.Count + starGrounds.Count);
+
+        Vector4[] colors = new Vector4[groundsCount];
+        for (int i = 0; i < colors.Length; ++i)
+            colors[i].w = 1;
+        for (int i = 0; i < geoGrounds.Count; ++i)
+            colors[i].x = (float)i / (float)geoGrounds.Count;
+        for (int i = geoGrounds.Count; i < geoGrounds.Count + starGrounds.Count; ++i)
+            colors[i].y = (float)i / (float)(geoGrounds.Count + starGrounds.Count);
+        for (int i = geoGrounds.Count + starGrounds.Count; i < colors.Length; ++i)
+            colors[i].z = (float)i / (float)colors.Length;
+        geoGroundsBlock.SetVectorArray("_Color", colors);
+
+        Graphics.DrawMeshInstanced(GroundMesh, 0, GroundMaterial, grounds, groundsCount, geoGroundsBlock);
     }
 }

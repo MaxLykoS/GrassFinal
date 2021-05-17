@@ -13,7 +13,7 @@ public class GrassDemo : MonoBehaviour
     //const int MapSize = 30;
 
     const float GeoDistance2 = 11 * 11 * 2;
-    const float StarDistance = 100;
+    const float StarDistance2 = 21 * 21 * 2;
 
     Vector3 WindForce = Vector3.up * 1000;
 
@@ -130,22 +130,23 @@ public class GrassDemo : MonoBehaviour
                     GEOsolver.AddGrassPatch(patch);
                 }
             }
-            else if (dist.magnitude <= StarDistance)  // should be star
+            else if (dist.sqrMagnitude <= StarDistance2)  // should be star
             {
                 if (kv.Value.isGeo)  // geo to star
                 {
                     GEOsolver.RemoveGrassPatch(patches[kv.Key]);
-                    patches.Remove(kv.Key);
-                    kv.Value.SwitchType(GrassType.StarBillboard, GroundMesh);
+                    patches.Remove(kv.Key);                  
                 }
                 else if (kv.Value.isStar)
                 {
-                    continue;
+                    
                 }
                 else 
-                { 
+                {
                     // bill to star
                 }
+
+                kv.Value.SwitchType(GrassType.StarBillboard, null);
             }
             else // should be billboard
             {
@@ -153,14 +154,12 @@ public class GrassDemo : MonoBehaviour
                 {
                     GEOsolver.RemoveGrassPatch(patches[kv.Key]);
                     patches.Remove(kv.Key);
-                    kv.Value.SwitchType(GrassType.Billboard, GroundMesh);
                 }
                 else if (kv.Value.isStar) // star to billboard
                 {
 
                 }
-                else
-                    continue;
+                kv.Value.SwitchType(GrassType.Billboard, null);
             }
         }
     }

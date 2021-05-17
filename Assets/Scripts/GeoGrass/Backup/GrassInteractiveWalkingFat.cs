@@ -140,7 +140,7 @@ namespace WalkingFat
 
             meshFilter.mesh = new Mesh();
             meshFilter.mesh.CombineMeshes(combine);
-            transform.gameObject.active = true;
+            transform.gameObject.SetActive(true);
 
             for (int n = 0; n < tempGrassPosList.Length; n++)
             {
