@@ -15,7 +15,7 @@ public class GrassPatchRenderer
     public Mesh grassMesh { get; private set; }
 
     public GrassType DrawingType;
-    public Vector2I Root { get; private set; }
+    public MyVector2Int Root { get; private set; }
 
     private static Material GeoMaterial;
     private static Material StarMaterial;
@@ -35,7 +35,7 @@ public class GrassPatchRenderer
     public bool isStar { get { return DrawingType == GrassType.StarBillboard; } }
     public bool isBill { get { return DrawingType == GrassType.Billboard; } }
 
-    public GrassPatchRenderer(Vector2I root)
+    public GrassPatchRenderer(MyVector2Int root)
     {
         this.DrawingType = GrassType.Unknown;
         this.Root = root;

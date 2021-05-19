@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public struct Vector2I
+public struct MyVector2Int
 {
     int X, Z;
 
-    public Vector2I(int x, int z)
+    public MyVector2Int(int x, int z)
     {
         this.X = x;
         this.Z = z;

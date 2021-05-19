@@ -24,8 +24,8 @@ public class GrassDemo : MonoBehaviour
     public List<Transform> colliders;
 
     private PBDSolver GEOsolver;
-    private Dictionary<Vector2I, GrassPatchRenderer> renderers;
-    private Dictionary<Vector2I, GeoGrassPatch> patches;
+    private Dictionary<MyVector2Int, GrassPatchRenderer> renderers;
+    private Dictionary<MyVector2Int, GeoGrassPatch> patches;
     private Mesh GroundMesh;
 
     private Transform camTr;
@@ -34,8 +34,8 @@ public class GrassDemo : MonoBehaviour
     {
         Application.targetFrameRate = 60;
         GroundMesh = GenGroundMesh();
-        renderers = new Dictionary<Vector2I, GrassPatchRenderer>();
-        patches = new Dictionary<Vector2I, GeoGrassPatch>();
+        renderers = new Dictionary<MyVector2Int, GrassPatchRenderer>();
+        patches = new Dictionary<MyVector2Int, GeoGrassPatch>();
         //camTr = Camera.main.transform;
         camTr = colliders[0].transform;
 
@@ -109,14 +109,14 @@ public class GrassDemo : MonoBehaviour
         {
             for (int j = -100; j <= 100; j += 10)
             {
-                renderers.Add(new Vector2I(i, j), new GrassPatchRenderer(new Vector2I(i, j)));
+                renderers.Add(new MyVector2Int(i, j), new GrassPatchRenderer(new MyVector2Int(i, j)));
             }
         }
     }
 
     private void UpdateDrawPatches()
     {
-        foreach (KeyValuePair<Vector2I, GrassPatchRenderer> kv in renderers)
+        foreach (KeyValuePair<MyVector2Int, GrassPatchRenderer> kv in renderers)
         {
             Vector3 rendererRoot = kv.Key.ToVector3();
             Vector3 dist = camTr.position - rendererRoot;
