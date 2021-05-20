@@ -12,7 +12,7 @@ public class GrassDemo : MonoBehaviour
 
     //const int MapSize = 30;
 
-    const float GeoDistance2 = 11 * 11 * 2;
+    const float GeoDistance2 = 5*5*2;
     const float StarDistance2 = 21 * 21 * 2;
 
     Vector3 WindForce = Vector3.up * 1000;

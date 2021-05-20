@@ -1,0 +1,45 @@
+#pragma kernel CSCulling
+
+StructuredBuffer<float3> posAllBuffer;
+RWStructuredBuffer<float3> posVisibleBuffer;
+RWStructuredBuffer<int> bufferWithArgs;
+float3 camPos;
+float3 camDir;
+float camHalfFov;
+float4x4 _Matrix_VP;
+Texture2D _DepthTex;
+float useHzb;
+  
+[numthreads(16, 16, 1)]
+void CSCulling(uint3 id : SV_DispatchThreadID)
+{
+    uint index = id.y * 400 + id.x;
+    float3 itemPos = posAllBuffer[index];
+    float3 itemDir = normalize(itemPos - camPos);
+    float rot = dot(camDir, itemDir);
+ 
+    float4 clipPos = mul(_Matrix_VP, float4(itemPos - camDir * 0.2, 1));
+
+    if (max(abs(clipPos.x), abs(clipPos.y)) > clipPos.w + 0.7)
+        return;
+    if (useHzb > 0.5)
+    {	
+        clipPos.xyz /= clipPos.w;
+        clipPos.xy = clipPos.xy * 0.5 + 0.5;
+
+        float scWid = 0.2 / (tan(camHalfFov * 3.1415926 / 180) * clipPos.w) * 1024;
+
+        uint mips = (uint) clamp(log2(scWid), 0, 7);
+
+        uint texScale = 1 << mips;
+        uint2 uv = uint2(clipPos.xy * (1024 / texScale));
+		 
+        float minD = min(min(_DepthTex.mips[mips][uv.xy + uint2(0, 0)].r, _DepthTex.mips[mips][uv.xy + uint2(0, 1)].r), min(_DepthTex.mips[mips][uv.xy + uint2(1, 0)].r, _DepthTex.mips[mips][uv.xy + uint2(1, 1)].r));
+        if (minD > clipPos.z)
+            return;
+    }
+	 
+    int currentIndex;
+    InterlockedAdd(bufferWithArgs[1], 1, currentIndex);
+    posVisibleBuffer[currentIndex] = itemPos;
+}
