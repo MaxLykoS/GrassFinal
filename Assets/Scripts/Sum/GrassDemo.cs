@@ -25,7 +25,7 @@ public class GrassDemo : MonoBehaviour
 
     private PBDSolver GEOsolver;
     private Dictionary<MyVector2Int, GrassPatchRenderer> renderers;
-    private Dictionary<MyVector2Int, GeoGrassPatch> patches;
+    private Dictionary<MyVector2Int, PBDoGrassPatch> patches;
     private Mesh GroundMesh;
 
     private Transform camTr;
@@ -35,7 +35,7 @@ public class GrassDemo : MonoBehaviour
         Application.targetFrameRate = 60;
         GroundMesh = GenGroundMesh();
         renderers = new Dictionary<MyVector2Int, GrassPatchRenderer>();
-        patches = new Dictionary<MyVector2Int, GeoGrassPatch>();
+        patches = new Dictionary<MyVector2Int, PBDoGrassPatch>();
         //camTr = Camera.main.transform;
         camTr = colliders[0].transform;
 
@@ -124,7 +124,7 @@ public class GrassDemo : MonoBehaviour
             {
                 if (!kv.Value.isGeo)
                 {
-                    GeoGrassPatch patch = new GeoGrassPatch(rendererRoot, GrassPatchWidth, GrassPatchLength, GrassBodyCounts, kv.Value);
+                    PBDoGrassPatch patch = new PBDoGrassPatch(rendererRoot, GrassPatchWidth, GrassPatchLength, GrassBodyCounts, kv.Value);
                     patches.Add(kv.Key, patch);
                     kv.Value.SwitchType(GrassType.Geo, patch.PatchMesh);
                     GEOsolver.AddGrassPatch(patch);

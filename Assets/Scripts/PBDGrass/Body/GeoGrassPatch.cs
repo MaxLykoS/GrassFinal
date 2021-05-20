@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace PBD
 {
-    public class GeoGrassPatch
+    public class PBDoGrassPatch
     {
         const int SEGMENTS = 3;
         const float GrassHeight = 0.5f;
@@ -25,7 +25,7 @@ namespace PBD
 
         public GrassPatchRenderer Renderer { get; private set; }
 
-        public GeoGrassPatch(Vector3 root, int width, int length, int points, GrassPatchRenderer renderer)
+        public PBDoGrassPatch(Vector3 root, int width, int length, int points, GrassPatchRenderer renderer)
         {
             this.Root = root;
             this.Width = width;
