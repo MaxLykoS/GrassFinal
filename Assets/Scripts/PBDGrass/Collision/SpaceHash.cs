@@ -5,20 +5,20 @@ namespace PBD
 {
     public class SpaceHash
     {
-        public Dictionary<MyVector2Int, List<GrassBody>> Hash;
+        public Dictionary<MyVector2Int, List<PBDGrassBody>> Hash;
 
         public int Width;
         public int Length;
         public Vector3 root;
 
-        public SpaceHash(Vector3 root, int w, int l, ref GrassBody[] bodies)
+        public SpaceHash(Vector3 root, int w, int l, ref PBDGrassBody[] bodies)
         {
             this.Width = w;
             this.Length = l;
             this.root = root;
-            this.Hash = new Dictionary<MyVector2Int, List<GrassBody>>();
+            this.Hash = new Dictionary<MyVector2Int, List<PBDGrassBody>>();
 
-            foreach (GrassBody body in bodies)
+            foreach (PBDGrassBody body in bodies)
             {
                 MyVector2Int key = GenCoord(ref body.OriginPos[0]);
 
@@ -28,17 +28,17 @@ namespace PBD
                 }
                 else
                 {           
-                    List<GrassBody> newList = new List<GrassBody>();
+                    List<PBDGrassBody> newList = new List<PBDGrassBody>();
                     newList.Add(body);
                     Hash.Add(key, newList);
                 }
             }
         }
 
-        public List<GrassBody> QueryPossibleBones(Vector3 place)
+        public List<PBDGrassBody> QueryPossibleBones(Vector3 place)
         {
             MyVector2Int key = GenCoord(ref place);
-            List<GrassBody> possibleBones;
+            List<PBDGrassBody> possibleBones;
             if (Hash.TryGetValue(key, out possibleBones))
                 return possibleBones;
             else

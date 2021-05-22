@@ -14,13 +14,13 @@ namespace PBD
             this.Radius = r;
         }
 
-        internal void FindContacts(List<GrassBody> possibleBodies, List<BodySphereContact> contacts)
+        internal void FindContacts(List<PBDGrassBody> possibleBodies, List<BodySphereContact> contacts)
         {
             if (possibleBodies == null)
                 return;
             for (int j = 0; j < possibleBodies.Count; j++)
             {
-                GrassBody grassBody = possibleBodies[j];
+                PBDGrassBody grassBody = possibleBodies[j];
 
                 int numParticles = grassBody.BoneCounts;
 

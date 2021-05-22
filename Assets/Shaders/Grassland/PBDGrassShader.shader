@@ -5,10 +5,9 @@ Shader "Custom/PBDGrassShader"
         _Color("Color", Color) = (1, 1, 1, 1)
     }
 
-    SubShader
+        SubShader
     {
         Tags { "RenderType" = "Opaque" }
-        LOD 100
 
         Cull Off
 
@@ -19,23 +18,23 @@ Shader "Custom/PBDGrassShader"
             #pragma fragment frag
             #include "UnityCG.cginc"
 
-            struct appdata
-            {
-                float4 vertex : POSITION;
-            };
+            float4 _Color;
+            StructuredBuffer<float3> VertexBuffer;
+            StructuredBuffer<int> TriangleBuffer;
 
             struct v2f
             {
                 float4 vertex : SV_POSITION;
-            };
+            };  
 
-            float4 _Color;
-
-            v2f vert(appdata v)
+            v2f vert(uint vertex_id : SV_VertexID)
             {
                 v2f o;
 
-                o.vertex = UnityObjectToClipPos(v.vertex);
+                int positionIndex = TriangleBuffer[vertex_id];
+                float3 position = VertexBuffer[positionIndex];
+
+                o.vertex = mul(UNITY_MATRIX_VP, float4(position, 1.0f));
                 return o;
             }
 

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace PBD
 {
-    public class GrassBody
+    public class PBDGrassBody
     {
         private const float DistanceConstraintStiffness = 0.2f; 
 
@@ -24,7 +24,7 @@ namespace PBD
         public int BoneCounts { get; private set; }
         public int vertexCounts { get; private set; }
 
-        public GrassBody(ref Vector3[] vertices, ref Vector2[] uvs, ref int[] triangles, int indexOffset, int triIndexOffset,
+        public PBDGrassBody(ref Vector3[] vertices, ref Vector2[] uvs, ref int[] triangles, int indexOffset, int triIndexOffset,
             Vector3 root, int segments, float h, float w, float f, float mass)
         {
             this.Mass = mass;
@@ -37,7 +37,7 @@ namespace PBD
 
             InitPositionsAndConstraints(ref vertices);
         }
-        ~GrassBody()
+        ~PBDGrassBody()
         {
             Fcons.Clear();
             Dcons.Clear();

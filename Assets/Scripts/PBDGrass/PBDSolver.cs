@@ -13,7 +13,7 @@ namespace PBD
         public int SolverIteration { get; private set; }
         public int CollisionIterations { get; private set; }
 
-        public List<PBDoGrassPatch> Patches { get; private set; }
+        public List<PBDGrassPatch> Patches { get; private set; }
         public List<SphereCollision> Collisions { get; private set; } // balls
 
         public PBDSolver(float friction, int solverIteration = 4, int collisionIterations = 1)
@@ -23,16 +23,16 @@ namespace PBD
             this.Friction = friction;
             this.StopThreshold = 0.1f;
 
-            this.Patches = new List<PBDoGrassPatch>();
+            this.Patches = new List<PBDGrassPatch>();
             this.Collisions = new List<SphereCollision>();
         }
 
-        public void AddGrassPatch(PBDoGrassPatch patch)
+        public void AddGrassPatch(PBDGrassPatch patch)
         {
             if(!Patches.Contains(patch))
                 Patches.Add(patch);
         }
-        public void RemoveGrassPatch(PBDoGrassPatch patch)
+        public void RemoveGrassPatch(PBDGrassPatch patch)
         {
             Patches.Remove(patch);
         }
@@ -52,7 +52,7 @@ namespace PBD
         {
             if (dt == 0)
                 return;
-            foreach (PBDoGrassPatch patch in Patches)
+            foreach (PBDGrassPatch patch in Patches)
             {
                 ApplyForce(patch, dt);
 
@@ -72,9 +72,9 @@ namespace PBD
             }
         }
 
-        private void ApplyForce(PBDoGrassPatch patch, float dt)
+        private void ApplyForce(PBDGrassPatch patch, float dt)
         {
-            foreach (GrassBody body in patch.Bodies)
+            foreach (PBDGrassBody body in patch.Bodies)
             {
                 for (int i = 0; i < body.BoneCounts; i++)
                 {
@@ -93,9 +93,9 @@ namespace PBD
             }
         }
 
-        private void EstimatePositions(PBDoGrassPatch patch, float dt)
+        private void EstimatePositions(PBDGrassPatch patch, float dt)
         {
-            foreach (GrassBody body in patch.Bodies)
+            foreach (PBDGrassBody body in patch.Bodies)
             {
                 for (int i = 0; i < body.BoneCounts; i++)
                 {
@@ -105,7 +105,7 @@ namespace PBD
             }
         }
 
-        private void ResolveCollisions(PBDoGrassPatch patch)
+        private void ResolveCollisions(PBDGrassPatch patch)
         {
             List<BodySphereContact> contacts = new List<BodySphereContact>();
 
@@ -123,9 +123,9 @@ namespace PBD
                     contacts[j].ResolveContact(di);
         }
 
-        private void DoConstraints(PBDoGrassPatch patch)
+        private void DoConstraints(PBDGrassPatch patch)
         {
-            foreach (GrassBody body in patch.Bodies)
+            foreach (PBDGrassBody body in patch.Bodies)
             {
                 // constraints
                 float stepDT = 1.0f / SolverIteration;
@@ -137,9 +137,9 @@ namespace PBD
             }
         }
 
-        private void FloorChecking(PBDoGrassPatch patch)
+        private void FloorChecking(PBDGrassPatch patch)
         {
-            foreach (GrassBody body in patch.Bodies)
+            foreach (PBDGrassBody body in patch.Bodies)
             {
                 // bounds checking
                 for (int i = 0; i < body.Predicted.Length; ++i)
@@ -153,11 +153,11 @@ namespace PBD
             }
         }
 
-        private void UpdateVelocities(PBDoGrassPatch patch, float dt)
+        private void UpdateVelocities(PBDGrassPatch patch, float dt)
         {
             float threshold2 = StopThreshold * dt;
             threshold2 *= threshold2;
-            foreach (GrassBody body in patch.Bodies)
+            foreach (PBDGrassBody body in patch.Bodies)
             {
                 for (int i = 0; i < body.BoneCounts; i++)
                 {
@@ -169,9 +169,9 @@ namespace PBD
             }
         }
 
-        private void UpdatePositions(PBDoGrassPatch patch)
+        private void UpdatePositions(PBDGrassPatch patch)
         {
-            foreach (GrassBody body in patch.Bodies)
+            foreach (PBDGrassBody body in patch.Bodies)
             {
                 for (int i = 0; i < body.BoneCounts; i++)
                 {

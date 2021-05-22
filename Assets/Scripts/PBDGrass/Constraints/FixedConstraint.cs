@@ -6,10 +6,10 @@ namespace PBD
 {
     public class FixedConstraint : Constraint
     {
-        private int i0;
+        public int i0 { get; private set; }
         public Vector3 fixedPos;
 
-        public FixedConstraint(int i0, GrassBody body) : base(body)
+        public FixedConstraint(int i0, PBDGrassBody body) : base(body)
         {
             this.i0 = i0;
             this.fixedPos = body.Positions[i0];

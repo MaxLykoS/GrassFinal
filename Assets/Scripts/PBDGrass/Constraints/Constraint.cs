@@ -6,9 +6,9 @@ namespace PBD
 {
     public abstract class Constraint
     {
-        protected GrassBody body { get; private set; }
+        protected PBDGrassBody body { get; private set; }
 
-        protected Constraint(GrassBody body)
+        protected Constraint(PBDGrassBody body)
         {
             this.body = body;
         }

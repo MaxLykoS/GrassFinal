@@ -6,13 +6,14 @@ namespace PBD
 {
     public class DistanceConstraint : Constraint
     {
-        private float RestLength;
+        public float RestLength { get; private set; }
 
-        private float ElasticModulus;
+        public float ElasticModulus { get; private set; }
 
-        private readonly int i0, i1;
+        public int i0 { get; private set; }
+        public int i1 { get; private set; }
 
-        internal DistanceConstraint(int i0, int i1, float stiffness, GrassBody body) : base(body)
+    internal DistanceConstraint(int i0, int i1, float stiffness, PBDGrassBody body) : base(body)
         {
             this.i0 = i0;
             this.i1 = i1;
@@ -35,7 +36,6 @@ namespace PBD
             body.Predicted[i0] += invMass * corr * dt;
 
             body.Predicted[i1] -= invMass * corr * dt;
-
         }
     }
 }

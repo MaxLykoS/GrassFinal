@@ -16,7 +16,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7111480401437039807
 Transform:
   m_ObjectHideFlags: 0
@@ -43,9 +43,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f56a084b1223d3a47bce8430aa7f0084, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GrassMaterial: {fileID: 2100000, guid: 5e754f3111a306449acc5d56eb79615a, type: 2}
-  GrassInstancingMaterial: {fileID: 0}
-  ball: {fileID: 0}
+  GrassMaterial: {fileID: 2100000, guid: 8cc098fa046c0874f8e125679058a67c, type: 2}
+  TestMaterial: {fileID: 2100000, guid: dbdf90aecf4d47943b6b8e6bb9c24c3c, type: 2}
+  balls:
+  - {fileID: 0}
   CS: {fileID: 7200000, guid: 95ab8d7635ae8fd4ea9232f9d23e5135, type: 3}
-  DrawCounts: 1
-  PBDSolverHandler: 0
