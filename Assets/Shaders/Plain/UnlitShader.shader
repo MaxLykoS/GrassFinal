@@ -1,13 +1,13 @@
-Shader "Custom/UnlitInstancedShader"
+Shader "Custom/UnlitShader"
 {
     Properties
     {
-        _Color("Color", Color) = (1, 1, 1, 1)
+        _Color ("Color", Color) = (1, 1, 1, 1)
     }
 
-        SubShader
+    SubShader
     {
-        Tags { "RenderType" = "Opaque" }
+        Tags { "RenderType"="Opaque" }
         LOD 100
 
         Pass
@@ -15,7 +15,6 @@ Shader "Custom/UnlitInstancedShader"
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            #pragma multi_compile_instancing
             #include "UnityCG.cginc"
 
             struct appdata
@@ -27,7 +26,7 @@ Shader "Custom/UnlitInstancedShader"
             {
                 float4 vertex : SV_POSITION;
             };
-
+            
             float4 _Color;
 
             v2f vert(appdata v)
@@ -45,4 +44,5 @@ Shader "Custom/UnlitInstancedShader"
             ENDCG
         }
     }
+    FallBack "Diffuse"
 }

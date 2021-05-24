@@ -51,7 +51,7 @@ public class PBDGrassCSTest : MonoBehaviour
 {
     const int GrassPatchWidth = 10;
     const int GrassPatchLength = 10;
-    const int GrassBodyCounts = 1024;
+    const int GrassBodyCounts = 128;
     const float CollisionRadius = 1.0f;
 
     int meshTrianglesCounts;
@@ -166,8 +166,8 @@ public class PBDGrassCSTest : MonoBehaviour
 
     void FixedUpdate()
     {
-        CS.Dispatch(PBDSolverHandler, 4, 1, 1);
-        CS.Dispatch(UpdateMeshHandler, 4, 1, 1);
+        CS.Dispatch(PBDSolverHandler, 1, 1, 1);
+        CS.Dispatch(UpdateMeshHandler, 1, 1, 1);
 
         //PositionBuffer.GetData(boneArray);
 

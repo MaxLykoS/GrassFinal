@@ -41,7 +41,7 @@ RWStructuredBuffer<SphereCollision> BallBuffer;
 
 RWStructuredBuffer<float3> ResultPosBuffer;
 
-[numthreads(256, 1, 1)]  // id.x body
+[numthreads(128, 1, 1)]  // id.x body
 void PBDSolver(uint3 id : SV_DispatchThreadID)
 {
     // Apply Force ************
@@ -63,6 +63,7 @@ void PBDSolver(uint3 id : SV_DispatchThreadID)
     for (i = 0; i < 4; i++)
     {      
         int idb = id.x * 4 + i;
+        // update position with new velocity
         PredictedBuffer[idb] = PositionBuffer[idb] + dt * VelocitiesBuffer[idb];
     }
     
@@ -111,9 +112,9 @@ void PBDSolver(uint3 id : SV_DispatchThreadID)
 
             float3 corr = DconsBuffer[dconsIndexOffset + j].ElasticModulus * n * (d - DconsBuffer[dconsIndexOffset + j].RestLength) * sum;
 
-            PredictedBuffer[i0] += invMass * corr * dt;
+            PredictedBuffer[i0] += invMass * corr * stepDT;
 
-            PredictedBuffer[i1] -= invMass * corr * dt;
+            PredictedBuffer[i1] -= invMass * corr * stepDT;
         }
     }
     
