@@ -15,12 +15,8 @@ Shader "Custom/UnlitInstanceIndirectShader"
             
             #include "UnityCG.cginc"
 
-            struct MeshProperties 
-            {
-                float4x4 mat; // world matrix
-                float4 color;
-            };
-            StructuredBuffer<MeshProperties> _Properties;
+            StructuredBuffer<int3> posVisibleBuffer;
+            float3 camPos;
 
             struct appdata
             {
@@ -30,21 +26,28 @@ Shader "Custom/UnlitInstanceIndirectShader"
             struct v2f
             {
                 float4 vertex : SV_POSITION;   
-                float4 color : COLOR;
+                float3 worldPos : TEXCOORD0;
             };
 
             v2f vert(appdata v, uint instanceID : SV_InstanceID)
             {
                 v2f o;
-                o.vertex = mul(_Properties[instanceID].mat, v.vertex);
-                o.vertex = mul(UNITY_MATRIX_VP, o.vertex);
-                o.color = _Properties[instanceID].color;
+                o.worldPos = posVisibleBuffer[instanceID] + v.vertex;
+                o.vertex = mul(UNITY_MATRIX_VP, float4(o.worldPos, 1));
                 return o;
             }
 
             fixed4 frag(v2f o) : SV_Target
             {
-                return o.color;
+                float dist = distance(camPos, o.worldPos);
+                float4 color = float4(0, 0, 0, 1);
+                if (dist <= 10)
+                    color.r = 1;
+                else if (dist <= 20)
+                    color.g = 1;
+                else
+                    color.b = 1;
+                return color;
             }
             ENDCG
         }

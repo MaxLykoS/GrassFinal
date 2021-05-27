@@ -5,7 +5,7 @@ namespace PBD
 {
     public class SpaceHash
     {
-        public Dictionary<MyVector2Int, List<PBDGrassBody>> Hash;
+        public Dictionary<Vector2Int, List<PBDGrassBody>> Hash;
 
         public int Width;
         public int Length;
@@ -16,11 +16,11 @@ namespace PBD
             this.Width = w;
             this.Length = l;
             this.root = root;
-            this.Hash = new Dictionary<MyVector2Int, List<PBDGrassBody>>();
+            this.Hash = new Dictionary<Vector2Int, List<PBDGrassBody>>();
 
             foreach (PBDGrassBody body in bodies)
             {
-                MyVector2Int key = GenCoord(ref body.OriginPos[0]);
+                Vector2Int key = GenCoord(ref body.OriginPos[0]);
 
                 if (Hash.ContainsKey(key))
                 {
@@ -37,7 +37,7 @@ namespace PBD
 
         public List<PBDGrassBody> QueryPossibleBones(Vector3 place)
         {
-            MyVector2Int key = GenCoord(ref place);
+            Vector2Int key = GenCoord(ref place);
             List<PBDGrassBody> possibleBones;
             if (Hash.TryGetValue(key, out possibleBones))
                 return possibleBones;
@@ -45,12 +45,12 @@ namespace PBD
                 return null;
         }
 
-        public static MyVector2Int GenCoord(ref Vector3 root)
+        public static Vector2Int GenCoord(ref Vector3 root)
         {
             int x = Mathf.FloorToInt(root.x);
             int z = Mathf.FloorToInt(root.z);
 
-            return new MyVector2Int(x, z);
+            return new Vector2Int(x, z);
         }
     }
 }

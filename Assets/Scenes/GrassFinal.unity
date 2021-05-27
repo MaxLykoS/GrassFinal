@@ -1897,7 +1897,11 @@ PrefabInstance:
     - target: {fileID: 1686453921032129304, guid: a4ec68f147d67264e8c1f7c0d6308de6, type: 3}
       propertyPath: GroundMaterial
       value: 
-      objectReference: {fileID: 2100000, guid: 35bb5acf7b8551946adc9566da2d7c6d, type: 2}
+      objectReference: {fileID: 2100000, guid: fc41f6c110899be46a01679942308061, type: 2}
+    - target: {fileID: 1686453921032129304, guid: a4ec68f147d67264e8c1f7c0d6308de6, type: 3}
+      propertyPath: groundsCullingCS
+      value: 
+      objectReference: {fileID: 7200000, guid: 2f9d100b3c4cedc44918895a7873d744, type: 3}
     - target: {fileID: 1686453921032129304, guid: a4ec68f147d67264e8c1f7c0d6308de6, type: 3}
       propertyPath: colliders.Array.data[0]
       value: 

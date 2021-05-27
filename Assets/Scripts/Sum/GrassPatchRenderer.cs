@@ -4,8 +4,8 @@ using UnityEngine;
 
 public enum GrassType
 { 
-    Geo,
-    StarBillboard,
+    PBD,
+    GEO,
     Billboard,
     Unknown
 }
@@ -15,125 +15,98 @@ public class GrassPatchRenderer
     public Mesh grassMesh { get; private set; }
 
     public GrassType DrawingType;
-    public MyVector2Int Root { get; private set; }
+    public Vector3Int Root { get; private set; }
 
-    private static Material GeoMaterial;
-    private static Material StarMaterial;
+    private static Material PBDMaterial;
+    private static Material GEOMaterial;
     private static Material BillboardMaterial;
     private static Mesh GroundMesh;
     private static Material GroundMaterial;
 
-    private static List<Matrix4x4> starBillboards;
-    private static List<Matrix4x4> billboards;
-    private static HashSet<Matrix4x4> geoGrounds;
-    private static HashSet<Matrix4x4> starGrounds;
-    private static HashSet<Matrix4x4> billGrounds;
+    private static List<Vector3Int> grounds;
+    private static HashSet<Vector3Int> pbdGrounds;
 
-    private static MaterialPropertyBlock geoGroundsBlock;
+    static uint[] args;
+    private static ComputeShader groundsCullingCS;
+    private static int groundsCullingCSHandler;
+    private static ComputeBuffer groundsArgsBuffer;
+    private static ComputeBuffer groundsPosBuffer;
+    private static ComputeBuffer groundVisibleBuffer;
 
-    public bool isGeo { get { return DrawingType == GrassType.Geo; } }
-    public bool isStar { get { return DrawingType == GrassType.StarBillboard; } }
-    public bool isBill { get { return DrawingType == GrassType.Billboard; } }
-
-    public GrassPatchRenderer(MyVector2Int root)
+    public GrassPatchRenderer(Vector3Int root)
     {
         this.DrawingType = GrassType.Unknown;
         this.Root = root;
+
+        grounds.Add(root);
     }
 
-    public static void SetMatAndMesh(Material geoMaterial, Material starMaterial, Material billboardMaterial, Material groundMaterial, Mesh groundMesh)
+    public static void SetMatAndMesh(Material pbdMaterial, Material geoMaterial, Material billboardMaterial, 
+        Material groundMaterial, Mesh groundMesh, ComputeShader groundCullingCS)
     {
-        GeoMaterial = geoMaterial;
-        StarMaterial = starMaterial;
+        PBDMaterial = pbdMaterial;
+        GEOMaterial = geoMaterial;
         BillboardMaterial = billboardMaterial;
         GroundMaterial = groundMaterial;
         GroundMesh = groundMesh;
 
-        starBillboards = new List<Matrix4x4>();
-        billboards = new List<Matrix4x4>();
-        geoGrounds = new HashSet<Matrix4x4>();
-        starGrounds = new HashSet<Matrix4x4>();
-        billGrounds = new HashSet<Matrix4x4>();
+        grounds = new List<Vector3Int>();
+        pbdGrounds = new HashSet<Vector3Int>();
 
-        geoGroundsBlock = new MaterialPropertyBlock();
-        //geoGroundsBlock.SetColor("_Color", new Vector4(16.0f / 255.0f, 96.0f / 255.0f, 18.0f / 255.0f, 1.0f));
+        groundsCullingCS = groundCullingCS;
     }
 
-    public void SwitchType(GrassType type, Mesh grassMesh)
+    public static void SubmitGroundsData()
     {
-        this.grassMesh = grassMesh;
-        Matrix4x4 m = Matrix4x4.Translate(Root.ToVector3());
-        if (type == GrassType.Geo)
-        {
-            if(DrawingType!=GrassType.Geo)
-                geoGrounds.Add(m);
-            
-            if (DrawingType == GrassType.StarBillboard)
-                starGrounds.Remove(m);
-            else if (DrawingType == GrassType.Billboard)
-                billGrounds.Remove(m);
-        }
-        else if (type == GrassType.StarBillboard)
-        {
-            if (DrawingType != GrassType.StarBillboard)
-                starGrounds.Add(m);
+        groundsCullingCSHandler = groundsCullingCS.FindKernel("CSMain");
 
-            if (DrawingType == GrassType.Geo)
-                geoGrounds.Remove(m);
-            else if (DrawingType == GrassType.Billboard)
-                billGrounds.Remove(m);
-        }
-        else if(type == GrassType.Billboard)
-        {
-            if (DrawingType != GrassType.Billboard)
-                billGrounds.Add(m);
+        args = new uint[5] { 0, 0, 0, 0, 0 };
+        args[0] = (uint)GroundMesh.GetIndexCount(0);
+        //args[1] = (uint)grounds.Count;
+        args[1] = 0;
+        args[2] = (uint)GroundMesh.GetIndexStart(0);
+        args[3] = (uint)GroundMesh.GetBaseVertex(0);
+        groundsArgsBuffer = new ComputeBuffer(1, args.Length * sizeof(uint), ComputeBufferType.IndirectArguments);
+        groundsArgsBuffer.SetData(args);
+        groundsCullingCS.SetBuffer(groundsCullingCSHandler, "bufferWithArgs", groundsArgsBuffer);
 
-            if (DrawingType == GrassType.Geo)
-                geoGrounds.Remove(m);
-            else if (DrawingType == GrassType.StarBillboard)
-                starGrounds.Remove(m);
-        }
+        groundsPosBuffer = new ComputeBuffer(grounds.Count, sizeof(int) * 3);
+        groundsPosBuffer.SetData(grounds.ToArray());
+        groundsCullingCS.SetBuffer(groundsCullingCSHandler, "posAllBuffer", groundsPosBuffer);
 
-        DrawingType = type;
+
+        groundVisibleBuffer = new ComputeBuffer(grounds.Count, sizeof(float) * 3);
+        groundsCullingCS.SetBuffer(groundsCullingCSHandler, "posVisibleBuffer", groundVisibleBuffer);
+        GroundMaterial.SetBuffer("posVisibleBuffer", groundVisibleBuffer);
     }
 
-    public void DrawGeoGrass()
+    public static void ReleaseData()
     {
-        if (DrawingType == GrassType.Geo && grassMesh) 
+        groundsArgsBuffer.Release();
+        groundsPosBuffer.Release();
+}
+
+    public void DrawPBDGrass()
+    {
+        if (DrawingType == GrassType.PBD && grassMesh) 
         {
-            Graphics.DrawMesh(grassMesh, Matrix4x4.identity, GeoMaterial, 0);
+            Graphics.DrawMesh(grassMesh, Matrix4x4.identity, PBDMaterial, 0);
         }
     }
 
     public static void DrawInstancing()
     {
         // draw all grass patches' grounds
-        DrawInstancingGrounds();
+        args[1] = 0;
+        groundsArgsBuffer.SetData(args);
 
-        // star billboard
+        groundsCullingCS.SetVector("camPos", Camera.main.transform.position);
+        GroundMaterial.SetVector("camPos", Camera.main.transform.position);
+        groundsCullingCS.Dispatch(groundsCullingCSHandler, grounds.Count / 256, 1, 1);
 
-        // billboard
-    }
-
-    private static void DrawInstancingGrounds()
-    {
-        int groundsCount = geoGrounds.Count + starGrounds.Count + billGrounds.Count;
-        Matrix4x4[] grounds = new Matrix4x4[groundsCount];
-        geoGrounds.CopyTo(grounds, 0);
-        starGrounds.CopyTo(grounds, geoGrounds.Count);
-        billGrounds.CopyTo(grounds, geoGrounds.Count + starGrounds.Count);
-
-        Vector4[] colors = new Vector4[groundsCount];
-        for (int i = 0; i < colors.Length; ++i)
-            colors[i].w = 1;
-        for (int i = 0; i < geoGrounds.Count; ++i)
-            colors[i].x = (float)i / (float)geoGrounds.Count;
-        for (int i = geoGrounds.Count; i < geoGrounds.Count + starGrounds.Count; ++i)
-            colors[i].y = (float)i / (float)(geoGrounds.Count + starGrounds.Count);
-        for (int i = geoGrounds.Count + starGrounds.Count; i < colors.Length; ++i)
-            colors[i].z = (float)i / (float)colors.Length;
-        geoGroundsBlock.SetVectorArray("_Color", colors);
-
-        Graphics.DrawMeshInstanced(GroundMesh, 0, GroundMaterial, grounds, groundsCount, geoGroundsBlock);
+        const float BoundSize = 10000.0f;
+        Graphics.DrawMeshInstancedIndirect(GroundMesh, 0, GroundMaterial,
+            new Bounds(Vector3.zero, Vector3.one * BoundSize)
+            , groundsArgsBuffer);
     }
 }

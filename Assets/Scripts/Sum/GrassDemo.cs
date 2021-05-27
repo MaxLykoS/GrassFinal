@@ -5,8 +5,8 @@ using PBD;
 
 public class GrassDemo : MonoBehaviour
 {
-    const int GrassPatchWidth = 10;
-    const int GrassPatchLength = 10;
+    const int GrassPatchWidth = 1;
+    const int GrassPatchLength = 1;
     const int GrassBodyCounts = 1;
     const float CollisionRadius = 1.0f;
 
@@ -22,20 +22,19 @@ public class GrassDemo : MonoBehaviour
     public Material BillboardMaterial;
     public Material GroundMaterial;
     public List<Transform> colliders;
+    public ComputeShader groundsCullingCS;
 
     private PBDSolver GEOsolver;
-    private Dictionary<MyVector2Int, GrassPatchRenderer> renderers;
-    private Dictionary<MyVector2Int, PBDGrassPatch> patches;
-    private Mesh GroundMesh;
+    private Dictionary<Vector3Int, GrassPatchRenderer> renderers;
+    private Dictionary<Vector3Int, PBDGrassPatch> patches;
 
     private Transform camTr;
 
     void Start()
     {
         Application.targetFrameRate = 60;
-        GroundMesh = GenGroundMesh();
-        renderers = new Dictionary<MyVector2Int, GrassPatchRenderer>();
-        patches = new Dictionary<MyVector2Int, PBDGrassPatch>();
+        renderers = new Dictionary<Vector3Int, GrassPatchRenderer>();
+        patches = new Dictionary<Vector3Int, PBDGrassPatch>();
         //camTr = Camera.main.transform;
         camTr = colliders[0].transform;
 
@@ -44,7 +43,6 @@ public class GrassDemo : MonoBehaviour
             Gravity = Vector3.down * 9.8f,
             WindForce = WindForce
         };
-
 
         InitGrassPatchRenderer();
 
@@ -64,12 +62,9 @@ public class GrassDemo : MonoBehaviour
 
     private void Update()
     {
-        // geo
-        foreach (var kv in patches)
-        {
-            kv.Value.Renderer.DrawGeoGrass();
-        }
-        // star billboard and billboard
+        // pbd
+
+        //
         GrassPatchRenderer.DrawInstancing();
     }
 
@@ -77,10 +72,10 @@ public class GrassDemo : MonoBehaviour
     {
         Mesh mesh = new Mesh();
         Vector3[] vertices = new Vector3[4];
-        vertices[0] = new Vector3(-5, 0, 5);
-        vertices[1] = new Vector3(5, 0, 5);
-        vertices[2] = new Vector3(5, 0, -5);
-        vertices[3] = new Vector3(-5, 0, -5);
+        vertices[0] = new Vector3(-0.5f, 0, 0.5f);
+        vertices[1] = new Vector3(0.5f, 0, 0.5f);
+        vertices[2] = new Vector3(0.5f, 0, -0.5f);
+        vertices[3] = new Vector3(-0.5f, 0, -0.5f);
         mesh.vertices = vertices;
 
         Vector2[] uvs = new Vector2[4];
@@ -99,68 +94,32 @@ public class GrassDemo : MonoBehaviour
         indexs[4] = 0; indexs[4] = 2; indexs[5] = 3;
         mesh.triangles = indexs;
 
+        mesh.RecalculateBounds();
+
         return mesh;
     }
 
     private void InitGrassPatchRenderer()
     {
-        GrassPatchRenderer.SetMatAndMesh(GrassMaterial, StarMaterial, BillboardMaterial, GroundMaterial, GroundMesh);
-        for (int i = -100; i <= 100; i += 10)
+        GrassPatchRenderer.SetMatAndMesh(GrassMaterial, StarMaterial, BillboardMaterial, GroundMaterial, GenGroundMesh(), groundsCullingCS);
+        for (int i = 0; i < 256; i++)
         {
-            for (int j = -100; j <= 100; j += 10)
+            for (int j = 0; j < 256; j++)
             {
-                renderers.Add(new MyVector2Int(i, j), new GrassPatchRenderer(new MyVector2Int(i, j)));
+                renderers.Add(new Vector3Int(i, 0, j), new GrassPatchRenderer(new Vector3Int(i, 0, j)));
             }
         }
+
+        GrassPatchRenderer.SubmitGroundsData();
     }
 
     private void UpdateDrawPatches()
     {
-        foreach (KeyValuePair<MyVector2Int, GrassPatchRenderer> kv in renderers)
-        {
-            Vector3 rendererRoot = kv.Key.ToVector3();
-            Vector3 dist = camTr.position - rendererRoot;
-            if (dist.sqrMagnitude <= GeoDistance2) // should be geo
-            {
-                if (!kv.Value.isGeo)
-                {
-                    PBDGrassPatch patch = new PBDGrassPatch(rendererRoot, GrassPatchWidth, GrassPatchLength, GrassBodyCounts, kv.Value);
-                    patches.Add(kv.Key, patch);
-                    kv.Value.SwitchType(GrassType.Geo, patch.PatchMesh);
-                    GEOsolver.AddGrassPatch(patch);
-                }
-            }
-            else if (dist.sqrMagnitude <= StarDistance2)  // should be star
-            {
-                if (kv.Value.isGeo)  // geo to star
-                {
-                    GEOsolver.RemoveGrassPatch(patches[kv.Key]);
-                    patches.Remove(kv.Key);                  
-                }
-                else if (kv.Value.isStar)
-                {
-                    
-                }
-                else 
-                {
-                    // bill to star
-                }
+        
+    }
 
-                kv.Value.SwitchType(GrassType.StarBillboard, null);
-            }
-            else // should be billboard
-            {
-                if (kv.Value.isGeo)// geo to star
-                {
-                    GEOsolver.RemoveGrassPatch(patches[kv.Key]);
-                    patches.Remove(kv.Key);
-                }
-                else if (kv.Value.isStar) // star to billboard
-                {
-
-                }
-                kv.Value.SwitchType(GrassType.Billboard, null);
-            }
-        }
+    private void OnDestroy()
+    {
+        GrassPatchRenderer.ReleaseData();
     }
 }

@@ -41,7 +41,7 @@ public struct PBDGrassBodyStruct
     public DistanceConstraintStruct[] Dcons;
 }
 
-struct SphereCollisionStruct
+public struct SphereCollisionStruct
 {
     public Vector3 Position;
     public float Radius;
