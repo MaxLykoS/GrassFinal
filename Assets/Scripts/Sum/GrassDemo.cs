@@ -5,67 +5,53 @@ using PBD;
 
 public class GrassDemo : MonoBehaviour
 {
-    const int GrassPatchWidth = 1;
-    const int GrassPatchLength = 1;
-    const int GrassBodyCounts = 1;
-    const float CollisionRadius = 1.0f;
-
-    //const int MapSize = 30;
-
-    const float GeoDistance2 = 5*5*2;
-    const float StarDistance2 = 21 * 21 * 2;
-
-    Vector3 WindForce = Vector3.up * 1000;
-
     public Material GrassMaterial;
-    public Material StarMaterial;
-    public Material BillboardMaterial;
-    public Material GroundMaterial;
     public List<Transform> colliders;
-    public ComputeShader groundsCullingCS;
 
-    private PBDSolver GEOsolver;
-    private Dictionary<Vector3Int, GrassPatchRenderer> renderers;
-    private Dictionary<Vector3Int, PBDGrassPatch> patches;
+    private Dictionary<Vector3Int, PBDGrassPatchRenderer> renderers;
+    private PBDGrassPatchRenderer pbdRenderer1;
+    private PBDGrassPatchRenderer pbdRenderer2;
 
     private Transform camTr;
 
     void Start()
     {
         Application.targetFrameRate = 60;
-        renderers = new Dictionary<Vector3Int, GrassPatchRenderer>();
-        patches = new Dictionary<Vector3Int, PBDGrassPatch>();
-        //camTr = Camera.main.transform;
-        camTr = colliders[0].transform;
+        renderers = new Dictionary<Vector3Int, PBDGrassPatchRenderer>();
+        camTr = Camera.main.transform;
+        //camTr = colliders[0].transform;
 
-        GEOsolver = new PBDSolver(3.0f)
-        {
-            Gravity = Vector3.down * 9.8f,
-            WindForce = WindForce
-        };
+        PBDGrassPatchRenderer.Setup(GrassMaterial, colliders);
 
-        InitGrassPatchRenderer();
-
-        foreach (Transform tr in colliders)
-        {
-            GEOsolver.AddCollider(new SphereCollision(tr, CollisionRadius));
-        }
+        pbdRenderer1 = new PBDGrassPatchRenderer(new Vector3Int(1, 0, 1), new PBDGrassPatch(new Vector3(1, 0, 1), 1, 1, 128));
+        pbdRenderer2 = new PBDGrassPatchRenderer(new Vector3Int(-1, 0, -1), new PBDGrassPatch(new Vector3(-1, 0, -1), 1, 1, 128));
     }
 
     void FixedUpdate()
     {
-        UpdateDrawPatches();
 
-        GEOsolver.Update((float)(1.0 / 60.0 / 3.0));
     }
 
 
     private void Update()
     {
+        // create grass around
+        float maxX = camTr.position.x + 5;
+        float minX = camTr.position.x - 5;
+        float maxY = camTr.position.y + 5;
+        float minY = camTr.position.y - 5;
+
         // pbd
+        PBDGrassPatchRenderer.UpdateCollision(colliders);
+
+        for (int i = 0; i < 100; i++)
+        {
+            pbdRenderer1.FixedUpdate();
+            pbdRenderer1.Update();
+        }
 
         //
-        GrassPatchRenderer.DrawInstancing();
+        //PBDGrassPatchRenderer.DrawInstancing();
     }
 
     private static Mesh GenGroundMesh()
@@ -99,27 +85,16 @@ public class GrassDemo : MonoBehaviour
         return mesh;
     }
 
-    private void InitGrassPatchRenderer()
-    {
-        GrassPatchRenderer.SetMatAndMesh(GrassMaterial, StarMaterial, BillboardMaterial, GroundMaterial, GenGroundMesh(), groundsCullingCS);
-        for (int i = 0; i < 256; i++)
-        {
-            for (int j = 0; j < 256; j++)
-            {
-                renderers.Add(new Vector3Int(i, 0, j), new GrassPatchRenderer(new Vector3Int(i, 0, j)));
-            }
-        }
-
-        GrassPatchRenderer.SubmitGroundsData();
-    }
-
-    private void UpdateDrawPatches()
-    {
-        
-    }
-
     private void OnDestroy()
     {
-        GrassPatchRenderer.ReleaseData();
+        PBDGrassPatchRenderer.ReleaseStaticData();
+        pbdRenderer1.Release();
+        pbdRenderer2.Release();
+    }
+
+    public static ComputeShader CreateShader(int index)
+    {
+        ComputeShader newCS = (ComputeShader)Instantiate(Resources.Load("PBDSolverCS" + index.ToString()));
+        return newCS;
     }
 }

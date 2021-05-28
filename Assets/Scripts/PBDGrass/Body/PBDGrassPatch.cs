@@ -4,6 +4,49 @@ using UnityEngine;
 
 namespace PBD
 {
+    public struct FixedConstraintStruct
+    {
+        public int i0;
+        public Vector3 fixedPos;
+
+        public static int Size()
+        {
+            return sizeof(int) + sizeof(float) * 3;
+        }
+    }
+    public struct DistanceConstraintStruct
+    {
+        public float RestLength;
+
+        public float ElasticModulus;
+
+        public int i0, i1;
+
+        public static int Size()
+        {
+            return sizeof(float) * 2 + sizeof(int) * 2;
+        }
+    }
+    public struct PBDGrassBodyStruct
+    {
+        public Vector3[] Positions;
+        public Vector3[] Predicted;
+        public Vector3[] Velocities;
+        public Vector3[] OriginPos;
+        public Vector3[] Offset;
+
+        public int IndexOffset;
+
+        public FixedConstraintStruct[] Fcons;
+        public DistanceConstraintStruct[] Dcons;
+    }
+
+    public struct SphereCollisionStruct
+    {
+        public Vector3 Position;
+        public float Radius;
+    };
+
     public class PBDGrassPatch
     {
         const int SEGMENTS = 3;
@@ -16,23 +59,20 @@ namespace PBD
 
         public Vector3 Root { get; private set; }
         public Mesh PatchMesh { get; private set; }
-        public SpaceHash Hash;
+        //public SpaceHash Hash;
 
         public Vector3[] vertices;
 
         public int Width;
         public int Length;
 
-        public GrassPatchRenderer Renderer { get; private set; }
-
-        public PBDGrassPatch(Vector3 root, int width, int length, int points, GrassPatchRenderer renderer)
+        public PBDGrassPatch(Vector3 root, int width, int length, int points)
         {
             this.Root = root;
             this.Width = width;
             this.Length = length;
             this.Bodies = new PBDGrassBody[points];
             this.vertices = new Vector3[points * (SEGMENTS * 2 + 1)];
-            this.Renderer = renderer;
 
             float xOffset = 0.5f * width;
             float maxX = root.x + xOffset;
@@ -62,7 +102,7 @@ namespace PBD
                 triIndexOffset += triIndexOffsetIncreasment;
             }
 
-            Hash = new SpaceHash(root, width, length, ref Bodies);
+            //Hash = new SpaceHash(root, width, length, ref Bodies);
 
             PatchMesh = new Mesh()
             {
@@ -82,10 +122,10 @@ namespace PBD
             PatchMesh.vertices = vertices;
         }
 
-        public List<PBDGrassBody> QueryNearBodies(Vector3 pos)
+        /*public List<PBDGrassBody> QueryNearBodies(Vector3 pos)
         {
             return Hash.QueryPossibleBones(pos);
-        }
+        }*/
 
         public Vector3[] GenPositionArray()
         {

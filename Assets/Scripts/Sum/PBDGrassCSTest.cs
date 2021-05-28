@@ -4,53 +4,10 @@ using UnityEngine;
 using PBD;
 using UnityEngine.Rendering;
 
-public struct FixedConstraintStruct
-{
-    public int i0;
-    public Vector3 fixedPos;
-
-    public static int Size()
-    {
-        return sizeof(int) + sizeof(float) * 3;
-    }
-}
-public struct DistanceConstraintStruct
-{
-    public float RestLength;
-
-    public float ElasticModulus;
-
-    public int i0, i1;
-
-    public static int Size()
-    {
-        return sizeof(float) * 2 + sizeof(int) * 2;
-    }
-}
-public struct PBDGrassBodyStruct
-{
-    public Vector3[] Positions;
-    public Vector3[] Predicted;
-    public Vector3[] Velocities;
-    public Vector3[] OriginPos;
-    public Vector3[] Offset;
-
-    public int IndexOffset;
-
-    public FixedConstraintStruct[] Fcons;
-    public DistanceConstraintStruct[] Dcons;
-}
-
-public struct SphereCollisionStruct
-{
-    public Vector3 Position;
-    public float Radius;
-};
-
 public class PBDGrassCSTest : MonoBehaviour
 {
-    const int GrassPatchWidth = 10;
-    const int GrassPatchLength = 10;
+    const int GrassPatchWidth = 1;
+    const int GrassPatchLength = 1;
     const int GrassBodyCounts = 128;
     const float CollisionRadius = 1.0f;
 
@@ -92,7 +49,7 @@ public class PBDGrassCSTest : MonoBehaviour
             WindForce = Vector3.up * 1000
         };
 
-        PBDGrassPatch patch = new PBDGrassPatch(Vector3.zero, GrassPatchWidth, GrassPatchLength, GrassBodyCounts, null);
+        PBDGrassPatch patch = new PBDGrassPatch(Vector3.zero, GrassPatchWidth, GrassPatchLength, GrassBodyCounts);
         meshTrianglesCounts = patch.PatchMesh.triangles.Length;
 
         InitCS(patch);
@@ -171,8 +128,8 @@ public class PBDGrassCSTest : MonoBehaviour
 
         //PositionBuffer.GetData(boneArray);
 
-        resultPosBuffer.GetData(vertArray);
-        patch.PatchMesh.vertices = vertArray;
+        //resultPosBuffer.GetData(vertArray);
+        //patch.PatchMesh.vertices = vertArray;
         //Debug.Log("¸üÐÂ");
         //Debug.Log(boneArray[100]);
     }

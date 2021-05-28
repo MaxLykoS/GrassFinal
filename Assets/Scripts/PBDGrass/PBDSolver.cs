@@ -112,8 +112,8 @@ namespace PBD
             for (int i = 0; i < Collisions.Count; ++i)
             {
                 float dist2 = (Collisions[i].GetPos() - patch.Root).sqrMagnitude;
-                if(dist2 < patch.Width* patch.Width + patch.Length * patch.Length)
-                    Collisions[i].FindContacts(patch.QueryNearBodies(Collisions[i].GetPos()), contacts);
+                //if(dist2 < patch.Width* patch.Width + patch.Length * patch.Length)
+                    //Collisions[i].FindContacts(patch.QueryNearBodies(Collisions[i].GetPos()), contacts);
             }
 
             float di = 1.0f / CollisionIterations;
