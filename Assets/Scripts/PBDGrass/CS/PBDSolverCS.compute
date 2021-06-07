@@ -1,6 +1,8 @@
 #pragma kernel PBDSolver
 #pragma kernel UpdateMesh
 
+#define XThreads 128
+
 struct FixedConstraintStruct
 {
     int i0;
@@ -41,7 +43,7 @@ RWStructuredBuffer<SphereCollision> BallBuffer;
 
 RWStructuredBuffer<float3> ResultPosBuffer;
 
-[numthreads(128, 1, 1)]  // id.x body
+[numthreads(XThreads, 1, 1)] // id.x body
 void PBDSolver(uint3 id : SV_DispatchThreadID)
 {
     // Apply Force ************
@@ -144,7 +146,7 @@ void PBDSolver(uint3 id : SV_DispatchThreadID)
 
 }
 
-[numthreads(256, 1, 1)]
+[numthreads(XThreads, 1, 1)]
 void UpdateMesh(uint3 id : SV_DispatchThreadID)
 {
     int boneOffset = id.x * 4;
