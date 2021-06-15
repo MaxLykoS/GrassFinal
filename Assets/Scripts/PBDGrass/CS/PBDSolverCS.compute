@@ -1,7 +1,7 @@
 #pragma kernel PBDSolver
 #pragma kernel UpdateMesh
 
-#define XThreads 128
+#define XThreads 1
 
 struct FixedConstraintStruct
 {

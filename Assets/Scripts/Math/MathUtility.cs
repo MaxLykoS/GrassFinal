@@ -40,4 +40,35 @@ public static class MathUtility
     {
         return string.Format("{0} {1} {2}", v.x, v.y, v.z);
     }
+
+    private static Mesh Gen1X1GroundMesh()
+    {
+        Mesh mesh = new Mesh();
+        Vector3[] vertices = new Vector3[4];
+        vertices[0] = new Vector3(-0.5f, 0, 0.5f);
+        vertices[1] = new Vector3(0.5f, 0, 0.5f);
+        vertices[2] = new Vector3(0.5f, 0, -0.5f);
+        vertices[3] = new Vector3(-0.5f, 0, -0.5f);
+        mesh.vertices = vertices;
+
+        Vector2[] uvs = new Vector2[4];
+        uvs[0] = new Vector2(0, 1);
+        uvs[1] = new Vector2(1, 1);
+        uvs[2] = new Vector2(1, 0);
+        uvs[3] = new Vector2(0, 0);
+        mesh.uv = uvs;
+
+        Vector3[] normals = new Vector3[4];
+        normals[0] = normals[1] = normals[2] = normals[3] = Vector3.up;
+        mesh.normals = normals;
+
+        int[] indexs = new int[6];
+        indexs[0] = 0; indexs[1] = 1; indexs[2] = 2;
+        indexs[4] = 0; indexs[4] = 2; indexs[5] = 3;
+        mesh.triangles = indexs;
+
+        mesh.RecalculateBounds();
+
+        return mesh;
+    }
 }

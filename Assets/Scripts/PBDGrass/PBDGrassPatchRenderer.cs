@@ -62,7 +62,7 @@ public class PBDGrassPatchRenderer
         for (int i = 0; i < ballslist.Count; i++)
         {
             balls[i].Position = ballslist[i].position;
-            balls[i].Radius = 1.0f;
+            balls[i].Radius = 0.8f;
         }
 
         ballBuffer = new ComputeBuffer(balls.Length, sizeof(float) * 4);
@@ -218,5 +218,7 @@ public class PBDGrassPatchRenderer
         
         vertArray = request.GetData<Vector3>().ToArray();
         grassMesh.vertices = vertArray;
+
+        grassMesh.RecalculateNormals(MeshUpdateFlags.DontNotifyMeshUsers);
     }
 }

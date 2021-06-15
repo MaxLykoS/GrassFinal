@@ -51,7 +51,7 @@ namespace PBD
     {
         const int SEGMENTS = 3;
         const float GrassHeight = 0.5f;
-        const float GrassWidth = 0.05f;
+        const float GrassWidth = 0.03f;
         const float GrassForward = 0.38f;
         const float GrassMass = 1.0f;
 
@@ -110,6 +110,7 @@ namespace PBD
                 uv = uvs,
                 triangles = triangles
             };
+            //PatchMesh.RecalculateNormals();
         }
 
         public void UpdateMesh()
