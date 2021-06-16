@@ -45,6 +45,12 @@ public class PBDGrassPatchRenderer
         meshTrianglesCounts = patch.PatchMesh.triangles.Length;
         grassMesh = patch.PatchMesh;
 
+        foreach (Vector3 v in grassMesh.vertices)
+            Debug.Log(MathUtility.V2S(v));
+        Debug.Log("tri");
+        foreach (int i in grassMesh.triangles)
+            Debug.Log(i);
+
         InitCS(patch);
     }
 
@@ -55,7 +61,7 @@ public class PBDGrassPatchRenderer
         Solver = new PBDSolver(3.0f)
         {
             Gravity = Vector3.down * 9.8f,
-            WindForce = Vector3.up * 1000
+            WindForce = Vector3.up * 100
         };
 
         balls = new SphereCollisionStruct[ballslist.Count];

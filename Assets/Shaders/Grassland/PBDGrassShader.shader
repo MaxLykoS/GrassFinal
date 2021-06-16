@@ -23,6 +23,7 @@ Shader "Custom/PBDGrassShader"
         Pass
         {
             CGPROGRAM
+
             #pragma vertex vert
             #pragma hull HS
             #pragma domain DS
@@ -31,6 +32,8 @@ Shader "Custom/PBDGrassShader"
             #include "UnityCG.cginc"
             #include "Lighting.cginc"
 
+            #define PI 3.14159
+
             struct a2v
             {
                 float4 vertex : POSITION;
@@ -38,7 +41,7 @@ Shader "Custom/PBDGrassShader"
                 float2 uv : TEXCOORD0;
             };
 
-            struct v2t
+            struct v2h
             {
                 float4 posW : TEXCOORD0;
                 float2 uv : TEXCOORD1;
@@ -47,7 +50,17 @@ Shader "Custom/PBDGrassShader"
                 float3 lightDir : TEXCOORD3;
             };
 
-            struct t2f
+            struct h2d
+            {
+                float4 posW : TEXCOORD0;
+                float2 uv : TEXCOORD1;
+                float3 normalW : NORMAL;
+                float3 viewDir : TEXCOORD2;
+                float3 lightDir : TEXCOORD3;
+                float bend : TEXCOORD4;
+            };
+
+            struct d2f
             {
                 float4 pos : SV_POSITION;
                 float2 uv : TEXCOORD0;
@@ -56,13 +69,16 @@ Shader "Custom/PBDGrassShader"
                 float3 lightDir : TEXCOORD2;
             };
 
-            v2t vert(a2v v)
+            v2h vert(a2v v)
             {
-                v2t o;
+                v2h o;
 
                 o.posW = mul(unity_ObjectToWorld, v.vertex);
                 o.uv = v.uv;
+
                 o.normalW = normalize(UnityObjectToWorldNormal(v.normal));
+                o.normalW *= o.normalW.y >= 0 ? 1 : -1;
+
                 o.viewDir = normalize(_WorldSpaceCameraPos.xyz - o.posW.xyz);
                 o.lightDir = normalize(_WorldSpaceLightPos0.xyz);
                 return o;
@@ -75,13 +91,16 @@ Shader "Custom/PBDGrassShader"
                 float edge[3] : SV_TessFactor;
                 float inside : SV_InsideTessFactor;
             };
-            TessellationFactors patchConstantFunction(InputPatch<v2t, 3> patch)
+            TessellationFactors patchConstantFunction(InputPatch<v2h, 3> patch)
             {
+                float factor = _TessellationUniform;
+                if (patch[0].uv.y < 0.34f || patch[0].uv.y > 0.67f)
+                    factor = 1;
                 TessellationFactors f;
-                f.edge[0] = _TessellationUniform;
-                f.edge[1] = _TessellationUniform;
-                f.edge[2] = _TessellationUniform;
-                f.inside = _TessellationUniform;
+                f.edge[0] = factor;
+                f.edge[1] = factor;
+                f.edge[2] = factor;
+                f.inside = factor;
                 return f;
             }
             [UNITY_domain("tri")]
@@ -89,15 +108,26 @@ Shader "Custom/PBDGrassShader"
             [UNITY_outputtopology("triangle_cw")]
             [UNITY_partitioning("integer")]
             [UNITY_patchconstantfunc("patchConstantFunction")]
-            v2t HS(InputPatch<v2t, 3> patch, uint id : SV_OutputControlPointID)
+            h2d HS(InputPatch<v2h, 3> patch, uint id : SV_OutputControlPointID)
             {
-                return patch[id];
+                h2d o;
+
+                o.posW = patch[id].posW;
+                o.uv = patch[id].uv;
+                o.normalW = patch[id].normalW;
+                o.viewDir = patch[id].viewDir;
+                o.lightDir = patch[id].lightDir;
+
+                float bladeYDif = abs(patch[0].posW.y - patch[2].posW.y);
+                o.bend = bladeYDif * 0.5f;
+
+                return o;
             }
 
             [UNITY_domain("tri")]
-            t2f DS(TessellationFactors factors, OutputPatch<v2t, 3> patch, float3 barycentricCoordinates : SV_DomainLocation)
+            d2f DS(TessellationFactors factors, OutputPatch<h2d, 3> patch, float3 barycentricCoordinates : SV_DomainLocation)
             {
-                v2t v;
+                h2d v;
 
                 #define MY_DOMAIN_PROGRAM_INTERPOLATE(fieldName) v.fieldName = \
 					patch[0].fieldName * barycentricCoordinates.x + \
@@ -109,8 +139,16 @@ Shader "Custom/PBDGrassShader"
                 MY_DOMAIN_PROGRAM_INTERPOLATE(normalW)
                 MY_DOMAIN_PROGRAM_INTERPOLATE(viewDir)
                 MY_DOMAIN_PROGRAM_INTERPOLATE(lightDir)
+                MY_DOMAIN_PROGRAM_INTERPOLATE(bend)
 
-                t2f o;
+                v.normalW = normalize(v.normalW);
+
+                float displacement = (sin(v.uv.y * PI) - sin(0.333f * PI)) * v.bend;
+                displacement = max(0, displacement);
+
+                v.posW += float4(v.normalW * displacement, 0);
+
+                d2f o;
                 o.pos = mul(UNITY_MATRIX_VP, v.posW);
                 o.uv = v.uv;
                 o.normalW = v.normalW;
@@ -126,7 +164,7 @@ Shader "Custom/PBDGrassShader"
             float _EdgeLitRate;
             float4 _InteriorColor;
 
-            fixed4 frag(t2f o, fixed facing : VFACE) : SV_Target
+            fixed4 frag(d2f o, fixed facing : VFACE) : SV_Target
             {
                 o.normalW = facing > 0 ? o.normalW : -o.normalW;
 

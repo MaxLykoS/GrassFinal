@@ -56,7 +56,7 @@ void PBDSolver(uint3 id : SV_DispatchThreadID)
         // gravity
         VelocitiesBuffer[idb] += Gravity * dt;
         // recovery force
-        VelocitiesBuffer[idb] += (OriginPosBuffer[idb] - PredictedBuffer[idb]) * dt * 1000;
+        VelocitiesBuffer[idb] += (OriginPosBuffer[idb] - PredictedBuffer[idb]) * dt * 100;
         // wind force
         VelocitiesBuffer[idb] += WindForce * dt;  
     }

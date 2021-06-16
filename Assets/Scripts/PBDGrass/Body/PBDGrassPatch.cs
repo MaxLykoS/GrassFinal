@@ -47,7 +47,7 @@ namespace PBD
         public float Radius;
     };
 
-    public struct PBDGrassPatch
+    public class PBDGrassPatch
     {
         const int SEGMENTS = 3;
         const float GrassHeight = 0.5f;

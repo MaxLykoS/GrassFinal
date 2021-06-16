@@ -215,7 +215,7 @@ Transform:
   m_GameObject: {fileID: 268437568}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -1.161, y: 1.883, z: 3.2647219}
-  m_LocalScale: {x: 1, y: 2.0757, z: 1}
+  m_LocalScale: {x: 0.11484, y: 0.2383734, z: 0.11484}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 8
@@ -318,6 +318,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1686453921032129304, guid: a4ec68f147d67264e8c1f7c0d6308de6, type: 3}
+      propertyPath: go
+      value: 
+      objectReference: {fileID: 268437568}
     - target: {fileID: 1686453921032129304, guid: a4ec68f147d67264e8c1f7c0d6308de6, type: 3}
       propertyPath: pbdCS
       value: 
@@ -615,7 +619,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!64 &1673541495
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -712,7 +716,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!64 &1875025064
 MeshCollider:
   m_ObjectHideFlags: 0
