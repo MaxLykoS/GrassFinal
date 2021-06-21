@@ -6,6 +6,8 @@ Shader "Custom/PBDGrassShader"
         _TopColor("Top Color", Color) = (1,1,1,1)
         _BottomColor("Bottom Color", Color) = (1,1,1,1)
         _TranslucentGain("Translucent Gain", Range(0,1)) = 0.5
+
+        [Header(Tessellation)]
         _TessellationUniform("Tessellation Uniform", Range(1, 64)) = 1
         
         [Header(BackLightSSS)]
@@ -175,7 +177,7 @@ Shader "Custom/PBDGrassShader"
                 float3 backLitDir = o.normalW * _BackSubsurfaceDistortion + o.lightDir;
                 float backSSS = saturate(dot(o.viewDir, -backLitDir));
                 backSSS = saturate(pow(backSSS, 3));
-                fixed3 edgeCol = backSSS * _EdgeLitRate * _InteriorColor * texColor.rgb; //***
+                fixed3 edgeCol = backSSS * _EdgeLitRate * _InteriorColor * texColor.rgb;
                 edgeCol += backSSS * _InteriorColor;
 
                 float3 ambient = ShadeSH9(float4(o.normalW, 1));

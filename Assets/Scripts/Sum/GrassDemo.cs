@@ -15,9 +15,6 @@ public class GrassDemo : MonoBehaviour
     private Transform camTr;
     private static ComputeShader PBDSolverCS_Static;
 
-    private Mesh quad;
-    public GameObject go;
-
     void Start()
     {
         Application.targetFrameRate = 60;
@@ -30,38 +27,6 @@ public class GrassDemo : MonoBehaviour
         PBDGrassPatchRenderer.Setup(GrassMaterial, colliders);
 
         p1 = new PBDGrassPatchRenderer(Vector3Int.zero, new PBDGrassPatch(Vector3Int.zero, 1, 1, 1));
-
-        Test();
-    }
-
-    void Test()
-    {
-        Vector3[] v = new Vector3[4];
-        v[0] = new Vector3(-0.5f, 0.5f, 0);
-        v[1] = new Vector3(0.5f, 0.5f, 0);
-        v[2] = new Vector3(-0.5f, -0.5f, 0);
-        v[3] = new Vector3(0.5f, -0.5f, 0);
-
-        int[] id = new int[6];
-        id[0] = 0;
-        id[1] = 1;
-        id[2] = 2;
-        id[3] = 1;
-        id[4] = 3;
-        id[5] = 2;
-
-        Vector2[] uv = new Vector2[4];
-        uv[0] = new Vector2(0, 0.66f);
-        uv[1] = new Vector2(1, 0.66f);
-        uv[2] = new Vector2(0, 0.33f);
-        uv[3] = new Vector2(1, 0.33f);
-
-        quad = new Mesh();
-        quad.vertices = v;
-        quad.triangles = id;
-        quad.uv = uv;
-
-        go.GetComponent<MeshFilter>().mesh = quad;
     }
 
     private List<Vector3Int> rToDestroy;
