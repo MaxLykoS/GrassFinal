@@ -43,7 +43,6 @@ Shader "Custom/StampShader"
 			fixed4 frag (v2f i) : SV_Target
 			{
 				fixed4 col = tex2D(_MainTex, i.uv);
-				// just invert the colors
 				//col = col.rgb*_Speed;
 				return col;
 			}

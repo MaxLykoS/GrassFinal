@@ -68,10 +68,9 @@ Shader "Custom/GrassInstancedIndirect"
                 //超出范围不采样
                 float2 stampUv = (position.xy - _StampVector.xz) / _StampVector.w + float2(0.5, .5);
                 float4 stampP = float4(0, 0, 0, 0);
-                if (stampUv.x > 0 && stampUv.x < 1 && stampUv.y>0 && stampUv.y < 1) {
-                    stampP = tex2Dlod(_StampTex, float4(stampUv, 0.0, 0.0));
-                }
-                float y = height * (1 - stampP.a);
+                if (stampUv.x > 0 && stampUv.x < 1 && stampUv.y>0 && stampUv.y < 1) 
+                    stampP = tex2Dlod(_StampTex, float4(stampUv, 0, 0));
+                float y = height * (1 - stampP.r);
                 return min(height, max(_StampVector.y, y));
             }
 
@@ -99,7 +98,7 @@ Shader "Custom/GrassInstancedIndirect"
             float _EdgeLitRate;
             float4 _InteriorColor;
 
-            fixed4 frag (v2f o, fixed facing : VFACE) : SV_Target
+            fixed4 frag(v2f o, fixed facing : VFACE) : SV_Target
             {
                 fixed4 col = tex2D(_MainTex, o.uv);
                 clip(col.a-0.6);  

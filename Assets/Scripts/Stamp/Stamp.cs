@@ -5,10 +5,10 @@ using UnityEngine;
 [RequireComponent(typeof(Camera))]
 public class Stamp : MonoBehaviour
 {
+    //public RenderTexture StampRT;
     public Transform CameraTr;
     private Camera cam;
     private float height;
-    //public Material stampMat;
     public float Size = 100;
 
     public Vector3 Center
@@ -24,11 +24,11 @@ public class Stamp : MonoBehaviour
     void Start()
     {
         cam = GetComponent<Camera>();
+        //cam.targetTexture = StampRT;
         height = cam.farClipPlane * 0.9f;
         if (CameraTr == null)
             CameraTr = Camera.main.transform;
     }
-
 
     void LateUpdate()
     {
