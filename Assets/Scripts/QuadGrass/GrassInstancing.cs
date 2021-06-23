@@ -28,14 +28,20 @@ public class GrassInstancing : MonoBehaviour
     private ComputeBuffer posVisibleBuffer;
     private int CSCullingID;
 
-    [Header("Camera")]
+    [Header("MainCamera")]
     public Camera cam;
 
     [Header("Ω≈”°")]
-    public Stamp stamp;
-    
-    [Header("—πµÕ≥Ã∂»")]
-    [Range(0, 1)] public float stampMin = 0.1f;
+    public Camera StampCam;
+    public float StampSize = 100;
+    public RenderTexture StampRT;
+    [Range(0, 1)] 
+    public float stampMin = 0.1f;
+    [Range(0.001f, 0.1f)]
+    public float _GrassflakeCount;
+    [Range(0f, 1f)]
+    public float _GrassflakeOpacity;
+    public Material StampRecoverMat;
 
     public struct GrassInfo
     {
@@ -50,6 +56,8 @@ public class GrassInstancing : MonoBehaviour
 
     private void Init()
     {
+        InitStamp();
+
         drawBounds = new Bounds(Vector3.zero, new Vector3(Size.x, 1.0f, Size.y));
 
         FillArgsBuffer();
@@ -118,16 +126,25 @@ public class GrassInstancing : MonoBehaviour
         grassPosBuffer.SetData(infos);
     }
 
+    private void InitStamp()
+    {
+        StampCam.targetTexture = StampRT;
+    }
+
     void Update()
     {
         Cull();
 
-        if (stamp != null)
-        {
-            GrassMaterial.SetVector("_StampVector", 
-                new Vector4(stamp.Center.x, stampMin, stamp.Center.z, stamp.Size));
-        }
+        StampRecoverMat.SetFloat("_GrassflakeCount", _GrassflakeCount);
+        StampRecoverMat.SetFloat("_GrassflakeOpacity", _GrassflakeOpacity);
+        RenderTexture temp = RenderTexture.GetTemporary(StampRT.width, StampRT.height, 0, StampRT.format);
+        Graphics.Blit(StampRT, temp, StampRecoverMat);
+        Graphics.Blit(temp, StampRT);
+        RenderTexture.ReleaseTemporary(temp);
 
+        GrassMaterial.SetVector("_StampVector", 
+            new Vector4(StampCam.transform.position.x, stampMin, StampCam.transform.position.z, 
+            StampSize));
         Graphics.DrawMeshInstancedIndirect(GrassMesh, 0, GrassMaterial, drawBounds, argsBuffer, 0,
             null, UnityEngine.Rendering.ShadowCastingMode.Off, false, 0);
     }
