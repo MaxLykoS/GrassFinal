@@ -3,7 +3,8 @@ Shader "Custom/GrassInstancedIndirect"
     Properties
     {
         [Header(Shading)]
-        _MainTex ("Texture", 2D) = "white" {}
+        _TopColor("Top Color", Color) = (1,1,1,1)
+        _BottomColor("Bottom Color", Color) = (1,1,1,1)
         _TranslucentGain("Translucent Gain", Range(0,1)) = 0.5
         
         [Header(BackLightSSS)]
@@ -12,8 +13,8 @@ Shader "Custom/GrassInstancedIndirect"
         _EdgeLitRate("Edge Light Rate", range(0, 2)) = 0.3
 
         [Header(Stamp)]
-        _StampTex("½ÅÓ¡ÌùÍ¼", 2D) = "white"{}
-        _StampVector("½ÅÓ¡ÖÐÐÄ", Vector) = (0, 0, 0, 0)
+        _StampTex("Stamp Tex", 2D) = "white"{}
+        //_StampVector("Stamp Center", Vector) = (0, 0, 0, 0)
     }
     SubShader
     {
@@ -55,7 +56,7 @@ Shader "Custom/GrassInstancedIndirect"
                 float3 lightDir : TEXCOORD3;
             };
 
-            sampler2D _MainTex;
+            //sampler2D _MainTex;
             sampler2D _StampTex;
             float4 _StampVector;
 
@@ -82,9 +83,9 @@ Shader "Custom/GrassInstancedIndirect"
 
                 worldPos.y = GetStamp(worldPos.xz, worldPos.y);
 
-                o.uv = v.uv;
+                o.uv = v.uv;  
 
-                o.normalW = normalize(UnityObjectToWorldNormal(v.normal));
+                o.normalW = normalize(mul(posVisibleBuffer[instanceID].worldMat, v.normal));
 
                 o.viewDir = normalize(_WorldSpaceCameraPos.xyz - worldPos);
                 o.lightDir = normalize(_WorldSpaceLightPos0.xyz);
@@ -93,6 +94,8 @@ Shader "Custom/GrassInstancedIndirect"
                 return o;
             }
 
+            float4 _TopColor;
+            float4 _BottomColor;
             float _TranslucentGain;
             float _BackSubsurfaceDistortion;
             float _EdgeLitRate;
@@ -100,22 +103,20 @@ Shader "Custom/GrassInstancedIndirect"
 
             fixed4 frag(v2f o, fixed facing : VFACE) : SV_Target
             {
-                fixed4 col = tex2D(_MainTex, o.uv);
-                clip(col.a-0.6);  
-
                 o.normalW = facing > 0 ? o.normalW : -o.normalW;
-
+                float4 texColor = lerp(_BottomColor, _TopColor, o.uv.y);
                 float NdotL = saturate(saturate(dot(o.normalW, _WorldSpaceLightPos0)) + _TranslucentGain);
 
                 // back light sss
                 float3 backLitDir = o.normalW * _BackSubsurfaceDistortion + o.lightDir;
                 float backSSS = saturate(dot(o.viewDir, -backLitDir));
                 backSSS = saturate(pow(backSSS, 3));
-                fixed3 edgeCol = backSSS * _EdgeLitRate * _InteriorColor * col.rgb; 
+                fixed3 edgeCol = backSSS * _EdgeLitRate * _InteriorColor * texColor.rgb;
                 edgeCol += backSSS * _InteriorColor;
 
                 float3 ambient = ShadeSH9(float4(o.normalW, 1));
                 float4 lightIntensity = NdotL * _LightColor0 + float4(ambient, 1);
+                float4 col = lerp(_BottomColor, _TopColor * lightIntensity, o.uv.y);
                 return col + fixed4(edgeCol, 1);
             }
             ENDCG

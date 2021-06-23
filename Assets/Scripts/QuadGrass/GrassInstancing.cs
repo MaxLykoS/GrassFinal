@@ -10,7 +10,7 @@ public class GrassInstancing : MonoBehaviour
     public int maxCount = 1000000;
 
     [Header("绘制模型")]
-    public Mesh GrassMesh;
+    private Mesh GrassMesh;
 
     [Header("绘制材质")]
     public Material GrassMaterial;
@@ -58,7 +58,10 @@ public class GrassInstancing : MonoBehaviour
     {
         InitStamp();
 
-        drawBounds = new Bounds(Vector3.zero, new Vector3(Size.x, 1.0f, Size.y));
+        PBD.PBDGrassPatch p1 = new PBD.PBDGrassPatch(Vector3Int.zero, 1, 1, 64);
+        GrassMesh = p1.PatchMesh;
+
+        drawBounds = new Bounds(Vector3.zero, new Vector3(10000, 10000, 10000));
 
         FillArgsBuffer();
         FillPosBuffer();
@@ -92,7 +95,7 @@ public class GrassInstancing : MonoBehaviour
         Matrix4x4 VP = GL.GetGPUProjectionMatrix(cam.projectionMatrix, false) * cam.worldToCameraMatrix;
         CS.SetMatrix("_Matrix_VP", VP);
 
-        CS.Dispatch(CSCullingID, maxCount / 64, 1, 1);
+        CS.Dispatch(CSCullingID, Mathf.Max(maxCount / 64, 1), 1, 1);
     }
 
     private void FillArgsBuffer()
@@ -120,7 +123,7 @@ public class GrassInstancing : MonoBehaviour
             float x = Random.Range(minX, maxX);
             float z = Random.Range(minZ, maxZ);
 
-            infos[i].worldMat = Matrix4x4.TRS(new Vector3(x, 0, z), Quaternion.Euler(0, Random.Range(0, 360), 0), Vector3.one * 100);
+            infos[i].worldMat = Matrix4x4.TRS(new Vector3(x, 0, z), Quaternion.Euler(0, Random.Range(0, 360), 0), Vector3.one);
             infos[i].worldPos = new Vector3(x, 0, z);
         }
         grassPosBuffer.SetData(infos);

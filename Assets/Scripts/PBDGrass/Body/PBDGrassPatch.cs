@@ -110,7 +110,7 @@ namespace PBD
                 uv = uvs,
                 triangles = triangles
             };
-            //PatchMesh.RecalculateNormals();
+            PatchMesh.RecalculateNormals();
         }
 
         public void UpdateMesh()
