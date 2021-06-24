@@ -6,17 +6,14 @@ public class GrassInstancing : MonoBehaviour
 {
     public static RenderTexture DepthTex;
 
-    [Header("最大绘制数量")]
-    public int maxCount = 1000000;
-
     [Header("绘制模型")]
     private Mesh GrassMesh;
 
     [Header("绘制材质")]
     public Material GrassMaterial;
 
-    [Header("绘制范围")]
-    public Vector2 Size;
+    [Header("绘制宽度（矩形）")]
+    public int Length;
 
     private ComputeBuffer grassPosBuffer;
     private ComputeBuffer argsBuffer;
@@ -73,7 +70,7 @@ public class GrassInstancing : MonoBehaviour
     {
         CSCullingID = CS.FindKernel("CSCulling");
 
-        posVisibleBuffer = new ComputeBuffer(maxCount, sizeof(float) * (16 + 3));
+        posVisibleBuffer = new ComputeBuffer(Length * Length, sizeof(float) * (16 + 3));
         CS.SetBuffer(CSCullingID, "bufferWithArgs", argsBuffer);
         CS.SetBuffer(CSCullingID, "posAllBuffer", grassPosBuffer);
         CS.SetBuffer(CSCullingID, "posVisibleBuffer", posVisibleBuffer);
@@ -95,7 +92,7 @@ public class GrassInstancing : MonoBehaviour
         Matrix4x4 VP = GL.GetGPUProjectionMatrix(cam.projectionMatrix, false) * cam.worldToCameraMatrix;
         CS.SetMatrix("_Matrix_VP", VP);
 
-        CS.Dispatch(CSCullingID, Mathf.Max(maxCount / 64, 1), 1, 1);
+        CS.Dispatch(CSCullingID, Mathf.Max(Length * Length / 1024, 1), 1, 1);
     }
 
     private void FillArgsBuffer()
@@ -110,22 +107,17 @@ public class GrassInstancing : MonoBehaviour
 
     private void FillPosBuffer()
     {
-        grassPosBuffer = new ComputeBuffer(maxCount, sizeof(float) * (16 + 3));
-        GrassInfo[] infos = new GrassInfo[maxCount];
+        grassPosBuffer = new ComputeBuffer(Length * Length, sizeof(float) * (16 + 3));
+        GrassInfo[] infos = new GrassInfo[Length * Length];
 
-        float maxX = Size.x / 2;
-        float minX = -maxX;
-        float maxZ = Size.y / 2;
-        float minZ = -maxZ;
-
-        for (int i = 0; i < maxCount; i++)
-        {
-            float x = Random.Range(minX, maxX);
-            float z = Random.Range(minZ, maxZ);
-
-            infos[i].worldMat = Matrix4x4.TRS(new Vector3(x, 0, z), Quaternion.Euler(0, Random.Range(0, 360), 0), Vector3.one);
-            infos[i].worldPos = new Vector3(x, 0, z);
-        }
+        int id = 0;
+        for (int i = 0; i < Length; i++)
+            for (int j = 0; j < Length; j++)
+            {
+                infos[id].worldMat = Matrix4x4.TRS(new Vector3(i, 0, j), Quaternion.Euler(0, Random.Range(0, 360), 0), Vector3.one);
+                infos[id].worldPos = new Vector3(i, 0, j);
+                id++;
+            }
         grassPosBuffer.SetData(infos);
     }
 

@@ -282,8 +282,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 765890049}
-  m_LocalRotation: {x: -0.046265077, y: -0.7916444, z: 0.60591066, w: -0.063489646}
-  m_LocalPosition: {x: 3.3227534, y: 22.085457, z: -13.89098}
+  m_LocalRotation: {x: 0.114898905, y: -0.47348663, z: 0.061160926, w: 0.8711303}
+  m_LocalPosition: {x: 6.661505, y: 2.030845, z: -5.4300985}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -574,7 +574,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1043691632
 Transform:
   m_ObjectHideFlags: 0
@@ -943,17 +943,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed48ea7c08176c54286262f0aae8bcfa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxCount: 1000000
+  maxCount: 1024
   GrassMaterial: {fileID: 2100000, guid: df645fe6755a7064b8731c9edc1276f1, type: 2}
-  Size: {x: 1000, y: 1000}
+  Size: {x: 10, y: 10}
   CS: {fileID: 7200000, guid: 2f9d100b3c4cedc44918895a7873d744, type: 3}
   cam: {fileID: 765890051}
   StampCam: {fileID: 1544400289}
   StampSize: 100
   StampRT: {fileID: 8400000, guid: 247226d4df227084180567987405e6e5, type: 2}
   stampMin: 0.1
-  _GrassflakeCount: 0.001
-  _GrassflakeOpacity: 0.06
+  _GrassflakeCount: 0.079
+  _GrassflakeOpacity: 0.19
   StampRecoverMat: {fileID: 2100000, guid: 99d1a745f246ae54d8a4cf9ba4e7d389, type: 2}
 --- !u!4 &2142814006
 Transform:

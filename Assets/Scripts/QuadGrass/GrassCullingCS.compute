@@ -16,11 +16,11 @@ float camHalfFov;
 float4x4 _Matrix_VP;
 Texture2D _DepthTex;
 
-[numthreads(64, 1, 1)] //15625
+[numthreads(1024, 1, 1)] //16384
 void CSCulling (uint3 id : SV_DispatchThreadID)
 {
     uint index = id.x;
-    /*
+    
     float3 itemPos = posAllBuffer[index].worldPos;
     float3 itemDir = normalize(itemPos - camPos);
     float rot = dot(camDir, itemDir);
@@ -44,7 +44,7 @@ void CSCulling (uint3 id : SV_DispatchThreadID)
     float minD = min(min(_DepthTex.mips[mips][uv.xy + uint2(0, 0)].r, _DepthTex.mips[mips][uv.xy + uint2(0, 1)].r), min(_DepthTex.mips[mips][uv.xy + uint2(1, 0)].r, _DepthTex.mips[mips][uv.xy + uint2(1, 1)].r));
     if (minD > clipPos.z)
         return;
-    */
+    
     int currentIndex;
     InterlockedAdd(bufferWithArgs[1], 1, currentIndex);
     posVisibleBuffer[currentIndex] = posAllBuffer[id.x];

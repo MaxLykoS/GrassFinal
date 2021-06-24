@@ -18,7 +18,7 @@ Shader "Custom/GrassInstancedIndirect"
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" "IgnoreProjector" = "True"}
+        Tags { "RenderType"="Opaque" "IgnoreProjector" = "True" "LightMode" = "ForwardBase"}
         
         Cull Off
 
@@ -53,7 +53,6 @@ Shader "Custom/GrassInstancedIndirect"
                 float4 vertex : SV_POSITION;
                 float3 normalW : NORMAL;
                 float3 viewDir : TEXCOORD2;
-                float3 lightDir : TEXCOORD3;
             };
 
             //sampler2D _MainTex;
@@ -86,9 +85,9 @@ Shader "Custom/GrassInstancedIndirect"
                 o.uv = v.uv;  
 
                 o.normalW = normalize(mul(posVisibleBuffer[instanceID].worldMat, v.normal));
+                o.normalW *= o.normalW.y >= 0 ? 1 : -1;
 
                 o.viewDir = normalize(_WorldSpaceCameraPos.xyz - worldPos);
-                o.lightDir = normalize(_WorldSpaceLightPos0.xyz);
 
                 o.vertex = mul(UNITY_MATRIX_VP, worldPos);
                 return o;
@@ -104,11 +103,12 @@ Shader "Custom/GrassInstancedIndirect"
             fixed4 frag(v2f o, fixed facing : VFACE) : SV_Target
             {
                 o.normalW = facing > 0 ? o.normalW : -o.normalW;
+                float3 lightDir = normalize(_WorldSpaceLightPos0);
                 float4 texColor = lerp(_BottomColor, _TopColor, o.uv.y);
                 float NdotL = saturate(saturate(dot(o.normalW, _WorldSpaceLightPos0)) + _TranslucentGain);
 
                 // back light sss
-                float3 backLitDir = o.normalW * _BackSubsurfaceDistortion + o.lightDir;
+                float3 backLitDir = o.normalW * _BackSubsurfaceDistortion + lightDir;
                 float backSSS = saturate(dot(o.viewDir, -backLitDir));
                 backSSS = saturate(pow(backSSS, 3));
                 fixed3 edgeCol = backSSS * _EdgeLitRate * _InteriorColor * texColor.rgb;
@@ -116,6 +116,8 @@ Shader "Custom/GrassInstancedIndirect"
 
                 float3 ambient = ShadeSH9(float4(o.normalW, 1));
                 float4 lightIntensity = NdotL * _LightColor0 + float4(ambient, 1);
+                //float4 lightIntensity = float4(ambient, 1);
+                //float4 col = lerp(_BottomColor, _TopColor, o.uv.y) * lightIntensity;
                 float4 col = lerp(_BottomColor, _TopColor * lightIntensity, o.uv.y);
                 return col + fixed4(edgeCol, 1);
             }
