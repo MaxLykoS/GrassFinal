@@ -14,6 +14,12 @@ namespace PBD
             this.i0 = i0;
             this.fixedPos = body.Positions[i0];
         }
+
+        public FixedConstraint(FixedConstraint origin, PBDGrassBody body) : base(body)
+        {
+            this.i0 = origin.i0;
+            this.fixedPos = origin.fixedPos;
+        }
         public override void DoConstraint(float dt)
         {
             body.Positions[i0] = fixedPos;

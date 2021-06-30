@@ -3,30 +3,51 @@ using System.Collections.Generic;
 using UnityEngine;
 using PBD;
 
+public struct PBDGrassInfo
+{
+    public PBDGrassPatchRenderer renderer;
+    public float TimeToDie;
+
+    public PBDGrassInfo(PBDGrassPatchRenderer renderer, float timeToDie)
+    {
+        this.renderer = renderer;
+        this.TimeToDie = timeToDie;
+    }
+
+    public void Release()
+    {
+        renderer.Release();
+    }
+}
+
 public class GrassDemo : MonoBehaviour
 {
     public Material GrassMaterial;
     public List<Transform> colliders;
-    public ComputeShader PBDSolverCS;
+    public ComputeShader PBDSolverCSLOD0;
+    public ComputeShader PBDSolverCSLOD1;
 
-    //private Dictionary<Vector3Int, PBDGrassPatchRenderer> renderers;
-    private PBDGrassPatchRenderer p1;
+    private Dictionary<Vector3Int, PBDGrassPatchRenderer> renderers;
+    //private PBDGrassPatchRenderer p1;
 
     private Transform camTr;
-    private static ComputeShader PBDSolverCS_Static;
+    private static ComputeShader PBDSolverCS_StaticLOD0;
+    private static ComputeShader PBDSolverCS_StaticLOD1;
 
     void Start()
     {
         Application.targetFrameRate = 60;
-        //renderers = new Dictionary<Vector3Int, PBDGrassPatchRenderer>();
-        //camTr = Camera.main.transform;
+        renderers = new Dictionary<Vector3Int, PBDGrassPatchRenderer>();
+        camTr = Camera.main.transform;
         rToDestroy = new List<Vector3Int>();
-        PBDSolverCS_Static = PBDSolverCS;
-        camTr = colliders[0].transform;
+        PBDSolverCS_StaticLOD0 = PBDSolverCSLOD0;
+        PBDSolverCS_StaticLOD1 = PBDSolverCSLOD1;
+        //camTr = colliders[0].transform;
 
         PBDGrassPatchRenderer.Setup(GrassMaterial, colliders);
 
-        p1 = new PBDGrassPatchRenderer(Vector3Int.zero, new PBDGrassPatch(Vector3Int.zero, 1, 1, 1));
+        /*p1 = new PBDGrassPatchRenderer(GrassPool.Instance.GetPBDPatchLOD(0, 0, 
+            Matrix4x4.TRS(Vector3.zero, Quaternion.identity, Vector3.one)), 0);*/
     }
 
     private List<Vector3Int> rToDestroy;
@@ -35,52 +56,31 @@ public class GrassDemo : MonoBehaviour
         // pbd
         PBDGrassPatchRenderer.UpdateCollision(colliders);
 
-        p1.FixedUpdate();
-        p1.Update();
-
-        /*
-        // create PBDgrass around
-        int maxX = (int)camTr.position.x + 5;
-        int minX = (int)camTr.position.x - 5;
-        int maxZ = (int)camTr.position.z + 5;
-        int minZ = (int)camTr.position.z - 5;
-
-        foreach (Vector3Int r in renderers.Keys)
+        for (int i = 0; i < colliders.Count; i++)
         {
-            if (Vector3.Distance(r, camTr.position) > 5 * Mathf.Sqrt(2))
+            int maxX = Mathf.CeilToInt(colliders[i].position.x);
+            int minX = Mathf.FloorToInt(colliders[i].position.x);
+            int maxZ = Mathf.CeilToInt(colliders[i].position.z);
+            int minZ = Mathf.FloorToInt(colliders[i].position.z);
+
+            Vector3[] nearest = new Vector3[4];
+            nearest[0] = new Vector3(maxX, 0, maxZ);
+            nearest[1] = new Vector3(maxX, 0, minZ);
+            nearest[2] = new Vector3(minX, 0, maxZ);
+            nearest[3] = new Vector3(maxX, 0, minZ);
+
+            for (int j = 0; j < nearest.Length; j++)
             {
-                rToDestroy.Add(r);
-            }
-        }
-        for (int i = 0; i < rToDestroy.Count; i++)
-        {
-            PBDGrassPatchRenderer _r;
-            renderers.TryGetValue(rToDestroy[i], out _r);
-            _r.Release();
-            renderers.Remove(rToDestroy[i]);
-        }
-        rToDestroy.Clear();
+                if (Vector3.Distance(nearest[j], colliders[i].position) <= Mathf.Sqrt(0.5f * 0.5f * 2) + 0.00001f)
+                { 
+                    // nearest grid collision occurs
 
-        for (int i = minX; i <= maxX; i++)
-        {
-            for (int j = minZ; j <= maxZ; j++)
-            {
-                Vector3Int pos = new Vector3Int(i, 0, j);
-                PBDGrassPatchRenderer r;
-                if (renderers.TryGetValue(pos, out r))
-                {
-                    r.FixedUpdate();
-                    r.Update();
-                }
-                else if (Vector3.Distance(pos, camTr.position) <= 5 * Mathf.Sqrt(2))
-                {
-                    r = new PBDGrassPatchRenderer(pos, new PBDGrassPatch(pos, 1, 1, 1));
-                    renderers.Add(pos, r);
-                    r.FixedUpdate();
-                    r.Update();
                 }
             }
-        }*/
+        }
+
+        /*p1.FixedUpdate();
+        p1.Update();*/
     }
 
     private void OnDestroy()
@@ -88,13 +88,16 @@ public class GrassDemo : MonoBehaviour
         PBDGrassPatchRenderer.ReleaseStaticData();
         /*foreach (PBDGrassPatchRenderer r in renderers.Values)
             r.Release();*/
-        p1.Release();
     }
 
-    public static ComputeShader CreateShader()
+    public static ComputeShader CreateShader(int LOD)
     {
-        ComputeShader newCS = Instantiate(PBDSolverCS_Static);
-        return newCS;
+        switch (LOD)
+        {
+            case 0: return Instantiate(PBDSolverCS_StaticLOD0);
+            case 1: return Instantiate(PBDSolverCS_StaticLOD1);
+            default: throw new System.Exception("Unknown LOD");
+        }
     }
 
     public static void DestroyMesh(Mesh mesh)

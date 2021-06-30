@@ -113,6 +113,83 @@ namespace PBD
             PatchMesh.RecalculateNormals();
         }
 
+        public PBDGrassPatch(Vector3 root, int width, int length, int points, Vector2[] pointsList)
+        {
+            this.Root = root;
+            this.Width = width;
+            this.Length = length;
+            this.Bodies = new PBDGrassBody[points];
+            this.vertices = new Vector3[points * (SEGMENTS * 2 + 1)];
+
+            int indexOffset = 0;
+            int offsetIncreasment = SEGMENTS * 2 + 1;
+            int triIndexOffset = 0;
+            int triIndexOffsetIncreasment = (SEGMENTS * 2 - 1) * 3;
+
+            Vector2[] uvs = new Vector2[points * (2 * SEGMENTS + 1)];
+            int[] triangles = new int[points * ((SEGMENTS * 2 - 1) * 3)];
+
+            for (int i = 0; i < points; ++i)
+            {
+                float newX = pointsList[i].x;
+                float newZ = pointsList[i].y;
+
+                Bodies[i] = new PBDGrassBody(ref vertices, ref uvs, ref triangles, indexOffset, triIndexOffset,
+                    new Vector3(newX, 0, newZ),
+                    SEGMENTS, GrassHeight, GrassWidth, GrassForward, GrassMass);
+
+                indexOffset += offsetIncreasment;
+                triIndexOffset += triIndexOffsetIncreasment;
+            }
+
+            //Hash = new SpaceHash(root, width, length, ref Bodies);
+
+            PatchMesh = new Mesh()
+            {
+                vertices = vertices,
+                uv = uvs,
+                triangles = triangles
+            };
+            PatchMesh.RecalculateNormals();
+        }
+
+        public PBDGrassPatch(PBDGrassPatch origin)
+        {
+            this.Root = origin.Root;
+            this.Width = origin.Width;
+            this.Length = origin.Length;
+
+            this.vertices = new Vector3[origin.vertices.Length];
+            origin.vertices.CopyTo(this.vertices, 0);
+
+            this.Bodies = new PBDGrassBody[origin.Bodies.Length];
+            for (int i = 0; i < Bodies.Length; i++)
+            {
+                Bodies[i] = new PBDGrassBody(origin.Bodies[i]);
+            }
+
+            PatchMesh = new Mesh();
+            PatchMesh.vertices = origin.PatchMesh.vertices;
+            PatchMesh.normals = origin.PatchMesh.normals;
+            PatchMesh.uv = origin.PatchMesh.uv;
+            PatchMesh.triangles = origin.PatchMesh.triangles;
+            PatchMesh.tangents = origin.PatchMesh.tangents;
+        }
+
+        public void Transform(Matrix4x4 TRS)
+        {
+            for (int i = 0; i < Bodies.Length; i++)
+            {
+                Bodies[i].Transform(TRS);
+            }
+
+            for (int i = 0; i < vertices.Length; i++)
+                vertices[i] = TRS.MultiplyPoint3x4(vertices[i]);
+            PatchMesh.vertices = vertices;
+            PatchMesh.RecalculateNormals();
+            PatchMesh.bounds = new Bounds(TRS.MultiplyPoint3x4(PatchMesh.bounds.center), Vector3.one);
+        }
+
         public void UpdateMesh()
         {
             foreach (PBDGrassBody body in Bodies)

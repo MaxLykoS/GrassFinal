@@ -13,8 +13,6 @@ public class PBDGrassPatchRenderer
     private static ComputeBuffer ballBuffer;
     private static SphereCollisionStruct[] balls;
 
-    public Vector3Int Root { get; private set; }
-
     int meshTrianglesCounts;
     private ComputeBuffer PositionBuffer;
     private ComputeBuffer PredictedBuffer;
@@ -36,22 +34,18 @@ public class PBDGrassPatchRenderer
 
     private Vector3[] vertArray;
 
-    public PBDGrassPatchRenderer(Vector3Int root, PBDGrassPatch patch)
+    private Bounds bound;
+
+    public PBDGrassPatchRenderer(PBDGrassPatch patch, int LOD)
     {
         Timer = 0;
-
-        this.Root = root;
 
         meshTrianglesCounts = patch.PatchMesh.triangles.Length;
         grassMesh = patch.PatchMesh;
 
-        foreach (Vector3 v in grassMesh.vertices)
-            Debug.Log(MathUtility.V2S(v));
-        Debug.Log("tri");
-        foreach (int i in grassMesh.triangles)
-            Debug.Log(i);
+        bound = new Bounds(patch.Root, Vector3.one);
 
-        InitCS(patch);
+        InitCS(patch, LOD);
     }
 
     public static void Setup(Material pbdMaterial, List<Transform> ballslist)
@@ -61,7 +55,7 @@ public class PBDGrassPatchRenderer
         Solver = new PBDSolver(3.0f)
         {
             Gravity = Vector3.down * 9.8f,
-            WindForce = Vector3.up * 100
+            WindForce = Vector3.up * 1000
         };
 
         balls = new SphereCollisionStruct[ballslist.Count];
@@ -149,9 +143,9 @@ public class PBDGrassPatchRenderer
         Graphics.DrawMesh(grassMesh, Matrix4x4.TRS(Vector3.zero, Quaternion.identity, Vector3.one), PBDMaterial, 0);
     }
 
-    private void InitCS(PBDGrassPatch patch)
+    private void InitCS(PBDGrassPatch patch, int LOD)
     {
-        CS = GrassDemo.CreateShader();
+        CS = GrassDemo.CreateShader(LOD);
 
         PBDSolverHandler = CS.FindKernel("PBDSolver");
         UpdateMeshHandler = CS.FindKernel("UpdateMesh");

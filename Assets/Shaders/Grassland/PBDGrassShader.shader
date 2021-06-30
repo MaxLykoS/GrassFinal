@@ -18,7 +18,7 @@ Shader "Custom/PBDGrassShader"
 
     SubShader
     {
-        Tags { "RenderType" = "Opaque" }
+        Tags { "RenderType"="Opaque" "IgnoreProjector" = "True" "LightMode" = "ForwardBase"}
 
         Cull Off
 
@@ -49,7 +49,6 @@ Shader "Custom/PBDGrassShader"
                 float2 uv : TEXCOORD1;
                 float3 normalW : NORMAL;
                 float3 viewDir : TEXCOORD2;
-                float3 lightDir : TEXCOORD3;
             };
 
             struct h2d
@@ -58,7 +57,6 @@ Shader "Custom/PBDGrassShader"
                 float2 uv : TEXCOORD1;
                 float3 normalW : NORMAL;
                 float3 viewDir : TEXCOORD2;
-                float3 lightDir : TEXCOORD3;
                 float bend : TEXCOORD4;
             };
 
@@ -68,7 +66,6 @@ Shader "Custom/PBDGrassShader"
                 float2 uv : TEXCOORD0;
                 float3 normalW : NORMAL;
                 float3 viewDir : TEXCOORD1;
-                float3 lightDir : TEXCOORD2;
             };
 
             v2h vert(a2v v)
@@ -82,7 +79,6 @@ Shader "Custom/PBDGrassShader"
                 o.normalW *= o.normalW.y >= 0 ? 1 : -1;
 
                 o.viewDir = normalize(_WorldSpaceCameraPos.xyz - o.posW.xyz);
-                o.lightDir = normalize(_WorldSpaceLightPos0.xyz);
                 return o;
             }
 
@@ -118,7 +114,6 @@ Shader "Custom/PBDGrassShader"
                 o.uv = patch[id].uv;
                 o.normalW = patch[id].normalW;
                 o.viewDir = patch[id].viewDir;
-                o.lightDir = patch[id].lightDir;
 
                 float bladeYDif = abs(patch[0].posW.y - patch[2].posW.y);
                 o.bend = bladeYDif * 0.5f;
@@ -140,7 +135,6 @@ Shader "Custom/PBDGrassShader"
                 MY_DOMAIN_PROGRAM_INTERPOLATE(uv)
                 MY_DOMAIN_PROGRAM_INTERPOLATE(normalW)
                 MY_DOMAIN_PROGRAM_INTERPOLATE(viewDir)
-                MY_DOMAIN_PROGRAM_INTERPOLATE(lightDir)
                 MY_DOMAIN_PROGRAM_INTERPOLATE(bend)
 
                 v.normalW = normalize(v.normalW);
@@ -155,7 +149,6 @@ Shader "Custom/PBDGrassShader"
                 o.uv = v.uv;
                 o.normalW = v.normalW;
                 o.viewDir = v.viewDir;
-                o.lightDir = v.lightDir;
                 return o;
             }
 
@@ -170,11 +163,12 @@ Shader "Custom/PBDGrassShader"
             {
                 o.normalW = facing > 0 ? o.normalW : -o.normalW;
 
+                float3 lightDir = normalize(_WorldSpaceLightPos0);
                 float4 texColor = lerp(_BottomColor, _TopColor, o.uv.y);
                 float NdotL = saturate(saturate(dot(o.normalW, _WorldSpaceLightPos0)) + _TranslucentGain);
 
                 // back light sss
-                float3 backLitDir = o.normalW * _BackSubsurfaceDistortion + o.lightDir;
+                float3 backLitDir = o.normalW * _BackSubsurfaceDistortion + lightDir;
                 float backSSS = saturate(dot(o.viewDir, -backLitDir));
                 backSSS = saturate(pow(backSSS, 3));
                 fixed3 edgeCol = backSSS * _EdgeLitRate * _InteriorColor * texColor.rgb;

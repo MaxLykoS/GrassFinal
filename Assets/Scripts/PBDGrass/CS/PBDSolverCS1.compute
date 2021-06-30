@@ -1,7 +1,7 @@
 #pragma kernel PBDSolver
 #pragma kernel UpdateMesh
 
-#define XThreads 1
+#define XThreads 32
 
 struct FixedConstraintStruct
 {
@@ -56,7 +56,7 @@ void PBDSolver(uint3 id : SV_DispatchThreadID)
         // gravity
         VelocitiesBuffer[idb] += Gravity * dt;
         // recovery force
-        VelocitiesBuffer[idb] += (OriginPosBuffer[idb] - PredictedBuffer[idb]) * dt * 100;
+        VelocitiesBuffer[idb] += (OriginPosBuffer[idb] - PredictedBuffer[idb]) * dt * 2000;
         // wind force
         VelocitiesBuffer[idb] += WindForce * dt;  
     }

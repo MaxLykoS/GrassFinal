@@ -6,7 +6,7 @@ namespace PBD
 {
     public class PBDGrassBody
     {
-        private const float DistanceConstraintStiffness = 0.2f; 
+        private const float DistanceConstraintStiffness = 1.0f; 
 
         public Vector3[] Positions { get; set; }
         public Vector3[] Predicted { get; set; }
@@ -36,6 +36,42 @@ namespace PBD
             FillGrassMesh(triIndexOffset, ref vertices, ref uvs, ref triangles, ref root, h, w, f);
 
             InitPositionsAndConstraints(ref vertices);
+        }
+
+        public PBDGrassBody(PBDGrassBody origin)
+        {
+            this.Mass = origin.Mass;
+            this.Segments = origin.Segments;
+            this.BoneCounts = origin.BoneCounts;
+            this.vertexCounts = origin.vertexCounts;
+            this.IndexOffset = origin.IndexOffset;
+
+            this.Positions = new Vector3[origin.Positions.Length];
+            origin.Positions.CopyTo(this.Positions, 0);
+
+            this.Predicted = new Vector3[origin.Predicted.Length];
+            origin.Predicted.CopyTo(this.Predicted, 0);
+
+            this.Velocities = new Vector3[origin.Velocities.Length];
+            origin.Velocities.CopyTo(this.Velocities, 0);
+
+            this.OriginPos = new Vector3[origin.OriginPos.Length];
+            origin.OriginPos.CopyTo(this.OriginPos, 0);
+
+            this.Offset = new Vector3[origin.Offset.Length];
+            origin.Offset.CopyTo(this.Offset, 0);
+
+            Fcons = new List<FixedConstraint>();
+            for (int i = 0; i < origin.Fcons.Count; i++)
+            {
+                Fcons.Add(new FixedConstraint(origin.Fcons[i], this));
+            }
+
+            Dcons = new List<DistanceConstraint>();
+            for (int i = 0; i < origin.Dcons.Count; i++)
+            {
+                Dcons.Add(new DistanceConstraint(origin.Dcons[i], this));
+            }
         }
         ~PBDGrassBody()
         {
@@ -85,6 +121,25 @@ namespace PBD
             }
             vertices[vertexCounts - 1 + IndexOffset] = Positions[index];
         }
+
+        public void Transform(Matrix4x4 TRS)
+        {
+            for (int i = 0; i < Positions.Length; i++)
+            {
+                Positions[i] = TRS.MultiplyPoint3x4(Positions[i]);
+                Predicted[i] = Positions[i];
+                OriginPos[i] = Positions[i];
+            }
+            for (int i = 0; i < Offset.Length; i++)
+            {
+                Offset[i] = TRS.MultiplyVector(Offset[i]);
+            }
+
+            for (int i = 0; i < Fcons.Count; i++)
+            {
+                Fcons[i].fixedPos = TRS.MultiplyPoint3x4(Fcons[i].fixedPos);
+            }
+    }
 
         void GenV(int vi, int ui, ref Vector3[] vertices, ref Vector2[] uvs, 
             Vector3 vertexPosition, float _w, float _h, float _f, Vector2 uv, Matrix3x3 transformMatrix)

@@ -61,11 +61,11 @@ Shader "Custom/GrassInstancedIndirect"
 
             float GetStamp(float2 position, float height)
             {
-                //_StampVector.xz   ²ÈÌ¤Í¶Ó°µÄË®Æ½×ø±êµã
-                //_StampVector.y    ×îµÍ½µµÍ³Ì¶È
-                //_StampVector.w    ²ÈÌ¤Í¶Ó°³ß´ç
-                //ÒÔÎïÌå¼õÈ¥²ÈÌ¤Í¶Ó°ÖÐÐÄµãµÄµÄÎ»ÖÃ²ÉÑù²ÈÌ¤Êý¾Ý
-                //³¬³ö·¶Î§²»²ÉÑù
+                //_StampVector.xz   ï¿½ï¿½Ì¤Í¶Ó°ï¿½ï¿½Ë®Æ½ï¿½ï¿½ï¿½ï¿½ï¿½
+                //_StampVector.y    ï¿½ï¿½Í½ï¿½ï¿½Í³Ì¶ï¿½
+                //_StampVector.w    ï¿½ï¿½Ì¤Í¶Ó°ï¿½ß´ï¿½
+                //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¥ï¿½ï¿½Ì¤Í¶Ó°ï¿½ï¿½ï¿½Äµï¿½Äµï¿½Î»ï¿½Ã²ï¿½ï¿½ï¿½ï¿½ï¿½Ì¤ï¿½ï¿½ï¿½ï¿½
+                //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î§ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                 float2 stampUv = (position.xy - _StampVector.xz) / _StampVector.w + float2(0.5, .5);
                 float4 stampP = float4(0, 0, 0, 0);
                 if (stampUv.x > 0 && stampUv.x < 1 && stampUv.y>0 && stampUv.y < 1) 
@@ -116,8 +116,6 @@ Shader "Custom/GrassInstancedIndirect"
 
                 float3 ambient = ShadeSH9(float4(o.normalW, 1));
                 float4 lightIntensity = NdotL * _LightColor0 + float4(ambient, 1);
-                //float4 lightIntensity = float4(ambient, 1);
-                //float4 col = lerp(_BottomColor, _TopColor, o.uv.y) * lightIntensity;
                 float4 col = lerp(_BottomColor, _TopColor * lightIntensity, o.uv.y);
                 return col + fixed4(edgeCol, 1);
             }

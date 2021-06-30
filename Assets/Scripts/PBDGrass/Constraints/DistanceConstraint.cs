@@ -13,13 +13,22 @@ namespace PBD
         public int i0 { get; private set; }
         public int i1 { get; private set; }
 
-    internal DistanceConstraint(int i0, int i1, float stiffness, PBDGrassBody body) : base(body)
+        internal DistanceConstraint(int i0, int i1, float stiffness, PBDGrassBody body) : base(body)
         {
             this.i0 = i0;
             this.i1 = i1;
 
             this.ElasticModulus = stiffness;
             this.RestLength = (body.Positions[i0] - body.Positions[i1]).magnitude;
+        }
+
+        internal DistanceConstraint(DistanceConstraint origin, PBDGrassBody body) : base(body)
+        {
+            this.i0 = origin.i0;
+            this.i1 = origin.i1;
+
+            this.ElasticModulus = origin.ElasticModulus;
+            this.RestLength = origin.RestLength;
         }
 
         public override void DoConstraint(float dt)
