@@ -2,6 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public struct GrassInfo
+{
+    public Matrix4x4 worldMat;
+    public int grassType;
+
+    public GrassInfo(Matrix4x4 TRS, int type)
+    {
+        this.worldMat = TRS;
+        this.grassType = type;
+    }
+}
 public class GrassInstancing : MonoBehaviour
 {
     public static RenderTexture DepthTex;
@@ -15,6 +26,8 @@ public class GrassInstancing : MonoBehaviour
     [Header("»æÖÆ¿í¶È£¨¾ØÐÎ£©")]
     public int Length;
 
+    private ComputeBuffer grassPoolBufferLOD0;
+    private ComputeBuffer grassPoolBufferLOD1;
     private ComputeBuffer grassPosBuffer;
     private ComputeBuffer argsBuffer;
     private uint[] args = new uint[5] { 0, 0, 0, 0, 0 };
@@ -40,12 +53,6 @@ public class GrassInstancing : MonoBehaviour
     public float _GrassflakeOpacity;
     public Material StampRecoverMat;
 
-    public struct GrassInfo
-    {
-        public Matrix4x4 worldMat;
-        public Vector3 worldPos;
-    }
-
     void Start()
     {
         Init();
@@ -64,13 +71,14 @@ public class GrassInstancing : MonoBehaviour
         FillPosBuffer();
 
         InitCulling();
+        InitMergeInstancing();
     }
 
     private void InitCulling()
     {
         CSCullingID = CS.FindKernel("CSCulling");
 
-        posVisibleBuffer = new ComputeBuffer(Length * Length, sizeof(float) * (16 + 3));
+        posVisibleBuffer = new ComputeBuffer(Length * Length, sizeof(float) * (16) + sizeof(int));
         CS.SetBuffer(CSCullingID, "bufferWithArgs", argsBuffer);
         CS.SetBuffer(CSCullingID, "posAllBuffer", grassPosBuffer);
         CS.SetBuffer(CSCullingID, "posVisibleBuffer", posVisibleBuffer);
@@ -92,7 +100,7 @@ public class GrassInstancing : MonoBehaviour
         Matrix4x4 VP = GL.GetGPUProjectionMatrix(cam.projectionMatrix, false) * cam.worldToCameraMatrix;
         CS.SetMatrix("_Matrix_VP", VP);
 
-        CS.Dispatch(CSCullingID, Mathf.Max(Length * Length / 1024, 1), 1, 1);
+        CS.Dispatch(CSCullingID, Mathf.Max(GrassPool.LENGTH * GrassPool.LENGTH / 1024, 1), 1, 1);
     }
 
     private void FillArgsBuffer()
@@ -107,18 +115,23 @@ public class GrassInstancing : MonoBehaviour
 
     private void FillPosBuffer()
     {
-        grassPosBuffer = new ComputeBuffer(Length * Length, sizeof(float) * (16 + 3));
-        GrassInfo[] infos = new GrassInfo[Length * Length];
+        grassPosBuffer = new ComputeBuffer(Length * Length, sizeof(float) * (16) + sizeof(int));
 
-        int id = 0;
-        for (int i = 0; i < Length; i++)
-            for (int j = 0; j < Length; j++)
-            {
-                infos[id].worldMat = Matrix4x4.TRS(new Vector3(i, 0, j), Quaternion.Euler(0, Random.Range(0, 360), 0), Vector3.one);
-                infos[id].worldPos = new Vector3(i, 0, j);
-                id++;
-            }
+        GrassInfo[] infos = GrassPool.Instance.GetGrassPosBuffer();
         grassPosBuffer.SetData(infos);
+    }
+
+    private void InitMergeInstancing()
+    {
+        Vector3[] poolLOD0 = GrassPool.Instance.GetGrassPoolBuffer(0);
+        Vector3[] poolLOD1 = GrassPool.Instance.GetGrassPoolBuffer(1);
+
+        grassPoolBufferLOD0 = new ComputeBuffer(poolLOD0.Length, sizeof(float) * 3);
+        grassPoolBufferLOD1 = new ComputeBuffer(poolLOD1.Length, sizeof(float) * 3);
+        grassPoolBufferLOD0.SetData(poolLOD0);
+        grassPoolBufferLOD1.SetData(poolLOD1);
+        GrassMaterial.SetBuffer("grassPoolBuffer", grassPoolBufferLOD0);
+        GrassMaterial.SetInteger("_GrassPoolStride", GrassPool.Instance.GetPoolStride(0));
     }
 
     private void InitStamp()
@@ -150,5 +163,8 @@ public class GrassInstancing : MonoBehaviour
         argsBuffer.Release();
 
         posVisibleBuffer.Release();
+
+        grassPoolBufferLOD0.Release();
+        grassPoolBufferLOD1.Release();
     }
 }

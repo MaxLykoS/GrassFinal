@@ -2,6 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public class GrassID
+{
+    public float yRotation;
+    public int Type;
+
+    public GrassID(float yRot, int type)
+    {
+        this.yRotation = yRot;
+        this.Type = type;
+    }
+}
+
 public class GrassPool
 {
     public static GrassPool Instance
@@ -22,14 +34,20 @@ public class GrassPool
     const int COUNT = 8;
     const int LOD0BLADES = 64;
     const int LOD1BLADES = 32;
+    public const int LENGTH = 128;
     private PBD.PBDGrassPatch[] patchPool3;  //64 grass 3 blade
     private PBD.PBDGrassPatch[] patchPool1;  //16 grass 1 blade
 
+    private Dictionary<Vector2Int, GrassID> grassGrids;
+
     public GrassPool()
     {
+        grassGrids = new Dictionary<Vector2Int, GrassID>();
+
         patchPool3 = new PBD.PBDGrassPatch[COUNT];
         patchPool1 = new PBD.PBDGrassPatch[COUNT];
 
+        FillGrassPos();
         FillGrassPool(GenPointsLists(Vector3.zero, 1, 1));
     }
 
@@ -108,5 +126,57 @@ public class GrassPool
         }
         newPatch.Transform(TRS);
         return newPatch;
+    }
+
+    void FillGrassPos()
+    {
+        for (int i = 0; i < LENGTH; i++)
+            for (int j = 0; j < LENGTH; j++)
+            {
+                grassGrids[new Vector2Int(i, j)] = new GrassID(Random.Range(0, 360), Random.Range(0, 8));
+            }
+    }
+
+    public GrassInfo[] GetGrassPosBuffer()
+    {
+        GrassInfo[] posBuffer = new GrassInfo[LENGTH * LENGTH];
+        int id = 0;
+        foreach (Vector2Int v in grassGrids.Keys)
+        {
+            var value = grassGrids[v];
+            posBuffer[id] = new GrassInfo(
+                Matrix4x4.TRS(new Vector3(v.x, 0, v.y), Quaternion.Euler(0, value.yRotation, 0), Vector3.one)
+                ,value.Type);
+            id++;
+        }
+        return posBuffer;
+    }
+
+    public Vector3[] GetGrassPoolBuffer(int LOD)
+    {
+        Vector3[] poolBuffer;
+        PBD.PBDGrassPatch[] targetPatchPool = LOD == 0 ? patchPool3 : patchPool1;
+
+        poolBuffer = new Vector3[COUNT * targetPatchPool[0].PatchMesh.vertexCount];
+        int id = 0;
+        for (int i = 0; i < targetPatchPool.Length; i++)
+        {
+            for (int j = 0; j < targetPatchPool[i].PatchMesh.vertexCount; j++)
+            {
+                poolBuffer[id] = targetPatchPool[i].PatchMesh.vertices[j];
+                ++id;
+            }
+        }
+        return poolBuffer;
+    }
+
+    public int GetPoolStride(int LOD)
+    {
+        switch (LOD)
+        {
+            case 0 : return patchPool3[0].PatchMesh.vertexCount;
+            case 1 : return patchPool1[0].PatchMesh.vertexCount;
+            default: throw new System.Exception("Unknown LOD");
+        }
     }
 }

@@ -36,15 +36,18 @@ Shader "Custom/GrassInstancedIndirect"
             struct MeshProperties
             {
                 float4x4 worldMat;
-                float3 worldPos;
+                int type;
             };
             StructuredBuffer<MeshProperties> posVisibleBuffer;
+            StructuredBuffer<float3> grassPoolBuffer;
 
             struct appdata
             {
                 float4 vertex : POSITION;
                 float2 uv : TEXCOORD0;
                 float3 normal : NORMAL;
+                uint vertexID : SV_VertexID;
+                uint instanceID : SV_InstanceID;
             };
 
             struct v2f
@@ -74,17 +77,22 @@ Shader "Custom/GrassInstancedIndirect"
                 return min(height, max(_StampVector.y, y));
             }
 
-            v2f vert (appdata v, uint instanceID : SV_InstanceID)
+            int _GrassPoolStride;
+
+            v2f vert (appdata v)
             {
                 v2f o;
                 
-                float4 worldPos = mul(posVisibleBuffer[instanceID].worldMat, v.vertex);
+                float4 vertex = float4(grassPoolBuffer[posVisibleBuffer[v.instanceID].type * _GrassPoolStride + v.vertexID], 1);
+                //float4 vertex = float4(grassPoolBuffer[type * _GrassPoolStride + v.vertexID], 1);
+                //vertex = v.vertex;
+                float4 worldPos = mul(posVisibleBuffer[v.instanceID].worldMat, vertex);
 
                 worldPos.y = GetStamp(worldPos.xz, worldPos.y);
 
-                o.uv = v.uv;  
+                o.uv = v.uv;
 
-                o.normalW = normalize(mul(posVisibleBuffer[instanceID].worldMat, v.normal));
+                o.normalW = normalize(mul(posVisibleBuffer[v.instanceID].worldMat, v.normal));
                 o.normalW *= o.normalW.y >= 0 ? 1 : -1;
 
                 o.viewDir = normalize(_WorldSpaceCameraPos.xyz - worldPos);

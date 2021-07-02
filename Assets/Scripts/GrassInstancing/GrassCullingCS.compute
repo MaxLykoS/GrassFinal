@@ -3,7 +3,7 @@
 struct MeshProperties
 {
     float4x4 worldMat;
-    float3 worldPos;
+    int grassType;
 };
 
 StructuredBuffer<MeshProperties> posAllBuffer;
@@ -21,7 +21,8 @@ void CSCulling (uint3 id : SV_DispatchThreadID)
 {
     uint index = id.x;
     
-    float3 itemPos = posAllBuffer[index].worldPos;
+    //https://math.stackexchange.com/questions/237369/given-this-transformation-matrix-how-do-i-decompose-it-into-translation-rotati/417813
+    float3 itemPos = posAllBuffer[index].worldMat._14_24_34;
     float3 itemDir = normalize(itemPos - camPos);
     float rot = dot(camDir, itemDir);
     
