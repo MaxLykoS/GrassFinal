@@ -34,7 +34,7 @@ public class GrassPool
     const int COUNT = 8;
     const int LOD0BLADES = 64;
     const int LOD1BLADES = 32;
-    public const int LENGTH = 128;
+    public const int LENGTH = 256;
     private PBD.PBDGrassPatch[] patchPool3;  //64 grass 3 blade
     private PBD.PBDGrassPatch[] patchPool1;  //16 grass 1 blade
 
@@ -100,12 +100,12 @@ public class GrassPool
     {
         for (int i = 0; i < COUNT; i++)
         {
-            patchPool3[i] = new PBD.PBDGrassPatch(Vector3.zero, 1, 1, grassPoints[0][0].Length, grassPoints[0][i]);
-            patchPool1[i] = new PBD.PBDGrassPatch(Vector3.zero, 1, 1, grassPoints[1][0].Length, grassPoints[1][i]);
+            patchPool3[i] = new PBD.PBDGrassPatch(Vector3.zero, 1, 1, grassPoints[0][0].Length, grassPoints[0][i], 3);
+            patchPool1[i] = new PBD.PBDGrassPatch(Vector3.zero, 1, 1, grassPoints[1][0].Length, grassPoints[1][i], 1);
         }
     }
 
-    public Mesh GetMeshLOD(int LOD, int type)
+    public Mesh GetMeshLOD(int LOD, int type = 0)
     {
         switch (LOD)
         {
@@ -176,6 +176,36 @@ public class GrassPool
         {
             case 0 : return patchPool3[0].PatchMesh.vertexCount;
             case 1 : return patchPool1[0].PatchMesh.vertexCount;
+            default: throw new System.Exception("Unknown LOD");
+        }
+    }
+
+    public uint GetIndexCountLOD(int LOD)
+    {
+        switch (LOD)
+        {
+            case 0: return patchPool3[0].PatchMesh.GetIndexCount(0);
+            case 1: return patchPool1[0].PatchMesh.GetIndexCount(0);
+            default: throw new System.Exception("Unknown LOD");
+        }
+    }
+
+    public uint GetIndexStartLOD(int LOD)
+    {
+        switch (LOD)
+        {
+            case 0: return patchPool3[0].PatchMesh.GetIndexStart(0);
+            case 1: return patchPool1[0].PatchMesh.GetIndexStart(0);
+            default: throw new System.Exception("Unknown LOD");
+        }
+    }
+
+    public uint GetBaseVertexLOD(int LOD)
+    {
+        switch (LOD)
+        {
+            case 0: return patchPool3[0].PatchMesh.GetBaseVertex(0);
+            case 1: return patchPool1[0].PatchMesh.GetBaseVertex(0);
             default: throw new System.Exception("Unknown LOD");
         }
     }

@@ -7,8 +7,10 @@ struct MeshProperties
 };
 
 StructuredBuffer<MeshProperties> posAllBuffer;
-RWStructuredBuffer<MeshProperties> posVisibleBuffer;
-RWStructuredBuffer<int> bufferWithArgs;
+RWStructuredBuffer<MeshProperties> posVisibleBufferLOD0;
+RWStructuredBuffer<MeshProperties> posVisibleBufferLOD1;
+RWStructuredBuffer<int> bufferWithArgsLOD0;
+RWStructuredBuffer<int> bufferWithArgsLOD1;
 
 float3 camPos;
 float3 camDir;
@@ -46,7 +48,16 @@ void CSCulling (uint3 id : SV_DispatchThreadID)
     if (minD > clipPos.z)
         return;
     
+    float dist = distance(itemPos, camPos);
     int currentIndex;
-    InterlockedAdd(bufferWithArgs[1], 1, currentIndex);
-    posVisibleBuffer[currentIndex] = posAllBuffer[id.x];
+    if (dist<=60)
+    {
+        InterlockedAdd(bufferWithArgsLOD0[1], 1, currentIndex);
+        posVisibleBufferLOD0[currentIndex] = posAllBuffer[id.x];
+    }
+    else
+    {
+        InterlockedAdd(bufferWithArgsLOD1[1], 1, currentIndex);
+        posVisibleBufferLOD1[currentIndex] = posAllBuffer[id.x];
+    }
 }

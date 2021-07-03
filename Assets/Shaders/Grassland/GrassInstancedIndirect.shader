@@ -58,7 +58,6 @@ Shader "Custom/GrassInstancedIndirect"
                 float3 viewDir : TEXCOORD2;
             };
 
-            //sampler2D _MainTex;
             sampler2D _StampTex;
             float4 _StampVector;
 

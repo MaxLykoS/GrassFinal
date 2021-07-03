@@ -49,7 +49,7 @@ namespace PBD
 
     public class PBDGrassPatch
     {
-        const int SEGMENTS = 3;
+        private int SEGMENTS = 3;
         const float GrassHeight = 0.5f;
         const float GrassWidth = 0.03f;
         const float GrassForward = 0.38f;
@@ -113,8 +113,9 @@ namespace PBD
             PatchMesh.RecalculateNormals();
         }
 
-        public PBDGrassPatch(Vector3 root, int width, int length, int points, Vector2[] pointsList)
+        public PBDGrassPatch(Vector3 root, int width, int length, int points, Vector2[] pointsList, int segments = 3)
         {
+            this.SEGMENTS = segments;
             this.Root = root;
             this.Width = width;
             this.Length = length;

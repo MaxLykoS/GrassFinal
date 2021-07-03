@@ -17,25 +17,24 @@ public class GrassInstancing : MonoBehaviour
 {
     public static RenderTexture DepthTex;
 
-    [Header("绘制模型")]
-    private Mesh GrassMesh;
-
     [Header("绘制材质")]
-    public Material GrassMaterial;
-
-    [Header("绘制宽度（矩形）")]
-    public int Length;
+    public Material GrassMaterialBackup;
+    private Material GrassMaterialLOD0;
+    private Material GrassMaterialLOD1;
 
     private ComputeBuffer grassPoolBufferLOD0;
     private ComputeBuffer grassPoolBufferLOD1;
     private ComputeBuffer grassPosBuffer;
-    private ComputeBuffer argsBuffer;
-    private uint[] args = new uint[5] { 0, 0, 0, 0, 0 };
+    private ComputeBuffer argsBufferLOD0;
+    private ComputeBuffer argsBufferLOD1;
+    private uint[] argsLOD0 = new uint[5] { 0, 0, 0, 0, 0 };
+    private uint[] argsLOD1 = new uint[5] { 0, 0, 0, 0, 0 };
     private Bounds drawBounds;
 
     [Header("剔除着色器")]
     public ComputeShader CS;
-    private ComputeBuffer posVisibleBuffer;
+    private ComputeBuffer posVisibleBufferLOD0;
+    private ComputeBuffer posVisibleBufferLOD1;
     private int CSCullingID;
 
     [Header("MainCamera")]
@@ -60,10 +59,12 @@ public class GrassInstancing : MonoBehaviour
 
     private void Init()
     {
-        InitStamp();
+        GrassMaterialLOD0 = new Material(GrassMaterialBackup);
+        GrassMaterialLOD0.CopyPropertiesFromMaterial(GrassMaterialBackup);
+        GrassMaterialLOD1 = new Material(GrassMaterialBackup);
+        GrassMaterialLOD1.CopyPropertiesFromMaterial(GrassMaterialBackup);
 
-        PBD.PBDGrassPatch p1 = new PBD.PBDGrassPatch(Vector3Int.zero, 1, 1, 64);
-        GrassMesh = p1.PatchMesh;
+        InitStamp();
 
         drawBounds = new Bounds(Vector3.zero, new Vector3(10000, 10000, 10000));
 
@@ -78,18 +79,25 @@ public class GrassInstancing : MonoBehaviour
     {
         CSCullingID = CS.FindKernel("CSCulling");
 
-        posVisibleBuffer = new ComputeBuffer(Length * Length, sizeof(float) * (16) + sizeof(int));
-        CS.SetBuffer(CSCullingID, "bufferWithArgs", argsBuffer);
+        posVisibleBufferLOD0 = new ComputeBuffer(GrassPool.LENGTH * GrassPool.LENGTH, sizeof(float) * 16 + sizeof(int));
+        posVisibleBufferLOD1 = new ComputeBuffer(GrassPool.LENGTH * GrassPool.LENGTH, sizeof(float) * 16 + sizeof(int));
+        CS.SetBuffer(CSCullingID, "bufferWithArgsLOD0", argsBufferLOD0);
+        CS.SetBuffer(CSCullingID, "bufferWithArgsLOD1", argsBufferLOD1);
         CS.SetBuffer(CSCullingID, "posAllBuffer", grassPosBuffer);
-        CS.SetBuffer(CSCullingID, "posVisibleBuffer", posVisibleBuffer);
+        CS.SetBuffer(CSCullingID, "posVisibleBufferLOD0", posVisibleBufferLOD0);
+        CS.SetBuffer(CSCullingID, "posVisibleBufferLOD1", posVisibleBufferLOD1);
 
-        GrassMaterial.SetBuffer("posVisibleBuffer", posVisibleBuffer);
+        GrassMaterialLOD0.SetBuffer("posVisibleBuffer", posVisibleBufferLOD0);
+        GrassMaterialLOD1.SetBuffer("posVisibleBuffer", posVisibleBufferLOD1);
     }
 
     private void Cull()
     {
-        args[1] = 0;
-        argsBuffer.SetData(args);
+        argsLOD0[1] = 0;
+        argsBufferLOD0.SetData(argsLOD0);
+
+        argsLOD1[1] = 0;
+        argsBufferLOD1.SetData(argsLOD1);
 
         CS.SetTexture(CSCullingID, "_DepthTex", DepthTex);
 
@@ -105,17 +113,24 @@ public class GrassInstancing : MonoBehaviour
 
     private void FillArgsBuffer()
     {
-        argsBuffer = new ComputeBuffer(1, args.Length * sizeof(uint), ComputeBufferType.IndirectArguments);
-        args[0] = GrassMesh.GetIndexCount(0);
-        args[1] = (uint)0;
-        args[2] = GrassMesh.GetIndexStart(0);
-        args[3] = GrassMesh.GetBaseVertex(0);
-        argsBuffer.SetData(args);
+        argsBufferLOD0 = new ComputeBuffer(1, argsLOD0.Length * sizeof(uint), ComputeBufferType.IndirectArguments);
+        argsLOD0[0] = GrassPool.Instance.GetIndexCountLOD(0);
+        argsLOD0[1] = (uint)0;
+        argsLOD0[2] = GrassPool.Instance.GetIndexStartLOD(0);
+        argsLOD0[3] = GrassPool.Instance.GetBaseVertexLOD(0);
+        argsBufferLOD0.SetData(argsLOD0);
+
+        argsBufferLOD1 = new ComputeBuffer(1, argsLOD0.Length * sizeof(uint), ComputeBufferType.IndirectArguments);
+        argsLOD1[0] = GrassPool.Instance.GetIndexCountLOD(1);
+        argsLOD1[1] = (uint)0;
+        argsLOD1[2] = GrassPool.Instance.GetIndexStartLOD(1);
+        argsLOD1[3] = GrassPool.Instance.GetBaseVertexLOD(1);
+        argsBufferLOD1.SetData(argsLOD1);
     }
 
     private void FillPosBuffer()
     {
-        grassPosBuffer = new ComputeBuffer(Length * Length, sizeof(float) * (16) + sizeof(int));
+        grassPosBuffer = new ComputeBuffer(GrassPool.LENGTH * GrassPool.LENGTH, sizeof(float) * (16) + sizeof(int));
 
         GrassInfo[] infos = GrassPool.Instance.GetGrassPosBuffer();
         grassPosBuffer.SetData(infos);
@@ -130,8 +145,10 @@ public class GrassInstancing : MonoBehaviour
         grassPoolBufferLOD1 = new ComputeBuffer(poolLOD1.Length, sizeof(float) * 3);
         grassPoolBufferLOD0.SetData(poolLOD0);
         grassPoolBufferLOD1.SetData(poolLOD1);
-        GrassMaterial.SetBuffer("grassPoolBuffer", grassPoolBufferLOD0);
-        GrassMaterial.SetInteger("_GrassPoolStride", GrassPool.Instance.GetPoolStride(0));
+        GrassMaterialLOD0.SetBuffer("grassPoolBuffer", grassPoolBufferLOD0);
+        GrassMaterialLOD0.SetInteger("_GrassPoolStride", GrassPool.Instance.GetPoolStride(0));
+        GrassMaterialLOD1.SetBuffer("grassPoolBuffer", grassPoolBufferLOD1);
+        GrassMaterialLOD1.SetInteger("_GrassPoolStride", GrassPool.Instance.GetPoolStride(1));
     }
 
     private void InitStamp()
@@ -150,19 +167,25 @@ public class GrassInstancing : MonoBehaviour
         Graphics.Blit(temp, StampRT);
         RenderTexture.ReleaseTemporary(temp);
 
-        GrassMaterial.SetVector("_StampVector", 
-            new Vector4(StampCam.transform.position.x, stampMin, StampCam.transform.position.z, 
-            StampSize));
-        Graphics.DrawMeshInstancedIndirect(GrassMesh, 0, GrassMaterial, drawBounds, argsBuffer, 0,
+        Vector4 _StampVector = new Vector4(StampCam.transform.position.x, stampMin, StampCam.transform.position.z,
+            StampSize);
+        GrassMaterialLOD0.SetVector("_StampVector", _StampVector);
+        Graphics.DrawMeshInstancedIndirect(GrassPool.Instance.GetMeshLOD(0), 0, GrassMaterialLOD0, drawBounds, argsBufferLOD0, 0,
+            null, UnityEngine.Rendering.ShadowCastingMode.Off, false, 0);
+        GrassMaterialLOD1.SetVector("_StampVector", _StampVector);
+        Graphics.DrawMeshInstancedIndirect(GrassPool.Instance.GetMeshLOD(1), 0, GrassMaterialLOD1, drawBounds, argsBufferLOD1, 0,
             null, UnityEngine.Rendering.ShadowCastingMode.Off, false, 0);
     }
 
     private void OnDestroy()
     {
         grassPosBuffer.Release();
-        argsBuffer.Release();
 
-        posVisibleBuffer.Release();
+        argsBufferLOD0.Release();
+        argsBufferLOD1.Release();
+
+        posVisibleBufferLOD0.Release();
+        posVisibleBufferLOD1.Release();
 
         grassPoolBufferLOD0.Release();
         grassPoolBufferLOD1.Release();
