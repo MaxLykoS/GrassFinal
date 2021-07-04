@@ -123,6 +123,79 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1001 &116733204
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2140604502853386276, guid: 2b167078b68e5b647a815caf62ead5bc, type: 3}
+      propertyPath: m_Name
+      value: GrassPatchMgr
+      objectReference: {fileID: 0}
+    - target: {fileID: 2140604502853386276, guid: 2b167078b68e5b647a815caf62ead5bc, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2140604502853386298, guid: 2b167078b68e5b647a815caf62ead5bc, type: 3}
+      propertyPath: m_RootOrder
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2140604502853386298, guid: 2b167078b68e5b647a815caf62ead5bc, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2140604502853386298, guid: 2b167078b68e5b647a815caf62ead5bc, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2140604502853386298, guid: 2b167078b68e5b647a815caf62ead5bc, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2140604502853386298, guid: 2b167078b68e5b647a815caf62ead5bc, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2140604502853386298, guid: 2b167078b68e5b647a815caf62ead5bc, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2140604502853386298, guid: 2b167078b68e5b647a815caf62ead5bc, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2140604502853386298, guid: 2b167078b68e5b647a815caf62ead5bc, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2140604502853386298, guid: 2b167078b68e5b647a815caf62ead5bc, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2140604502853386298, guid: 2b167078b68e5b647a815caf62ead5bc, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2140604502853386298, guid: 2b167078b68e5b647a815caf62ead5bc, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2140604502853386303, guid: 2b167078b68e5b647a815caf62ead5bc, type: 3}
+      propertyPath: TEST
+      value: 1048576
+      objectReference: {fileID: 0}
+    - target: {fileID: 2140604502853386303, guid: 2b167078b68e5b647a815caf62ead5bc, type: 3}
+      propertyPath: PBDSolverCS
+      value: 
+      objectReference: {fileID: 7200000, guid: 40f4d5cf31103634391482a046e6fd2c, type: 3}
+    - target: {fileID: 2140604502853386303, guid: 2b167078b68e5b647a815caf62ead5bc, type: 3}
+      propertyPath: colliders.Array.data[0]
+      value: 
+      objectReference: {fileID: 910008394}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 2b167078b68e5b647a815caf62ead5bc, type: 3}
 --- !u!1 &609186735
 GameObject:
   m_ObjectHideFlags: 0
@@ -217,6 +290,7 @@ GameObject:
   - component: {fileID: 765890050}
   - component: {fileID: 765890051}
   - component: {fileID: 765890053}
+  - component: {fileID: 765890054}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -302,6 +376,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DepthMat: {fileID: 2100000, guid: 21ae484e84fc77f459f3db5b406ed8bd, type: 2}
+--- !u!114 &765890054
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 765890049}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6740f84328309b43939ad96d84bc738, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  movementSpeed: 10
+  fastMovementSpeed: 100
+  freeLookSensitivity: 3
+  zoomSensitivity: 10
+  fastZoomSensitivity: 50
 --- !u!1 &875038109
 GameObject:
   m_ObjectHideFlags: 0
@@ -930,7 +1021,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &2142814005
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -943,8 +1034,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed48ea7c08176c54286262f0aae8bcfa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GrassMaterial: {fileID: 2100000, guid: df645fe6755a7064b8731c9edc1276f1, type: 2}
-  Length: 128
+  GrassMaterialBackup: {fileID: 2100000, guid: df645fe6755a7064b8731c9edc1276f1, type: 2}
   CS: {fileID: 7200000, guid: 2f9d100b3c4cedc44918895a7873d744, type: 3}
   cam: {fileID: 765890051}
   StampCam: {fileID: 1544400289}

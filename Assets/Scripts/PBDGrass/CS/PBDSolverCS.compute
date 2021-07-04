@@ -2,6 +2,7 @@
 #pragma kernel UpdateMesh
 
 #define XThreads 32
+#define BoneCounts 2
 
 struct FixedConstraintStruct
 {
@@ -47,9 +48,9 @@ RWStructuredBuffer<float3> ResultPosBuffer;
 void PBDSolver(uint3 id : SV_DispatchThreadID)
 {
     // Apply Force ************
-    for (int i = 0; i < 4;i++)
+    for (int i = 0; i < BoneCounts; i++)
     {
-        int idb = id.x * 4 + i;
+        int idb = id.x * BoneCounts + i;
         
         // air friction
         VelocitiesBuffer[idb] -= VelocitiesBuffer[idb] * Friction * dt;
@@ -62,9 +63,9 @@ void PBDSolver(uint3 id : SV_DispatchThreadID)
     }
     
     // Estimate Positions ***********
-    for (i = 0; i < 4; i++)
+    for (i = 0; i < BoneCounts; i++)
     {      
-        int idb = id.x * 4 + i;
+        int idb = id.x * BoneCounts + i;
         // update position with new velocity
         PredictedBuffer[idb] = PositionBuffer[idb] + dt * VelocitiesBuffer[idb];
     }
@@ -73,9 +74,9 @@ void PBDSolver(uint3 id : SV_DispatchThreadID)
     uint ballCount = 0;
     uint ballStride = 0;
     BallBuffer.GetDimensions(ballCount, ballStride);
-    for (i = 0; i < 4;i++)
+    for (i = 0; i < BoneCounts; i++)
     {
-        int idb = id.x * 4 + i;
+        int idb = id.x * BoneCounts + i;
         
         for (uint j = 0; j < ballCount; j++)
         {
@@ -99,15 +100,15 @@ void PBDSolver(uint3 id : SV_DispatchThreadID)
     float stepDT = 1.0f / 4.0f;
     
     // distance constraints
-    int dconsIndexOffset = id.x * 3;
+    int dconsIndexOffset = id.x * (BoneCounts - 1);
     float invMass = 1.0f / Mass;
     float sum = Mass * 2.0f;
     for (i = 0; i < 4; i++)  // 4 iteration
     {
-        for (int j = 0; j < 3; j++)   // 3 dcons
+        for (int j = 0; j < BoneCounts - 1; j++)   // 3 dcons
         {
-            int i1 = DconsBuffer[dconsIndexOffset + j].i1 + id.x * 4;
-            int i0 = DconsBuffer[dconsIndexOffset + j].i0 + id.x * 4;
+            int i1 = DconsBuffer[dconsIndexOffset + j].i1 + id.x * BoneCounts;
+            int i0 = DconsBuffer[dconsIndexOffset + j].i0 + id.x * BoneCounts;
             float3 n = PredictedBuffer[i1] - PredictedBuffer[i0];
             float d = length(n);
             n = normalize(n);
@@ -121,15 +122,15 @@ void PBDSolver(uint3 id : SV_DispatchThreadID)
     }
     
     // fixed constraints
-    PositionBuffer[FconsBuffer[id.x].i0 + id.x * 4] = FconsBuffer[id.x].fixedPos;
-    PredictedBuffer[FconsBuffer[id.x].i0 + id.x * 4] = FconsBuffer[id.x].fixedPos;
+    PositionBuffer[FconsBuffer[id.x].i0 + id.x * BoneCounts] = FconsBuffer[id.x].fixedPos;
+    PredictedBuffer[FconsBuffer[id.x].i0 + id.x * BoneCounts] = FconsBuffer[id.x].fixedPos;
     
     
     // UpdateVelocities ****************
     float threshold = StopThreshold * dt;
-    for (i = 0; i < 4;i++)
+    for (i = 0; i < BoneCounts; i++)
     {
-        int boneIndex = id.x * 4 + i;
+        int boneIndex = id.x * BoneCounts + i;
     
         float3 dist = PredictedBuffer[boneIndex] - PositionBuffer[boneIndex];
         VelocitiesBuffer[boneIndex] = dist / dt;
@@ -138,9 +139,9 @@ void PBDSolver(uint3 id : SV_DispatchThreadID)
     }
     
     // Update Positions ********************
-    for (i = 0; i < 4;i++)
+    for (i = 0; i < BoneCounts; i++)
     {
-        int boneIndex = id.x * 4 + i;
+        int boneIndex = id.x * BoneCounts + i;
         PositionBuffer[boneIndex] = PredictedBuffer[boneIndex];
     }
 
@@ -149,14 +150,14 @@ void PBDSolver(uint3 id : SV_DispatchThreadID)
 [numthreads(XThreads, 1, 1)]
 void UpdateMesh(uint3 id : SV_DispatchThreadID)
 {
-    int boneOffset = id.x * 4;
-    int offsetOffset = id.x * 3;
+    int boneOffset = id.x * BoneCounts;
+    int offsetOffset = id.x * (BoneCounts - 1);
     int index = 0;
-    for (int i = 0; i < 7 - 2; i += 2)
+    for (int i = 0; i < (BoneCounts * 2 - 1) - 2; i += 2)
     {
         ResultPosBuffer[i + IndexOffsetBuffer[id.x]] = PositionBuffer[boneOffset + index] + OffsetBuffer[offsetOffset + index];
         ResultPosBuffer[i + 1 + IndexOffsetBuffer[id.x]] = PositionBuffer[boneOffset + index] - OffsetBuffer[offsetOffset + index];
         ++index;
     }
-    ResultPosBuffer[7 - 1 + IndexOffsetBuffer[id.x]] = PositionBuffer[boneOffset + index];
+    ResultPosBuffer[(BoneCounts * 2 - 1) - 1 + IndexOffsetBuffer[id.x]] = PositionBuffer[boneOffset + index];
 }

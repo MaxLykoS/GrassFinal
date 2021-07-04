@@ -49,7 +49,7 @@ namespace PBD
 
     public class PBDGrassPatch
     {
-        private int SEGMENTS = 3;
+        public int SEGMENTS {get; private set;}
         const float GrassHeight = 0.5f;
         const float GrassWidth = 0.03f;
         const float GrassForward = 0.38f;
@@ -66,8 +66,9 @@ namespace PBD
         public int Width;
         public int Length;
 
-        public PBDGrassPatch(Vector3 root, int width, int length, int points)
+        public PBDGrassPatch(Vector3 root, int width, int length, int points, int segments = 3)
         {
+            this.SEGMENTS = segments;
             this.Root = root;
             this.Width = width;
             this.Length = length;
@@ -104,12 +105,12 @@ namespace PBD
 
             //Hash = new SpaceHash(root, width, length, ref Bodies);
 
-            PatchMesh = new Mesh()
-            {
-                vertices = vertices,
-                uv = uvs,
-                triangles = triangles
-            };
+            PatchMesh = new Mesh();
+            if(vertices.Length >= 65536 )
+                PatchMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+            PatchMesh.vertices = vertices;
+            PatchMesh.uv = uvs;
+            PatchMesh.triangles = triangles;
             PatchMesh.RecalculateNormals();
         }
 
@@ -145,17 +146,17 @@ namespace PBD
 
             //Hash = new SpaceHash(root, width, length, ref Bodies);
 
-            PatchMesh = new Mesh()
-            {
-                vertices = vertices,
-                uv = uvs,
-                triangles = triangles
-            };
+            PatchMesh = new Mesh();
+            PatchMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+            PatchMesh.vertices = vertices;
+            PatchMesh.uv = uvs;
+            PatchMesh.triangles = triangles;
             PatchMesh.RecalculateNormals();
         }
 
         public PBDGrassPatch(PBDGrassPatch origin)
         {
+            this.SEGMENTS = origin.SEGMENTS;
             this.Root = origin.Root;
             this.Width = origin.Width;
             this.Length = origin.Length;

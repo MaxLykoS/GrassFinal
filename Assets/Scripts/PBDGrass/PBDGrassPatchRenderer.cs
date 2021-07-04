@@ -36,16 +36,20 @@ public class PBDGrassPatchRenderer
 
     private Bounds bound;
 
-    public PBDGrassPatchRenderer(PBDGrassPatch patch, int LOD)
+    private int bodyCount;
+
+    public PBDGrassPatchRenderer(PBDGrassPatch patch)
     {
         Timer = 0;
 
         meshTrianglesCounts = patch.PatchMesh.triangles.Length;
         grassMesh = patch.PatchMesh;
+        bodyCount = patch.Bodies.Length;
+        Debug.Log(grassMesh.vertexCount);
 
         bound = new Bounds(patch.Root, Vector3.one);
 
-        InitCS(patch, LOD);
+        InitCS(patch);
     }
 
     public static void Setup(Material pbdMaterial, List<Transform> ballslist)
@@ -127,8 +131,8 @@ public class PBDGrassPatchRenderer
             ballBuffer.SetData(balls);
             CS.SetBuffer(PBDSolverHandler, "BallBuffer", ballBuffer);
 
-            CS.Dispatch(PBDSolverHandler, 1, 1, 1);
-            CS.Dispatch(UpdateMeshHandler, 1, 1, 1);
+            CS.Dispatch(PBDSolverHandler, bodyCount / 32, 1, 1);
+            CS.Dispatch(UpdateMeshHandler, bodyCount / 32, 1, 1);
 
             //resultPosBuffer.GetData(vertArray);
             //grassMesh.vertices = vertArray;
@@ -143,9 +147,9 @@ public class PBDGrassPatchRenderer
         Graphics.DrawMesh(grassMesh, Matrix4x4.TRS(Vector3.zero, Quaternion.identity, Vector3.one), PBDMaterial, 0);
     }
 
-    private void InitCS(PBDGrassPatch patch, int LOD)
+    private void InitCS(PBDGrassPatch patch)
     {
-        CS = GrassDemo.CreateShader(LOD);
+        CS = GrassDemo.CreateShader();
 
         PBDSolverHandler = CS.FindKernel("PBDSolver");
         UpdateMeshHandler = CS.FindKernel("UpdateMesh");
@@ -161,37 +165,45 @@ public class PBDGrassPatchRenderer
 
         CS.SetBuffer(PBDSolverHandler, "BallBuffer", ballBuffer);
 
-        PositionBuffer = new ComputeBuffer(1024 * 4, sizeof(float) * 3);
-        PositionBuffer.SetData(patch.GenPositionArray());
+        Vector3[] t = patch.GenPositionArray();
+        PositionBuffer = new ComputeBuffer(t.Length, sizeof(float) * 3);
+        PositionBuffer.SetData(t);
         CS.SetBuffer(PBDSolverHandler, "PositionBuffer", PositionBuffer);
         CS.SetBuffer(UpdateMeshHandler, "PositionBuffer", PositionBuffer);
 
-        PredictedBuffer = new ComputeBuffer(1024 * 4, sizeof(float) * 3);
-        PredictedBuffer.SetData(patch.GenPredictedArray());
+        t = patch.GenPredictedArray();
+        PredictedBuffer = new ComputeBuffer(t.Length, sizeof(float) * 3);
+        PredictedBuffer.SetData(t);
         CS.SetBuffer(PBDSolverHandler, "PredictedBuffer", PredictedBuffer);
 
-        VelocitiesBuffer = new ComputeBuffer(1024 * 4, sizeof(float) * 3);
-        VelocitiesBuffer.SetData(patch.GenVelocitiesArray());
+        t = patch.GenVelocitiesArray();
+        VelocitiesBuffer = new ComputeBuffer(t.Length, sizeof(float) * 3);
+        VelocitiesBuffer.SetData(t);
         CS.SetBuffer(PBDSolverHandler, "VelocitiesBuffer", VelocitiesBuffer);
 
-        OriginPosBuffer = new ComputeBuffer(1024 * 4, sizeof(float) * 3);
-        OriginPosBuffer.SetData(patch.GenOriginPosArray());
+        t = patch.GenOriginPosArray();
+        OriginPosBuffer = new ComputeBuffer(t.Length, sizeof(float) * 3);
+        OriginPosBuffer.SetData(t);
         CS.SetBuffer(PBDSolverHandler, "OriginPosBuffer", OriginPosBuffer);
 
-        OffsetBuffer = new ComputeBuffer(1024 * 3, sizeof(float) * 3);
-        OffsetBuffer.SetData(patch.GenOffsetArray());
+        t = patch.GenOffsetArray();
+        OffsetBuffer = new ComputeBuffer(t.Length, sizeof(float) * 3);
+        OffsetBuffer.SetData(t);
         CS.SetBuffer(UpdateMeshHandler, "OffsetBuffer", OffsetBuffer);
 
-        FconsBuffer = new ComputeBuffer(1024, FixedConstraintStruct.Size());
-        FconsBuffer.SetData(patch.GenFconsArray());
+        FixedConstraintStruct[] tt = patch.GenFconsArray();
+        FconsBuffer = new ComputeBuffer(tt.Length, FixedConstraintStruct.Size());
+        FconsBuffer.SetData(tt);
         CS.SetBuffer(PBDSolverHandler, "FconsBuffer", FconsBuffer);
 
-        DconsBuffer = new ComputeBuffer(1024 * 3, DistanceConstraintStruct.Size());
-        DconsBuffer.SetData(patch.GenDconsArray());
+        DistanceConstraintStruct[] ttt = patch.GenDconsArray();
+        DconsBuffer = new ComputeBuffer(ttt.Length, DistanceConstraintStruct.Size());
+        DconsBuffer.SetData(ttt);
         CS.SetBuffer(PBDSolverHandler, "DconsBuffer", DconsBuffer);
 
-        IndexOffsetBuffer = new ComputeBuffer(1024, sizeof(int));
-        IndexOffsetBuffer.SetData(patch.GenIndexOffsetArray());
+        int[] tttt = patch.GenIndexOffsetArray();
+        IndexOffsetBuffer = new ComputeBuffer(tttt.Length, sizeof(int));
+        IndexOffsetBuffer.SetData(tttt);
         CS.SetBuffer(UpdateMeshHandler, "IndexOffsetBuffer", IndexOffsetBuffer);
 
         resultPosBuffer = new ComputeBuffer(patch.vertices.Length, sizeof(float) * 3);
@@ -219,6 +231,6 @@ public class PBDGrassPatchRenderer
         vertArray = request.GetData<Vector3>().ToArray();
         grassMesh.vertices = vertArray;
 
-        grassMesh.RecalculateNormals(MeshUpdateFlags.DontNotifyMeshUsers);
+        //grassMesh.RecalculateNormals(MeshUpdateFlags.DontNotifyMeshUsers);
     }
 }
