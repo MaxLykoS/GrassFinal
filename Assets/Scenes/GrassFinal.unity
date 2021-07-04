@@ -191,6 +191,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 7200000, guid: 40f4d5cf31103634391482a046e6fd2c, type: 3}
     - target: {fileID: 2140604502853386303, guid: 2b167078b68e5b647a815caf62ead5bc, type: 3}
+      propertyPath: GrassMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 0131064107dc911419389f31c240a1ef, type: 2}
+    - target: {fileID: 2140604502853386303, guid: 2b167078b68e5b647a815caf62ead5bc, type: 3}
       propertyPath: colliders.Array.data[0]
       value: 
       objectReference: {fileID: 910008394}

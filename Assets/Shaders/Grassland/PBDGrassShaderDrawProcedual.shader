@@ -2,12 +2,23 @@ Shader "Custom/PBDGrassShaderDrawProcedual"
 {
     Properties
     {
-        _Color("Color", Color) = (1, 1, 1, 1)
+        [Header(Shading)]
+        _TopColor("Top Color", Color) = (1,1,1,1)
+        _BottomColor("Bottom Color", Color) = (1,1,1,1)
+        _TranslucentGain("Translucent Gain", Range(0,1)) = 0.5
+
+        [Header(Tessellation)]
+        _TessellationUniform("Tessellation Uniform", Range(1, 64)) = 1
+
+        [Header(BackLightSSS)]
+        _InteriorColor("Interior Color", Color) = (1, 1, 1, 1)
+        _BackSubsurfaceDistortion("Back Subsurface Distortion", Range(0, 1)) = 0.5
+        _EdgeLitRate("Edge Light Rate", range(0, 2)) = 0.3
     }
 
         SubShader
     {
-        Tags { "RenderType" = "Opaque" }
+        Tags { "RenderType" = "Opaque" "IgnoreProjector" = "True" "LightMode" = "ForwardBase" }
 
         Cull Off
 
@@ -15,32 +26,157 @@ Shader "Custom/PBDGrassShaderDrawProcedual"
         {
             CGPROGRAM
             #pragma vertex vert
+            #pragma hull HS
+            #pragma domain DS
             #pragma fragment frag
-            #include "UnityCG.cginc"
 
-            float4 _Color;
+            #include "UnityCG.cginc"
+            #include "Lighting.cginc"
+            #define PI 3.14159
+
             StructuredBuffer<float3> VertexBuffer;
             StructuredBuffer<int> TriangleBuffer;
+            StructuredBuffer<float3> NormalBuffer;
+            StructuredBuffer<float2> UvBuffer;
 
-            struct v2f
+            struct v2h
             {
-                float4 vertex : SV_POSITION;
-            };  
+                float4 posW : TEXCOORD0;
+                float2 uv : TEXCOORD1;
+                float3 normalW : NORMAL;
+                float3 viewDir : TEXCOORD2;
+            };
 
-            v2f vert(uint vertex_id : SV_VertexID)
+            struct h2d
             {
-                v2f o;
+                float4 posW : TEXCOORD0;
+                float2 uv : TEXCOORD1;
+                float3 normalW : NORMAL;
+                float3 viewDir : TEXCOORD2;
+                float bend : TEXCOORD4;
+            };
 
-                int positionIndex = TriangleBuffer[vertex_id];
-                float3 position = VertexBuffer[positionIndex];
+            struct d2f
+            {
+                float4 pos : SV_POSITION;
+                float2 uv : TEXCOORD0;
+                float3 normalW : NORMAL;
+                float3 viewDir : TEXCOORD1;
+            };
 
-                o.vertex = mul(UNITY_MATRIX_VP, float4(position, 1.0f));
+            v2h vert(uint vertex_id : SV_VertexID)
+            {
+                v2h o;
+
+                int index = TriangleBuffer[vertex_id];
+
+                o.posW = float4(VertexBuffer[index], 1);
+                o.uv = UvBuffer[index];
+
+                o.normalW = normalize(UnityObjectToWorldNormal(NormalBuffer[index]));
+                o.normalW *= o.normalW.y >= 0 ? 1 : -1;
+
+                o.viewDir = normalize(_WorldSpaceCameraPos.xyz - o.posW.xyz);
+
                 return o;
             }
 
-            fixed4 frag(v2f i) : SV_Target
+            float _TessellationUniform;
+
+            struct TessellationFactors
             {
-                return _Color;
+                float edge[3] : SV_TessFactor;
+                float inside : SV_InsideTessFactor;
+            };
+            TessellationFactors patchConstantFunction(InputPatch<v2h, 3> patch)
+            {
+                float factor = _TessellationUniform;
+                if (patch[0].uv.y < 0.34f || patch[0].uv.y > 0.67f)
+                    factor = 1;
+                TessellationFactors f;
+                f.edge[0] = factor;
+                f.edge[1] = factor;
+                f.edge[2] = factor;
+                f.inside = factor;
+                return f;
+            }
+            [UNITY_domain("tri")]
+            [UNITY_outputcontrolpoints(3)]
+            [UNITY_outputtopology("triangle_cw")]
+            [UNITY_partitioning("integer")]
+            [UNITY_patchconstantfunc("patchConstantFunction")]
+            h2d HS(InputPatch<v2h, 3> patch, uint id : SV_OutputControlPointID)
+            {
+                h2d o;
+
+                o.posW = patch[id].posW;
+                o.uv = patch[id].uv;
+                o.normalW = patch[id].normalW;
+                o.viewDir = patch[id].viewDir;
+
+                float bladeYDif = abs(patch[0].posW.y - patch[2].posW.y);
+                o.bend = bladeYDif * 0.5f;
+
+                return o;
+            }
+
+            [UNITY_domain("tri")]
+            d2f DS(TessellationFactors factors, OutputPatch<h2d, 3> patch, float3 barycentricCoordinates : SV_DomainLocation)
+            {
+                h2d v;
+
+                #define MY_DOMAIN_PROGRAM_INTERPOLATE(fieldName) v.fieldName = \
+					patch[0].fieldName * barycentricCoordinates.x + \
+					patch[1].fieldName * barycentricCoordinates.y + \
+					patch[2].fieldName * barycentricCoordinates.z;
+
+                MY_DOMAIN_PROGRAM_INTERPOLATE(posW)
+                    MY_DOMAIN_PROGRAM_INTERPOLATE(uv)
+                    MY_DOMAIN_PROGRAM_INTERPOLATE(normalW)
+                    MY_DOMAIN_PROGRAM_INTERPOLATE(viewDir)
+                    MY_DOMAIN_PROGRAM_INTERPOLATE(bend)
+
+                    v.normalW = normalize(v.normalW);
+
+                float displacement = (sin(v.uv.y * PI) - sin(0.333f * PI)) * v.bend;
+                displacement = max(0, displacement);
+
+                v.posW += float4(v.normalW * displacement, 0);
+
+                d2f o;
+                o.pos = mul(UNITY_MATRIX_VP, v.posW);
+                o.uv = v.uv;
+                o.normalW = v.normalW;
+                o.viewDir = v.viewDir;
+                return o;
+            }
+
+            float4 _TopColor;
+            float4 _BottomColor;
+            float _TranslucentGain;
+            float _BackSubsurfaceDistortion;
+            float _EdgeLitRate;
+            float4 _InteriorColor;
+
+            fixed4 frag(d2f o, fixed facing : VFACE) : SV_Target
+            {
+                o.normalW = facing > 0 ? o.normalW : -o.normalW;
+
+                float3 lightDir = normalize(_WorldSpaceLightPos0);
+                float4 texColor = lerp(_BottomColor, _TopColor, o.uv.y);
+                float NdotL = saturate(saturate(dot(o.normalW, _WorldSpaceLightPos0)) + _TranslucentGain);
+
+                // back light sss
+                float3 backLitDir = o.normalW * _BackSubsurfaceDistortion + lightDir;
+                float backSSS = saturate(dot(o.viewDir, -backLitDir));
+                backSSS = saturate(pow(backSSS, 3));
+                fixed3 edgeCol = backSSS * _EdgeLitRate * _InteriorColor * texColor.rgb;
+                edgeCol += backSSS * _InteriorColor;
+
+                float3 ambient = ShadeSH9(float4(o.normalW, 1));
+                float4 lightIntensity = NdotL * _LightColor0 + float4(ambient, 1);
+                float4 col = lerp(_BottomColor, _TopColor * lightIntensity, o.uv.y);
+                return col + fixed4(edgeCol, 1);
             }
             ENDCG
         }

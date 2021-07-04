@@ -13,7 +13,7 @@ public class PBDGrassPatchRenderer
     private static ComputeBuffer ballBuffer;
     private static SphereCollisionStruct[] balls;
 
-    int meshTrianglesCounts;
+    int meshVerticesCount;
     private ComputeBuffer PositionBuffer;
     private ComputeBuffer PredictedBuffer;
     private ComputeBuffer VelocitiesBuffer;
@@ -24,7 +24,11 @@ public class PBDGrassPatchRenderer
     private ComputeBuffer IndexOffsetBuffer;
 
     private ComputeBuffer resultPosBuffer;
-    //private ComputeBuffer resultTriangles;
+    #region draw procedual
+    private ComputeBuffer resultTriangles;
+    private ComputeBuffer NormalsBuffer;
+    private ComputeBuffer UVsBuffer;
+    #endregion
 
     private ComputeShader CS;
     private int PBDSolverHandler;
@@ -42,7 +46,7 @@ public class PBDGrassPatchRenderer
     {
         Timer = 0;
 
-        meshTrianglesCounts = patch.PatchMesh.triangles.Length;
+        meshVerticesCount = patch.PatchMesh.vertices.Length;
         grassMesh = patch.PatchMesh;
         bodyCount = patch.Bodies.Length;
         Debug.Log(grassMesh.vertexCount);
@@ -97,7 +101,9 @@ public class PBDGrassPatchRenderer
         IndexOffsetBuffer.Release();
 
         resultPosBuffer.Release();
-        //resultTriangles.Release();
+        resultTriangles.Release();
+        NormalsBuffer.Release();
+        UVsBuffer.Release();
 
         GrassDemo.DestroyCS(CS);
 
@@ -115,7 +121,9 @@ public class PBDGrassPatchRenderer
         IndexOffsetBuffer.Release();
 
         resultPosBuffer.Release();
-        //resultTriangles.Release();
+        resultTriangles.Release();
+        NormalsBuffer.Release();
+        UVsBuffer.Release();
 
         GrassDemo.DestroyMesh(grassMesh);
     }
@@ -134,17 +142,14 @@ public class PBDGrassPatchRenderer
             CS.Dispatch(PBDSolverHandler, bodyCount / 32, 1, 1);
             CS.Dispatch(UpdateMeshHandler, bodyCount / 32, 1, 1);
 
-            //resultPosBuffer.GetData(vertArray);
-            //grassMesh.vertices = vertArray;
-
-            AsyncGPUReadback.Request(resultPosBuffer, CSBufferCallBack);
+            //AsyncGPUReadback.Request(resultPosBuffer, CSBufferCallBack);
         }
     }
 
     public void Update()
     {
-        //Graphics.DrawProcedural(PBDMaterial, new Bounds(Root, Vector3.one), MeshTopology.Triangles, meshTrianglesCounts)
-        Graphics.DrawMesh(grassMesh, Matrix4x4.TRS(Vector3.zero, Quaternion.identity, Vector3.one), PBDMaterial, 0);
+        Graphics.DrawProcedural(PBDMaterial, new Bounds(Vector3.zero, Vector3.one * 100000), MeshTopology.Triangles, meshVerticesCount);
+        //Graphics.DrawMesh(grassMesh, Matrix4x4.TRS(Vector3.zero, Quaternion.identity, Vector3.one), PBDMaterial, 0);
     }
 
     private void InitCS(PBDGrassPatch patch)
@@ -211,11 +216,21 @@ public class PBDGrassPatchRenderer
         resultPosBuffer.SetData(vertArray);
         CS.SetBuffer(UpdateMeshHandler, "ResultPosBuffer", resultPosBuffer);
 
-        //resultTriangles = new ComputeBuffer(patch.PatchMesh.triangles.Length, sizeof(int)); // to shader
-        //resultTriangles.SetData(patch.PatchMesh.triangles);
+        #region draw procedual
+        resultTriangles = new ComputeBuffer(patch.PatchMesh.triangles.Length, sizeof(int)); // to shader
+        resultTriangles.SetData(patch.PatchMesh.triangles);
 
-        //PBDMaterial.SetBuffer("VertexBuffer", resultPosBuffer);
-        //PBDMaterial.SetBuffer("TriangleBuffer", resultTriangles);
+        NormalsBuffer = new ComputeBuffer(patch.PatchMesh.vertexCount, sizeof(float) * 3);
+        NormalsBuffer.SetData(patch.PatchMesh.normals);
+
+        UVsBuffer = new ComputeBuffer(patch.PatchMesh.vertexCount, sizeof(float) * 2);
+        UVsBuffer.SetData(patch.PatchMesh.uv);
+
+        PBDMaterial.SetBuffer("VertexBuffer", resultPosBuffer);
+        PBDMaterial.SetBuffer("TriangleBuffer", resultTriangles);
+        PBDMaterial.SetBuffer("NormalBuffer", NormalsBuffer);
+        PBDMaterial.SetBuffer("UvBuffer", UVsBuffer);
+        #endregion
     }
 
     private void CSBufferCallBack(AsyncGPUReadbackRequest request)

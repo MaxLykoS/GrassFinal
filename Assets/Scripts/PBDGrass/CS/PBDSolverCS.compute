@@ -2,7 +2,7 @@
 #pragma kernel UpdateMesh
 
 #define XThreads 32
-#define BoneCounts 2
+#define BoneCounts 4
 
 struct FixedConstraintStruct
 {

@@ -62,7 +62,7 @@ public class GrassDemo : MonoBehaviour
 
         PBDGrassPatchRenderer.Setup(GrassMaterial, colliders);
 
-        r1 = new PBDGrassPatchRenderer(new PBDGrassPatch(Vector3.zero, 100, 100, TEST, 1));
+        r1 = new PBDGrassPatchRenderer(new PBDGrassPatch(Vector3.zero, 100, 100, TEST, 3));
         renderers = new Dictionary<Vector3Int, PBDGrassInfo>();
     }
 
