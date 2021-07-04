@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using PBD;
 
-public class PBDGrassInfo
+/*
+ * public class PBDGrassInfo
 {
     const float TIME = 5.0f;
     public PBDGrassPatchRenderer renderer;
@@ -41,6 +42,7 @@ public class PBDGrassInfo
         renderer.Release();
     }
 }
+*/
 
 public class GrassDemo : MonoBehaviour
 {
@@ -49,7 +51,7 @@ public class GrassDemo : MonoBehaviour
     public List<Transform> colliders;
     public ComputeShader PBDSolverCS;
 
-    private Dictionary<Vector3Int, PBDGrassInfo> renderers;
+    //private Dictionary<Vector3Int, PBDGrassInfo> renderers;
     private PBDGrassPatchRenderer r1;
 
     private static ComputeShader PBDSolverCS_Static;
@@ -57,13 +59,13 @@ public class GrassDemo : MonoBehaviour
     void Start()
     {
         Application.targetFrameRate = 60;
-        rToDestroy = new List<Vector3Int>();
+        //rToDestroy = new List<Vector3Int>();
         PBDSolverCS_Static = PBDSolverCS;
 
         PBDGrassPatchRenderer.Setup(GrassMaterial, colliders);
 
         r1 = new PBDGrassPatchRenderer(new PBDGrassPatch(Vector3.zero, 100, 100, TEST, 3));
-        renderers = new Dictionary<Vector3Int, PBDGrassInfo>();
+        //renderers = new Dictionary<Vector3Int, PBDGrassInfo>();
     }
 
 
@@ -78,6 +80,7 @@ public class GrassDemo : MonoBehaviour
         //UpdateRenderers();
     }
 
+    /*
     private List<Vector3Int> rToDestroy;
     void UpdateRenderers()
     {
@@ -142,13 +145,14 @@ public class GrassDemo : MonoBehaviour
         }
         #endregion
     }
+    */
 
     private void OnDestroy()
     {
         PBDGrassPatchRenderer.ReleaseStaticData();
-        foreach (PBDGrassInfo r in renderers.Values)
+        /*foreach (PBDGrassInfo r in renderers.Values)
             r.Release();
-        renderers.Clear();
+        renderers.Clear();*/
 
         r1.Release();
     }
