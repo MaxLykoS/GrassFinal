@@ -45,6 +45,15 @@ public static class MathUtility
         return string.Format("{0} {1} {2}", v.x, v.y, v.z);
     }
 
+    public static string V2S(ref Vector2 v)
+    {
+        return string.Format("{0} {1}", v.x, v.y);
+    }
+    public static string V2S(Vector2 v)
+    {
+        return string.Format("{0} {1}", v.x, v.y);
+    }
+
     private static Mesh Gen1X1GroundMesh()
     {
         Mesh mesh = new Mesh();

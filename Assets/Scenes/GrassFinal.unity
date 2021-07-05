@@ -184,7 +184,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2140604502853386303, guid: 2b167078b68e5b647a815caf62ead5bc, type: 3}
       propertyPath: TEST
-      value: 1048576
+      value: 16384
       objectReference: {fileID: 0}
     - target: {fileID: 2140604502853386303, guid: 2b167078b68e5b647a815caf62ead5bc, type: 3}
       propertyPath: PBDSolverCS

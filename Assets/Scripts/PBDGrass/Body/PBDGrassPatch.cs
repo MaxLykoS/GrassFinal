@@ -47,6 +47,12 @@ namespace PBD
         public float Radius;
     };
 
+    public struct GrassGridStruct
+    {
+        public Vector3 Pos;
+        public int IdOffset;
+    }
+
     public class PBDGrassPatch
     {
         public int SEGMENTS {get; private set;}
@@ -66,7 +72,7 @@ namespace PBD
         public int Width;
         public int Length;
 
-        public PBDGrassPatch(Vector3 root, int width, int length, int points, int segments = 3)
+        public PBDGrassPatch(Vector3 root, int width, int length, int points, int segments)
         {
             this.SEGMENTS = segments;
             this.Root = root;
@@ -107,6 +113,65 @@ namespace PBD
 
             PatchMesh = new Mesh();
             if(vertices.Length >= 65536 )
+                PatchMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+            PatchMesh.vertices = vertices;
+            PatchMesh.uv = uvs;
+            PatchMesh.triangles = triangles;
+            PatchMesh.RecalculateNormals();
+        }
+
+        public PBDGrassPatch(Vector3 root, int len, int pointsPerGrid)
+        {
+            int points = len * len * pointsPerGrid;
+            this.SEGMENTS = 3;
+            this.Root = root;
+            this.Width = len;
+            this.Length = len;
+            this.Bodies = new PBDGrassBody[points];
+            this.vertices = new Vector3[points * (SEGMENTS * 2 + 1)];
+
+            int indexOffset = 0;
+            int offsetIncreasment = SEGMENTS * 2 + 1;
+            int triIndexOffset = 0;
+            int triIndexOffsetIncreasment = (SEGMENTS * 2 - 1) * 3;
+
+            Vector2[] uvs = new Vector2[points * (2 * SEGMENTS + 1)];
+            int[] triangles = new int[points * ((SEGMENTS * 2 - 1) * 3)];
+
+            // from left to right, from top to bottom
+            float startCenterX = Root.x - len / 2 + 0.5f;
+            float startCenterY = Root.y + len / 2 - 0.5f;
+
+            int bodyID = 0;
+            for (int i = 0; i < len; i++)
+            {
+                for (int j = 0; j < len; j++)
+                {
+                    Vector2 newCenter = new Vector2(startCenterX + j, startCenterY - i);
+                    float maxX = newCenter.x + 0.5f;
+                    float minX = newCenter.x - 0.5f;
+                    float maxZ = newCenter.y + 0.5f;
+                    float minZ = newCenter.y - 0.5f;
+
+                    for (int k = 0; k < pointsPerGrid; k++)
+                    {
+                        float newX = Random.Range(minX, maxX);
+                        float newZ = Random.Range(minZ, maxZ);
+
+                        Bodies[bodyID] = new PBDGrassBody(ref vertices, ref uvs, ref triangles, indexOffset, triIndexOffset,
+                            new Vector3(newX, 0, newZ),
+                            SEGMENTS, GrassHeight, GrassWidth, GrassForward, GrassMass);
+                        bodyID++;
+                        indexOffset += offsetIncreasment;
+                        triIndexOffset += triIndexOffsetIncreasment;
+                    }
+                }
+            }
+
+            //Hash = new SpaceHash(root, width, length, ref Bodies);
+
+            PatchMesh = new Mesh();
+            if (vertices.Length >= 65536)
                 PatchMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
             PatchMesh.vertices = vertices;
             PatchMesh.uv = uvs;

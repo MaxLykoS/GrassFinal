@@ -36,7 +36,7 @@ public class PBDGrassPatchRenderer
 
     public Mesh grassMesh;
 
-    private Vector3[] vertArray;
+    //private Vector3[] vertArray;
 
     private Bounds bound;
 
@@ -58,7 +58,7 @@ public class PBDGrassPatchRenderer
 
     public static void Setup(Material pbdMaterial, List<Transform> ballslist)
     {
-        PBDMaterial = new Material(pbdMaterial);
+        PBDMaterial = pbdMaterial;
 
         Solver = new PBDSolver(3.0f)
         {
@@ -139,8 +139,11 @@ public class PBDGrassPatchRenderer
             ballBuffer.SetData(balls);
             CS.SetBuffer(PBDSolverHandler, "BallBuffer", ballBuffer);
 
-            CS.Dispatch(PBDSolverHandler, bodyCount / 32, 1, 1);
-            CS.Dispatch(UpdateMeshHandler, bodyCount / 32, 1, 1);
+            int dispatchCount = bodyCount / 32;
+            dispatchCount = Mathf.Max(dispatchCount, 1);
+
+            CS.Dispatch(PBDSolverHandler, dispatchCount, 1, 1);
+            CS.Dispatch(UpdateMeshHandler, dispatchCount, 1, 1);
 
             //AsyncGPUReadback.Request(resultPosBuffer, CSBufferCallBack);
         }
@@ -148,8 +151,8 @@ public class PBDGrassPatchRenderer
 
     public void Update()
     {
-        Graphics.DrawProcedural(PBDMaterial, new Bounds(Vector3.zero, Vector3.one * 100000), MeshTopology.Triangles, meshVerticesCount);
-        //Graphics.DrawMesh(grassMesh, Matrix4x4.TRS(Vector3.zero, Quaternion.identity, Vector3.one), PBDMaterial, 0);
+        Graphics.DrawProcedural(PBDMaterial, new Bounds(Vector3.zero, Vector3.one * 100000), MeshTopology.Triangles, meshVerticesCount * 2 + 4);
+        //Graphics.DrawMesh(grassMesh, Matrix4x4.TRS(new Vector3(1, 0, 1), Quaternion.identity, Vector3.one), PBDTestMaterial, 0);
     }
 
     private void InitCS(PBDGrassPatch patch)
@@ -212,8 +215,9 @@ public class PBDGrassPatchRenderer
         CS.SetBuffer(UpdateMeshHandler, "IndexOffsetBuffer", IndexOffsetBuffer);
 
         resultPosBuffer = new ComputeBuffer(patch.vertices.Length, sizeof(float) * 3);
-        vertArray = patch.vertices;
-        resultPosBuffer.SetData(vertArray);
+        //vertArray = patch.vertices;
+        //resultPosBuffer.SetData(vertArray);
+        resultPosBuffer.SetData(patch.vertices);
         CS.SetBuffer(UpdateMeshHandler, "ResultPosBuffer", resultPosBuffer);
 
         #region draw procedual
@@ -243,8 +247,8 @@ public class PBDGrassPatchRenderer
         if (grassMesh == null)
             return;
         
-        vertArray = request.GetData<Vector3>().ToArray();
-        grassMesh.vertices = vertArray;
+        //vertArray = request.GetData<Vector3>().ToArray();
+        //grassMesh.vertices = vertArray;
 
         //grassMesh.RecalculateNormals(MeshUpdateFlags.DontNotifyMeshUsers);
     }
