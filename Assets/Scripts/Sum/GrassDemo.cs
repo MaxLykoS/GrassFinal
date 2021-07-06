@@ -46,10 +46,10 @@ using PBD;
 
 public class GrassDemo : MonoBehaviour
 {
-    public int TEST;
     public Material GrassProcedrualMaterial;
     public List<Transform> colliders;
     public ComputeShader PBDSolverCS;
+    public Camera Cam;
 
     //private Dictionary<Vector3Int, PBDGrassInfo> renderers;
     private PBDGrassPatchRenderer r1;
@@ -62,10 +62,10 @@ public class GrassDemo : MonoBehaviour
         //rToDestroy = new List<Vector3Int>();
         PBDSolverCS_Static = PBDSolverCS;
 
-        PBDGrassPatchRenderer.Setup(GrassProcedrualMaterial, colliders);
+        PBDGrassPatchRenderer.Setup(GrassProcedrualMaterial, colliders, Cam);
 
         //r1 = new PBDGrassPatchRenderer(new PBDGrassPatch(Vector3.zero, 1, 1, 4, 3));
-        r1 = new PBDGrassPatchRenderer(new PBDGrassPatch(Vector3.zero, 32, 32));
+        r1 = new PBDGrassPatchRenderer(new PBDGrassPatch(Vector3.zero, 32, 32)); //256
         //renderers = new Dictionary<Vector3Int, PBDGrassInfo>();
     }
 

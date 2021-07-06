@@ -1,5 +1,6 @@
 #pragma kernel PBDSolver
 #pragma kernel UpdateMesh
+#pragma kernel GridCulling
 
 #define XThreads 32
 #define BoneCounts 4
@@ -44,13 +45,22 @@ RWStructuredBuffer<SphereCollision> BallBuffer;
 
 RWStructuredBuffer<float3> ResultPosBuffer;
 
-[numthreads(XThreads, 1, 1)] // id.x body
-void PBDSolver(uint3 id : SV_DispatchThreadID)
+struct PBDGrid
 {
+    float3 pos;
+    int idOffset;
+};
+RWStructuredBuffer<PBDGrid> GridsVisibleBuffer;
+
+[numthreads(XThreads, 1, 1)] // GridsVisibleBuffer[id.y].idOffset + idInGroup.x body
+void PBDSolver(uint3 id : SV_DispatchThreadID, uint3 idInGroup : SV_GroupThreadID)
+{
+    int idx = (GridsVisibleBuffer[id.y].idOffset + idInGroup.x);
+    
     // Apply Force ************
     for (int i = 0; i < BoneCounts; i++)
     {
-        int idb = id.x * BoneCounts + i;
+        int idb = idx * BoneCounts + i;
         
         // air friction
         VelocitiesBuffer[idb] -= VelocitiesBuffer[idb] * Friction * dt;
@@ -65,7 +75,7 @@ void PBDSolver(uint3 id : SV_DispatchThreadID)
     // Estimate Positions ***********
     for (i = 0; i < BoneCounts; i++)
     {      
-        int idb = id.x * BoneCounts + i;
+        int idb = idx * BoneCounts + i;
         // update position with new velocity
         PredictedBuffer[idb] = PositionBuffer[idb] + dt * VelocitiesBuffer[idb];
     }
@@ -76,7 +86,7 @@ void PBDSolver(uint3 id : SV_DispatchThreadID)
     BallBuffer.GetDimensions(ballCount, ballStride);
     for (i = 0; i < BoneCounts; i++)
     {
-        int idb = id.x * BoneCounts + i;
+        int idb = idx * BoneCounts + i;
         
         for (uint j = 0; j < ballCount; j++)
         {
@@ -100,15 +110,15 @@ void PBDSolver(uint3 id : SV_DispatchThreadID)
     float stepDT = 1.0f / 4.0f;
     
     // distance constraints
-    int dconsIndexOffset = id.x * (BoneCounts - 1);
+    int dconsIndexOffset = idx * (BoneCounts - 1);
     float invMass = 1.0f / Mass;
     float sum = Mass * 2.0f;
     for (i = 0; i < 4; i++)  // 4 iteration
     {
         for (int j = 0; j < BoneCounts - 1; j++)   // 3 dcons
         {
-            int i1 = DconsBuffer[dconsIndexOffset + j].i1 + id.x * BoneCounts;
-            int i0 = DconsBuffer[dconsIndexOffset + j].i0 + id.x * BoneCounts;
+            int i1 = DconsBuffer[dconsIndexOffset + j].i1 + idx * BoneCounts;
+            int i0 = DconsBuffer[dconsIndexOffset + j].i0 + idx * BoneCounts;
             float3 n = PredictedBuffer[i1] - PredictedBuffer[i0];
             float d = length(n);
             n = normalize(n);
@@ -122,15 +132,15 @@ void PBDSolver(uint3 id : SV_DispatchThreadID)
     }
     
     // fixed constraints
-    PositionBuffer[FconsBuffer[id.x].i0 + id.x * BoneCounts] = FconsBuffer[id.x].fixedPos;
-    PredictedBuffer[FconsBuffer[id.x].i0 + id.x * BoneCounts] = FconsBuffer[id.x].fixedPos;
+    PositionBuffer[FconsBuffer[idx].i0 + idx * BoneCounts] = FconsBuffer[idx].fixedPos;
+    PredictedBuffer[FconsBuffer[idx].i0 + idx * BoneCounts] = FconsBuffer[idx].fixedPos;
     
     
     // UpdateVelocities ****************
     float threshold = StopThreshold * dt;
     for (i = 0; i < BoneCounts; i++)
     {
-        int boneIndex = id.x * BoneCounts + i;
+        int boneIndex = idx * BoneCounts + i;
     
         float3 dist = PredictedBuffer[boneIndex] - PositionBuffer[boneIndex];
         VelocitiesBuffer[boneIndex] = dist / dt;
@@ -141,23 +151,73 @@ void PBDSolver(uint3 id : SV_DispatchThreadID)
     // Update Positions ********************
     for (i = 0; i < BoneCounts; i++)
     {
-        int boneIndex = id.x * BoneCounts + i;
+        int boneIndex = idx * BoneCounts + i;
         PositionBuffer[boneIndex] = PredictedBuffer[boneIndex];
     }
 
 }
 
 [numthreads(XThreads, 1, 1)]
-void UpdateMesh(uint3 id : SV_DispatchThreadID)
+void UpdateMesh(uint3 id : SV_DispatchThreadID, uint3 idInGroup : SV_GroupThreadID)
 {
-    int boneOffset = id.x * BoneCounts;
-    int offsetOffset = id.x * (BoneCounts - 1);
+    int idx = (GridsVisibleBuffer[id.y].idOffset + idInGroup.x);
+    
+    int boneOffset = idx * BoneCounts;
+    int offsetOffset = idx * (BoneCounts - 1);
     int index = 0;
     for (int i = 0; i < (BoneCounts * 2 - 1) - 2; i += 2)
     {
-        ResultPosBuffer[i + IndexOffsetBuffer[id.x]] = PositionBuffer[boneOffset + index] + OffsetBuffer[offsetOffset + index];
-        ResultPosBuffer[i + 1 + IndexOffsetBuffer[id.x]] = PositionBuffer[boneOffset + index] - OffsetBuffer[offsetOffset + index];
+        ResultPosBuffer[i + IndexOffsetBuffer[idx]] = PositionBuffer[boneOffset + index] + OffsetBuffer[offsetOffset + index];
+        ResultPosBuffer[i + 1 + IndexOffsetBuffer[idx]] = PositionBuffer[boneOffset + index] - OffsetBuffer[offsetOffset + index];
         ++index;
     }
-    ResultPosBuffer[(BoneCounts * 2 - 1) - 1 + IndexOffsetBuffer[id.x]] = PositionBuffer[boneOffset + index];
+    ResultPosBuffer[(BoneCounts * 2 - 1) - 1 + IndexOffsetBuffer[idx]] = PositionBuffer[boneOffset + index];
+}
+
+StructuredBuffer<PBDGrid> GridsAllBuffer;
+RWStructuredBuffer<int> bufferWithArgs;
+
+float3 camPos;
+float3 camDir;
+float camHalfFov;
+float4x4 _Matrix_VP;
+Texture2D _DepthTex;
+
+[numthreads(32, 1, 1)]
+void GridCulling(uint3 id : SV_DispatchThreadID)
+{
+    uint index = id.x;
+    
+    //https://math.stackexchange.com/questions/237369/given-this-transformation-matrix-how-do-i-decompose-it-into-translation-rotati/417813
+    float3 itemPos = GridsAllBuffer[index].pos;
+    float3 itemDir = normalize(itemPos - camPos);
+    float rot = dot(camDir, itemDir);
+    
+    float4 clipPos = mul(_Matrix_VP, float4(itemPos - camDir * 0.2, 1));
+    
+    //view frustrum
+    if (max(abs(clipPos.x), abs(clipPos.y)) > clipPos.w + 0.7)
+        return;
+    
+    clipPos.xyz /= clipPos.w;
+    clipPos.xy = clipPos.xy * 0.5 + 0.5;
+    
+    float scWid = 0.2 / (tan(camHalfFov * 3.1415926 / 180) * clipPos.w) * 1024;
+    
+    uint mips = (uint) clamp(log2(scWid), 0, 7);
+    
+    uint texScale = 1 << mips;
+    uint2 uv = uint2(clipPos.xy * (1024 / texScale));
+    
+    float minD = min(min(_DepthTex.mips[mips][uv.xy + uint2(0, 0)].r, _DepthTex.mips[mips][uv.xy + uint2(0, 1)].r), min(_DepthTex.mips[mips][uv.xy + uint2(1, 0)].r, _DepthTex.mips[mips][uv.xy + uint2(1, 1)].r));
+    if (minD > clipPos.z)
+        return;
+    
+    float dist = distance(itemPos, camPos);
+    if (dist >= 30)
+        return;
+    
+    int currentIndex;
+    InterlockedAdd(bufferWithArgs[1], 1, currentIndex);
+    GridsVisibleBuffer[currentIndex] = GridsAllBuffer[id.x];
 }

@@ -21,6 +21,7 @@ public class DepthTexMaker : MonoBehaviour
         DepthTex.Create();
 
         GrassInstancing.DepthTex = DepthTex;
+        PBDGrassPatchRenderer.DepthTex = DepthTex;
     }
 
     int ID_DepthTexture;

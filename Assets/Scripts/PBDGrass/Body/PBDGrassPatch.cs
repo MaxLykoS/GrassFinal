@@ -68,6 +68,7 @@ namespace PBD
         //public SpaceHash Hash;
 
         public Vector3[] vertices;
+        public GrassGridStruct[] grids;
 
         public int Width;
         public int Length;
@@ -129,6 +130,7 @@ namespace PBD
             this.Length = len;
             this.Bodies = new PBDGrassBody[points];
             this.vertices = new Vector3[points * (SEGMENTS * 2 + 1)];
+            this.grids = new GrassGridStruct[len * len];
 
             int indexOffset = 0;
             int offsetIncreasment = SEGMENTS * 2 + 1;
@@ -143,11 +145,17 @@ namespace PBD
             float startCenterY = Root.y + len / 2 - 0.5f;
 
             int bodyID = 0;
+            int gridID = 0;
             for (int i = 0; i < len; i++)
             {
                 for (int j = 0; j < len; j++)
                 {
                     Vector2 newCenter = new Vector2(startCenterX + j, startCenterY - i);
+
+                    grids[gridID].Pos = new Vector3(newCenter.x, 0, newCenter.y);
+                    grids[gridID].IdOffset = bodyID;
+                    gridID++;
+
                     float maxX = newCenter.x + 0.5f;
                     float minX = newCenter.x - 0.5f;
                     float maxZ = newCenter.y + 0.5f;

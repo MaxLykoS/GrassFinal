@@ -183,6 +183,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2140604502853386303, guid: 2b167078b68e5b647a815caf62ead5bc, type: 3}
+      propertyPath: Cam
+      value: 
+      objectReference: {fileID: 765890051}
+    - target: {fileID: 2140604502853386303, guid: 2b167078b68e5b647a815caf62ead5bc, type: 3}
       propertyPath: TEST
       value: 16384
       objectReference: {fileID: 0}
@@ -192,6 +196,10 @@ PrefabInstance:
       objectReference: {fileID: 7200000, guid: 40f4d5cf31103634391482a046e6fd2c, type: 3}
     - target: {fileID: 2140604502853386303, guid: 2b167078b68e5b647a815caf62ead5bc, type: 3}
       propertyPath: GrassMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 8cc098fa046c0874f8e125679058a67c, type: 2}
+    - target: {fileID: 2140604502853386303, guid: 2b167078b68e5b647a815caf62ead5bc, type: 3}
+      propertyPath: GrassProcedrualMaterial
       value: 
       objectReference: {fileID: 2100000, guid: 0131064107dc911419389f31c240a1ef, type: 2}
     - target: {fileID: 2140604502853386303, guid: 2b167078b68e5b647a815caf62ead5bc, type: 3}
@@ -504,7 +512,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 910008390}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -555,7 +563,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 910008390}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 4.3}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

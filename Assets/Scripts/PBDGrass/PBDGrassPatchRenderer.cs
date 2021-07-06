@@ -6,12 +6,16 @@ using UnityEngine.Rendering;
 
 public class PBDGrassPatchRenderer
 {
+    public static RenderTexture DepthTex;
+
     private static Material PBDMaterial;
 
     private static PBDSolver Solver;
 
     private static ComputeBuffer ballBuffer;
     private static SphereCollisionStruct[] balls;
+
+    private static Camera Cam;
 
     int meshVerticesCount;
     private ComputeBuffer PositionBuffer;
@@ -28,6 +32,15 @@ public class PBDGrassPatchRenderer
     private ComputeBuffer resultTriangles;
     private ComputeBuffer NormalsBuffer;
     private ComputeBuffer UVsBuffer;
+    #endregion
+
+    #region dispatch indirect
+    private int GridCullingCSHandler;
+    private ComputeBuffer dispatchArgsBuffer;
+    private ComputeBuffer gridsAllBuffer;
+    private ComputeBuffer gridsVisibleBuffer;
+    private uint[] args = new uint[4] { 0, 0, 0, 0 };
+    private int gridsLen;
     #endregion
 
     private ComputeShader CS;
@@ -50,13 +63,14 @@ public class PBDGrassPatchRenderer
         grassMesh = patch.PatchMesh;
         bodyCount = patch.Bodies.Length;
         Debug.Log(grassMesh.vertexCount);
+        gridsLen = patch.Width * patch.Length / 32;
 
         bound = new Bounds(patch.Root, Vector3.one);
 
-        InitCS(patch);
+        InitCS(patch); 
     }
 
-    public static void Setup(Material pbdMaterial, List<Transform> ballslist)
+    public static void Setup(Material pbdMaterial, List<Transform> ballslist, Camera cam)
     {
         PBDMaterial = pbdMaterial;
 
@@ -75,6 +89,8 @@ public class PBDGrassPatchRenderer
 
         ballBuffer = new ComputeBuffer(balls.Length, sizeof(float) * 4);
         ballBuffer.SetData(balls);
+
+        Cam = cam;
     }
 
     public static void UpdateCollision(List<Transform> ballsList)
@@ -105,8 +121,11 @@ public class PBDGrassPatchRenderer
         NormalsBuffer.Release();
         UVsBuffer.Release();
 
-        GrassDemo.DestroyCS(CS);
+        dispatchArgsBuffer.Release();
+        gridsAllBuffer.Release();
+        gridsVisibleBuffer.Release();
 
+        GrassDemo.DestroyCS(CS);
         GrassDemo.DestroyMesh(grassMesh);
     }
     ~PBDGrassPatchRenderer()
@@ -125,6 +144,11 @@ public class PBDGrassPatchRenderer
         NormalsBuffer.Release();
         UVsBuffer.Release();
 
+        dispatchArgsBuffer.Release();
+        gridsAllBuffer.Release();
+        gridsVisibleBuffer.Release();
+
+        GrassDemo.DestroyCS(CS);
         GrassDemo.DestroyMesh(grassMesh);
     }
 
@@ -139,11 +163,30 @@ public class PBDGrassPatchRenderer
             ballBuffer.SetData(balls);
             CS.SetBuffer(PBDSolverHandler, "BallBuffer", ballBuffer);
 
-            int dispatchCount = bodyCount / 32;
-            dispatchCount = Mathf.Max(dispatchCount, 1);
+            #region dispatch indirect
+            args[1] = 0;
+            dispatchArgsBuffer.SetData(args);
 
-            CS.Dispatch(PBDSolverHandler, dispatchCount, 1, 1);
-            CS.Dispatch(UpdateMeshHandler, dispatchCount, 1, 1);
+            CS.SetTexture(GridCullingCSHandler, "_DepthTex", DepthTex);
+
+            CS.SetVector("camPos", Cam.transform.position);
+            CS.SetVector("camDir", Cam.transform.forward);
+            CS.SetFloat("camHalfFov", Cam.fieldOfView / 2);
+
+            Matrix4x4 VP = GL.GetGPUProjectionMatrix(Cam.projectionMatrix, false) * Cam.worldToCameraMatrix;
+            CS.SetMatrix("_Matrix_VP", VP);
+
+            CS.Dispatch(GridCullingCSHandler, gridsLen, 1, 1);
+            #endregion
+
+            //int dispatchCount = bodyCount / 32;
+            //dispatchCount = Mathf.Max(dispatchCount, 1);
+
+            CS.DispatchIndirect(PBDSolverHandler, dispatchArgsBuffer, 0);
+            CS.DispatchIndirect(UpdateMeshHandler, dispatchArgsBuffer, 0);
+
+            //CS.Dispatch(PBDSolverHandler, dispatchCount, 1, 1);
+            //CS.Dispatch(UpdateMeshHandler, dispatchCount, 1, 1);
 
             //AsyncGPUReadback.Request(resultPosBuffer, CSBufferCallBack);
         }
@@ -234,6 +277,31 @@ public class PBDGrassPatchRenderer
         PBDMaterial.SetBuffer("TriangleBuffer", resultTriangles);
         PBDMaterial.SetBuffer("NormalBuffer", NormalsBuffer);
         PBDMaterial.SetBuffer("UvBuffer", UVsBuffer);
+        #endregion
+
+        #region dispatch indirect
+
+        gridsAllBuffer = new ComputeBuffer(patch.grids.Length, sizeof(float) * 3 + sizeof(int));
+        gridsAllBuffer.SetData(patch.grids);
+        gridsVisibleBuffer = new ComputeBuffer(patch.grids.Length, sizeof(float) * 3 + sizeof(int));
+
+        GridCullingCSHandler = CS.FindKernel("GridCulling");
+
+        //https://docs.unity3d.com/540/Documentation/ScriptReference/ComputeShader.DispatchIndirect.html
+        //https://github.com/cinight/MinimalCompute/blob/master/Assets/IndirectCompute/IndirectCompute.cs
+        args[0] = 1; // number of work groups in X
+        args[1] = 0; // number of work groups in Y
+        args[2] = 1; // number of work groups in Z
+        args[3] = 0; // idk
+        dispatchArgsBuffer = new ComputeBuffer(1, sizeof(uint) * 4, ComputeBufferType.IndirectArguments);
+        dispatchArgsBuffer.SetData(args);
+
+        CS.SetBuffer(GridCullingCSHandler, "GridsAllBuffer", gridsAllBuffer);
+        CS.SetBuffer(GridCullingCSHandler, "GridsVisibleBuffer", gridsVisibleBuffer);
+        CS.SetBuffer(GridCullingCSHandler, "bufferWithArgs", dispatchArgsBuffer);
+
+        CS.SetBuffer(PBDSolverHandler, "GridsVisibleBuffer", gridsVisibleBuffer);
+        CS.SetBuffer(UpdateMeshHandler, "GridsVisibleBuffer", gridsVisibleBuffer);
         #endregion
     }
 
