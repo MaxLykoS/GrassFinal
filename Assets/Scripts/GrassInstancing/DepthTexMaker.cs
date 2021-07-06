@@ -6,12 +6,12 @@ public class DepthTexMaker : MonoBehaviour
 {
     public Material DepthMat;
     private RenderTexture DepthTex;
-    private Camera cam;
+    //private Camera cam;
 
     private void Start()
     {
-        cam = GetComponent<Camera>();
-        cam.depthTextureMode |= DepthTextureMode.Depth;
+        //cam = GetComponent<Camera>();
+        Camera.main.depthTextureMode |= DepthTextureMode.Depth;
 
         DepthTex = new RenderTexture(1024, 1024, 0, RenderTextureFormat.RHalf);
         DepthTex.autoGenerateMips = false;
