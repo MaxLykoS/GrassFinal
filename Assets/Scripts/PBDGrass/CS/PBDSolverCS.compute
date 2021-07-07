@@ -69,7 +69,7 @@ void PBDSolver(uint3 id : SV_DispatchThreadID, uint3 idInGroup : SV_GroupThreadI
         // recovery force
         VelocitiesBuffer[idb] += (OriginPosBuffer[idb] - PredictedBuffer[idb]) * dt * 2000;
         // wind force
-        VelocitiesBuffer[idb] += WindForce * dt;  
+        VelocitiesBuffer[idb] += WindForce * dt;
     }
     
     // Estimate Positions ***********
@@ -176,6 +176,7 @@ void UpdateMesh(uint3 id : SV_DispatchThreadID, uint3 idInGroup : SV_GroupThread
 
 StructuredBuffer<PBDGrid> GridsAllBuffer;
 RWStructuredBuffer<int> bufferWithArgs;
+RWStructuredBuffer<int> bufferWithArgsDrawIndirect;
 
 float3 camPos;
 float3 camDir;
@@ -214,10 +215,11 @@ void GridCulling(uint3 id : SV_DispatchThreadID)
         return;
     
     float dist = distance(itemPos, camPos);
-    if (dist >= 30)
+    if (dist >= 90)
         return;
     
     int currentIndex;
     InterlockedAdd(bufferWithArgs[1], 1, currentIndex);
+    InterlockedAdd(bufferWithArgsDrawIndirect[1], 1);
     GridsVisibleBuffer[currentIndex] = GridsAllBuffer[id.x];
 }

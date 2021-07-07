@@ -177,6 +177,11 @@ public class GrassInstancing : MonoBehaviour
             null, UnityEngine.Rendering.ShadowCastingMode.Off, false, 0);
     }
 
+    private void LateUpdate()
+    {
+        StampCam.transform.position = cam.transform.position + Vector3.up * 500;
+    }
+
     private void OnDestroy()
     {
         grassPosBuffer.Release();

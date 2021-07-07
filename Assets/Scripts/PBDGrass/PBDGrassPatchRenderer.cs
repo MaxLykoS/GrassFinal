@@ -35,12 +35,17 @@ public class PBDGrassPatchRenderer
     private int indicesCount;
     #endregion
 
+    #region draw procedual indirect
+    private int[] drawIndirectArgs = { 0, 1, 0, 0};
+    private ComputeBuffer drawIndirectArgsBuffer;
+    #endregion
+
     #region dispatch indirect
     private int GridCullingCSHandler;
     private ComputeBuffer dispatchArgsBuffer;
     private ComputeBuffer gridsAllBuffer;
     private ComputeBuffer gridsVisibleBuffer;
-    private uint[] args = new uint[4] { 0, 0, 0, 0 };
+    private uint[] gridCullingArgs = new uint[4] { 0, 0, 0, 0 };
     private int gridsLen;
     #endregion
 
@@ -65,7 +70,7 @@ public class PBDGrassPatchRenderer
         indicesCount = patch.PatchMesh.triangles.Length;
         gridsLen = Mathf.Max(patch.Width * patch.Length / 32, 1);
 
-        bound = new Bounds(patch.Root, Vector3.one);
+        bound = new Bounds(patch.Root, Vector3.one * 100000);
 
         InitCS(patch); 
     }
@@ -125,6 +130,8 @@ public class PBDGrassPatchRenderer
         gridsAllBuffer.Release();
         gridsVisibleBuffer.Release();
 
+        drawIndirectArgsBuffer.Release();
+
         GrassDemo.DestroyCS(CS);
         //GrassDemo.DestroyMesh(grassMesh);
     }
@@ -148,6 +155,8 @@ public class PBDGrassPatchRenderer
         gridsAllBuffer.Release();
         gridsVisibleBuffer.Release();
 
+        drawIndirectArgsBuffer.Release();
+
         GrassDemo.DestroyCS(CS);
         //GrassDemo.DestroyMesh(grassMesh);
     }
@@ -164,8 +173,11 @@ public class PBDGrassPatchRenderer
             CS.SetBuffer(PBDSolverHandler, "BallBuffer", ballBuffer);
 
             #region dispatch indirect
-            args[1] = 0;
-            dispatchArgsBuffer.SetData(args);
+            gridCullingArgs[1] = 0;
+            dispatchArgsBuffer.SetData(gridCullingArgs);
+
+            drawIndirectArgs[1] = 0;
+            drawIndirectArgsBuffer.SetData(drawIndirectArgs);
 
             CS.SetTexture(GridCullingCSHandler, "_DepthTex", DepthTex);
 
@@ -182,8 +194,9 @@ public class PBDGrassPatchRenderer
             //int dispatchCount = bodyCount / 32;
             //dispatchCount = Mathf.Max(dispatchCount, 1);
 
-            //CS.DispatchIndirect(PBDSolverHandler, dispatchArgsBuffer, 0);
-            //CS.DispatchIndirect(UpdateMeshHandler, dispatchArgsBuffer, 0);
+            CS.DispatchIndirect(PBDSolverHandler, dispatchArgsBuffer, 0);
+
+            CS.DispatchIndirect(UpdateMeshHandler, dispatchArgsBuffer, 0);
 
             //CS.Dispatch(PBDSolverHandler, dispatchCount, 1, 1);
             //CS.Dispatch(UpdateMeshHandler, dispatchCount, 1, 1);
@@ -194,8 +207,9 @@ public class PBDGrassPatchRenderer
 
     public void Update()
     {
-        Graphics.DrawProcedural(PBDMaterial, new Bounds(Vector3.zero, Vector3.one * 100000), MeshTopology.Triangles, indicesCount);
+        //Graphics.DrawProcedural(PBDMaterial, bound, MeshTopology.Triangles, indicesCount);
         //Graphics.DrawMesh(grassMesh, Matrix4x4.TRS(new Vector3(1, 0, 1), Quaternion.identity, Vector3.one), PBDTestMaterial, 0);
+        Graphics.DrawProceduralIndirect(PBDMaterial, bound, MeshTopology.Triangles, drawIndirectArgsBuffer);
     }
 
     private void InitCS(PBDGrassPatch patch)
@@ -285,16 +299,18 @@ public class PBDGrassPatchRenderer
         gridsAllBuffer.SetData(patch.grids);
         gridsVisibleBuffer = new ComputeBuffer(patch.grids.Length, sizeof(float) * 3 + sizeof(int));
 
+        PBDMaterial.SetBuffer("GridsVisibleBuffer", gridsVisibleBuffer);
+
         GridCullingCSHandler = CS.FindKernel("GridCulling");
 
         //https://docs.unity3d.com/540/Documentation/ScriptReference/ComputeShader.DispatchIndirect.html
         //https://github.com/cinight/MinimalCompute/blob/master/Assets/IndirectCompute/IndirectCompute.cs
-        args[0] = 1; // number of work groups in X
-        args[1] = 0; // number of work groups in Y
-        args[2] = 1; // number of work groups in Z
-        args[3] = 0; // idk
+        gridCullingArgs[0] = 1; // number of work groups in X
+        gridCullingArgs[1] = 0; // number of work groups in Y
+        gridCullingArgs[2] = 1; // number of work groups in Z
+        gridCullingArgs[3] = 0; // idk
         dispatchArgsBuffer = new ComputeBuffer(1, sizeof(uint) * 4, ComputeBufferType.IndirectArguments);
-        dispatchArgsBuffer.SetData(args);
+        dispatchArgsBuffer.SetData(gridCullingArgs);
 
         CS.SetBuffer(GridCullingCSHandler, "GridsAllBuffer", gridsAllBuffer);
         CS.SetBuffer(GridCullingCSHandler, "GridsVisibleBuffer", gridsVisibleBuffer);
@@ -302,6 +318,16 @@ public class PBDGrassPatchRenderer
 
         CS.SetBuffer(PBDSolverHandler, "GridsVisibleBuffer", gridsVisibleBuffer);
         CS.SetBuffer(UpdateMeshHandler, "GridsVisibleBuffer", gridsVisibleBuffer);
+        #endregion
+
+        #region draw procedual indirect
+        drawIndirectArgs[0] = 32 * 5 * 3;
+        drawIndirectArgs[1] = 0;
+        drawIndirectArgs[2] = 0;
+        drawIndirectArgs[3] = 0;
+        drawIndirectArgsBuffer = new ComputeBuffer(1, sizeof(int) * 4, ComputeBufferType.IndirectArguments);
+        drawIndirectArgsBuffer.SetData(drawIndirectArgs);
+        CS.SetBuffer(GridCullingCSHandler, "bufferWithArgsDrawIndirect", drawIndirectArgsBuffer);
         #endregion
     }
 

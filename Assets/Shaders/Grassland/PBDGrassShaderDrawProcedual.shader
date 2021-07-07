@@ -39,6 +39,13 @@ Shader "Custom/PBDGrassShaderDrawProcedual"
             StructuredBuffer<float3> NormalBuffer;
             StructuredBuffer<float2> UvBuffer;
 
+            struct PBDGrid
+            {
+                float3 pos;
+                int idOffset;
+            };
+            StructuredBuffer<PBDGrid> GridsVisibleBuffer;
+
             struct v2h
             {
                 float4 posW : TEXCOORD0;
@@ -64,11 +71,13 @@ Shader "Custom/PBDGrassShaderDrawProcedual"
                 float3 viewDir : TEXCOORD1;
             };
 
-            v2h vert(uint vertex_id : SV_VertexID)
+            v2h vert(uint vertex_id : SV_VertexID, uint instance_id : SV_InstanceID)
             {
                 v2h o;
 
-                int index = TriangleBuffer[vertex_id];
+                int vertexOffset = GridsVisibleBuffer[instance_id].idOffset * 5 * 3 + vertex_id;
+
+                int index = TriangleBuffer[vertexOffset];
 
                 o.posW = float4(VertexBuffer[index], 1);
                 o.uv = UvBuffer[index];
