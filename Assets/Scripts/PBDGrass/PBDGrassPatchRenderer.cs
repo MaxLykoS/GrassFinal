@@ -209,6 +209,25 @@ public class PBDGrassPatchRenderer
     {
         //Graphics.DrawProcedural(PBDMaterial, bound, MeshTopology.Triangles, indicesCount);
         //Graphics.DrawMesh(grassMesh, Matrix4x4.TRS(new Vector3(1, 0, 1), Quaternion.identity, Vector3.one), PBDTestMaterial, 0);
+        #region dispatch indirect
+        gridCullingArgs[1] = 0;
+        dispatchArgsBuffer.SetData(gridCullingArgs);
+
+        drawIndirectArgs[1] = 0;
+        drawIndirectArgsBuffer.SetData(drawIndirectArgs);
+
+        CS.SetTexture(GridCullingCSHandler, "_DepthTex", DepthTex);
+
+        CS.SetVector("camPos", Cam.transform.position);
+        CS.SetVector("camDir", Cam.transform.forward);
+        CS.SetFloat("camHalfFov", Cam.fieldOfView / 2);
+
+        Matrix4x4 VP = GL.GetGPUProjectionMatrix(Cam.projectionMatrix, false) * Cam.worldToCameraMatrix;
+        CS.SetMatrix("_Matrix_VP", VP);
+
+        CS.Dispatch(GridCullingCSHandler, gridsLen, 1, 1);
+        #endregion
+
         Graphics.DrawProceduralIndirect(PBDMaterial, bound, MeshTopology.Triangles, drawIndirectArgsBuffer);
     }
 
