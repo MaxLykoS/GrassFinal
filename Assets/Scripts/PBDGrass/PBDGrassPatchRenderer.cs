@@ -32,6 +32,7 @@ public class PBDGrassPatchRenderer
     private ComputeBuffer resultTriangles;
     private ComputeBuffer NormalsBuffer;
     private ComputeBuffer UVsBuffer;
+    private int indicesCount;
     #endregion
 
     #region dispatch indirect
@@ -47,23 +48,22 @@ public class PBDGrassPatchRenderer
     private int PBDSolverHandler;
     private int UpdateMeshHandler;
 
-    public Mesh grassMesh;
+    //public Mesh grassMesh;
 
     //private Vector3[] vertArray;
 
     private Bounds bound;
 
-    private int bodyCount;
 
     public PBDGrassPatchRenderer(PBDGrassPatch patch)
     {
         Timer = 0;
 
         meshVerticesCount = patch.PatchMesh.vertices.Length;
-        grassMesh = patch.PatchMesh;
-        bodyCount = patch.Bodies.Length;
-        Debug.Log(grassMesh.vertexCount);
-        gridsLen = patch.Width * patch.Length / 32;
+        //grassMesh = patch.PatchMesh;
+        Debug.Log("ÃæÊý:" + (patch.PatchMesh.triangles.Length / 3).ToString());
+        indicesCount = patch.PatchMesh.triangles.Length;
+        gridsLen = Mathf.Max(patch.Width * patch.Length / 32, 1);
 
         bound = new Bounds(patch.Root, Vector3.one);
 
@@ -126,7 +126,7 @@ public class PBDGrassPatchRenderer
         gridsVisibleBuffer.Release();
 
         GrassDemo.DestroyCS(CS);
-        GrassDemo.DestroyMesh(grassMesh);
+        //GrassDemo.DestroyMesh(grassMesh);
     }
     ~PBDGrassPatchRenderer()
     {
@@ -149,7 +149,7 @@ public class PBDGrassPatchRenderer
         gridsVisibleBuffer.Release();
 
         GrassDemo.DestroyCS(CS);
-        GrassDemo.DestroyMesh(grassMesh);
+        //GrassDemo.DestroyMesh(grassMesh);
     }
 
     private float Timer;
@@ -182,8 +182,8 @@ public class PBDGrassPatchRenderer
             //int dispatchCount = bodyCount / 32;
             //dispatchCount = Mathf.Max(dispatchCount, 1);
 
-            CS.DispatchIndirect(PBDSolverHandler, dispatchArgsBuffer, 0);
-            CS.DispatchIndirect(UpdateMeshHandler, dispatchArgsBuffer, 0);
+            //CS.DispatchIndirect(PBDSolverHandler, dispatchArgsBuffer, 0);
+            //CS.DispatchIndirect(UpdateMeshHandler, dispatchArgsBuffer, 0);
 
             //CS.Dispatch(PBDSolverHandler, dispatchCount, 1, 1);
             //CS.Dispatch(UpdateMeshHandler, dispatchCount, 1, 1);
@@ -194,7 +194,7 @@ public class PBDGrassPatchRenderer
 
     public void Update()
     {
-        Graphics.DrawProcedural(PBDMaterial, new Bounds(Vector3.zero, Vector3.one * 100000), MeshTopology.Triangles, meshVerticesCount * 2 + 4);
+        Graphics.DrawProcedural(PBDMaterial, new Bounds(Vector3.zero, Vector3.one * 100000), MeshTopology.Triangles, indicesCount);
         //Graphics.DrawMesh(grassMesh, Matrix4x4.TRS(new Vector3(1, 0, 1), Quaternion.identity, Vector3.one), PBDTestMaterial, 0);
     }
 
@@ -312,8 +312,8 @@ public class PBDGrassPatchRenderer
             Debug.Log("GPU readback error detected.");
             return;
         }
-        if (grassMesh == null)
-            return;
+        //if (grassMesh == null)
+            //return;
         
         //vertArray = request.GetData<Vector3>().ToArray();
         //grassMesh.vertices = vertArray;
