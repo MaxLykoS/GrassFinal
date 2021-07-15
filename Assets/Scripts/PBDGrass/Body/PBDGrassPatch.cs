@@ -27,6 +27,14 @@ namespace PBD
             return sizeof(float) * 2 + sizeof(int) * 2;
         }
     }
+
+    public struct BoneInfo
+    {
+        public Vector3 Position;
+        public Vector3 Predicted;
+        public Vector3 Velocities;
+        public Vector3 OriginPos;
+    };
     public struct PBDGrassBodyStruct
     {
         public Vector3[] Positions;
@@ -279,6 +287,20 @@ namespace PBD
         {
             return Hash.QueryPossibleBones(pos);
         }*/
+
+        public BoneInfo[] GenBoneInfoArray()
+        {
+            BoneInfo[] infos = new BoneInfo[Bodies.Length * Bodies[0].Positions.Length];
+            for (int i = 0; i < Bodies.Length; i++)
+                for (int j = 0; j < Bodies[i].Positions.Length; j++)
+                {
+                    infos[i * Bodies[i].Positions.Length + j].Position = Bodies[i].Positions[j];
+                    infos[i * Bodies[i].Positions.Length + j].Predicted = Bodies[i].Predicted[j];
+                    infos[i * Bodies[i].Positions.Length + j].Velocities = Bodies[i].Velocities[j];
+                    infos[i * Bodies[i].Positions.Length + j].OriginPos = Bodies[i].OriginPos[j];
+                }
+            return infos;
+        }
 
         public Vector3[] GenPositionArray()
         {

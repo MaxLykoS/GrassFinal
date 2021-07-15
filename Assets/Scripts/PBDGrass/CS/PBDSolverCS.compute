@@ -23,6 +23,7 @@ struct SphereCollision
     float Radius;
 };
 
+float _Time;
 float dt;
 
 float3 Gravity;
@@ -30,16 +31,26 @@ float3 WindForce;
 float Friction;
 float StopThreshold;
 
+float _WindFrequency;
+float4 _WindForceMap_ST;
+
 float Mass;
 
-RWStructuredBuffer<float3> PositionBuffer;
-RWStructuredBuffer<float3> PredictedBuffer;
-RWStructuredBuffer<float3> VelocitiesBuffer;
-RWStructuredBuffer<float3> OriginPosBuffer;
-RWStructuredBuffer<FixedConstraintStruct> FconsBuffer;
-RWStructuredBuffer<DistanceConstraintStruct> DconsBuffer;
+struct BoneInfo
+{
+    float3 Position;
+    float3 Predicted;
+    float3 Velocities;
+    float3 OriginPos;
+};
 
-RWStructuredBuffer<SphereCollision> BallBuffer;
+RWStructuredBuffer<BoneInfo> BonesBuffer;
+StructuredBuffer<FixedConstraintStruct> FconsBuffer;
+StructuredBuffer<DistanceConstraintStruct> DconsBuffer;
+Texture2D<float4> WindForceMap;
+SamplerState linearRepeatSampler;
+
+StructuredBuffer<SphereCollision> BallBuffer;
 
 RWStructuredBuffer<float3> ResultPosBuffer;
 
@@ -71,29 +82,32 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 void PBDSolver(uint3 id : SV_DispatchThreadID, uint3 idInGroup : SV_GroupThreadID)
 {
     int idx = (GridsToComputeBuffer[id.y].idOffset + idInGroup.x);
-    
     // Apply Force ************
     for (int i = 1; i < BoneCounts - 1; i++)
     {
         int idb = idx * BoneCounts + i;
         
         // air friction
-        VelocitiesBuffer[idb] -= VelocitiesBuffer[idb] * Friction * dt;
+        BonesBuffer[idb].Velocities -= BonesBuffer[idb].Velocities * Friction * dt;
         // gravity
-        VelocitiesBuffer[idb] += Gravity * dt;
+        BonesBuffer[idb].Velocities += Gravity * dt;
         // recovery force
-        VelocitiesBuffer[idb] += (OriginPosBuffer[idb] - PredictedBuffer[idb]) * dt * 2000;
+        BonesBuffer[idb].Velocities += (BonesBuffer[idb].OriginPos - BonesBuffer[idb].Predicted) * dt * 2000;
     }
     int rootID = idx * BoneCounts;
     int topID = rootID + BoneCounts - 1;    
     // air friction
-    VelocitiesBuffer[topID] -= VelocitiesBuffer[topID] * Friction * dt;
+    BonesBuffer[topID].Velocities -= BonesBuffer[topID].Velocities * Friction * dt;
     // gravity
-    VelocitiesBuffer[topID] += Gravity * dt;
+    BonesBuffer[topID].Velocities += Gravity * dt;
     // recovery force
-    VelocitiesBuffer[topID] += (OriginPosBuffer[topID] - PredictedBuffer[topID]) * dt * 2000;
+    BonesBuffer[topID].Velocities += (BonesBuffer[topID].OriginPos - BonesBuffer[topID].Predicted) * dt * 2000;
     // wind force
-    VelocitiesBuffer[topID] += WindForce * dt;
+    //BonesBuffer[topID].Velocities += WindForce * dt;
+    // Noise Wind Force
+    float2 windUV = BonesBuffer[topID].Position.xz * _WindForceMap_ST.xy + _WindForceMap_ST.zw + _WindFrequency * _Time;
+    float2 windNoise = WindForceMap.SampleLevel(linearRepeatSampler, windUV, 0).xy * 2 - 1;
+    BonesBuffer[topID].Velocities += float3(windNoise.x, 0, windNoise.y) * dt * WindForce;
     
     // Apply Swinging **********
     /*float3 Gstatic = OriginPosBuffer[rootID] - OriginPosBuffer[topID];
@@ -108,7 +122,7 @@ void PBDSolver(uint3 id : SV_DispatchThreadID, uint3 idInGroup : SV_GroupThreadI
     {
         int idb = idx * BoneCounts + i;
         // update position with new velocity
-        PredictedBuffer[idb] = PositionBuffer[idb] + dt * VelocitiesBuffer[idb];
+        BonesBuffer[idb].Predicted = BonesBuffer[idb].Position + dt * BonesBuffer[idb].Velocities;
     }
     
     // ResolveCollision *************
@@ -121,7 +135,7 @@ void PBDSolver(uint3 id : SV_DispatchThreadID, uint3 idInGroup : SV_GroupThreadI
         
         for (uint j = 0; j < ballCount; j++)
         {
-            float3 b2g = PredictedBuffer[idb] - BallBuffer[j].Position;
+            float3 b2g = BonesBuffer[idb].Predicted - BallBuffer[j].Position;
             float len = length(b2g);
             float3 b2gNormalize = normalize(b2g);
         
@@ -129,9 +143,9 @@ void PBDSolver(uint3 id : SV_DispatchThreadID, uint3 idInGroup : SV_GroupThreadI
             if (offset < 0)
             {
                 float3 targetPos = BallBuffer[j].Position + b2gNormalize * BallBuffer[j].Radius;
-                PositionBuffer[idb] = targetPos;
-                PredictedBuffer[idb] = targetPos;
-                VelocitiesBuffer[idb] = float3(0, 0, 0);
+                BonesBuffer[idb].Position = targetPos;
+                BonesBuffer[idb].Predicted = targetPos;
+                BonesBuffer[idb].Velocities = float3(0, 0, 0);
                 break;
             }
         }
@@ -150,21 +164,21 @@ void PBDSolver(uint3 id : SV_DispatchThreadID, uint3 idInGroup : SV_GroupThreadI
         {
             int i1 = DconsBuffer[dconsIndexOffset + j].i1 + idx * BoneCounts;
             int i0 = DconsBuffer[dconsIndexOffset + j].i0 + idx * BoneCounts;
-            float3 n = PredictedBuffer[i1] - PredictedBuffer[i0];
+            float3 n = BonesBuffer[i1].Predicted - BonesBuffer[i0].Predicted;
             float d = length(n);
             n = normalize(n);
 
             float3 corr = DconsBuffer[dconsIndexOffset + j].ElasticModulus * n * (d - DconsBuffer[dconsIndexOffset + j].RestLength) * sum;
 
-            PredictedBuffer[i0] += invMass * corr * stepDT;
+            BonesBuffer[i0].Predicted += invMass * corr * stepDT;
 
-            PredictedBuffer[i1] -= invMass * corr * stepDT;
+            BonesBuffer[i1].Predicted -= invMass * corr * stepDT;
         }
     }
     
     // fixed constraints
-    PositionBuffer[FconsBuffer[idx].i0 + idx * BoneCounts] = FconsBuffer[idx].fixedPos;
-    PredictedBuffer[FconsBuffer[idx].i0 + idx * BoneCounts] = FconsBuffer[idx].fixedPos;
+    BonesBuffer[FconsBuffer[idx].i0 + idx * BoneCounts].Position = FconsBuffer[idx].fixedPos;
+    BonesBuffer[FconsBuffer[idx].i0 + idx * BoneCounts].Predicted = FconsBuffer[idx].fixedPos;
     
     
     // UpdateVelocities ****************
@@ -173,23 +187,22 @@ void PBDSolver(uint3 id : SV_DispatchThreadID, uint3 idInGroup : SV_GroupThreadI
     {
         int boneIndex = idx * BoneCounts + i;
     
-        float3 dist = PredictedBuffer[boneIndex] - PositionBuffer[boneIndex];
-        VelocitiesBuffer[boneIndex] = dist / dt;
-        if (length(VelocitiesBuffer[boneIndex]) < threshold)
-            VelocitiesBuffer[boneIndex] = float3(0, 0, 0);
+        float3 dist = BonesBuffer[boneIndex].Predicted - BonesBuffer[boneIndex].Position;
+        BonesBuffer[boneIndex].Velocities = dist / dt;
+        if (length(BonesBuffer[boneIndex].Velocities) < threshold)
+            BonesBuffer[boneIndex].Velocities = float3(0, 0, 0);
     }
     
     // Update Positions ********************
     for (i = 0; i < BoneCounts; i++)
     {
         int boneIndex = idx * BoneCounts + i;
-        PositionBuffer[boneIndex] = PredictedBuffer[boneIndex];
+        BonesBuffer[boneIndex].Position = BonesBuffer[boneIndex].Predicted;
     }
-
 }
 
-RWStructuredBuffer<float3> OffsetBuffer;
-RWStructuredBuffer<int> IndexOffsetBuffer;
+StructuredBuffer<int> IndexOffsetBuffer;
+StructuredBuffer<float3> OffsetBuffer;
 [numthreads(XThreads, 1, 1)]
 void UpdateMesh(uint3 id : SV_DispatchThreadID, uint3 idInGroup : SV_GroupThreadID)
 {
@@ -200,11 +213,11 @@ void UpdateMesh(uint3 id : SV_DispatchThreadID, uint3 idInGroup : SV_GroupThread
     int index = 0;
     for (int i = 0; i < (BoneCounts * 2 - 1) - 2; i += 2)
     {
-        ResultPosBuffer[i + IndexOffsetBuffer[idx]] = PositionBuffer[boneOffset + index] + OffsetBuffer[offsetOffset + index];
-        ResultPosBuffer[i + 1 + IndexOffsetBuffer[idx]] = PositionBuffer[boneOffset + index] - OffsetBuffer[offsetOffset + index];
+        ResultPosBuffer[i + IndexOffsetBuffer[idx]] = BonesBuffer[boneOffset + index].Position + OffsetBuffer[offsetOffset + index];
+        ResultPosBuffer[i + 1 + IndexOffsetBuffer[idx]] = BonesBuffer[boneOffset + index].Position - OffsetBuffer[offsetOffset + index];
         ++index;
     }
-    ResultPosBuffer[(BoneCounts * 2 - 1) - 1 + IndexOffsetBuffer[idx]] = PositionBuffer[boneOffset + index];
+    ResultPosBuffer[(BoneCounts * 2 - 1) - 1 + IndexOffsetBuffer[idx]] = BonesBuffer[boneOffset + index].Position;
 }
 
 StructuredBuffer<PBDGrid> GridsAllBuffer;

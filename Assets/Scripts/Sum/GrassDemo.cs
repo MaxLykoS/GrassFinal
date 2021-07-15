@@ -10,6 +10,10 @@ public class GrassDemo : MonoBehaviour
     public ComputeShader PBDSolverCS;
     public Vector3 WindForce;
     public Camera Cam;
+    public Texture2D WindNoiseTex;
+
+    public float Frequency;
+    public Vector4 TileAndOffset;
 
     private PBDGrassPatchRenderer r1;
 
@@ -19,7 +23,7 @@ public class GrassDemo : MonoBehaviour
     {
         PBDSolverCS_Static = PBDSolverCS;
 
-        PBDGrassPatchRenderer.Setup(GrassProcedrualMaterial, colliders, Cam);
+        PBDGrassPatchRenderer.Setup(GrassProcedrualMaterial, colliders, Cam, WindNoiseTex);
 
         var patch = new PBDGrassPatch(Vector3.zero, 32, 32);//256(2 millions)
 
@@ -35,6 +39,7 @@ public class GrassDemo : MonoBehaviour
         PBDGrassPatchRenderer.UpdateCollision(colliders);
 
         r1.SetWindForce(WindForce);
+        r1.SetWindNoise(Frequency, TileAndOffset);
 
         r1.FixedUpdate();
         r1.Update();

@@ -195,6 +195,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 7200000, guid: 40f4d5cf31103634391482a046e6fd2c, type: 3}
     - target: {fileID: 2140604502853386303, guid: 2b167078b68e5b647a815caf62ead5bc, type: 3}
+      propertyPath: WindNoiseTex
+      value: 
+      objectReference: {fileID: 2800000, guid: f28bba76fb944bc48be841e3ab6c411f, type: 3}
+    - target: {fileID: 2140604502853386303, guid: 2b167078b68e5b647a815caf62ead5bc, type: 3}
       propertyPath: GrassMaterial
       value: 
       objectReference: {fileID: 2100000, guid: 8cc098fa046c0874f8e125679058a67c, type: 2}

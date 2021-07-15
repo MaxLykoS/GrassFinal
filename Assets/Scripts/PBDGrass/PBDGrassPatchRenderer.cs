@@ -11,7 +11,8 @@ public class PBDGrassPatchRenderer
     private static PBDSolver Solver;
     private static ComputeBuffer ballBuffer;
     private static SphereCollisionStruct[] balls;
-    public static void Setup(Material pbdMaterial, List<Transform> ballslist, Camera cam)
+    private static Texture2D WindNoiseTex;
+    public static void Setup(Material pbdMaterial, List<Transform> ballslist, Camera cam, Texture2D windNoiseTex)
     {
         PBDMaterial = pbdMaterial;
 
@@ -32,6 +33,8 @@ public class PBDGrassPatchRenderer
         ballBuffer.SetData(balls);
 
         Cam = cam;
+
+        WindNoiseTex = windNoiseTex;
     }
     public static void UpdateCollision(List<Transform> ballsList)
     {
@@ -46,11 +49,9 @@ public class PBDGrassPatchRenderer
     private ComputeShader CS;
 
     #region PBD Solver Compute Shader
-    private ComputeBuffer PositionBuffer;
-    private ComputeBuffer PredictedBuffer;
-    private ComputeBuffer VelocitiesBuffer;
-    private ComputeBuffer OriginPosBuffer;
+    private ComputeBuffer BoneInfoBuffer;
     private ComputeBuffer OffsetBuffer;
+
     private ComputeBuffer FconsBuffer;
     private ComputeBuffer DconsBuffer;
     private ComputeBuffer IndexOffsetBuffer;
@@ -102,57 +103,56 @@ public class PBDGrassPatchRenderer
         PBDSolverHandler = CS.FindKernel("PBDSolver");
         UpdateMeshHandler = CS.FindKernel("UpdateMesh");
 
+        #region PBDSolver
         // for PBD solver
         CS.SetFloat("dt", 1.0f / 60.0f / 3.0f);
         CS.SetVector("Gravity", Solver.Gravity);
         CS.SetVector("WindForce", Solver.WindForce);
         CS.SetFloat("Friction", Solver.Friction);
         CS.SetFloat("StopThreshold", Solver.StopThreshold);
+        // procedual Wind Force
+        CS.SetFloat("_Time", 0);
+        CS.SetFloat("_WindFrequency", 1);
+        CS.SetVector("_WindForceMap_ST", new Vector4(0.01f, 0.01f, 1, 1));
         // for grass constants
         CS.SetFloat("Mass", patch.Bodies[0].Mass);
 
         CS.SetBuffer(PBDSolverHandler, "BallBuffer", ballBuffer);
 
-        Vector3[] t = patch.GenPositionArray();
-        PositionBuffer = new ComputeBuffer(t.Length, sizeof(float) * 3);
-        PositionBuffer.SetData(t);
-        CS.SetBuffer(PBDSolverHandler, "PositionBuffer", PositionBuffer);
-        CS.SetBuffer(UpdateMeshHandler, "PositionBuffer", PositionBuffer);
+        BoneInfo[] t = patch.GenBoneInfoArray();
+        BoneInfoBuffer = new ComputeBuffer(t.Length, sizeof(float) * 3 * 4);
+        BoneInfoBuffer.SetData(t);
+        CS.SetBuffer(PBDSolverHandler, "BonesBuffer", BoneInfoBuffer);
+        CS.SetBuffer(UpdateMeshHandler, "BonesBuffer", BoneInfoBuffer);
+        t = null;
 
-        t = patch.GenPredictedArray();
-        PredictedBuffer = new ComputeBuffer(t.Length, sizeof(float) * 3);
-        PredictedBuffer.SetData(t);
-        CS.SetBuffer(PBDSolverHandler, "PredictedBuffer", PredictedBuffer);
-
-        t = patch.GenVelocitiesArray();
-        VelocitiesBuffer = new ComputeBuffer(t.Length, sizeof(float) * 3);
-        VelocitiesBuffer.SetData(t);
-        CS.SetBuffer(PBDSolverHandler, "VelocitiesBuffer", VelocitiesBuffer);
-
-        t = patch.GenOriginPosArray();
-        OriginPosBuffer = new ComputeBuffer(t.Length, sizeof(float) * 3);
-        OriginPosBuffer.SetData(t);
-        CS.SetBuffer(PBDSolverHandler, "OriginPosBuffer", OriginPosBuffer);
-
-        t = patch.GenOffsetArray();
-        OffsetBuffer = new ComputeBuffer(t.Length, sizeof(float) * 3);
-        OffsetBuffer.SetData(t);
+        Vector3[] vt = patch.GenOffsetArray();
+        OffsetBuffer = new ComputeBuffer(vt.Length, sizeof(float) * 3);
+        OffsetBuffer.SetData(vt);
         CS.SetBuffer(UpdateMeshHandler, "OffsetBuffer", OffsetBuffer);
+        vt = null;
 
         FixedConstraintStruct[] tt = patch.GenFconsArray();
         FconsBuffer = new ComputeBuffer(tt.Length, FixedConstraintStruct.Size());
         FconsBuffer.SetData(tt);
         CS.SetBuffer(PBDSolverHandler, "FconsBuffer", FconsBuffer);
+        tt = null;
 
         DistanceConstraintStruct[] ttt = patch.GenDconsArray();
         DconsBuffer = new ComputeBuffer(ttt.Length, DistanceConstraintStruct.Size());
         DconsBuffer.SetData(ttt);
         CS.SetBuffer(PBDSolverHandler, "DconsBuffer", DconsBuffer);
+        ttt = null;
 
         int[] tttt = patch.GenIndexOffsetArray();
         IndexOffsetBuffer = new ComputeBuffer(tttt.Length, sizeof(int));
         IndexOffsetBuffer.SetData(tttt);
         CS.SetBuffer(UpdateMeshHandler, "IndexOffsetBuffer", IndexOffsetBuffer);
+        tttt = null;
+
+        CS.SetTexture(PBDSolverHandler, "WindForceMap", WindNoiseTex);
+
+        #endregion
 
         resultPosBuffer = new ComputeBuffer(patch.vertices.Length, sizeof(float) * 3);
         resultPosBuffer.SetData(patch.vertices);
@@ -224,6 +224,7 @@ public class PBDGrassPatchRenderer
 
             ballBuffer.SetData(balls);
             CS.SetBuffer(PBDSolverHandler, "BallBuffer", ballBuffer);
+            CS.SetFloat("_Time", Time.realtimeSinceStartup);
 
             #region dispatch indirect
             gridCullingArgs[1] = 0;
@@ -280,10 +281,7 @@ public class PBDGrassPatchRenderer
 
     public void Release()
     {
-        PositionBuffer.Release();
-        PredictedBuffer.Release();
-        VelocitiesBuffer.Release();
-        OriginPosBuffer.Release();
+        BoneInfoBuffer.Release();
         OffsetBuffer.Release();
         FconsBuffer.Release();
         DconsBuffer.Release();
@@ -305,10 +303,7 @@ public class PBDGrassPatchRenderer
     }
     ~PBDGrassPatchRenderer()
     {
-        PositionBuffer.Release();
-        PredictedBuffer.Release();
-        VelocitiesBuffer.Release();
-        OriginPosBuffer.Release();
+        BoneInfoBuffer.Release();
         OffsetBuffer.Release();
         FconsBuffer.Release();
         DconsBuffer.Release();
@@ -327,5 +322,11 @@ public class PBDGrassPatchRenderer
         drawIndirectArgsBuffer.Release();
 
         GrassDemo.DestroyCS(CS);
+    }
+
+    public void SetWindNoise(float frequency, Vector4 tileAndOffset)
+    {
+        CS.SetFloat("_WindFrequency", frequency);
+        CS.SetVector("_WindForceMap_ST", tileAndOffset);
     }
 }
