@@ -36,10 +36,8 @@ RWStructuredBuffer<float3> PositionBuffer;
 RWStructuredBuffer<float3> PredictedBuffer;
 RWStructuredBuffer<float3> VelocitiesBuffer;
 RWStructuredBuffer<float3> OriginPosBuffer;
-RWStructuredBuffer<float3> OffsetBuffer;
 RWStructuredBuffer<FixedConstraintStruct> FconsBuffer;
 RWStructuredBuffer<DistanceConstraintStruct> DconsBuffer;
-RWStructuredBuffer<int> IndexOffsetBuffer;
 
 RWStructuredBuffer<SphereCollision> BallBuffer;
 
@@ -50,15 +48,32 @@ struct PBDGrid
     float3 pos;
     int idOffset;
 };
-RWStructuredBuffer<PBDGrid> GridsVisibleBuffer;
+RWStructuredBuffer<PBDGrid> GridsToComputeBuffer;
+
+float3x3 AngleAxis3x3(float angle, float3 axis)
+{
+    float c, s;
+    sincos(angle, s, c);
+
+    float t = 1 - c;
+    float x = axis.x;
+    float y = axis.y;
+    float z = axis.z;
+
+    return float3x3(
+			t * x * x + c, t * x * y - s * z, t * x * z + s * y,
+			t * x * y + s * z, t * y * y + c, t * y * z - s * x,
+			t * x * z - s * y, t * y * z + s * x, t * z * z + c
+			);
+}
 
 [numthreads(XThreads, 1, 1)] // GridsVisibleBuffer[id.y].idOffset + idInGroup.x body
 void PBDSolver(uint3 id : SV_DispatchThreadID, uint3 idInGroup : SV_GroupThreadID)
 {
-    int idx = (GridsVisibleBuffer[id.y].idOffset + idInGroup.x);
+    int idx = (GridsToComputeBuffer[id.y].idOffset + idInGroup.x);
     
     // Apply Force ************
-    for (int i = 0; i < BoneCounts; i++)
+    for (int i = 1; i < BoneCounts - 1; i++)
     {
         int idb = idx * BoneCounts + i;
         
@@ -68,13 +83,29 @@ void PBDSolver(uint3 id : SV_DispatchThreadID, uint3 idInGroup : SV_GroupThreadI
         VelocitiesBuffer[idb] += Gravity * dt;
         // recovery force
         VelocitiesBuffer[idb] += (OriginPosBuffer[idb] - PredictedBuffer[idb]) * dt * 2000;
-        // wind force
-        VelocitiesBuffer[idb] += WindForce * dt;
     }
+    int rootID = idx * BoneCounts;
+    int topID = rootID + BoneCounts - 1;    
+    // air friction
+    VelocitiesBuffer[topID] -= VelocitiesBuffer[topID] * Friction * dt;
+    // gravity
+    VelocitiesBuffer[topID] += Gravity * dt;
+    // recovery force
+    VelocitiesBuffer[topID] += (OriginPosBuffer[topID] - PredictedBuffer[topID]) * dt * 2000;
+    // wind force
+    VelocitiesBuffer[topID] += WindForce * dt;
+    
+    // Apply Swinging **********
+    /*float3 Gstatic = OriginPosBuffer[rootID] - OriginPosBuffer[topID];
+    float3 Gcur = PositionBuffer[rootID] - OriginPosBuffer[topID];
+    for (i = 0; i < BoneCounts; i++)
+    {
+        
+    }*/
     
     // Estimate Positions ***********
     for (i = 0; i < BoneCounts; i++)
-    {      
+    {
         int idb = idx * BoneCounts + i;
         // update position with new velocity
         PredictedBuffer[idb] = PositionBuffer[idb] + dt * VelocitiesBuffer[idb];
@@ -157,10 +188,12 @@ void PBDSolver(uint3 id : SV_DispatchThreadID, uint3 idInGroup : SV_GroupThreadI
 
 }
 
+RWStructuredBuffer<float3> OffsetBuffer;
+RWStructuredBuffer<int> IndexOffsetBuffer;
 [numthreads(XThreads, 1, 1)]
 void UpdateMesh(uint3 id : SV_DispatchThreadID, uint3 idInGroup : SV_GroupThreadID)
 {
-    int idx = (GridsVisibleBuffer[id.y].idOffset + idInGroup.x);
+    int idx = (GridsToComputeBuffer[id.y].idOffset + idInGroup.x);
     
     int boneOffset = idx * BoneCounts;
     int offsetOffset = idx * (BoneCounts - 1);
@@ -175,6 +208,7 @@ void UpdateMesh(uint3 id : SV_DispatchThreadID, uint3 idInGroup : SV_GroupThread
 }
 
 StructuredBuffer<PBDGrid> GridsAllBuffer;
+RWStructuredBuffer<PBDGrid> GridsVisibleBuffer;
 RWStructuredBuffer<int> bufferWithArgs;
 RWStructuredBuffer<int> bufferWithArgsDrawIndirect;
 
@@ -192,7 +226,14 @@ void GridCulling(uint3 id : SV_DispatchThreadID)
     //https://math.stackexchange.com/questions/237369/given-this-transformation-matrix-how-do-i-decompose-it-into-translation-rotati/417813
     float3 itemPos = GridsAllBuffer[index].pos;
     float3 itemDir = normalize(itemPos - camPos);
-    float rot = dot(camDir, itemDir);
+    
+    float dist = distance(itemPos, camPos);
+    if (dist >= 90)
+        return;
+    
+    int currentIndexToCompute;
+    InterlockedAdd(bufferWithArgs[1], 1, currentIndexToCompute);
+    GridsToComputeBuffer[currentIndexToCompute] = GridsAllBuffer[id.x];
     
     float4 clipPos = mul(_Matrix_VP, float4(itemPos - camDir * 0.2, 1));
     
@@ -214,12 +255,7 @@ void GridCulling(uint3 id : SV_DispatchThreadID)
     if (minD > clipPos.z)
         return;
     
-    float dist = distance(itemPos, camPos);
-    if (dist >= 90)
-        return;
-    
-    int currentIndex;
-    InterlockedAdd(bufferWithArgs[1], 1, currentIndex);
-    InterlockedAdd(bufferWithArgsDrawIndirect[1], 1);
-    GridsVisibleBuffer[currentIndex] = GridsAllBuffer[id.x];
+    int currentIndexToDraw;
+    InterlockedAdd(bufferWithArgsDrawIndirect[1], 1, currentIndexToDraw);
+    GridsVisibleBuffer[currentIndexToDraw] = GridsAllBuffer[id.x];
 }

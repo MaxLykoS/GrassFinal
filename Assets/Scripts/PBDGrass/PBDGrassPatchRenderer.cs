@@ -7,82 +7,18 @@ using UnityEngine.Rendering;
 public class PBDGrassPatchRenderer
 {
     public static RenderTexture DepthTex;
-
     private static Material PBDMaterial;
-
     private static PBDSolver Solver;
-
     private static ComputeBuffer ballBuffer;
     private static SphereCollisionStruct[] balls;
-
-    private static Camera Cam;
-
-    int meshVerticesCount;
-    private ComputeBuffer PositionBuffer;
-    private ComputeBuffer PredictedBuffer;
-    private ComputeBuffer VelocitiesBuffer;
-    private ComputeBuffer OriginPosBuffer;
-    private ComputeBuffer OffsetBuffer;
-    private ComputeBuffer FconsBuffer;
-    private ComputeBuffer DconsBuffer;
-    private ComputeBuffer IndexOffsetBuffer;
-
-    private ComputeBuffer resultPosBuffer;
-    #region draw procedual
-    private ComputeBuffer resultTriangles;
-    private ComputeBuffer NormalsBuffer;
-    private ComputeBuffer UVsBuffer;
-    private int indicesCount;
-    #endregion
-
-    #region draw procedual indirect
-    private int[] drawIndirectArgs = { 0, 1, 0, 0};
-    private ComputeBuffer drawIndirectArgsBuffer;
-    #endregion
-
-    #region dispatch indirect
-    private int GridCullingCSHandler;
-    private ComputeBuffer dispatchArgsBuffer;
-    private ComputeBuffer gridsAllBuffer;
-    private ComputeBuffer gridsVisibleBuffer;
-    private uint[] gridCullingArgs = new uint[4] { 0, 0, 0, 0 };
-    private int gridsLen;
-    #endregion
-
-    private ComputeShader CS;
-    private int PBDSolverHandler;
-    private int UpdateMeshHandler;
-
-    //public Mesh grassMesh;
-
-    //private Vector3[] vertArray;
-
-    private Bounds bound;
-
-
-    public PBDGrassPatchRenderer(PBDGrassPatch patch)
-    {
-        Timer = 0;
-
-        meshVerticesCount = patch.PatchMesh.vertices.Length;
-        //grassMesh = patch.PatchMesh;
-        Debug.Log("中方:" + (patch.PatchMesh.triangles.Length / 3).ToString());
-        indicesCount = patch.PatchMesh.triangles.Length;
-        gridsLen = Mathf.Max(patch.Width * patch.Length / 32, 1);
-
-        bound = new Bounds(patch.Root, Vector3.one * 100000);
-
-        InitCS(patch); 
-    }
-
     public static void Setup(Material pbdMaterial, List<Transform> ballslist, Camera cam)
     {
         PBDMaterial = pbdMaterial;
 
         Solver = new PBDSolver(3.0f)
         {
-            Gravity = Vector3.down * 9.8f,
-            WindForce = Vector3.up * 1000
+            Gravity = Vector3.up * 1000,
+            WindForce = Vector3.one
         };
 
         balls = new SphereCollisionStruct[ballslist.Count];
@@ -97,141 +33,69 @@ public class PBDGrassPatchRenderer
 
         Cam = cam;
     }
-
     public static void UpdateCollision(List<Transform> ballsList)
     {
         for (int i = 0; i < balls.Length; i++)
             balls[i].Position = ballsList[i].position;
     }
-
     public static void ReleaseStaticData()
     {
         ballBuffer.Release();
     }
 
+    private ComputeShader CS;
 
-    public void Release()
+    #region PBD Solver Compute Shader
+    private ComputeBuffer PositionBuffer;
+    private ComputeBuffer PredictedBuffer;
+    private ComputeBuffer VelocitiesBuffer;
+    private ComputeBuffer OriginPosBuffer;
+    private ComputeBuffer OffsetBuffer;
+    private ComputeBuffer FconsBuffer;
+    private ComputeBuffer DconsBuffer;
+    private ComputeBuffer IndexOffsetBuffer;
+    private ComputeBuffer resultPosBuffer;
+    private int PBDSolverHandler;
+    private int UpdateMeshHandler;
+    #endregion
+
+    #region draw procedual
+    private ComputeBuffer resultTriangles;
+    private ComputeBuffer NormalsBuffer;
+    private ComputeBuffer UVsBuffer;
+    #endregion
+
+    #region draw procedual indirect
+    private int[] drawIndirectArgs = { 0, 1, 0, 0};
+    private ComputeBuffer drawIndirectArgsBuffer;
+    #endregion
+
+    #region dispatch indirect
+    private static Camera Cam;
+    private int GridCullingCSHandler;
+    private ComputeBuffer dispatchArgsBuffer;
+    private ComputeBuffer gridsAllBuffer;
+    private ComputeBuffer gridsToComputeBuffer;
+    private ComputeBuffer gridsVisibleBuffer;
+    private uint[] gridCullingArgs = new uint[4] { 0, 0, 0, 0 };
+    private int gridsLen;
+    #endregion
+
+    private Bounds bound;
+
+    public PBDGrassPatchRenderer(PBDGrassPatch patch)
     {
-        PositionBuffer.Release();
-        PredictedBuffer.Release();
-        VelocitiesBuffer.Release();
-        OriginPosBuffer.Release();
-        OffsetBuffer.Release();
-        FconsBuffer.Release();
-        DconsBuffer.Release();
-        IndexOffsetBuffer.Release();
+        Timer = 0;
 
-        resultPosBuffer.Release();
-        resultTriangles.Release();
-        NormalsBuffer.Release();
-        UVsBuffer.Release();
+        Debug.Log("中方:" + (patch.PatchMesh.triangles.Length / 3).ToString());
+        gridsLen = Mathf.Max(patch.Width * patch.Length / 32, 1);
 
-        dispatchArgsBuffer.Release();
-        gridsAllBuffer.Release();
-        gridsVisibleBuffer.Release();
+        bound = new Bounds(patch.Root, Vector3.one * 100000);
 
-        drawIndirectArgsBuffer.Release();
-
-        GrassDemo.DestroyCS(CS);
-        //GrassDemo.DestroyMesh(grassMesh);
-    }
-    ~PBDGrassPatchRenderer()
-    {
-        PositionBuffer.Release();
-        PredictedBuffer.Release();
-        VelocitiesBuffer.Release();
-        OriginPosBuffer.Release();
-        OffsetBuffer.Release();
-        FconsBuffer.Release();
-        DconsBuffer.Release();
-        IndexOffsetBuffer.Release();
-
-        resultPosBuffer.Release();
-        resultTriangles.Release();
-        NormalsBuffer.Release();
-        UVsBuffer.Release();
-
-        dispatchArgsBuffer.Release();
-        gridsAllBuffer.Release();
-        gridsVisibleBuffer.Release();
-
-        drawIndirectArgsBuffer.Release();
-
-        GrassDemo.DestroyCS(CS);
-        //GrassDemo.DestroyMesh(grassMesh);
-    }
-
-    private float Timer;
-    public void FixedUpdate()
-    {
-        Timer += Time.fixedDeltaTime;
-        if (Timer >= 0.02f)
-        {
-            Timer = 0;
-
-            ballBuffer.SetData(balls);
-            CS.SetBuffer(PBDSolverHandler, "BallBuffer", ballBuffer);
-
-            #region dispatch indirect
-            gridCullingArgs[1] = 0;
-            dispatchArgsBuffer.SetData(gridCullingArgs);
-
-            drawIndirectArgs[1] = 0;
-            drawIndirectArgsBuffer.SetData(drawIndirectArgs);
-
-            CS.SetTexture(GridCullingCSHandler, "_DepthTex", DepthTex);
-
-            CS.SetVector("camPos", Cam.transform.position);
-            CS.SetVector("camDir", Cam.transform.forward);
-            CS.SetFloat("camHalfFov", Cam.fieldOfView / 2);
-
-            Matrix4x4 VP = GL.GetGPUProjectionMatrix(Cam.projectionMatrix, false) * Cam.worldToCameraMatrix;
-            CS.SetMatrix("_Matrix_VP", VP);
-
-            CS.Dispatch(GridCullingCSHandler, gridsLen, 1, 1);
-            #endregion
-
-            //int dispatchCount = bodyCount / 32;
-            //dispatchCount = Mathf.Max(dispatchCount, 1);
-
-            CS.DispatchIndirect(PBDSolverHandler, dispatchArgsBuffer, 0);
-
-            CS.DispatchIndirect(UpdateMeshHandler, dispatchArgsBuffer, 0);
-
-            //CS.Dispatch(PBDSolverHandler, dispatchCount, 1, 1);
-            //CS.Dispatch(UpdateMeshHandler, dispatchCount, 1, 1);
-
-            //AsyncGPUReadback.Request(resultPosBuffer, CSBufferCallBack);
-        }
+        InitCS(patch);
     }
 
-    public void Update()
-    {
-        //Graphics.DrawProcedural(PBDMaterial, bound, MeshTopology.Triangles, indicesCount);
-        //Graphics.DrawMesh(grassMesh, Matrix4x4.TRS(new Vector3(1, 0, 1), Quaternion.identity, Vector3.one), PBDTestMaterial, 0);
-        #region dispatch indirect
-        gridCullingArgs[1] = 0;
-        dispatchArgsBuffer.SetData(gridCullingArgs);
-
-        drawIndirectArgs[1] = 0;
-        drawIndirectArgsBuffer.SetData(drawIndirectArgs);
-
-        CS.SetTexture(GridCullingCSHandler, "_DepthTex", DepthTex);
-
-        CS.SetVector("camPos", Cam.transform.position);
-        CS.SetVector("camDir", Cam.transform.forward);
-        CS.SetFloat("camHalfFov", Cam.fieldOfView / 2);
-
-        Matrix4x4 VP = GL.GetGPUProjectionMatrix(Cam.projectionMatrix, false) * Cam.worldToCameraMatrix;
-        CS.SetMatrix("_Matrix_VP", VP);
-
-        CS.Dispatch(GridCullingCSHandler, gridsLen, 1, 1);
-        #endregion
-
-        Graphics.DrawProceduralIndirect(PBDMaterial, bound, MeshTopology.Triangles, drawIndirectArgsBuffer);
-    }
-
-    private void InitCS(PBDGrassPatch patch)
+    void InitCS(PBDGrassPatch patch)
     {
         CS = GrassDemo.CreateShader();
 
@@ -291,8 +155,6 @@ public class PBDGrassPatchRenderer
         CS.SetBuffer(UpdateMeshHandler, "IndexOffsetBuffer", IndexOffsetBuffer);
 
         resultPosBuffer = new ComputeBuffer(patch.vertices.Length, sizeof(float) * 3);
-        //vertArray = patch.vertices;
-        //resultPosBuffer.SetData(vertArray);
         resultPosBuffer.SetData(patch.vertices);
         CS.SetBuffer(UpdateMeshHandler, "ResultPosBuffer", resultPosBuffer);
 
@@ -316,6 +178,7 @@ public class PBDGrassPatchRenderer
 
         gridsAllBuffer = new ComputeBuffer(patch.grids.Length, sizeof(float) * 3 + sizeof(int));
         gridsAllBuffer.SetData(patch.grids);
+        gridsToComputeBuffer = new ComputeBuffer(patch.grids.Length, sizeof(float) * 3 + sizeof(int));
         gridsVisibleBuffer = new ComputeBuffer(patch.grids.Length, sizeof(float) * 3 + sizeof(int));
 
         PBDMaterial.SetBuffer("GridsVisibleBuffer", gridsVisibleBuffer);
@@ -332,11 +195,12 @@ public class PBDGrassPatchRenderer
         dispatchArgsBuffer.SetData(gridCullingArgs);
 
         CS.SetBuffer(GridCullingCSHandler, "GridsAllBuffer", gridsAllBuffer);
+        CS.SetBuffer(GridCullingCSHandler, "GridsToComputeBuffer", gridsToComputeBuffer);
         CS.SetBuffer(GridCullingCSHandler, "GridsVisibleBuffer", gridsVisibleBuffer);
         CS.SetBuffer(GridCullingCSHandler, "bufferWithArgs", dispatchArgsBuffer);
 
-        CS.SetBuffer(PBDSolverHandler, "GridsVisibleBuffer", gridsVisibleBuffer);
-        CS.SetBuffer(UpdateMeshHandler, "GridsVisibleBuffer", gridsVisibleBuffer);
+        CS.SetBuffer(PBDSolverHandler, "GridsToComputeBuffer", gridsToComputeBuffer);
+        CS.SetBuffer(UpdateMeshHandler, "GridsToComputeBuffer", gridsToComputeBuffer);
         #endregion
 
         #region draw procedual indirect
@@ -350,19 +214,118 @@ public class PBDGrassPatchRenderer
         #endregion
     }
 
-    private void CSBufferCallBack(AsyncGPUReadbackRequest request)
+    private float Timer;
+    public void FixedUpdate()
     {
-        if (request.hasError)
+        Timer += Time.fixedDeltaTime;
+        if (Timer >= 0.02f)
         {
-            Debug.Log("GPU readback error detected.");
-            return;
-        }
-        //if (grassMesh == null)
-            //return;
-        
-        //vertArray = request.GetData<Vector3>().ToArray();
-        //grassMesh.vertices = vertArray;
+            Timer = 0;
 
-        //grassMesh.RecalculateNormals(MeshUpdateFlags.DontNotifyMeshUsers);
+            ballBuffer.SetData(balls);
+            CS.SetBuffer(PBDSolverHandler, "BallBuffer", ballBuffer);
+
+            #region dispatch indirect
+            gridCullingArgs[1] = 0;
+            dispatchArgsBuffer.SetData(gridCullingArgs);
+
+            drawIndirectArgs[1] = 0;
+            drawIndirectArgsBuffer.SetData(drawIndirectArgs);
+
+            CS.SetTexture(GridCullingCSHandler, "_DepthTex", DepthTex);
+
+            CS.SetVector("camPos", Cam.transform.position);
+            CS.SetVector("camDir", Cam.transform.forward);
+            CS.SetFloat("camHalfFov", Cam.fieldOfView / 2);
+
+            Matrix4x4 VP = GL.GetGPUProjectionMatrix(Cam.projectionMatrix, false) * Cam.worldToCameraMatrix;
+            CS.SetMatrix("_Matrix_VP", VP);
+
+            CS.Dispatch(GridCullingCSHandler, gridsLen, 1, 1);
+            #endregion
+
+            CS.DispatchIndirect(PBDSolverHandler, dispatchArgsBuffer, 0);
+
+            CS.DispatchIndirect(UpdateMeshHandler, dispatchArgsBuffer, 0);
+        }
+    }
+    public void Update()
+    {
+        #region dispatch indirect
+        gridCullingArgs[1] = 0;
+        dispatchArgsBuffer.SetData(gridCullingArgs);
+
+        drawIndirectArgs[1] = 0;
+        drawIndirectArgsBuffer.SetData(drawIndirectArgs);
+
+        CS.SetTexture(GridCullingCSHandler, "_DepthTex", DepthTex);
+
+        CS.SetVector("camPos", Cam.transform.position);
+        CS.SetVector("camDir", Cam.transform.forward);
+        CS.SetFloat("camHalfFov", Cam.fieldOfView / 2);
+
+        Matrix4x4 VP = GL.GetGPUProjectionMatrix(Cam.projectionMatrix, false) * Cam.worldToCameraMatrix;
+        CS.SetMatrix("_Matrix_VP", VP);
+
+        CS.Dispatch(GridCullingCSHandler, gridsLen, 1, 1);
+        #endregion
+
+        Graphics.DrawProceduralIndirect(PBDMaterial, bound, MeshTopology.Triangles, drawIndirectArgsBuffer);
+    }
+
+    public void SetWindForce(Vector3 wind)
+    {
+        CS.SetVector("WindForce", wind);
+    }
+
+    public void Release()
+    {
+        PositionBuffer.Release();
+        PredictedBuffer.Release();
+        VelocitiesBuffer.Release();
+        OriginPosBuffer.Release();
+        OffsetBuffer.Release();
+        FconsBuffer.Release();
+        DconsBuffer.Release();
+        IndexOffsetBuffer.Release();
+
+        resultPosBuffer.Release();
+        resultTriangles.Release();
+        NormalsBuffer.Release();
+        UVsBuffer.Release();
+
+        dispatchArgsBuffer.Release();
+        gridsAllBuffer.Release();
+        gridsToComputeBuffer.Release();
+        gridsVisibleBuffer.Release();
+
+        drawIndirectArgsBuffer.Release();
+
+        GrassDemo.DestroyCS(CS);
+    }
+    ~PBDGrassPatchRenderer()
+    {
+        PositionBuffer.Release();
+        PredictedBuffer.Release();
+        VelocitiesBuffer.Release();
+        OriginPosBuffer.Release();
+        OffsetBuffer.Release();
+        FconsBuffer.Release();
+        DconsBuffer.Release();
+        IndexOffsetBuffer.Release();
+
+        resultPosBuffer.Release();
+        resultTriangles.Release();
+        NormalsBuffer.Release();
+        UVsBuffer.Release();
+
+        dispatchArgsBuffer.Release();
+        gridsAllBuffer.Release();
+        gridsToComputeBuffer.Release();
+        gridsVisibleBuffer.Release();
+
+        drawIndirectArgsBuffer.Release();
+
+        GrassDemo.DestroyCS(CS);
     }
 }
