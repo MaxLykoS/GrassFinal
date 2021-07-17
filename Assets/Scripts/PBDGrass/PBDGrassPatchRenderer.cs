@@ -57,7 +57,6 @@ public class PBDGrassPatchRenderer
     private ComputeBuffer IndexOffsetBuffer;
     private ComputeBuffer resultPosBuffer;
     private int PBDSolverHandler;
-    private int UpdateMeshHandler;
     #endregion
 
     #region draw procedual
@@ -101,7 +100,6 @@ public class PBDGrassPatchRenderer
         CS = GrassDemo.CreateShader();
 
         PBDSolverHandler = CS.FindKernel("PBDSolver");
-        UpdateMeshHandler = CS.FindKernel("UpdateMesh");
 
         #region PBDSolver
         // for PBD solver
@@ -123,13 +121,12 @@ public class PBDGrassPatchRenderer
         BoneInfoBuffer = new ComputeBuffer(t.Length, sizeof(float) * 3 * 4);
         BoneInfoBuffer.SetData(t);
         CS.SetBuffer(PBDSolverHandler, "BonesBuffer", BoneInfoBuffer);
-        CS.SetBuffer(UpdateMeshHandler, "BonesBuffer", BoneInfoBuffer);
         t = null;
 
         Vector3[] vt = patch.GenOffsetArray();
         OffsetBuffer = new ComputeBuffer(vt.Length, sizeof(float) * 3);
         OffsetBuffer.SetData(vt);
-        CS.SetBuffer(UpdateMeshHandler, "OffsetBuffer", OffsetBuffer);
+        CS.SetBuffer(PBDSolverHandler, "OffsetBuffer", OffsetBuffer);
         vt = null;
 
         FixedConstraintStruct[] tt = patch.GenFconsArray();
@@ -147,7 +144,7 @@ public class PBDGrassPatchRenderer
         int[] tttt = patch.GenIndexOffsetArray();
         IndexOffsetBuffer = new ComputeBuffer(tttt.Length, sizeof(int));
         IndexOffsetBuffer.SetData(tttt);
-        CS.SetBuffer(UpdateMeshHandler, "IndexOffsetBuffer", IndexOffsetBuffer);
+        CS.SetBuffer(PBDSolverHandler, "IndexOffsetBuffer", IndexOffsetBuffer);
         tttt = null;
 
         CS.SetTexture(PBDSolverHandler, "WindForceMap", WindNoiseTex);
@@ -156,7 +153,7 @@ public class PBDGrassPatchRenderer
 
         resultPosBuffer = new ComputeBuffer(patch.vertices.Length, sizeof(float) * 3);
         resultPosBuffer.SetData(patch.vertices);
-        CS.SetBuffer(UpdateMeshHandler, "ResultPosBuffer", resultPosBuffer);
+        CS.SetBuffer(PBDSolverHandler, "ResultPosBuffer", resultPosBuffer);
 
         #region draw procedual
         resultTriangles = new ComputeBuffer(patch.PatchMesh.triangles.Length, sizeof(int)); // to shader
@@ -200,7 +197,6 @@ public class PBDGrassPatchRenderer
         CS.SetBuffer(GridCullingCSHandler, "bufferWithArgs", dispatchArgsBuffer);
 
         CS.SetBuffer(PBDSolverHandler, "GridsToComputeBuffer", gridsToComputeBuffer);
-        CS.SetBuffer(UpdateMeshHandler, "GridsToComputeBuffer", gridsToComputeBuffer);
         #endregion
 
         #region draw procedual indirect
@@ -245,9 +241,8 @@ public class PBDGrassPatchRenderer
             CS.Dispatch(GridCullingCSHandler, gridsLen, 1, 1);
             #endregion
 
-            CS.DispatchIndirect(PBDSolverHandler, dispatchArgsBuffer, 0);
-
-            CS.DispatchIndirect(UpdateMeshHandler, dispatchArgsBuffer, 0);
+            //for(int i = 0; i < 64;i++)
+                CS.DispatchIndirect(PBDSolverHandler, dispatchArgsBuffer, 0);
         }
     }
     public void Update()
