@@ -25,7 +25,7 @@ public class GrassDemo : MonoBehaviour
 
         PBDGrassPatchRenderer.Setup(GrassProcedrualMaterial, colliders, Cam, WindNoiseTex);
 
-        var patch = new PBDGrassPatch(Vector3.zero, 32, 32);//256(2 millions)
+        var patch = new PBDGrassPatch(Vector3.zero, 256, 32);//256(2 millions)
 
         r1 = new PBDGrassPatchRenderer(patch); 
 

@@ -1,4 +1,5 @@
-#pragma kernel PBDSolver
+#pragma kernel PBDSolverLOD0
+#pragma kernel PBDSolverLOD1
 #pragma kernel GridCulling
 
 #define XThreads 32
@@ -51,6 +52,7 @@ SamplerState linearRepeatSampler;
 
 StructuredBuffer<SphereCollision> BallBuffer;
 
+RWStructuredBuffer<float3> NormalBuffer;
 RWStructuredBuffer<float3> ResultPosBuffer;
 
 struct PBDGrid
@@ -58,7 +60,8 @@ struct PBDGrid
     float3 pos;
     int idOffset;
 };
-RWStructuredBuffer<PBDGrid> GridsToComputeBuffer;
+RWStructuredBuffer<PBDGrid> GridsToComputeBufferLOD0;
+RWStructuredBuffer<PBDGrid> GridsToComputeBufferLOD1;
 
 StructuredBuffer<int> IndexOffsetBuffer;
 StructuredBuffer<float3> OffsetBuffer;
@@ -81,9 +84,9 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 }
 
 [numthreads(XThreads, 1, 1)] // GridsVisibleBuffer[id.y].idOffset + idInGroup.x body
-void PBDSolver(uint3 id : SV_DispatchThreadID, uint3 idInGroup : SV_GroupThreadID)
+void PBDSolverLOD0(uint3 id : SV_DispatchThreadID, uint3 idInGroup : SV_GroupThreadID)
 {
-    int idx = (GridsToComputeBuffer[id.y].idOffset + idInGroup.x);
+    int idx = (GridsToComputeBufferLOD0[id.y].idOffset + idInGroup.x);
     
     // Apply Force ************
     for (int i = 1; i < BoneCounts - 1; i++)
@@ -162,7 +165,7 @@ void PBDSolver(uint3 id : SV_DispatchThreadID, uint3 idInGroup : SV_GroupThreadI
     int dconsIndexOffset = idx * (BoneCounts - 1);
     float invMass = 1.0f / Mass;
     float sum = Mass * 2.0f;
-    for (i = 0; i < 1; i++)  // 1(4 max) iteration
+    for (i = 0; i < 4; i++)  // 1(4 max) iteration
     {
         for (int j = 0; j < BoneCounts - 1; j++)   // 3 dcons
         {
@@ -204,6 +207,145 @@ void PBDSolver(uint3 id : SV_DispatchThreadID, uint3 idInGroup : SV_GroupThreadI
         BonesBuffer[boneIndex].Position = BonesBuffer[boneIndex].Predicted;
     }
     
+    
+    // Update Mesh ************************
+    int boneOffset = idx * BoneCounts;
+    int offsetOffset = idx * (BoneCounts - 1);
+    int index = 0;
+    for (i = 0; i < (BoneCounts * 2 - 1) - 2; i += 2)
+    {
+        ResultPosBuffer[i + IndexOffsetBuffer[idx]] = BonesBuffer[boneOffset + index].Position + OffsetBuffer[offsetOffset + index]; 
+        ResultPosBuffer[i + 1 + IndexOffsetBuffer[idx]] = BonesBuffer[boneOffset + index].Position - OffsetBuffer[offsetOffset + index];
+        NormalBuffer[i + IndexOffsetBuffer[idx]] = normalize(cross(OffsetBuffer[offsetOffset + index], BonesBuffer[boneOffset + index].Position - BonesBuffer[boneOffset + index + 1].Position));
+        NormalBuffer[i + 1 + IndexOffsetBuffer[idx]] = NormalBuffer[i + IndexOffsetBuffer[idx]];
+        ++index;
+    }
+    ResultPosBuffer[(BoneCounts * 2 - 1) - 1 + IndexOffsetBuffer[idx]] = BonesBuffer[boneOffset + index].Position;
+    NormalBuffer[(BoneCounts * 2 - 1) - 1 + IndexOffsetBuffer[idx]] = NormalBuffer[(BoneCounts * 2 - 1) - 1 + IndexOffsetBuffer[idx] - 1];
+}
+
+[numthreads(XThreads, 1, 1)] // GridsVisibleBuffer[id.y].idOffset + idInGroup.x body
+void PBDSolverLOD1(uint3 id : SV_DispatchThreadID, uint3 idInGroup : SV_GroupThreadID)
+{
+    int idx = (GridsToComputeBufferLOD1[id.y].idOffset + idInGroup.x);
+    
+    // Apply Force ************
+    for (int i = 1; i < BoneCounts - 1; i++)
+    {
+        int idb = idx * BoneCounts + i;
+        
+        // air friction
+        BonesBuffer[idb].Velocities -= BonesBuffer[idb].Velocities * Friction * dt;
+        // gravity
+        BonesBuffer[idb].Velocities += Gravity * dt;
+        // recovery force
+        BonesBuffer[idb].Velocities += (BonesBuffer[idb].OriginPos - BonesBuffer[idb].Predicted) * dt * 2000;
+    }
+    int rootID = idx * BoneCounts;
+    int topID = rootID + BoneCounts - 1;
+    // air friction
+    BonesBuffer[topID].Velocities -= BonesBuffer[topID].Velocities * Friction * dt;
+    // gravity
+    BonesBuffer[topID].Velocities += Gravity * dt;
+    // recovery force
+    BonesBuffer[topID].Velocities += (BonesBuffer[topID].OriginPos - BonesBuffer[topID].Predicted) * dt * 2000;
+    // wind force
+    //BonesBuffer[topID].Velocities += WindForce * dt;
+    // Noise Wind Force
+    float2 windUV = BonesBuffer[topID].Position.xz * _WindForceMap_ST.xy + _WindForceMap_ST.zw + _WindFrequency * _Time;
+    float2 windNoise = WindForceMap.SampleLevel(linearRepeatSampler, windUV, 0).xy * 2 - 1;
+    BonesBuffer[topID].Velocities += float3(windNoise.x, 0, windNoise.y) * dt * WindForce;
+    
+    // Apply Swinging **********
+    /*float3 Gstatic = OriginPosBuffer[rootID] - OriginPosBuffer[topID];
+    float3 Gcur = PositionBuffer[rootID] - OriginPosBuffer[topID];
+    for (i = 0; i < BoneCounts; i++)
+    {
+        
+    }*/
+    
+    // Estimate Positions ***********
+    for (i = 0; i < BoneCounts; i++)
+    {
+        int idb = idx * BoneCounts + i;
+        // update position with new velocity
+        BonesBuffer[idb].Predicted = BonesBuffer[idb].Position + dt * BonesBuffer[idb].Velocities;
+    }
+    
+    // ResolveCollision *************
+    uint ballCount = 0;
+    uint ballStride = 0;
+    BallBuffer.GetDimensions(ballCount, ballStride);
+    for (i = 0; i < BoneCounts; i++)
+    {
+        int idb = idx * BoneCounts + i;
+        
+        //for (int t = 0; t < 3000; t++)
+        for (uint j = 0; j < ballCount; j++)
+        {
+            float3 b2g = BonesBuffer[idb].Predicted - BallBuffer[j].Position;
+            float len = length(b2g);
+            float3 b2gNormalize = normalize(b2g);
+        
+            float offset = len - BallBuffer[j].Radius;
+            if (offset < 0)
+            {
+                float3 targetPos = BallBuffer[j].Position + b2gNormalize * BallBuffer[j].Radius;
+                BonesBuffer[idb].Position = targetPos;
+                BonesBuffer[idb].Predicted = targetPos;
+                BonesBuffer[idb].Velocities = float3(0, 0, 0);
+                break;
+            }
+        }
+    }
+    
+    // Do Constraints ***************
+    float stepDT = 1.0f / 4.0f;
+    
+    // distance constraints
+    int dconsIndexOffset = idx * (BoneCounts - 1);
+    float invMass = 1.0f / Mass;
+    float sum = Mass * 2.0f;
+       
+    for (int j = 0; j < BoneCounts - 1; j++)   // 3 dcons
+    {
+        int i1 = DconsBuffer[dconsIndexOffset + j].i1 + idx * BoneCounts;
+        int i0 = DconsBuffer[dconsIndexOffset + j].i0 + idx * BoneCounts;
+        float3 n = BonesBuffer[i1].Predicted - BonesBuffer[i0].Predicted;
+        float d = length(n);
+        n = normalize(n);
+
+        float3 corr = DconsBuffer[dconsIndexOffset + j].ElasticModulus * n * (d - DconsBuffer[dconsIndexOffset + j].RestLength) * sum;
+
+        BonesBuffer[i0].Predicted += invMass * corr * stepDT;
+
+        BonesBuffer[i1].Predicted -= invMass * corr * stepDT;
+    }
+    
+    // fixed constraints
+    BonesBuffer[FconsBuffer[idx].i0 + idx * BoneCounts].Position = FconsBuffer[idx].fixedPos;
+    BonesBuffer[FconsBuffer[idx].i0 + idx * BoneCounts].Predicted = FconsBuffer[idx].fixedPos;
+    
+    
+    // UpdateVelocities ****************
+    float threshold = StopThreshold * dt;
+    for (i = 0; i < BoneCounts; i++)
+    {
+        int boneIndex = idx * BoneCounts + i;
+    
+        float3 dist = BonesBuffer[boneIndex].Predicted - BonesBuffer[boneIndex].Position;
+        BonesBuffer[boneIndex].Velocities = dist / dt;
+        if (length(BonesBuffer[boneIndex].Velocities) < threshold)
+            BonesBuffer[boneIndex].Velocities = float3(0, 0, 0);
+    }
+    
+    // Update Positions ********************
+    for (i = 0; i < BoneCounts; i++)
+    {
+        int boneIndex = idx * BoneCounts + i;
+        BonesBuffer[boneIndex].Position = BonesBuffer[boneIndex].Predicted;
+    }
+    
     int boneOffset = idx * BoneCounts;
     int offsetOffset = idx * (BoneCounts - 1);
     int index = 0;
@@ -211,14 +353,18 @@ void PBDSolver(uint3 id : SV_DispatchThreadID, uint3 idInGroup : SV_GroupThreadI
     {
         ResultPosBuffer[i + IndexOffsetBuffer[idx]] = BonesBuffer[boneOffset + index].Position + OffsetBuffer[offsetOffset + index];
         ResultPosBuffer[i + 1 + IndexOffsetBuffer[idx]] = BonesBuffer[boneOffset + index].Position - OffsetBuffer[offsetOffset + index];
+        NormalBuffer[i + IndexOffsetBuffer[idx]] = normalize(cross(OffsetBuffer[offsetOffset + index], BonesBuffer[boneOffset + index].Position - BonesBuffer[boneOffset + index + 1].Position));
+        NormalBuffer[i + 1 + IndexOffsetBuffer[idx]] = NormalBuffer[i + IndexOffsetBuffer[idx]];
         ++index;
     }
     ResultPosBuffer[(BoneCounts * 2 - 1) - 1 + IndexOffsetBuffer[idx]] = BonesBuffer[boneOffset + index].Position;
+    NormalBuffer[(BoneCounts * 2 - 1) - 1 + IndexOffsetBuffer[idx]] = NormalBuffer[(BoneCounts * 2 - 1) - 1 + IndexOffsetBuffer[idx] - 1];
 }
 
 StructuredBuffer<PBDGrid> GridsAllBuffer;
 RWStructuredBuffer<PBDGrid> GridsVisibleBuffer;
-RWStructuredBuffer<int> bufferWithArgs;
+RWStructuredBuffer<int> bufferWithArgsLOD0;
+RWStructuredBuffer<int> bufferWithArgsLOD1;
 RWStructuredBuffer<int> bufferWithArgsDrawIndirect;
 
 float3 camPos;
@@ -233,16 +379,24 @@ void GridCulling(uint3 id : SV_DispatchThreadID)
     uint index = id.x;
     
     //https://math.stackexchange.com/questions/237369/given-this-transformation-matrix-how-do-i-decompose-it-into-translation-rotati/417813
-    float3 itemPos = GridsAllBuffer[index].pos + float3(0, 0.5, 0);
+    float3 itemPos = GridsAllBuffer[index].pos + float3(0, 0.5f, 0);
     float3 itemDir = normalize(itemPos - camPos);
     
     float dist = distance(itemPos, camPos);
-    if (dist >= 90)
+    if (dist <= 10)
+    {
+        int currentIndexToComputeLOD0;
+        InterlockedAdd(bufferWithArgsLOD0[1], 1, currentIndexToComputeLOD0);
+        GridsToComputeBufferLOD0[currentIndexToComputeLOD0] = GridsAllBuffer[id.x];
+    }
+    else if (dist <= 90)
+    {
+        int currentIndexToComputeLOD1;
+        InterlockedAdd(bufferWithArgsLOD1[1], 1, currentIndexToComputeLOD1);
+        GridsToComputeBufferLOD1[currentIndexToComputeLOD1] = GridsAllBuffer[id.x];
+    }
+    else
         return;
-    
-    int currentIndexToCompute;
-    InterlockedAdd(bufferWithArgs[1], 1, currentIndexToCompute);
-    GridsToComputeBuffer[currentIndexToCompute] = GridsAllBuffer[id.x];
     
     float4 clipPos = mul(_Matrix_VP, float4(itemPos - camDir * 0.2, 1));
     
