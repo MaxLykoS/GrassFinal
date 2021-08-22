@@ -8,7 +8,7 @@ Shader "Custom/PBDGrassShaderDrawProcedual"
         _TranslucentGain("Translucent Gain", Range(0,1)) = 0.5
 
         [Header(Tessellation)]
-        _TessellationUniform("Tessellation Uniform", Range(1, 64)) = 1
+        _TessellationUniform("Tessellation Uniform", Range(1, 64)) = 32
 
         [Header(BackLightSSS)]
         _InteriorColor("Interior Color", Color) = (1, 1, 1, 1)
@@ -99,8 +99,9 @@ Shader "Custom/PBDGrassShaderDrawProcedual"
             };
             TessellationFactors patchConstantFunction(InputPatch<v2h, 3> patch)
             {
-                float factor = _TessellationUniform;
-                if (patch[0].uv.y < 0.34f || patch[0].uv.y > 0.67f)
+                float dist = distance(patch[0].posW, _WorldSpaceCameraPos);
+                float factor = 32;
+                if (patch[0].uv.y < 0.34f || patch[0].uv.y > 0.67f || dist > 1.0)
                     factor = 1;
                 TessellationFactors f;
                 f.edge[0] = factor;

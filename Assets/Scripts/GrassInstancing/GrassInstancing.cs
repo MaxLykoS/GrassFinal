@@ -179,7 +179,7 @@ public class GrassInstancing : MonoBehaviour
 
     private void LateUpdate()
     {
-        StampCam.transform.position = cam.transform.position + Vector3.up * 500;
+        //StampCam.transform.position = cam.transform.position + Vector3.up * 500;
     }
 
     private void OnDestroy()

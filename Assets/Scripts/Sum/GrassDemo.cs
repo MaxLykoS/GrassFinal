@@ -5,6 +5,7 @@ using PBD;
 
 public class GrassDemo : MonoBehaviour
 {
+    public int GrassSize;
     public Material GrassProcedrualMaterial;
     public List<Transform> colliders;
     public ComputeShader PBDSolverCS;
@@ -25,7 +26,7 @@ public class GrassDemo : MonoBehaviour
 
         PBDGrassPatchRenderer.Setup(GrassProcedrualMaterial, colliders, Cam, WindNoiseTex);
 
-        var patch = new PBDGrassPatch(Vector3.zero, 256, 32);//256(2 millions)
+        var patch = new PBDGrassPatch(Vector3.zero, GrassSize, 32);//256(2 millions)
 
         r1 = new PBDGrassPatchRenderer(patch); 
 

@@ -398,10 +398,10 @@ void GridCulling(uint3 id : SV_DispatchThreadID)
     else
         return;
     
-    float4 clipPos = mul(_Matrix_VP, float4(itemPos - camDir * 0.2, 1));
+    float4 clipPos = mul(_Matrix_VP, float4(itemPos - camDir * 0.5, 1));
     
     //view frustrum
-    if (max(abs(clipPos.x), abs(clipPos.y)) > clipPos.w + 0.7)
+    if (max(abs(clipPos.x), abs(clipPos.y)) > clipPos.w + 3.0)
         return;
     
     clipPos.xyz /= clipPos.w;

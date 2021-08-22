@@ -142,12 +142,12 @@ namespace PBD
     }
 
         void GenV(int vi, int ui, ref Vector3[] vertices, ref Vector2[] uvs, 
-            Vector3 vertexPosition, float _w, float _h, float _f, Vector2 uv, Matrix3x3 transformMatrix)
+            Vector3 rootPosition, float _w, float _h, float _f, Vector2 uv, Matrix3x3 transformMatrix)
         {
-            Vector3 tangentPoint = new Vector3(_w, _h, _f);
-            Vector3 localPosition = vertexPosition + transformMatrix * tangentPoint;
+            Vector3 localPosition = new Vector3(_w, _h, _f);
+            Vector3 worldPosition = rootPosition + transformMatrix * localPosition;
 
-            vertices[vi + IndexOffset] = localPosition;
+            vertices[vi + IndexOffset] = worldPosition;
             uvs[ui + IndexOffset] = uv;
         }
         private void FillGrassMesh(int triIndexOffset, ref Vector3[] vertices, ref Vector2[] uvs, ref int[] triangles, 
