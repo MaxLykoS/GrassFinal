@@ -63,11 +63,11 @@ Shader "Custom/GrassInstancedIndirect"
 
             float GetStamp(float2 position, float height)
             {
-                //_StampVector.xz   ��̤ͶӰ��ˮƽ�����
-                //_StampVector.y    ��ͽ��ͳ̶�
-                //_StampVector.w    ��̤ͶӰ�ߴ�
-                //�������ȥ��̤ͶӰ���ĵ�ĵ�λ�ò�����̤����
-                //������Χ������
+                //_StampVector.xz   踩踏投影的水平坐标点
+                //_StampVector.y    最低降低程度
+                //_StampVector.w    踩踏投影尺寸
+                //以物体减去踩踏投影中心点的位置采样踩踏数据
+                //超出范围不采样
                 float2 stampUv = (position.xy - _StampVector.xz) / _StampVector.w + float2(0.5, .5);
                 float4 stampP = float4(0, 0, 0, 0);
                 if (stampUv.x > 0 && stampUv.x < 1 && stampUv.y>0 && stampUv.y < 1) 

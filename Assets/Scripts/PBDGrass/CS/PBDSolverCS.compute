@@ -405,9 +405,9 @@ void GridCulling(uint3 id : SV_DispatchThreadID)
         return;
     
     clipPos.xyz /= clipPos.w;
-    clipPos.xy = clipPos.xy * 0.5 + 0.5;
+    clipPos.xy = clipPos.xy * 0.5f + 0.5f;
     
-    float scWid = 0.2 / (tan(camHalfFov * 3.1415926 / 180) * clipPos.w) * 1024;
+    float scWid = 0.5f / (tan(camHalfFov * 3.1415926 / 180) * clipPos.w) * 1024;
     
     uint mips = (uint) clamp(log2(scWid), 0, 7);
     
