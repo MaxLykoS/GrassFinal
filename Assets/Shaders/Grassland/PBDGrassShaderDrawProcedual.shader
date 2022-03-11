@@ -101,7 +101,9 @@ Shader "Custom/PBDGrassShaderDrawProcedual"
             {
                 float dist = distance(patch[0].posW, _WorldSpaceCameraPos);
                 float factor = 32;
-                if (patch[0].uv.y < 0.34f || patch[0].uv.y > 0.67f || dist > 1.0)
+                //if (patch[0].uv.y < 0.34f || patch[0].uv.y > 0.67f || dist > 1.0)
+                    //factor = 1;
+                if (dist > 1.0)
                     factor = 1;
                 TessellationFactors f;
                 f.edge[0] = factor;

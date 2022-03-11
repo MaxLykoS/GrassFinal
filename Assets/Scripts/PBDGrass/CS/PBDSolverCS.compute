@@ -1,6 +1,7 @@
 #pragma kernel PBDSolverLOD0
 #pragma kernel PBDSolverLOD1
 #pragma kernel GridCulling
+#pragma kernel GridLOD
 
 #define XThreads 32
 #define BoneCounts 4
@@ -363,8 +364,6 @@ void PBDSolverLOD1(uint3 id : SV_DispatchThreadID, uint3 idInGroup : SV_GroupThr
 
 StructuredBuffer<PBDGrid> GridsAllBuffer;
 RWStructuredBuffer<PBDGrid> GridsVisibleBuffer;
-RWStructuredBuffer<int> bufferWithArgsLOD0;
-RWStructuredBuffer<int> bufferWithArgsLOD1;
 RWStructuredBuffer<int> bufferWithArgsDrawIndirect;
 
 float3 camPos;
@@ -383,25 +382,14 @@ void GridCulling(uint3 id : SV_DispatchThreadID)
     float3 itemDir = normalize(itemPos - camPos);
     
     float dist = distance(itemPos, camPos);
-    if (dist <= 10)
-    {
-        int currentIndexToComputeLOD0;
-        InterlockedAdd(bufferWithArgsLOD0[1], 1, currentIndexToComputeLOD0);
-        GridsToComputeBufferLOD0[currentIndexToComputeLOD0] = GridsAllBuffer[id.x];
-    }
-    else if (dist <= 90)
-    {
-        int currentIndexToComputeLOD1;
-        InterlockedAdd(bufferWithArgsLOD1[1], 1, currentIndexToComputeLOD1);
-        GridsToComputeBufferLOD1[currentIndexToComputeLOD1] = GridsAllBuffer[id.x];
-    }
-    else
+    if (dist > 90)
         return;
     
-    float4 clipPos = mul(_Matrix_VP, float4(itemPos - camDir * 0.5, 1));
+    //float4 clipPos = mul(_Matrix_VP, float4(itemPos - camDir * 0.5, 1));
+    float4 clipPos = mul(_Matrix_VP, float4(itemPos, 1));
     
     //view frustrum
-    if (max(abs(clipPos.x), abs(clipPos.y)) > clipPos.w + 3.0)
+    if (max(abs(clipPos.x), abs(clipPos.y)) > clipPos.w + 0.7f * clipPos.w)
         return;
     
     clipPos.xyz /= clipPos.w;
@@ -421,4 +409,30 @@ void GridCulling(uint3 id : SV_DispatchThreadID)
     int currentIndexToDraw;
     InterlockedAdd(bufferWithArgsDrawIndirect[1], 1, currentIndexToDraw);
     GridsVisibleBuffer[currentIndexToDraw] = GridsAllBuffer[id.x];
+}
+
+RWStructuredBuffer<int> bufferWithArgsLOD0;
+RWStructuredBuffer<int> bufferWithArgsLOD1;
+[numthreads(32, 1, 1)]
+void GridLOD(uint3 id : SV_DispatchThreadID)
+{
+    uint index = id.x;
+    
+    float3 itemPos = GridsAllBuffer[index].pos + float3(0, 0.5f, 0);
+    
+    float dist = distance(itemPos, camPos);
+    if (dist <= 10)
+    {
+        int currentIndexToComputeLOD0;
+        InterlockedAdd(bufferWithArgsLOD0[1], 1, currentIndexToComputeLOD0);
+        GridsToComputeBufferLOD0[currentIndexToComputeLOD0] = GridsAllBuffer[id.x];
+    }
+    else if (dist <= 90)
+    {
+        int currentIndexToComputeLOD1;
+        InterlockedAdd(bufferWithArgsLOD1[1], 1, currentIndexToComputeLOD1);
+        GridsToComputeBufferLOD1[currentIndexToComputeLOD1] = GridsAllBuffer[id.x];
+    }
+    else
+        return;
 }

@@ -26,7 +26,7 @@ public class PBDGrassPatchRenderer
         for (int i = 0; i < ballslist.Count; i++)
         {
             balls[i].Position = ballslist[i].position;
-            balls[i].Radius = 0.8f;
+            balls[i].Radius = 0.6f;
         }
 
         ballBuffer = new ComputeBuffer(balls.Length, sizeof(float) * 4);
@@ -77,6 +77,7 @@ public class PBDGrassPatchRenderer
     private ComputeBuffer dispatchArgsBufferLOD0;
     private ComputeBuffer dispatchArgsBufferLOD1;
     private ComputeBuffer gridsAllBuffer;
+    private int GridLODCSHandler;
     private ComputeBuffer gridsToComputeBufferLOD0;
     private ComputeBuffer gridsToComputeBufferLOD1;
     private ComputeBuffer gridsVisibleBuffer;
@@ -187,7 +188,6 @@ public class PBDGrassPatchRenderer
         #endregion
 
         #region dispatch indirect
-
         gridsAllBuffer = new ComputeBuffer(patch.grids.Length, sizeof(float) * 3 + sizeof(int));
         gridsAllBuffer.SetData(patch.grids);
         gridsToComputeBufferLOD0 = new ComputeBuffer(patch.grids.Length, sizeof(float) * 3 + sizeof(int));
@@ -210,11 +210,13 @@ public class PBDGrassPatchRenderer
         dispatchArgsBufferLOD1.SetData(gridCullingArgs);
 
         CS.SetBuffer(GridCullingCSHandler, "GridsAllBuffer", gridsAllBuffer);
-        CS.SetBuffer(GridCullingCSHandler, "GridsToComputeBufferLOD0", gridsToComputeBufferLOD0);
-        CS.SetBuffer(GridCullingCSHandler, "GridsToComputeBufferLOD1", gridsToComputeBufferLOD1);
+        GridLODCSHandler = CS.FindKernel("GridLOD");
+        CS.SetBuffer(GridLODCSHandler, "GridsAllBuffer", gridsAllBuffer);
+        CS.SetBuffer(GridLODCSHandler, "GridsToComputeBufferLOD0", gridsToComputeBufferLOD0);
+        CS.SetBuffer(GridLODCSHandler, "GridsToComputeBufferLOD1", gridsToComputeBufferLOD1);
         CS.SetBuffer(GridCullingCSHandler, "GridsVisibleBuffer", gridsVisibleBuffer);
-        CS.SetBuffer(GridCullingCSHandler, "bufferWithArgsLOD0", dispatchArgsBufferLOD0);
-        CS.SetBuffer(GridCullingCSHandler, "bufferWithArgsLOD1", dispatchArgsBufferLOD1);
+        CS.SetBuffer(GridLODCSHandler, "bufferWithArgsLOD0", dispatchArgsBufferLOD0);
+        CS.SetBuffer(GridLODCSHandler, "bufferWithArgsLOD1", dispatchArgsBufferLOD1);
 
         CS.SetBuffer(PBDSolverHandlerLOD0, "GridsToComputeBufferLOD0", gridsToComputeBufferLOD0);
         CS.SetBuffer(PBDSolverHandlerLOD1, "GridsToComputeBufferLOD1", gridsToComputeBufferLOD1);
@@ -249,19 +251,9 @@ public class PBDGrassPatchRenderer
             dispatchArgsBufferLOD0.SetData(gridCullingArgs);
             dispatchArgsBufferLOD1.SetData(gridCullingArgs);
 
-            drawIndirectArgs[1] = 0;
-            drawIndirectArgsBuffer.SetData(drawIndirectArgs);
-
-            CS.SetTexture(GridCullingCSHandler, "_DepthTex", DepthTex);
-
             CS.SetVector("camPos", Cam.transform.position);
-            CS.SetVector("camDir", Cam.transform.forward);
-            CS.SetFloat("camHalfFov", Cam.fieldOfView / 2);
 
-            Matrix4x4 VP = GL.GetGPUProjectionMatrix(Cam.projectionMatrix, false) * Cam.worldToCameraMatrix;
-            CS.SetMatrix("_Matrix_VP", VP);
-
-            CS.Dispatch(GridCullingCSHandler, gridsLen, 1, 1);
+            CS.Dispatch(GridLODCSHandler, gridsLen, 1, 1);
             #endregion
 
             CS.DispatchIndirect(PBDSolverHandlerLOD0, dispatchArgsBufferLOD0, 0);
