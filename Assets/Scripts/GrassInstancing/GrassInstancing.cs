@@ -93,6 +93,9 @@ public class GrassInstancing : MonoBehaviour
 
     private void Cull()
     {
+        //uint[] res = new uint[5];
+        //int count = GrassPool.LENGTH*GrassPool.LENGTH;
+
         argsLOD0[1] = 0;
         argsBufferLOD0.SetData(argsLOD0);
 
@@ -109,6 +112,12 @@ public class GrassInstancing : MonoBehaviour
         CS.SetMatrix("_Matrix_VP", VP);
 
         CS.Dispatch(CSCullingID, Mathf.Max(GrassPool.LENGTH * GrassPool.LENGTH / 1024, 1), 1, 1);
+
+        /*argsBufferLOD0.GetData(res);
+        count -= res;
+        Debug.Log(res[1]);
+        argsBufferLOD1.GetData(res);
+        Debug.Log(res[1]);*/
     }
 
     private void FillArgsBuffer()

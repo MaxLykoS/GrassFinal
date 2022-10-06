@@ -34,9 +34,9 @@ public class GrassPool
     const int COUNT = 8;
     const int LOD0BLADES = 64;
     const int LOD1BLADES = 32;
-    public const int LENGTH = 256;
+    public const int LENGTH = 128;
     private PBD.PBDGrassPatch[] patchPool3;  //64 grass 3 blade
-    private PBD.PBDGrassPatch[] patchPool1;  //16 grass 1 blade
+    private PBD.PBDGrassPatch[] patchPool1;  //32 grass 1 blade
 
     private Dictionary<Vector2Int, GrassID> grassGrids;
 
