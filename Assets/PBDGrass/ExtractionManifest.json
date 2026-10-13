@@ -1,0 +1,134 @@
+{
+  "workspace": "Assets/PBDGrass",
+  "namespace": "GrassFinal.PBDGrass",
+  "source_scene": "Assets/Scenes/GrassFinal.unity",
+  "sources": [
+    {
+      "source": "Assets/Scripts/PBDGrass/PBDSolver.cs",
+      "copy": "Assets/PBDGrass/Runtime/PBDSolver.cs",
+      "source_sha256": "c1c3a7a93380f29297332f7d61d4cca637dbb24e99c4eae50bfc26b17bcbb8f3"
+    },
+    {
+      "source": "Assets/Scripts/PBDGrass/PBDGrassPatchRenderer.cs",
+      "copy": "Assets/PBDGrass/Runtime/PBDGrassPatchRenderer.cs",
+      "source_sha256": "49fc9ca6d14686d7f8aa4332c2bc74fc1dfcff176ae677ce1ddfaa9b9e2029e3"
+    },
+    {
+      "source": "Assets/Scripts/PBDGrass/Body/PBDGrassBody.cs",
+      "copy": "Assets/PBDGrass/Runtime/Body/PBDGrassBody.cs",
+      "source_sha256": "a7dcc561a1f383d2c7c3b6bb52cbf18af2f1b632a5fc17ade508f73cbd7ddde8"
+    },
+    {
+      "source": "Assets/Scripts/PBDGrass/Body/PBDGrassPatch.cs",
+      "copy": "Assets/PBDGrass/Runtime/Body/PBDGrassPatch.cs",
+      "source_sha256": "edf95ae4bf30cd312ab386ce6dc03bbebf968aecb72aed6c00b680d4f1ee8a58"
+    },
+    {
+      "source": "Assets/Scripts/PBDGrass/Constraints/Constraint.cs",
+      "copy": "Assets/PBDGrass/Runtime/Constraints/Constraint.cs",
+      "source_sha256": "eb99893f8966836667baec2e24817485037ed3d652cbf9d4fbb76fd973d633ca"
+    },
+    {
+      "source": "Assets/Scripts/PBDGrass/Constraints/DistanceConstraint.cs",
+      "copy": "Assets/PBDGrass/Runtime/Constraints/DistanceConstraint.cs",
+      "source_sha256": "a885dbcc0d2dc78dd4d2fa940f04b873960939c34da336708215aba1762fbc49"
+    },
+    {
+      "source": "Assets/Scripts/PBDGrass/Constraints/FixedConstraint.cs",
+      "copy": "Assets/PBDGrass/Runtime/Constraints/FixedConstraint.cs",
+      "source_sha256": "c8e8f65947e48455a6bebb23e4435e286e401cc975483344b57fa7e61dc3a083"
+    },
+    {
+      "source": "Assets/Scripts/PBDGrass/Collision/BodySphereContact.cs",
+      "copy": "Assets/PBDGrass/Runtime/Collision/BodySphereContact.cs",
+      "source_sha256": "d96bde4fbc335a263c331f9939d44cc98307378bdd507641ae7ea84371f77f8d"
+    },
+    {
+      "source": "Assets/Scripts/PBDGrass/Collision/SphereCollision.cs",
+      "copy": "Assets/PBDGrass/Runtime/Collision/SphereCollision.cs",
+      "source_sha256": "b1a984482e0dc87dcc7022a3249ef819801ea72c4081d1a2b36c54de70a636d2"
+    },
+    {
+      "source": "Assets/Scripts/PBDGrass/Collision/SpaceHash.cs",
+      "copy": "Assets/PBDGrass/Runtime/Collision/SpaceHash.cs",
+      "source_sha256": "babc9d1122c59f214e7244f701626fb38295b88dc4c340033dfe8c4fe6f2cf0d"
+    },
+    {
+      "source": "Assets/Scripts/Math/MathUtility.cs",
+      "copy": "Assets/PBDGrass/Runtime/Math/MathUtility.cs",
+      "source_sha256": "aa2d6a4a233a09ed1b9f26458c1f852f11a04071a3acca19d0aa913315db6a51"
+    },
+    {
+      "source": "Assets/Scripts/Math/Matrix3x3.cs",
+      "copy": "Assets/PBDGrass/Runtime/Math/Matrix3x3.cs",
+      "source_sha256": "2f22801ccc5081f36d9ed005fc1de19ab8c4925e1e82fe8562e2ab3ccb2dc798"
+    },
+    {
+      "source": "Assets/Scripts/GrassInstancing/DepthTexMaker.cs",
+      "copy": "Assets/PBDGrass/Runtime/Rendering/DepthTexMaker.cs",
+      "source_sha256": "eb02cfc9092ebc7c6e6c78257dc2d92f6ffcd439e5d253a95be6c6cdadbdf10d"
+    },
+    {
+      "source": "Assets/Scripts/Sum/GrassDemo.cs",
+      "copy": "Assets/PBDGrass/Demo/GrassDemo.cs",
+      "source_sha256": "e8b50c69c3986d1c74896b50661dbcdfb062ac2da968d3eb599655436c50664b"
+    },
+    {
+      "source": "Assets/Scripts/Utility/FreeCam.cs",
+      "copy": "Assets/PBDGrass/Demo/FreeCam.cs",
+      "source_sha256": "cd3cafac93bd96711da964ec846acb350c224d38b1ab78a92f1943ca35e3dfa3"
+    },
+    {
+      "source": "Assets/Scripts/Utility/ColliderController.cs",
+      "copy": "Assets/PBDGrass/Demo/ColliderController.cs",
+      "source_sha256": "4dbe41635847323f39b5e538e2d9780c9c69d28e14642c201fab91d6fe9468b5"
+    },
+    {
+      "source": "Assets/Scripts/PBDGrass/CS/PBDSolverCS.compute",
+      "copy": "Assets/PBDGrass/Shaders/PBDSolverCS.compute",
+      "source_sha256": "7812f5cd1339073979ddca59ca64eb2ba6b88c7d70427ee93370c10131ef12ef"
+    },
+    {
+      "source": "Assets/Shaders/Grassland/PBDGrassShaderDrawProcedual.shader",
+      "copy": "Assets/PBDGrass/Shaders/PBDGrassShaderDrawProcedual.shader",
+      "source_sha256": "9f8d71c466d70ea36c864ddf7520fce0a0ec9e2d659d3790680bc06ae09fc336"
+    },
+    {
+      "source": "Assets/Shaders/Grassland/PBDGrassShader.shader",
+      "copy": "Assets/PBDGrass/Shaders/PBDGrassShader.shader",
+      "source_sha256": "4d27330f5d4618b0d055efb6897e1bd804d41d4a1eda8cd1afa425ebb15d2841"
+    },
+    {
+      "source": "Assets/Scripts/GrassInstancing/HZBMaker.shader",
+      "copy": "Assets/PBDGrass/Shaders/HZBMaker.shader",
+      "source_sha256": "415c2346848d288246eed569aa670ee89f1e17f2baa32bb491d8f4d6cb004eb5"
+    },
+    {
+      "source": "Assets/Materials/PBDGrassProcedualMaterial.mat",
+      "copy": "Assets/PBDGrass/Materials/PBDGrassProcedualMaterial.mat",
+      "source_sha256": "9ab0e571631143cc6a4ab01d174f23b0c437480000e63a98a00ae59daadd8fb8"
+    },
+    {
+      "source": "Assets/Materials/PBDGrassMaterial.mat",
+      "copy": "Assets/PBDGrass/Materials/PBDGrassMaterial.mat",
+      "source_sha256": "90718f72a291f8580f60c694a255d5774c21ab14c6b1ed9e74b9b554d27c5dd6"
+    },
+    {
+      "source": "Assets/Materials/DepthTexMaker.mat",
+      "copy": "Assets/PBDGrass/Materials/DepthTexMaker.mat",
+      "source_sha256": "3d97cd6f8c439da6d35d03f27174d717219d20177425b5d387c03a58f4acda38"
+    },
+    {
+      "source": "Assets/Textures/Wind.png",
+      "copy": "Assets/PBDGrass/Textures/Wind.png",
+      "source_sha256": "bde63a20b60f9126eef15e774f2212bf02c5f46c04becb195273f107662808bd"
+    }
+  ],
+  "isolation_changes": [
+    "C# namespace and assembly isolation",
+    "Shader name isolation",
+    "Fresh Unity GUIDs and remapped references",
+    "PBD-only depth texture publication",
+    "Minimal independently wired demo scene and prefab"
+  ]
+}
