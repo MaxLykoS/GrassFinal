@@ -19,10 +19,10 @@ public class ColliderController : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.O))
             foreach (Transform tr in Colliders)
-                tr.Translate(Vector3.right * speed);
+                tr.Translate(Vector3.right * speed * Time.deltaTime);
         else if (Input.GetKey(KeyCode.P))
             foreach (Transform tr in Colliders)
-                tr.Translate(-Vector3.right * speed);
+                tr.Translate(-Vector3.right * speed * Time.deltaTime);
     }
 }
 }

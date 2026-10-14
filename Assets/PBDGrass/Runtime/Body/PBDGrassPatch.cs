@@ -64,9 +64,9 @@ namespace GrassFinal.PBDGrass
     public class PBDGrassPatch
     {
         public int SEGMENTS {get; private set;}
-        const float GrassHeight = 0.5f;
-        const float GrassWidth = 0.03f;
-        const float GrassForward = 0.38f;
+        const float GrassHeight = 0.65f;
+        const float GrassWidth = 0.015f;
+        const float GrassForward = 0.18f;
         const float GrassMass = 1.0f;
 
         public PBDGrassBody[] Bodies;
@@ -132,7 +132,7 @@ namespace GrassFinal.PBDGrass
         public PBDGrassPatch(Vector3 root, int len, int pointsPerGrid)
         {
             int points = len * len * pointsPerGrid;
-            this.SEGMENTS = 3;
+            this.SEGMENTS = GrassBladeData.Segments;
             this.Root = root;
             this.Width = len;
             this.Length = len;
@@ -149,8 +149,8 @@ namespace GrassFinal.PBDGrass
             int[] triangles = new int[points * ((SEGMENTS * 2 - 1) * 3)];
 
             // from left to right, from top to bottom
-            float startCenterX = Root.x - len / 2 + 0.5f;
-            float startCenterY = Root.y + len / 2 - 0.5f;
+            float startCenterX = Root.x - len / 2.0f + 0.5f;
+            float startCenterY = Root.z + len / 2.0f - 0.5f;
 
             int bodyID = 0;
             int gridID = 0;
@@ -160,7 +160,7 @@ namespace GrassFinal.PBDGrass
                 {
                     Vector2 newCenter = new Vector2(startCenterX + j, startCenterY - i);
 
-                    grids[gridID].Pos = new Vector3(newCenter.x, 0, newCenter.y);
+                    grids[gridID].Pos = new Vector3(newCenter.x, Root.y, newCenter.y);
                     grids[gridID].IdOffset = bodyID;
                     gridID++;
 
@@ -175,7 +175,7 @@ namespace GrassFinal.PBDGrass
                         float newZ = Random.Range(minZ, maxZ);
 
                         Bodies[bodyID] = new PBDGrassBody(ref vertices, ref uvs, ref triangles, indexOffset, triIndexOffset,
-                            new Vector3(newX, 0, newZ),
+                            new Vector3(newX, Root.y, newZ),
                             SEGMENTS, GrassHeight, GrassWidth, GrassForward, GrassMass);
                         bodyID++;
                         indexOffset += offsetIncreasment;

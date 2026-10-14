@@ -1,50 +1,104 @@
-# PBD 草工作目录
+# 近景 XPBD 草工作目录
 
-后续 PBD 草的生成、模拟和渲染在此目录迭代。目录外的原代码和资源作为 Archive 保留，没有移动或修改。
+此目录是当前生成、模拟和渲染的开发入口；目录外的原有代码和资源继续作为 Archive。本版只实现近景，没有接入中景或远景。
 
-## 运行入口
+当前已接受版本作为优化前 baseline，配置与复现约定见 [OptimizationBaseline.md](Diagnostics/OptimizationBaseline.md)，Git 标签为 `baseline/xpbd-grass-pre-optimization`。
 
-在 Unity 2022.3、Built-in Render Pipeline 下打开 `Scenes/PBDGrassDemo.unity`，等待导入后进入 Play Mode。
-场景引用本目录的 `Prefabs/PBDGrassDemo.prefab`，已接好草材质、Compute Shader、风噪声、相机、Hi-Z 深度生成和两个交互球。
+## 查看效果
 
-- WASD / 方向键：移动相机；右键：观察；Shift：加速；滚轮：前后移动。
-- O / P：移动两个交互球，观察草的碰撞与恢复。
-- GrassSize 为原场景的 128；每格 32 根，共 524,288 根草。可以在新 prefab 的 GrassDemo 上调整。
-- 当前实现使用静态渲染状态；一个场景只放一个此 prefab，并保持根对象位于原点、单位缩放。
-- GPU 路径要求 Compute Shader、间接绘制和曲面细分支持，建议使用原工程的 Windows 图形环境。
+打开 `Scenes/PBDGrassDemo.unity`。Scene 视图在编辑模式显示静止草叶，进入 Play Mode 后显示当前模拟结果。
+Scene 视图的剔除仍使用 `GrassDemo.Cam` 主相机的视锥、距离、投影和 Hi-Z；Scene 相机移动不会改变被剔除的草叶集合。编辑预览和 Scene 相机渲染不会额外推进模拟。
 
-## 全流程与目录
+- WASD / 方向键移动相机，右键观察，Shift 加速；Space 开关风，观察卸载后的恢复。
+- O / P 移动胶囊体和球体，观察草叶受压、沿接触面滑动和恢复。
+- 默认生成 32 × 32 米、每平方米 32 根的固定草田，共 32,768 根。
+- Demo 固定为 32,768 根标杆：模拟池上限 32,768 根，激活半径 24 米覆盖方形草田的四角，全部参与模拟。通用设置类仍保留 16 米半径供其他场景使用；相机可见性只控制绘制。
+- `SimulationFocus` 可指向玩家/交互中心；为空时使用草田根对象位置。模拟池在已生成草田内移动，没有无限世界流式生成。
+- 近景范围外暂时不绘制草。这个版本用于检查近景效果，边界还没有中景形状过渡。
 
-1. `Demo/GrassDemo.cs`：初始化、风参数、交互球数据和每帧调度。
-2. `Runtime/Body/`、`Runtime/Math/`、`Runtime/Constraints/`：草叶生成、节点状态及约束数据。
-3. `Runtime/PBDGrassPatchRenderer.cs`：GPU 缓冲、LOD 调度、剔除与间接绘制。
-4. `Shaders/PBDSolverCS.compute`：近远 PBD 求解、球体碰撞、顶点/法线重建、网格 LOD 与剔除。
-5. `Runtime/Rendering/DepthTexMaker.cs`、`Shaders/HZBMaker.shader`、`Materials/DepthTexMaker.mat`：用于草地遮挡剔除的深度金字塔。
-6. `Shaders/PBDGrassShaderDrawProcedual.shader`、`Materials/PBDGrassProcedualMaterial.mat`：当前 GPU 路径的细分与着色。
-7. `Textures/Wind.png`：独立复制的风场噪声及原导入设置。
+参数在 `GrassDemo.Physics`。柔顺度越大越软。质量单位为 kg，长度单位为 Unity 米。风仍为启发式世界空间加速度，并非完整空气动力学。
+根对象的旋转和缩放保持单位值；支持非零平移原点。
 
-`Runtime/PBDSolver.cs` 和相关碰撞类保留 CPU 求解参考及当前渲染器所用的求解参数。
-`PBDGrassShader.shader` / `PBDGrassMaterial.mat` 保留 PBD 网格着色版本，不是演示场景默认的 GPU 绘制路径。
-相机控制和交互球控制仅用于独立检查 PBD 草；没有复制角色、UI、后期、非 PBD 草或大型环境模型。
+## 共享数据和模拟池
 
-## 本轮隔离改动
+`GrassBladeData` 保存稳定草叶 ID、根位置、尺寸、静止中心线、材料坐标系、截面缩放、质量权重和渲染拓扑。将来中景可以从同一份数据取形状，不需要生成另一批草。
 
-- C# 类型统一放入 `GrassFinal.PBDGrass` 命名空间，并使用独立 asmdef；`autoReferenced` 关闭，旧脚本不自动引用新程序集。
-- Shader 名称使用 `PBDGrass/Workspace/` 前缀，所有资产和目录获得新 GUID；新材质和场景引用新资源。
-- 深度生成器删除向旧 `GrassInstancing` 发布深度图的语句，仅服务新 PBD 渲染器。
-- 原脚本的 UTF-8 / Windows 中文编码在新副本中统一为 UTF-8，原文件字节保持不变。
-- 演示场景使用独立 prefab、内置平面和球体，重建必要参数与连接；没有携带旧场景的角色、UI或烘焙数据。
-- 草生成算法、PBD 力与约束、GPU 内核、LOD、细分、着色和原始时间调度保持原样。
+`GrassSimulationPool` 按每格 32 根分配 GPU 状态槽，严格限制容量。候选格以交互中心距离排序；仍驻留的格保留位置、速度、材料方向和角速度。范围外驻留槽暂停模拟，作为 LRU 缓存；有空余容量时，重新进入不会重置状态。只有槽被其他格淘汰后，重新进入才从静止形状初始化。
 
-## 后续迭代记录
+池与风场不依赖相机朝向，转动相机不会重置模拟。相机用视锥/可选 Hi-Z 剔除已激活格的绘制；默认关闭 Hi-Z。运行帧没有同步 GPU 回读。
+池容量、截面厚度比和交互列表长度在初始化时确定，修改后重新进入 Play Mode；柔顺度、阻尼、质量、半径和风可以运行时调节。
 
-已知的时间步、近距离细分成本、静态状态、资源释放方式和遮挡剔除问题留待后续显式升级，本轮没有修正这些旧行为。
-`ExtractionManifest.json` 记录原文件路径与哈希，用于追踪副本来源。
+## 八节点弹性草叶
 
-## 提取验证（2026-10-13）
+每根草有 8 个中心线节点、7 段、7 个单位四元数材料坐标系，渲染为 15 顶点 / 13 三角形的连续带状叶片。材料局部 x 是宽度方向，y 是材料截面法线，z 是草段切线。当前三角形绕序的正面渲染法线沿 `cross(width, tangent)`，与材料 y 轴符号相反；这不改变弯曲/扭转约束的材料坐标系。
 
-- 使用已安装 Unity 2022.3 的引擎与 .NET Standard 2.1 引用，独立编译全部 16 个 C# 脚本；UNITY_EDITOR 与播放器条件分支均通过。
-- 检查 43 个新资产/目录 GUID，全部唯一且与旧 Assets 中的 GUID 无冲突。
-- 场景、prefab 和材质通过 YAML 解析；13 个非 Unity 内置资源引用全部解析到本目录，prefab 层级与组件引用一致。
-- 24 个副本与原内容比对通过，只包含上述隔离改动；51 个原始源文件与元数据的 SHA-256 保持不变。
-- 未启动 Unity、未执行 Shader/GPU 渲染或 Play Mode 验证，未访问项目 Library；编译输出和检查工具仅放在系统临时目录。
+1. 根节点位置固定；地上 7 个节点全部参与动力学。基部材料方向通过弹性约束获得土壤支撑，不额外固定地上节点的位置。
+2. 相邻节点的段长使用 XPBD 伸长弹簧。
+3. 单位切线与材料 z 轴的 XPBD 对齐约束，将节点位置与材料旋转耦合。
+4. 相邻材料方向的相对四元数与静止相对四元数比较，得到两个弯曲分量和一个扭转分量。弯曲绕宽度轴容易、绕法线轴困难；三个柔顺度可分别调整。
+5. 静止相对旋转保留草叶自然初始曲率，不使用地上点拉回固定世界位置的弹簧。
+6. 质量按段长、逐渐变窄的宽度、逐渐变薄的厚度积分并分配到节点，再归一化到 `BladeMass`。默认每根 0.01 kg。
+7. 参考角柔顺度按段长和截面缩放：易弯/扭转约为 `L/(w*t³)`，难弯约为 `L/(t*w³)`。转动惯量使用段质量与长度的标量近似。
+
+默认柔顺度：易弯 12、难弯 0.8、扭转 3、基部 0.5；它们是可调的有效材料参数，尚未由实测草种的 Young 模量和截面标定。
+法线和叶片宽度由模拟材料方向重建；移除了旧渲染器额外的曲面位移，以便画面直接反映物理形状。着色阶段额外构造圆弧截面法线，不改变模拟中心线或几何轮廓。
+
+## 草叶光照
+
+当前材质默认 `Lit` 正常光照。`Debug View` 可实时切换到 `SpecularOnly`，仅输出实际主光高光贡献，保留 GGX、灯光颜色/强度和阴影衰减，使用原始 1 倍强度，不叠加漫反射、透射、环境光或雾；也可选择 `SimulationNormals` GPU 原始世界法线、`ShadingNormals` 世界空间圆弧正面法线、`SpecularNormals` 草丛过滤后的正面法线、`FacingNormals` 双面 BRDF 实际使用的法线（按三角形正反面翻转）。法线模式 RGB = N × 0.5 + 0.5。Game/Scene 视图均生效，此开关即时更新，不需要重新初始化模拟；历史光照截图和性能数据均在 `Lit` 模式下采集。法线方向、相机不变性验证见 [NormalSpaceValidation.md](Diagnostics/NormalSpaceValidation.md)。
+
+当前 Demo 使用 `Materials/PBDGrassProcedualMaterial.mat`，着色器是 `Shaders/PBDGrassShaderDrawProcedual.shader`。参考《对马岛之魂》GDC 2021 草演讲的圆弧法线、草丛法线参与高光抗闪烁，以及叶脉/光泽/颜色纹理组织；完整 BRDF 未在演讲中公开，本版是在 Unity Built-in Forward 中实现这些公开思路，并非原游戏着色器的逐字复刻。此前自行添加的掠射角视线法线偏置已移除，没有将它作为原游戏实现保留。
+
+- 叶片宽度方向来自当前模拟几何，圆弧法线随 XPBD 的弯曲、扭转一起变化。世界空间正面法线与三角形绕序一致；双面光照使用 `SV_IsFrontFace` 在 BRDF 阶段翻转，不用 `dot(N,V)` 修补法线方向。
+- GGX 非金属高光使用光泽纹理，按像素足迹混合空间草丛法线，并用法线导数提高有效粗糙度，减少细叶高光闪烁。草丛法线与叶片正面法线对齐，不再与相机对齐。`SpecularNormals` 仍会随像素足迹/LOD 改变过滤量；严格检查相机不变性请用 `SimulationNormals` 或 `ShadingNormals`。
+- 高光直接复用 Unity Standard 的 GGX 分布、Smith 可见性和 Fresnel 辅助函数。基础反射率及漫反射能量分配使用 `unity_ColorSpaceDielectricSpec`：Gamma 为约 0.221，Linear 为 0.04；此前仅修正 GGX 平方根分支、仍硬编码 Fresnel=0.04 的混用已修复。相同输入对照 Unity `BRDF1_Unity_PBS` 的直接高光，Gamma/Linear 均通过逐像素验证，见 [HighlightValidation.md](Diagnostics/HighlightValidation.md)。草丛过滤从叶宽接近 1 像素时开始，限制粗糙度增量；法线在每个 60 Hz 模拟 tick 最后一个子步重建，没有模拟推进的渲染帧直接复用。
+- `Textures/LeafVeinProfile.png` 和 `LeafGlossProfile.png` 是横跨叶宽的 1D 纹理；`LeafColorVariation.png` 是以稳定草叶种子与叶高采样的 2D 颜色变化纹理。三者为线性数据、Clamp、带 mipmap；没有增加逐帧 CPU 颜色计算或模拟回读。
+- 漫反射、高光和薄叶透射均乘灯光颜色、强度和阴影衰减；根部颜色也参与光照。环境光使用 SH，根部 AO 只衰减环境光。不会再用未受灯光控制的加色模拟逆光。
+- 新增与模拟几何一致的双面 ShadowCaster，接收 Unity 主光阴影并支持雾。当前只实现 ForwardBase 主光，不含 ForwardAdd 多光源叠加、反射探针高光、SSGI 或游戏原版的屏幕空间接触阴影。
+
+材质可调 `Rounded Cross Section`、`Roughness`、`Specular Anti Aliasing`、`Transmission`、`Root Ambient Occlusion` 和根/尖颜色。草丛是根位置生成的空间着色分组，尚未接入美术草丛分布数据。
+
+Demo 沿用工程当前 Quality 设置；如果该档位关闭 Shadows，即使灯光选择 Soft Shadows 也不会出图。启用 Quality 的阴影后会增加阴影图开销；这里只提交主相机剔除后可见的草，画外草叶向画内投影仍有遗漏。没有为了光照改动工程全局 Quality 配置。
+
+渲染器初始化时复制材质参数，修改材质后重新开关 `GrassDemo` 或重新进入 Play Mode 查看。实际新旧对比、验证和本轮 GPU 开销见 [LightingValidation.md](Diagnostics/LightingValidation.md)。
+
+## 时间、接触与摩擦
+
+默认固定 60 Hz、每 tick 8 个 Small Steps 子步，每子步执行 3 次耦合约束扫掠。XPBD 使用 `alpha = compliance/h²`；乘子在子步开始时清零，在子步内扫掠之间保留。
+为了兼容 Unity 2022 的 Direct3D 编译器，每个子步独立提交，单线程求解整根草；固定七段的调用使用显式索引。正常帧无需 CPU 读取模拟结果。
+
+位置使用以每根草根为原点的局部坐标，避免世界坐标舍入被放大成速度。小于 0.1 微米的段长残差及约 1 微弧度的角残差不投影，避免初始浮点误差形成预应力。
+追帧超过预算会丢弃过多积累时间，`DroppedTime` 提供诊断。
+
+`GrassInteractionCollider` 支持球体和胶囊体；未附加此组件的旧交互 Transform 仍使用 `ColliderRadius` 球体。禁用组件/对象可暂停该接触。
+每段求草段与胶囊轴线的最近点，按两个端点的重心权重和逆质量分配接触修正，因此两个节点之间也能发生接触。
+接触处理同时考虑碰撞体的位移；多个固定 tick 分担一帧的运动，各子步再插值。重采样位置以 10 微米量化，避免帧率插值的浮点末位差异触发不同擦边接触分支。
+切向位移修正按 `mu * 法向修正量` 截断，形成位置形式的近似 Coulomb 摩擦；地面同样处理滑动。
+
+当前接触仍是离散子步碰撞，地面是草根高度的水平面；不是任意 Terrain/MeshCollider，不含连续碰撞检测、自碰撞或完整叶片表面接触。没有跨帧静摩擦接触缓存。根点进入障碍物属于不可满足的接触，根仍保持固定。
+
+## 代码入口
+
+- `Demo/GrassDemo.cs`：确定性生成、交互中心、风输入和运行；Space 开关风；主相机/Scene 相机渲染回调及编辑静态预览。
+- `Runtime/GrassBladeData.cs`：共享草叶身份、静止形状、质量和截面参数。
+- `Runtime/GrassSimulationPool.cs`：容量、滞回、驻留和 LRU 槽。
+- `Runtime/XPBDGrassSettings.cs`：近景预算、弹性、时间和接触参数。
+- `Runtime/GrassInteractionCollider.cs`：球/胶囊交互形状。
+- `Runtime/PBDGrassPatchRenderer.cs`：GPU 资源、槽初始化、固定时间、碰撞体重采样和绘制。
+- `Shaders/PBDSolverCS.compute`：位置/方向 XPBD、Small Steps、整段接触、摩擦、几何重建和剔除。
+- `Editor/XPBDValidation.cs`：真实 GPU 验证、基准测试和动画帧捕获。
+
+提取时保留的 CPU `PBDSolver.cs`、CPU 碰撞类和另一套网格着色版本仅作为旧方案参考，不参与当前演示。
+`ExtractionManifest.json` 记录最初提取来源，不代表升级后内容仍与原文件一致。命名空间、程序集、Shader 名称和 GUID 保持独立。
+
+## 验证
+
+光照升级前的 32,768 根 Demo 直接 GPU 时间戳评估见 [GPUPerformance.md](Diagnostics/GPUPerformance.md)。当时 1080p HDR / 4× MSAA、每帧一个完整 tick，求解与重建约 2.13 ms，离屏整帧 GPU 工作约 2.58 ms；光照升级后的数据见 [LightingValidation.md](Diagnostics/LightingValidation.md)。正常帧不回读模拟状态。此前同步基准作为历史记录保留。
+
+当前版本的测量、限制和动画见 `Diagnostics/NearValidation.md` 与 `Diagnostics/XPBDNearPreview.gif`。
+旧四节点版的 `Validation.md`、`XPBDValidationResults.json`、`XPBDPreview.gif` 保留作为历史对照。
+Unity 菜单 `Tools > PBD Grass > Validate XPBD and Capture Preview` 在临时场景验证并捕获图像；`XPBD_VALIDATION_OUTPUT` 可指定输出目录。
+自动验证使用系统临时目录中的独立 Unity 工程，只复制本工作目录，不访问源工程的 Library。
+同步基准包含 CPU 提交与结束回读，排除绘制，不等于纯 GPU 求解耗时或完整场景帧率。
+
+方法参考：[XPBD](https://mmacklin.com/xpbd.pdf)、[Small Steps](https://matthias-research.github.io/pages/publications/smallsteps.pdf)、[Position and Orientation Based Cosserat Rods](https://vci.rwth-aachen.de/publication/0550/)。本实现使用世界空间旋转增量与可调 XPBD 柔顺度，并非论文求解器的逐字移植。

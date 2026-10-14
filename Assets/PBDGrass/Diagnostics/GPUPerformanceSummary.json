@@ -1,0 +1,665 @@
+{
+  "gpu": "NVIDIA GeForce RTX 3080 Ti",
+  "api": "Direct3D11",
+  "cpu": "AMD Ryzen 7 5800X 8-Core Processor ",
+  "unity": "2022.3.62f2c1",
+  "width": 1920,
+  "height": 1080,
+  "msaa": 4,
+  "generated": 32768,
+  "active": 32768,
+  "dropped": 0,
+  "failed": 0,
+  "substeps": 8,
+  "iterations": 3,
+  "physicsRate": 60.0,
+  "sampleTarget": 600,
+  "phases": [
+    "default_one_tick",
+    "no_grass_draw",
+    "no_hiz",
+    "two_views",
+    "default_repeat",
+    "realtime_uncapped"
+  ],
+  "method": "D3D11 timestamp + disjoint queries, polled with DONOTFLUSH on render thread; no simulation-buffer readback",
+  "scope": "1920x1080 HDR 4x MSAA offscreen camera rendering in Windows Mono Development Player; excludes Editor UI and presentation",
+  "combined_default": {
+    "gpu": {
+      "total": {
+        "count": 1200,
+        "mean_ms": 2.5772943466666667,
+        "median_ms": 2.521088,
+        "p95_ms": 2.9359104
+      },
+      "simulation": {
+        "count": 1200,
+        "mean_ms": 2.12674048,
+        "median_ms": 2.080768,
+        "p95_ms": 2.4802304
+      },
+      "culling": {
+        "count": 1200,
+        "mean_ms": 0.008948053333333345,
+        "median_ms": 0.009215999999999891,
+        "p95_ms": 0.009216000000000335
+      },
+      "opaque": {
+        "count": 1200,
+        "mean_ms": 0.20916650666666667,
+        "median_ms": 0.20582399999999978,
+        "p95_ms": 0.20992000000000033
+      },
+      "hiz": {
+        "count": 1200,
+        "mean_ms": 0.13648746666666667,
+        "median_ms": 0.13107200000000008,
+        "p95_ms": 0.137216
+      },
+      "firstSeven": {
+        "count": 1200,
+        "mean_ms": 1.7641557333333333,
+        "median_ms": 1.7274880000000001,
+        "p95_ms": 2.110464
+      },
+      "lastStep": {
+        "count": 1200,
+        "mean_ms": 0.3625847466666666,
+        "median_ms": 0.3522560000000001,
+        "p95_ms": 0.3553280000000001
+      }
+    },
+    "cpu": {
+      "simulation": {
+        "count": 1200,
+        "mean_ms": 0.6520362500000001,
+        "median_ms": 0.62275,
+        "p95_ms": 0.773605
+      },
+      "pool": {
+        "count": 1200,
+        "mean_ms": 0.61423375,
+        "median_ms": 0.5864,
+        "p95_ms": 0.7320099999999999
+      },
+      "culling": {
+        "count": 1200,
+        "mean_ms": 0.01802175,
+        "median_ms": 0.017,
+        "p95_ms": 0.0216
+      },
+      "hiz": {
+        "count": 1200,
+        "mean_ms": 0.07875566666666667,
+        "median_ms": 0.0747,
+        "p95_ms": 0.0945
+      },
+      "wallFrame": {
+        "count": 1200,
+        "mean_ms": 2.5810642500000003,
+        "median_ms": 1.58585,
+        "p95_ms": 6.600185000000001
+      }
+    }
+  },
+  "phases_stats": {
+    "default_one_tick": {
+      "gpu": {
+        "total": {
+          "count": 600,
+          "mean_ms": 2.572263253333333,
+          "median_ms": 2.514944,
+          "p95_ms": 2.9270015999999996
+        },
+        "simulation": {
+          "count": 600,
+          "mean_ms": 2.1220488533333333,
+          "median_ms": 2.074624,
+          "p95_ms": 2.4822272
+        },
+        "culling": {
+          "count": 600,
+          "mean_ms": 0.008961706666666689,
+          "median_ms": 0.009215999999999891,
+          "p95_ms": 0.009216000000000335
+        },
+        "opaque": {
+          "count": 600,
+          "mean_ms": 0.20701013333333332,
+          "median_ms": 0.20582399999999978,
+          "p95_ms": 0.20991999999999988
+        },
+        "hiz": {
+          "count": 600,
+          "mean_ms": 0.13795856,
+          "median_ms": 0.13107200000000008,
+          "p95_ms": 0.137216
+        },
+        "extraOpaque": {
+          "count": 0
+        },
+        "extraCulling": {
+          "count": 0
+        },
+        "firstSeven": {
+          "count": 600,
+          "mean_ms": 1.7582216533333332,
+          "median_ms": 1.723392,
+          "p95_ms": 2.1065215999999998
+        },
+        "lastStep": {
+          "count": 600,
+          "mean_ms": 0.36382719999999996,
+          "median_ms": 0.3512320000000002,
+          "p95_ms": 0.3543040000000002
+        }
+      },
+      "cpu": {
+        "simulation": {
+          "count": 600,
+          "mean_ms": 0.6498998333333333,
+          "median_ms": 0.6161000000000001,
+          "p95_ms": 0.7683399999999999
+        },
+        "pool": {
+          "count": 600,
+          "mean_ms": 0.6118308333333333,
+          "median_ms": 0.5789,
+          "p95_ms": 0.7248399999999999
+        },
+        "culling": {
+          "count": 600,
+          "mean_ms": 0.018128333333333333,
+          "median_ms": 0.017,
+          "p95_ms": 0.021904999999999994
+        },
+        "hiz": {
+          "count": 600,
+          "mean_ms": 0.07925516666666667,
+          "median_ms": 0.0749,
+          "p95_ms": 0.095
+        },
+        "wallFrame": {
+          "count": 600,
+          "mean_ms": 2.5680666666666667,
+          "median_ms": 1.6194,
+          "p95_ms": 6.622629999999998
+        }
+      },
+      "simulation_tick_counts": {
+        "1": 600
+      }
+    },
+    "no_grass_draw": {
+      "gpu": {
+        "total": {
+          "count": 600,
+          "mean_ms": 2.3628524266666666,
+          "median_ms": 2.311168,
+          "p95_ms": 2.7052591999999995
+        },
+        "simulation": {
+          "count": 600,
+          "mean_ms": 2.1201165866666667,
+          "median_ms": 2.0736,
+          "p95_ms": 2.4627712
+        },
+        "culling": {
+          "count": 600,
+          "mean_ms": 0.009371306666666674,
+          "median_ms": 0.009215999999999891,
+          "p95_ms": 0.009216000000000335
+        },
+        "opaque": {
+          "count": 600,
+          "mean_ms": 0.04291925333333334,
+          "median_ms": 0.043007999999999935,
+          "p95_ms": 0.04403200000000007
+        },
+        "hiz": {
+          "count": 600,
+          "mean_ms": 0.11176991999999998,
+          "median_ms": 0.10752000000000006,
+          "p95_ms": 0.11263999999999985
+        },
+        "extraOpaque": {
+          "count": 0
+        },
+        "extraCulling": {
+          "count": 0
+        },
+        "firstSeven": {
+          "count": 600,
+          "mean_ms": 1.76055264,
+          "median_ms": 1.7213440000000002,
+          "p95_ms": 2.1094912000000003
+        },
+        "lastStep": {
+          "count": 600,
+          "mean_ms": 0.35956394666666663,
+          "median_ms": 0.3522559999999997,
+          "p95_ms": 0.35430399999999995
+        }
+      },
+      "cpu": {
+        "simulation": {
+          "count": 600,
+          "mean_ms": 0.6470443333333332,
+          "median_ms": 0.61635,
+          "p95_ms": 0.7727699999999998
+        },
+        "pool": {
+          "count": 600,
+          "mean_ms": 0.6091225,
+          "median_ms": 0.5805,
+          "p95_ms": 0.7284099999999999
+        },
+        "culling": {
+          "count": 600,
+          "mean_ms": 0.017914666666666666,
+          "median_ms": 0.0169,
+          "p95_ms": 0.0214
+        },
+        "hiz": {
+          "count": 600,
+          "mean_ms": 0.07899366666666667,
+          "median_ms": 0.0748,
+          "p95_ms": 0.094605
+        },
+        "wallFrame": {
+          "count": 600,
+          "mean_ms": 2.383921833333333,
+          "median_ms": 1.89875,
+          "p95_ms": 4.999134999999995
+        }
+      },
+      "simulation_tick_counts": {
+        "1": 600
+      }
+    },
+    "no_hiz": {
+      "gpu": {
+        "total": {
+          "count": 600,
+          "mean_ms": 2.3788425600000003,
+          "median_ms": 2.3262400000000003,
+          "p95_ms": 2.7210175999999997
+        },
+        "simulation": {
+          "count": 600,
+          "mean_ms": 2.128028266666667,
+          "median_ms": 2.08384,
+          "p95_ms": 2.466048
+        },
+        "culling": {
+          "count": 600,
+          "mean_ms": 0.008961706666666675,
+          "median_ms": 0.009215999999999891,
+          "p95_ms": 0.009216000000000335
+        },
+        "opaque": {
+          "count": 600,
+          "mean_ms": 0.21114368,
+          "median_ms": 0.20582399999999978,
+          "p95_ms": 0.20997120000000027
+        },
+        "hiz": {
+          "count": 0
+        },
+        "extraOpaque": {
+          "count": 0
+        },
+        "extraCulling": {
+          "count": 0
+        },
+        "firstSeven": {
+          "count": 600,
+          "mean_ms": 1.7662610133333336,
+          "median_ms": 1.73056,
+          "p95_ms": 1.985894399999997
+        },
+        "lastStep": {
+          "count": 600,
+          "mean_ms": 0.3617672533333333,
+          "median_ms": 0.35328000000000004,
+          "p95_ms": 0.3553280000000001
+        }
+      },
+      "cpu": {
+        "simulation": {
+          "count": 600,
+          "mean_ms": 0.6541419999999999,
+          "median_ms": 0.63575,
+          "p95_ms": 0.772415
+        },
+        "pool": {
+          "count": 600,
+          "mean_ms": 0.6161463333333334,
+          "median_ms": 0.59955,
+          "p95_ms": 0.727745
+        },
+        "culling": {
+          "count": 600,
+          "mean_ms": 0.018602666666666667,
+          "median_ms": 0.0175,
+          "p95_ms": 0.022504999999999994
+        },
+        "hiz": {
+          "count": 600,
+          "mean_ms": 0.0,
+          "median_ms": 0.0,
+          "p95_ms": 0.0
+        },
+        "wallFrame": {
+          "count": 600,
+          "mean_ms": 2.4118696666666666,
+          "median_ms": 1.0571,
+          "p95_ms": 5.880839999999998
+        }
+      },
+      "simulation_tick_counts": {
+        "1": 600
+      }
+    },
+    "two_views": {
+      "gpu": {
+        "total": {
+          "count": 600,
+          "mean_ms": 2.72183344,
+          "median_ms": 2.664288,
+          "p95_ms": 3.0750496
+        },
+        "simulation": {
+          "count": 600,
+          "mean_ms": 2.1308962133333336,
+          "median_ms": 2.084864,
+          "p95_ms": 2.4730112
+        },
+        "culling": {
+          "count": 600,
+          "mean_ms": 0.009277440000000008,
+          "median_ms": 0.009215999999999891,
+          "p95_ms": 0.010240000000000027
+        },
+        "opaque": {
+          "count": 600,
+          "mean_ms": 0.2109934933333333,
+          "median_ms": 0.20582399999999978,
+          "p95_ms": 0.20992000000000033
+        },
+        "hiz": {
+          "count": 600,
+          "mean_ms": 0.13651728000000002,
+          "median_ms": 0.13107200000000008,
+          "p95_ms": 0.13641759999999967
+        },
+        "extraOpaque": {
+          "count": 600,
+          "mean_ms": 0.0927744,
+          "median_ms": 0.0911360000000001,
+          "p95_ms": 0.09318400000000038
+        },
+        "extraCulling": {
+          "count": 600,
+          "mean_ms": 0.009632426666666674,
+          "median_ms": 0.009215999999999891,
+          "p95_ms": 0.009216000000000335
+        },
+        "firstSeven": {
+          "count": 600,
+          "mean_ms": 1.7697706666666666,
+          "median_ms": 1.73056,
+          "p95_ms": 2.1126144
+        },
+        "lastStep": {
+          "count": 600,
+          "mean_ms": 0.36112554666666663,
+          "median_ms": 0.35328000000000026,
+          "p95_ms": 0.356352
+        }
+      },
+      "cpu": {
+        "simulation": {
+          "count": 600,
+          "mean_ms": 0.6600068333333333,
+          "median_ms": 0.63165,
+          "p95_ms": 0.7772899999999999
+        },
+        "pool": {
+          "count": 600,
+          "mean_ms": 0.6219026666666667,
+          "median_ms": 0.5960000000000001,
+          "p95_ms": 0.73502
+        },
+        "culling": {
+          "count": 600,
+          "mean_ms": 0.04016983333333333,
+          "median_ms": 0.0379,
+          "p95_ms": 0.0472
+        },
+        "hiz": {
+          "count": 600,
+          "mean_ms": 0.07769433333333334,
+          "median_ms": 0.0746,
+          "p95_ms": 0.09111499999999999
+        },
+        "wallFrame": {
+          "count": 600,
+          "mean_ms": 2.741533,
+          "median_ms": 1.6012,
+          "p95_ms": 6.8761449999999975
+        }
+      },
+      "simulation_tick_counts": {
+        "1": 600
+      }
+    },
+    "default_repeat": {
+      "gpu": {
+        "total": {
+          "count": 600,
+          "mean_ms": 2.58232544,
+          "median_ms": 2.525184,
+          "p95_ms": 2.9402111999999994
+        },
+        "simulation": {
+          "count": 600,
+          "mean_ms": 2.1314321066666664,
+          "median_ms": 2.08384,
+          "p95_ms": 2.4752128
+        },
+        "culling": {
+          "count": 600,
+          "mean_ms": 0.008934400000000002,
+          "median_ms": 0.009215999999999891,
+          "p95_ms": 0.009216000000000335
+        },
+        "opaque": {
+          "count": 600,
+          "mean_ms": 0.21132288000000002,
+          "median_ms": 0.20582399999999978,
+          "p95_ms": 0.21094400000000002
+        },
+        "hiz": {
+          "count": 600,
+          "mean_ms": 0.13501637333333333,
+          "median_ms": 0.13107200000000008,
+          "p95_ms": 0.137216
+        },
+        "extraOpaque": {
+          "count": 0
+        },
+        "extraCulling": {
+          "count": 0
+        },
+        "firstSeven": {
+          "count": 600,
+          "mean_ms": 1.7700898133333332,
+          "median_ms": 1.73056,
+          "p95_ms": 2.115584
+        },
+        "lastStep": {
+          "count": 600,
+          "mean_ms": 0.36134229333333334,
+          "median_ms": 0.35328000000000004,
+          "p95_ms": 0.3553280000000001
+        }
+      },
+      "cpu": {
+        "simulation": {
+          "count": 600,
+          "mean_ms": 0.6541726666666666,
+          "median_ms": 0.629,
+          "p95_ms": 0.7787
+        },
+        "pool": {
+          "count": 600,
+          "mean_ms": 0.6166366666666666,
+          "median_ms": 0.5926,
+          "p95_ms": 0.73892
+        },
+        "culling": {
+          "count": 600,
+          "mean_ms": 0.017915166666666666,
+          "median_ms": 0.0171,
+          "p95_ms": 0.021304999999999994
+        },
+        "hiz": {
+          "count": 600,
+          "mean_ms": 0.07825616666666667,
+          "median_ms": 0.0746,
+          "p95_ms": 0.094205
+        },
+        "wallFrame": {
+          "count": 600,
+          "mean_ms": 2.5940618333333334,
+          "median_ms": 1.5544,
+          "p95_ms": 6.489769999999996
+        }
+      },
+      "simulation_tick_counts": {
+        "1": 600
+      }
+    },
+    "realtime_uncapped": {
+      "gpu": {
+        "total": {
+          "count": 900,
+          "mean_ms": 0.5186578844444445,
+          "median_ms": 0.438272,
+          "p95_ms": 0.6933471999999998
+        },
+        "simulation": {
+          "count": 29,
+          "mean_ms": 2.1207393103448275,
+          "median_ms": 2.107392,
+          "p95_ms": 2.1153792
+        },
+        "culling": {
+          "count": 900,
+          "mean_ms": 0.009369600000000004,
+          "median_ms": 0.009216,
+          "p95_ms": 0.01024
+        },
+        "opaque": {
+          "count": 900,
+          "mean_ms": 0.2124401777777778,
+          "median_ms": 0.207872,
+          "p95_ms": 0.21196800000000002
+        },
+        "hiz": {
+          "count": 900,
+          "mean_ms": 0.13782030222222222,
+          "median_ms": 0.13312,
+          "p95_ms": 0.139264
+        },
+        "extraOpaque": {
+          "count": 0
+        },
+        "extraCulling": {
+          "count": 0
+        },
+        "firstSeven": {
+          "count": 29,
+          "mean_ms": 1.76318675862069,
+          "median_ms": 1.750016,
+          "p95_ms": 1.7569792
+        },
+        "lastStep": {
+          "count": 29,
+          "mean_ms": 0.3575525517241379,
+          "median_ms": 0.35839999999999983,
+          "p95_ms": 0.3594240000000001
+        }
+      },
+      "cpu": {
+        "simulation": {
+          "count": 900,
+          "mean_ms": 0.022136666666666666,
+          "median_ms": 0.0002,
+          "p95_ms": 0.0003
+        },
+        "pool": {
+          "count": 900,
+          "mean_ms": 0.020521444444444446,
+          "median_ms": 0.0,
+          "p95_ms": 0.0
+        },
+        "culling": {
+          "count": 900,
+          "mean_ms": 0.02180333333333333,
+          "median_ms": 0.0213,
+          "p95_ms": 0.0264
+        },
+        "hiz": {
+          "count": 900,
+          "mean_ms": 0.07690633333333333,
+          "median_ms": 0.0737,
+          "p95_ms": 0.09191499999999998
+        },
+        "wallFrame": {
+          "count": 900,
+          "mean_ms": 0.5390222222222222,
+          "median_ms": 0.3518,
+          "p95_ms": 1.0451199999999998
+        }
+      },
+      "simulation_tick_counts": {
+        "0": 871,
+        "1": 29
+      }
+    }
+  },
+  "source_snapshot": {
+    "Assets/PBDGrass/Demo/ColliderController.cs": "ec3b19a7944bbcb7512e3745cdf4a1b0d8d73bd50a010e18f36129bea60cd9a6",
+    "Assets/PBDGrass/Demo/FreeCam.cs": "30a5f55206454c3b70779947c77904e96144cd9685ed12bb860f39a172db36c1",
+    "Assets/PBDGrass/Demo/GrassDemo.cs": "a82bf317052a72d382cb3d9c6d6a20df0dcea0727fa1bcc60b07a2c66aad7176",
+    "Assets/PBDGrass/Editor/XPBDValidation.cs": "981db853171dacf4a6830605c16ca6d6d7213a188be05ad25d5fc152b12d6911",
+    "Assets/PBDGrass/Materials/DepthTexMaker.mat": "62932a6936192a823d6312dd08fc53d1e9ae0f9fa3a1160fdd84ffc2cd3fc505",
+    "Assets/PBDGrass/Materials/PBDGrassMaterial.mat": "8c7f60d05ca781ccedef085fd71216cb2261e34a5f971ff516d234a36659c11f",
+    "Assets/PBDGrass/Materials/PBDGrassProcedualMaterial.mat": "eb449c0684e385f1f56fa3c967c9cbbb3f175a8d04743ee0c23ca37c61a6fc77",
+    "Assets/PBDGrass/Prefabs/PBDGrassDemo.prefab": "8458ee371f9afcc26a6f13f3883ed64bacdbd1d88e903321f061e5f55ffd8831",
+    "Assets/PBDGrass/Runtime/GrassBladeData.cs": "c0481b60cd92dcb2d61da5f85cd39d1ea0ddb9199be44299023e3aaa89eb224e",
+    "Assets/PBDGrass/Runtime/GrassInteractionCollider.cs": "9ce3c92f43c50a910495f746515033675aebb56122387cf2e42c5a8fb6db89bc",
+    "Assets/PBDGrass/Runtime/GrassSimulationPool.cs": "a60ecb474a2e18b9df6ab55044794c81cb58f719aeee7405b8113fc91f13549a",
+    "Assets/PBDGrass/Runtime/PBDGrassPatchRenderer.cs": "b72e7ad75601a2eb10660926dc0035c295f4cbea7afad9c2c8cf254374438573",
+    "Assets/PBDGrass/Runtime/PBDSolver.cs": "fdd0ee546b0b7889954cea1ecdf8750f86141722ab11c7d2760b1a06b335e49e",
+    "Assets/PBDGrass/Runtime/XPBDGrassSettings.cs": "c14f666bd59ae1bfb1cea2dbbc1cd7369cf774d0b25b3a5f7f5a9ac56ac08ab9",
+    "Assets/PBDGrass/Scenes/PBDGrassDemo.unity": "506141b9f24980c293019d47b7c34ae14bbdf77af603fac6e66376e042bd57dc",
+    "Assets/PBDGrass/Shaders/HZBMaker.shader": "791b27f4cd8e535f844580f622be3224e1a4c6f4cbd5e483d4e6e7b8daff98fb",
+    "Assets/PBDGrass/Shaders/PBDGrassShader.shader": "7da180cc7ee0f507067e59aa9a359a00e636467fa565609b0e801edc70e0b3d5",
+    "Assets/PBDGrass/Shaders/PBDGrassShaderDrawProcedual.shader": "91e473760a6527d058f552c3ec06d362ee8d5b4f9ab77d3d38d1da21034b441f",
+    "Assets/PBDGrass/Shaders/PBDSolverCS.compute": "903c954dcea6da55fee8b1ff939195d924176ee411c24be327364fa0f08d791f",
+    "Assets/PBDGrass/Runtime/Body/PBDGrassBody.cs": "3ae198f260648f36ab0e63fcf1f35822e42c4de709fe545c996d942ce72ff7ca",
+    "Assets/PBDGrass/Runtime/Body/PBDGrassPatch.cs": "95cd25e5608b226e61a51b0613a3fc709bb3a5cb521c2ec1640963203abbc1a9",
+    "Assets/PBDGrass/Runtime/Collision/BodySphereContact.cs": "2345d92fb212a36804c15bb643ac182986bf5bce9f27cf611dbbeb2dc9842d5f",
+    "Assets/PBDGrass/Runtime/Collision/SpaceHash.cs": "c0eb5247856f68c6f51c035f4b892a38f0a5d090c37d295291610c025b4adfd0",
+    "Assets/PBDGrass/Runtime/Collision/SphereCollision.cs": "fef30005f5a31a84121352748f6347c4bf5e7ce7fc56f05dbb15880a51c1755f",
+    "Assets/PBDGrass/Runtime/Constraints/Constraint.cs": "6d1f0fce0894cf30be1ab4e44b83472241f04fb3ce6adac280c83adc3b425605",
+    "Assets/PBDGrass/Runtime/Constraints/DistanceConstraint.cs": "4f9bef895d7c73a77af187b586012ed2477af118dd79346b27c166d712067ae8",
+    "Assets/PBDGrass/Runtime/Constraints/FixedConstraint.cs": "c73146c7d88a2fe5167f82d69627c84a11206ad5d6e03200980d819b8a971dbc",
+    "Assets/PBDGrass/Runtime/Math/MathUtility.cs": "fdcd6150dfdffb0600bac027f12c41e2c990577e6c646083fbc6ca86149b4da3",
+    "Assets/PBDGrass/Runtime/Math/Matrix3x3.cs": "23de1409480e204a58cf4d232942a8413ea328bc0494c1a50e0eb8c310ba5fbe",
+    "Assets/PBDGrass/Runtime/Rendering/DepthTexMaker.cs": "f2b12972b6fadb8b494b37237565cbdb89d31a853812f4ff5927c619ff13709e"
+  }
+}

@@ -1,0 +1,327 @@
+{
+  "gpu": "NVIDIA GeForce RTX 3080 Ti",
+  "api": "Direct3D11",
+  "cpu": "AMD Ryzen 7 5800X 8-Core Processor ",
+  "unity": "2022.3.62f2c1",
+  "msaa": 4,
+  "generated": 32768,
+  "active": 32768,
+  "dropped": 0,
+  "failed": 0,
+  "substeps": 8,
+  "iterations": 3,
+  "physicsRate": 60.0,
+  "sampleTarget": 600,
+  "phases": [
+    "default_one_tick",
+    "no_grass_draw",
+    "no_hiz",
+    "two_views",
+    "default_repeat",
+    "realtime_uncapped",
+    "shadows_one_tick"
+  ],
+  "screenWidth": 1920,
+  "screenHeight": 1080,
+  "renderTargetWidth": 1920,
+  "renderTargetHeight": 1080,
+  "scope": "D3D11 timestamp/disjoint queries, 1920x1080 HDR 4x MSAA offscreen Camera.Render, excludes Editor UI/presentation; no simulation-state readback",
+  "combinedDefault": {
+    "total": {
+      "count": 1200,
+      "mean_ms": 2.677771573333333,
+      "p95_ms": 2.8774096
+    },
+    "simulation": {
+      "count": 1200,
+      "mean_ms": 2.1418065333333334,
+      "p95_ms": 2.34496
+    },
+    "culling": {
+      "count": 1200,
+      "mean_ms": 0.009184426666666672,
+      "p95_ms": 0.010240000000000027
+    },
+    "opaque": {
+      "count": 1200,
+      "mean_ms": 0.22970453333333335,
+      "p95_ms": 0.2334719999999999
+    },
+    "hiz": {
+      "count": 1200,
+      "mean_ms": 0.1329069333333333,
+      "p95_ms": 0.13521920000000012
+    }
+  },
+  "byPhase": {
+    "default_one_tick": {
+      "total": {
+        "count": 600,
+        "mean_ms": 2.6708723733333333,
+        "p95_ms": 2.8710128
+      },
+      "simulation": {
+        "count": 600,
+        "mean_ms": 2.1359302933333333,
+        "p95_ms": 2.3377616
+      },
+      "culling": {
+        "count": 600,
+        "mean_ms": 0.009146026666666671,
+        "p95_ms": 0.009216000000000335
+      },
+      "opaque": {
+        "count": 600,
+        "mean_ms": 0.22986410666666668,
+        "p95_ms": 0.2324480000000002
+      },
+      "hiz": {
+        "count": 600,
+        "mean_ms": 0.13242591999999997,
+        "p95_ms": 0.1341952
+      },
+      "extraOpaque": null
+    },
+    "no_grass_draw": {
+      "total": {
+        "count": 600,
+        "mean_ms": 2.3787184,
+        "p95_ms": 2.5759279999999998
+      },
+      "simulation": {
+        "count": 600,
+        "mean_ms": 2.1339409066666666,
+        "p95_ms": 2.3337472
+      },
+      "culling": {
+        "count": 600,
+        "mean_ms": 0.00913578666666667,
+        "p95_ms": 0.009216000000000335
+      },
+      "opaque": {
+        "count": 600,
+        "mean_ms": 0.04226559999999999,
+        "p95_ms": 0.04403200000000007
+      },
+      "hiz": {
+        "count": 600,
+        "mean_ms": 0.11261696,
+        "p95_ms": 0.11468800000000012
+      },
+      "extraOpaque": null
+    },
+    "no_hiz": {
+      "total": {
+        "count": 600,
+        "mean_ms": 2.49233712,
+        "p95_ms": 2.692096
+      },
+      "simulation": {
+        "count": 600,
+        "mean_ms": 2.14950976,
+        "p95_ms": 2.3531519999999997
+      },
+      "culling": {
+        "count": 600,
+        "mean_ms": 0.009179999999999999,
+        "p95_ms": 0.009216000000000335
+      },
+      "opaque": {
+        "count": 600,
+        "mean_ms": 0.23135744000000003,
+        "p95_ms": 0.23449600000000004
+      },
+      "hiz": null,
+      "extraOpaque": null
+    },
+    "two_views": {
+      "total": {
+        "count": 600,
+        "mean_ms": 2.8942452266666665,
+        "p95_ms": 3.0992895999999996
+      },
+      "simulation": {
+        "count": 600,
+        "mean_ms": 2.15015936,
+        "p95_ms": 2.357248
+      },
+      "culling": {
+        "count": 600,
+        "mean_ms": 0.011117226666666665,
+        "p95_ms": 0.010240000000000027
+      },
+      "opaque": {
+        "count": 600,
+        "mean_ms": 0.23002112000000002,
+        "p95_ms": 0.2334719999999999
+      },
+      "hiz": {
+        "count": 600,
+        "mean_ms": 0.1343389866666667,
+        "p95_ms": 0.13516800000000018
+      },
+      "extraOpaque": {
+        "count": 600,
+        "mean_ms": 0.11455829333333337,
+        "p95_ms": 0.11468800000000012
+      }
+    },
+    "default_repeat": {
+      "total": {
+        "count": 600,
+        "mean_ms": 2.684670773333333,
+        "p95_ms": 2.878464
+      },
+      "simulation": {
+        "count": 600,
+        "mean_ms": 2.1476827733333335,
+        "p95_ms": 2.3480800000000004
+      },
+      "culling": {
+        "count": 600,
+        "mean_ms": 0.009222826666666673,
+        "p95_ms": 0.010240000000000027
+      },
+      "opaque": {
+        "count": 600,
+        "mean_ms": 0.22954496000000002,
+        "p95_ms": 0.23347199999999993
+      },
+      "hiz": {
+        "count": 600,
+        "mean_ms": 0.13338794666666665,
+        "p95_ms": 0.1361920000000003
+      },
+      "extraOpaque": null
+    },
+    "realtime_uncapped": {
+      "total": {
+        "count": 900,
+        "mean_ms": 0.6325307377777777,
+        "p95_ms": 0.800768
+      },
+      "simulation": {
+        "count": 35,
+        "mean_ms": 2.2317613714285716,
+        "p95_ms": 2.4444928
+      },
+      "culling": {
+        "count": 900,
+        "mean_ms": 0.010795235555555555,
+        "p95_ms": 0.01024
+      },
+      "opaque": {
+        "count": 900,
+        "mean_ms": 0.23498979555555555,
+        "p95_ms": 0.23859200000000003
+      },
+      "hiz": {
+        "count": 900,
+        "mean_ms": 0.1370049777777778,
+        "p95_ms": 0.13824000000000003
+      },
+      "extraOpaque": null
+    },
+    "shadows_one_tick": {
+      "total": {
+        "count": 600,
+        "mean_ms": 2.9751731200000004,
+        "p95_ms": 3.1764944
+      },
+      "simulation": {
+        "count": 600,
+        "mean_ms": 2.1642527466666666,
+        "p95_ms": 2.3675392000000004
+      },
+      "culling": {
+        "count": 600,
+        "mean_ms": 0.009214293333333333,
+        "p95_ms": 0.009216000000000335
+      },
+      "opaque": {
+        "count": 600,
+        "mean_ms": 0.27901269333333334,
+        "p95_ms": 0.2806272000000003
+      },
+      "hiz": {
+        "count": 600,
+        "mean_ms": 0.13436586666666667,
+        "p95_ms": 0.137216
+      },
+      "extraOpaque": null
+    }
+  },
+  "oldLightingHistorical": {
+    "total": {
+      "count": 1200,
+      "mean_ms": 2.5772943466666667,
+      "median_ms": 2.521088,
+      "p95_ms": 2.9359104
+    },
+    "simulation": {
+      "count": 1200,
+      "mean_ms": 2.12674048,
+      "median_ms": 2.080768,
+      "p95_ms": 2.4802304
+    },
+    "culling": {
+      "count": 1200,
+      "mean_ms": 0.008948053333333345,
+      "median_ms": 0.009215999999999891,
+      "p95_ms": 0.009216000000000335
+    },
+    "opaque": {
+      "count": 1200,
+      "mean_ms": 0.20916650666666667,
+      "median_ms": 0.20582399999999978,
+      "p95_ms": 0.20992000000000033
+    },
+    "hiz": {
+      "count": 1200,
+      "mean_ms": 0.13648746666666667,
+      "median_ms": 0.13107200000000008,
+      "p95_ms": 0.137216
+    },
+    "firstSeven": {
+      "count": 1200,
+      "mean_ms": 1.7641557333333333,
+      "median_ms": 1.7274880000000001,
+      "p95_ms": 2.110464
+    },
+    "lastStep": {
+      "count": 1200,
+      "mean_ms": 0.3625847466666666,
+      "median_ms": 0.3522560000000001,
+      "p95_ms": 0.3553280000000001
+    }
+  },
+  "validation": {
+    "passed": true,
+    "error": "",
+    "gpu": "NVIDIA GeForce RTX 3080 Ti",
+    "unity": "2022.3.62f2c1",
+    "generated": 32768,
+    "active": 32768,
+    "oldFront": 0.42978518613456507,
+    "newFront": 0.37457436959663637,
+    "oldBack": 0.5104942544247716,
+    "newBack": 0.3438570279102298,
+    "noTransmissionBack": 0.3194403323867221,
+    "darkMax": 0.0,
+    "redLightGreenMax": 0.0,
+    "halfLightMean": 0.016325525352695398,
+    "fullLightMean": 0.03265105068834855,
+    "shadowDifference": 0.004856894082830325,
+    "shaderErrors": 0,
+    "mainVisible": 452,
+    "sceneVisible": 452,
+    "hiddenVisible": 0,
+    "simulationTicks": 0
+  },
+  "sourceSha256": {
+    "Shaders/PBDGrassShaderDrawProcedual.shader": "c92dca2efa1c0d6259efe56c60b5db2172564eed1df116386d32551ed811247d",
+    "Shaders/PBDSolverCS.compute": "903c954dcea6da55fee8b1ff939195d924176ee411c24be327364fa0f08d791f",
+    "Runtime/PBDGrassPatchRenderer.cs": "7cf2967b95f8dcf93def24ff49d37cff2e4eeaa004d485836a5902b836ee46bd",
+    "Materials/PBDGrassProcedualMaterial.mat": "543de6e06bf017ad0eeb1088e80b160d0597f84ea5f77217f5755691a164d5c9"
+  }
+}

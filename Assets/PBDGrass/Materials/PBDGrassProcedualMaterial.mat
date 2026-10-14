@@ -2,85 +2,54 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!21 &2100000
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: PBDGrassProcedualMaterial
   m_Shader: {fileID: 4800000, guid: 39a3024eada64e0c86d44f232879848f, type: 3}
-  m_ShaderKeywords: 
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
+  m_DoubleSidedGI: 1
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
+  m_LockedProperties:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _BumpMap:
-        m_Texture: {fileID: 0}
+    - _ColorMap:
+        m_Texture: {fileID: 2800000, guid: c83f77504c0344419d8398fcdbd6f313, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _DetailAlbedoMap:
-        m_Texture: {fileID: 0}
+    - _GlossMap:
+        m_Texture: {fileID: 2800000, guid: 5d1898b08a7e405693e6cbf16b599f26, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _DetailMask:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _DetailNormalMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _EmissionMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MetallicGlossMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _OcclusionMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _ParallaxMap:
-        m_Texture: {fileID: 0}
+    - _VeinMap:
+        m_Texture: {fileID: 2800000, guid: 4dfc1933f7924403815bce23120e9868, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _BackSubsurfaceDistortion: 0.1
-    - _BumpScale: 1
-    - _Cutoff: 0.5
-    - _DetailNormalMapScale: 1
-    - _DstBlend: 0
-    - _EdgeLitRate: 0.3
-    - _GlossMapScale: 1
-    - _Glossiness: 0.5
-    - _GlossyReflections: 1
-    - _Metallic: 0
-    - _Mode: 0
-    - _OcclusionStrength: 1
-    - _Parallax: 0.02
-    - _SmoothnessTextureChannel: 0
-    - _SpecularHighlights: 1
-    - _SrcBlend: 1
-    - _TessellationUniform: 1
-    - _TranslucentGain: 0.5
-    - _UVSec: 0
-    - _ZWrite: 1
+    - _ClumpSize: 1.5
+    - _ColorVariation: 0.35
+    - _DebugView: 0
+    - _NormalCurvature: 0.65
+    - _RootOcclusion: 0.65
+    - _Roughness: 0.48
+    - _SpecularAA: 1
+    - _SpecularStrength: 0.7
+    - _Transmission: 0.55
+    - _TransmissionPower: 4
     m_Colors:
-    - _BottomColor: {r: 0.0627451, g: 0.3764706, b: 0.07058824, a: 1}
-    - _Color: {r: 0.03773582, g: 0.036810223, b: 0.036810223, a: 1}
-    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _InteriorColor: {r: 0.47502044, g: 0.5943396, b: 0.22091489, a: 1}
-    - _TopColor: {r: 0.5803922, g: 0.84705883, b: 0.32941177, a: 1}
+    - _AlternateColor: {r: 1.12, g: 0.96, b: 0.72, a: 1}
+    - _BottomColor: {r: 0.12, g: 0.25, b: 0.055, a: 1}
+    - _TopColor: {r: 0.58, g: 0.72, b: 0.3, a: 1}
+    - _TransmissionColor: {r: 1, g: 0.94, b: 0.56, a: 1}
   m_BuildTextureStacks: []

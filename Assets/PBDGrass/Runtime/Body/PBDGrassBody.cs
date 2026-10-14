@@ -158,7 +158,7 @@ namespace GrassFinal.PBDGrass
             int ui = 0;
 
             Matrix3x3 facingRotationMatrix = MathUtility.AngleAxis3x3(MathUtility.Rand(root) * Mathf.PI * 2, Vector3.up);
-            Matrix3x3 bendRotationMatrix = MathUtility.AngleAxis3x3(MathUtility.Rand(root) * Mathf.PI * 0.5f, Vector3.left);
+            Matrix3x3 bendRotationMatrix = MathUtility.AngleAxis3x3((0.10f + MathUtility.Rand(root) * 0.20f), Vector3.left);
 
             Matrix3x3 bendFacingRotationMatrix = facingRotationMatrix * bendRotationMatrix;
 

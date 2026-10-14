@@ -132,7 +132,55 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1002, guid: e2d2115721d44067b1df31abcdfba58c, type: 3}
       propertyPath: GrassSize
-      value: 8
+      value: 32
+      objectReference: {fileID: 0}
+    - target: {fileID: 1002, guid: e2d2115721d44067b1df31abcdfba58c, type: 3}
+      propertyPath: Physics.NearDistance
+      value: 24
+      objectReference: {fileID: 0}
+    - target: {fileID: 2000, guid: e2d2115721d44067b1df31abcdfba58c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 765890051, guid: e2d2115721d44067b1df31abcdfba58c, type: 3}
+      propertyPath: m_BackGroundColor.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 765890051, guid: e2d2115721d44067b1df31abcdfba58c, type: 3}
+      propertyPath: m_BackGroundColor.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 765890051, guid: e2d2115721d44067b1df31abcdfba58c, type: 3}
+      propertyPath: m_BackGroundColor.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1031959128, guid: e2d2115721d44067b1df31abcdfba58c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.8660254
+      objectReference: {fileID: 0}
+    - target: {fileID: 1031959128, guid: e2d2115721d44067b1df31abcdfba58c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1031959128, guid: e2d2115721d44067b1df31abcdfba58c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1031959128, guid: e2d2115721d44067b1df31abcdfba58c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1031959128, guid: e2d2115721d44067b1df31abcdfba58c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 1031959128, guid: e2d2115721d44067b1df31abcdfba58c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1031959128, guid: e2d2115721d44067b1df31abcdfba58c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

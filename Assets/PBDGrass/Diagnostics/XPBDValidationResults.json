@@ -1,0 +1,84 @@
+{
+    "gpu": "NVIDIA GeForce RTX 3080 Ti",
+    "graphicsApi": "Direct3D11",
+    "passed": true,
+    "error": "",
+    "metrics": [
+        {
+            "name": "rest_drift_m",
+            "value": 0.00009133147250395268
+        },
+        {
+            "name": "fps_30_difference_m",
+            "value": 0.0
+        },
+        {
+            "name": "fps_60_difference_m",
+            "value": 0.0
+        },
+        {
+            "name": "fps_120_difference_m",
+            "value": 0.0
+        },
+        {
+            "name": "far_4_substeps_max_stretch",
+            "value": 0.0028651051688939335
+        },
+        {
+            "name": "odd_grid_and_hitch_guard",
+            "value": 1.0
+        },
+        {
+            "name": "compliance_0.001_tip_m",
+            "value": 0.34860551357269289
+        },
+        {
+            "name": "compliance_0.001_bend_error_rad",
+            "value": 0.005316526163369417
+        },
+        {
+            "name": "compliance_0.001_max_stretch",
+            "value": 0.0008511769119650126
+        },
+        {
+            "name": "compliance_0.01_tip_m",
+            "value": 0.378150075674057
+        },
+        {
+            "name": "compliance_0.01_bend_error_rad",
+            "value": 0.04427235201001167
+        },
+        {
+            "name": "compliance_0.01_max_stretch",
+            "value": 0.0008511763298884034
+        },
+        {
+            "name": "loaded_bend_error_rad",
+            "value": 0.04427235201001167
+        },
+        {
+            "name": "recovered_bend_error_rad",
+            "value": 0.000025161440134979784
+        },
+        {
+            "name": "moving_sphere_penetration_m",
+            "value": 0.0
+        },
+        {
+            "name": "post_contact_max_stretch",
+            "value": 0.0054809763096272949
+        },
+        {
+            "name": "blades_32768_synchronized_tick_ms",
+            "value": 1.3976233005523682
+        },
+        {
+            "name": "blades_131072_synchronized_tick_ms",
+            "value": 6.1384100914001469
+        },
+        {
+            "name": "preview_visible_grids",
+            "value": 64.0
+        }
+    ]
+}

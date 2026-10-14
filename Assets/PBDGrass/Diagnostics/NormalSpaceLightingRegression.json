@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "error": "",
+  "gpu": "NVIDIA GeForce RTX 3080 Ti",
+  "unity": "2022.3.62f2c1",
+  "generated": 32768,
+  "active": 32768,
+  "darkMax": 0.0,
+  "redLightGreenMax": 0.0,
+  "halfLightMean": 0.016420690713061695,
+  "fullLightMean": 0.03284138142612339,
+  "shadowDifference": 0.004945252784499966,
+  "shaderErrors": 0,
+  "mainVisible": 452,
+  "sceneVisible": 452,
+  "hiddenVisible": 0,
+  "simulationTicks": 0
+}
