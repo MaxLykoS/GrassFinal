@@ -24,6 +24,7 @@ namespace GrassFinal.PBDGrass
         public readonly int[] Triangles;
         public readonly Vector2[] UV;
         public readonly Bounds Bounds;
+        public float MaximumBladeLength { get; private set; }
         public GrassBladeData(PBDGrassPatch patch, float tipThickness)
         {
             if (patch.SEGMENTS != Segments || patch.grids == null || patch.Bodies.Length != patch.grids.Length * 32)
@@ -32,13 +33,14 @@ namespace GrassFinal.PBDGrass
             Rods = new Rod[Blades.Length * Segments]; InverseMass = new float[RestNodes.Length];
             Grids = patch.grids; VerticesData = patch.vertices; Normals = patch.PatchMesh.normals;
             Triangles = patch.PatchMesh.triangles; UV = patch.PatchMesh.uv;
-            Bounds = new Bounds(patch.Root + Vector3.up * .5f, new Vector3(patch.Width + 4, 4, patch.Length + 4));
             for (int b = 0; b < Blades.Length; b++)
             {
                 var body = patch.Bodies[b]; Vector3 root = body.OriginPos[0];
                 float total = 0; float[] weights = new float[Nodes];
                 Quaternion previous = Quaternion.identity;
                 float bladeLength = 0;
+                float maximumWidth = 1e-6f;
+                foreach (Vector3 offset in body.Offset) maximumWidth = Mathf.Max(maximumWidth, offset.magnitude);
                 for (int s = 0; s < Segments; s++)
                 {
                     Vector3 tangent = (body.OriginPos[s+1] - body.OriginPos[s]).normalized;
@@ -47,6 +49,11 @@ namespace GrassFinal.PBDGrass
                     float len = Vector3.Distance(body.OriginPos[s], body.OriginPos[s+1]);
                     float u = (s + .5f) / Segments;
                     float w = Mathf.Max(.08f, 1 - u), t = Mathf.Lerp(1, tipThickness, u);
+                    if (body.UsesBezierShape)
+                    {
+                        float nextWidth = s + 1 < Segments ? body.Offset[s + 1].magnitude : 0;
+                        w = Mathf.Max(.08f, .5f * (body.Offset[s].magnitude + nextWidth) / maximumWidth);
+                    }
                     float mass = len * w * t;
                     weights[s] += mass*.5f; weights[s+1] += mass*.5f; total += mass;
                     float thin = len / .1f / (w*t*t*t);
@@ -69,7 +76,10 @@ namespace GrassFinal.PBDGrass
                 Blades[b] = new Blade { Root = root, Length = bladeLength, Id = (uint)b,
                     Width = body.Offset[0].magnitude*2, Height = body.OriginPos[Nodes-1].y-root.y,
                     Seed = Mathf.Repeat(b * .61803398875f, 1) };
+                MaximumBladeLength = Mathf.Max(MaximumBladeLength, bladeLength);
             }
+            float reach = MaximumBladeLength * 1.1f + .1f;
+            Bounds = new Bounds(patch.Root, new Vector3(patch.Width + 2 * reach, 2 * reach, patch.Length + 2 * reach));
         }
     }
 }

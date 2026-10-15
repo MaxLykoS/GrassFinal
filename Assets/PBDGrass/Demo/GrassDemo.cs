@@ -19,6 +19,7 @@ namespace GrassFinal.PBDGrass
         public float Frequency = 0.1f;
         public Vector4 TileAndOffset = new Vector4(0.01f, 0.01f, 0, 1);
         public int RandomSeed = 12345;
+        public GrassBladeShapeSettings BladeShape = new GrassBladeShapeSettings();
         public XPBDGrassSettings Physics = new XPBDGrassSettings();
         public PBDGrassPatchRenderer Renderer { get; private set; }
 
@@ -53,7 +54,7 @@ namespace GrassFinal.PBDGrass
             try
             {
                 Random.InitState(RandomSeed);
-                patch = new PBDGrassPatch(transform.position, Mathf.Max(1, GrassSize), 32);
+                patch = new PBDGrassPatch(transform.position, Mathf.Max(1, GrassSize), 32, BladeShape);
                 Renderer = new PBDGrassPatchRenderer(patch, PBDSolverCS, GrassProcedrualMaterial,
                     Cam, WindNoiseTex, Physics, colliders);
                 Renderer.SetWind(WindForce, Frequency, TileAndOffset);
@@ -114,6 +115,9 @@ namespace GrassFinal.PBDGrass
             Renderer?.Dispose();
             Renderer = null;
         }
+
+        [ContextMenu("Reset Grass Deformation")]
+        public void ResetDeformation() => Renderer?.ResetDeformation();
 
         public static void DestroyMesh(Mesh mesh)
         {

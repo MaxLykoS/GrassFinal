@@ -81,7 +81,7 @@ namespace GrassFinal.PBDGrass
         public int Width;
         public int Length;
 
-        public PBDGrassPatch(Vector3 root, int width, int length, int points, int segments)
+        public PBDGrassPatch(Vector3 root, int width, int length, int points, int segments, GrassBladeShapeSettings shape = null)
         {
             this.SEGMENTS = segments;
             this.Root = root;
@@ -112,7 +112,7 @@ namespace GrassFinal.PBDGrass
 
                 Bodies[i] = new PBDGrassBody(ref vertices, ref uvs, ref triangles, indexOffset, triIndexOffset,
                     new Vector3(newX, 0, newZ), 
-                    SEGMENTS, GrassHeight, GrassWidth, GrassForward, GrassMass);
+                    SEGMENTS, GrassHeight, GrassWidth, GrassForward, GrassMass, shape);
 
                 indexOffset += offsetIncreasment;
                 triIndexOffset += triIndexOffsetIncreasment;
@@ -129,7 +129,7 @@ namespace GrassFinal.PBDGrass
             PatchMesh.RecalculateNormals();
         }
 
-        public PBDGrassPatch(Vector3 root, int len, int pointsPerGrid)
+        public PBDGrassPatch(Vector3 root, int len, int pointsPerGrid, GrassBladeShapeSettings shape = null)
         {
             int points = len * len * pointsPerGrid;
             this.SEGMENTS = GrassBladeData.Segments;
@@ -176,7 +176,7 @@ namespace GrassFinal.PBDGrass
 
                         Bodies[bodyID] = new PBDGrassBody(ref vertices, ref uvs, ref triangles, indexOffset, triIndexOffset,
                             new Vector3(newX, Root.y, newZ),
-                            SEGMENTS, GrassHeight, GrassWidth, GrassForward, GrassMass);
+                            SEGMENTS, GrassHeight, GrassWidth, GrassForward, GrassMass, shape);
                         bodyID++;
                         indexOffset += offsetIncreasment;
                         triIndexOffset += triIndexOffsetIncreasment;

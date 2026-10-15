@@ -23,17 +23,19 @@ namespace GrassFinal.PBDGrass
         public int Segments { get; private set; }
         public int BoneCounts { get; private set; }
         public int vertexCounts { get; private set; }
+        public bool UsesBezierShape { get; private set; }
 
         public PBDGrassBody(ref Vector3[] vertices, ref Vector2[] uvs, ref int[] triangles, int indexOffset, int triIndexOffset,
-            Vector3 root, int segments, float h, float w, float f, float mass)
+            Vector3 root, int segments, float h, float w, float f, float mass, GrassBladeShapeSettings shape = null)
         {
             this.Mass = mass;
             this.Segments = segments;
             this.BoneCounts = segments + 1;
             this.vertexCounts = 2 * segments + 1;
             this.IndexOffset = indexOffset;
+            UsesBezierShape = shape != null;
 
-            FillGrassMesh(triIndexOffset, ref vertices, ref uvs, ref triangles, ref root, h, w, f);
+            FillGrassMesh(triIndexOffset, ref vertices, ref uvs, ref triangles, ref root, h, w, f, shape);
 
             InitPositionsAndConstraints(ref vertices);
         }
@@ -45,6 +47,7 @@ namespace GrassFinal.PBDGrass
             this.BoneCounts = origin.BoneCounts;
             this.vertexCounts = origin.vertexCounts;
             this.IndexOffset = origin.IndexOffset;
+            UsesBezierShape = origin.UsesBezierShape;
 
             this.Positions = new Vector3[origin.Positions.Length];
             origin.Positions.CopyTo(this.Positions, 0);
@@ -151,8 +154,13 @@ namespace GrassFinal.PBDGrass
             uvs[ui + IndexOffset] = uv;
         }
         private void FillGrassMesh(int triIndexOffset, ref Vector3[] vertices, ref Vector2[] uvs, ref int[] triangles, 
-            ref Vector3 root, float h, float w, float f)
+            ref Vector3 root, float h, float w, float f, GrassBladeShapeSettings shape)
         {
+            if (shape != null)
+            {
+                FillBezierGrassMesh(triIndexOffset, vertices, uvs, triangles, root, shape);
+                return;
+            }
             int vi = 0;
             int ti = 0;
             int ui = 0;
@@ -213,6 +221,59 @@ namespace GrassFinal.PBDGrass
                 triangles[triIndexOffset + ti++] = 2 + IndexOffset;
                 triangles[triIndexOffset + ti++] = 1 + IndexOffset;
             }
+        }
+
+        private static float ShapeHash(Vector3 root, float salt)
+        {
+            float value = Mathf.Sin(Vector3.Dot(root, new Vector3(12.9898f, 78.233f, 53.539f)) + salt) * 43758.5453f;
+            return value - Mathf.Floor(value);
+        }
+
+        private void FillBezierGrassMesh(int triangleOffset, Vector3[] vertices, Vector2[] uvs, int[] triangles,
+            Vector3 root, GrassBladeShapeSettings shape)
+        {
+            // The curve defines the natural leaf only. XPBD remains responsible for its moving shape.
+            float height = Mathf.Max(.1f, shape.Height) * (1 + (ShapeHash(root, 11) * 2 - 1) * Mathf.Clamp(shape.HeightVariation, 0, .4f));
+            float width = Mathf.Max(.001f, shape.HalfWidth) * (1 + (ShapeHash(root, 23) * 2 - 1) * Mathf.Clamp(shape.WidthVariation, 0, .5f));
+            float bend = height * Mathf.Clamp(shape.BendRatio, 0, .8f) * Mathf.Lerp(.8f, 1.2f, ShapeHash(root, 37));
+            float side = height * Mathf.Clamp(shape.SideCurveRatio, 0, .15f) * (ShapeHash(root, 41) * 2 - 1);
+            float tilt = shape.TiltDegrees + (ShapeHash(root, 53) * 2 - 1) * shape.TiltVariationDegrees;
+            Quaternion rotation = Quaternion.AngleAxis(ShapeHash(root, 67) * 360, Vector3.up)
+                * Quaternion.AngleAxis(Mathf.Clamp(tilt, 0, 40), Vector3.right);
+            Vector3 p1 = new Vector3(0, height * .4f, 0);
+            Vector3 p2 = new Vector3(side * .35f, height * .95f, bend * .15f);
+            Vector3 p3 = new Vector3(side, height * .9f, bend);
+            for (int s = 0; s <= Segments; s++)
+            {
+                float t = s / (float)Segments, a = 1 - t;
+                Vector3 center = 3 * a * a * t * p1 + 3 * a * t * t * p2 + t * t * t * p3;
+                Vector3 tangent = (3 * a * a * p1 + 6 * a * t * (p2 - p1) + 3 * t * t * (p3 - p2)).normalized;
+                Vector3 across = Vector3.ProjectOnPlane(Vector3.right, tangent).normalized;
+                float profile = (.72f + .28f * Mathf.Sin(Mathf.PI * t)) * Mathf.Pow(a, .75f);
+                int vertex = IndexOffset + s * 2;
+                if (s == Segments)
+                {
+                    vertices[vertex] = root + rotation * center;
+                    uvs[vertex] = new Vector2(.5f, 1);
+                }
+                else
+                {
+                    Vector3 offset = rotation * across * (width * profile);
+                    vertices[vertex] = root + rotation * center - offset;
+                    vertices[vertex + 1] = root + rotation * center + offset;
+                    uvs[vertex] = new Vector2(0, t); uvs[vertex + 1] = new Vector2(1, t);
+                }
+            }
+            int ti = triangleOffset;
+            for (int s = 1; s < Segments; s++)
+            {
+                int v = IndexOffset + s * 2;
+                triangles[ti++] = v; triangles[ti++] = v + 1; triangles[ti++] = v - 2;
+                triangles[ti++] = v + 1; triangles[ti++] = v - 1; triangles[ti++] = v - 2;
+            }
+            triangles[ti++] = IndexOffset + Segments * 2;
+            triangles[ti++] = IndexOffset + Segments * 2 - 1;
+            triangles[ti] = IndexOffset + Segments * 2 - 2;
         }
     }
 }

@@ -1,0 +1,25 @@
+{
+  "date": "2026-10-15",
+  "source_sha256": {
+    "Assets/PBDGrass/Demo/GrassDemo.cs": "2ff6afc397e609bc05da4a3a08879f0dbb74a0a3def40e34c032844a89a8234a",
+    "Assets/PBDGrass/Editor/XPBDValidation.cs": "4d3b8a0d59ea734c5ffd48a8b42ca6aa0d387dffb39896987e276f2304a813f0",
+    "Assets/PBDGrass/Prefabs/PBDGrassDemo.prefab": "82a981905fe84017074391b3e2e99ff55b76e3b855c48d3a72efd2e5df02fcc2",
+    "Assets/PBDGrass/README.md": "7bbbf0463541924b77faa54d6f8fd1f464bd4d8d59b499b54c263747f6299ed2",
+    "Assets/PBDGrass/Runtime/Body/PBDGrassBody.cs": "e4223d561a113dc39c4c54bd3928a3d30fe94a518b63a33487f4b15d7e335ebf",
+    "Assets/PBDGrass/Runtime/Body/PBDGrassPatch.cs": "fbbe7a9d249e40bcc9a1ec54aedde95f36f7f0d5f374c981014392d04428ec29",
+    "Assets/PBDGrass/Runtime/GrassBladeData.cs": "35c13cf7ecb8686281b6785f0533747d6da2063676067304257cfd07ce2a223c",
+    "Assets/PBDGrass/Runtime/PBDGrassPatchRenderer.cs": "5f030ac1d4bee0222673b066f4f8baff53f75e852003e5bf62d5d82502957a09",
+    "Assets/PBDGrass/Runtime/XPBDGrassSettings.cs": "75d6a91b474cfdf1c14edd6f49e5bd2cfc401dbb461abbfa9ee89e0eab9a7b46",
+    "Assets/PBDGrass/Shaders/PBDSolverCS.compute": "421ee649d676a658737573d6a9abfcbb45d47ba37e494b1d3141ac7c83ef043b",
+    "Assets/PBDGrass/Runtime/GrassBladeShapeSettings.cs": "d15c403859e77cb9bb760a83daf90789a67808dc3545f167af3a49641ccb98a4",
+    "Assets/PBDGrass/Editor/PlasticGrassValidation.cs": "3d2d98648610085e69d22b76b64d3cf73c18d3d546c38730aa860bdd8b09e5ca"
+  },
+  "gpu": "NVIDIA GeForce RTX 3080 Ti",
+  "plastic_off_mean_ms": 2.395165920000003,
+  "plastic_on_mean_ms": 2.456987306666665,
+  "delta_ms": 0.06182138666666237,
+  "samples": 1200,
+  "dropped": 0,
+  "failed": 0,
+  "note": "Same current long-grass solver toggled off/on; not a pre-optimization baseline comparison or full frame time."
+}

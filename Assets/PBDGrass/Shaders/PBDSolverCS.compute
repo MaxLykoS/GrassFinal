@@ -14,6 +14,8 @@ struct ActiveGrid { float3 Position; int BladeOffset; int PoolOffset; int GridId
 struct PBDGrid { float3 pos; int idOffset; };
 RWStructuredBuffer<BoneInfo> BonesBuffer;
 RWStructuredBuffer<Frame> FramesBuffer;
+// World blade ID, not simulation slot: plastic material history survives pool eviction.
+RWStructuredBuffer<float4> PlasticBendsBuffer;
 StructuredBuffer<BoneInfo> RestNodesBuffer;
 StructuredBuffer<Blade> BladesBuffer;
 StructuredBuffer<Rod> RodsBuffer;
@@ -30,12 +32,14 @@ Texture2D<float> _DepthTex;
 float TickDt, SimulationTime, InverseBladeMass, VelocityDamping, AngularDamping;
 float StretchCompliance, AlignmentCompliance, SoftBendCompliance, HardBendCompliance, TwistCompliance, BaseBendCompliance;
 float CollisionMargin, GroundFriction;
+float PlasticYieldCurvature, PlasticFlowRate, PlasticMaxCurvature, BaseYieldAngle, BaseMaxPlasticAngle, GrassReach;
 float3 Gravity, WindForce, camPos, camDir;
 float _WindFrequency;
 float4 _WindForceMap_ST;
 float MaxDistance;
 int SubstepIndex, NearSubsteps, ConstraintIterations, ColliderCount, GroundCollision, ActiveGridCount, InitializationCount;
 int EnableOcclusionCulling, ReversedZ;
+int EnablePlasticity;
 float4 FrustumPlanes[6];
 float4x4 _Matrix_VP;
 float3 SafeNormal(float3 v, float3 fallback) { float l=dot(v,v); return l>EPS*EPS?v*rsqrt(l):fallback; }
@@ -55,6 +59,22 @@ float3 QLog(float4 q)
     float l=length(q.xyz); return q.xyz*(l>1e-6?2*atan2(l,q.w)/max(l,1e-6):2);
 }
 float3 Axis(int k) { return k==0?float3(1,0,0):(k==1?float3(0,1,0):float3(0,0,1)); }
+float4 PlasticRest(float4 original,float2 plastic)
+{
+    return QMul(Rotate(float4(0,0,0,1),float3(plastic,0)),original);
+}
+float2 EvolvePlasticBend(float4 relative,float4 original,float2 plastic,float jointLength,bool basal,float h)
+{
+    // Bounded, rate-dependent bending plasticity in the parent material axes; twist stays elastic.
+    float2 total=QLog(QMul(relative,QInv(original))).xy;
+    float2 elastic=total-plastic;
+    float magnitude=length(elastic);
+    float yieldAngle=basal?BaseYieldAngle:PlasticYieldCurvature*jointLength;
+    if(magnitude<=yieldAngle || PlasticFlowRate<=0)return plastic;
+    float2 next=plastic+elastic*((1-yieldAngle/max(magnitude,EPS))*(1-exp(-PlasticFlowRate*h)));
+    float limit=basal?BaseMaxPlasticAngle:min(1.2,PlasticMaxCurvature*jointLength);
+    return next*min(1.0,limit/max(length(next),EPS));
+}
 void WriteGeometry(uint blade,float3 p[NODES],float4 q[SEGMENTS])
 {
     float3 root=BladesBuffer[blade].Root;
@@ -79,9 +99,18 @@ void InitializePool(uint3 id:SV_DispatchThreadID)
     if(id.x>=(uint)InitializationCount*32)return;
     int2 init=InitializationBuffer[id.x/32]; uint blade=init.y+id.x%32, pool=init.x*32+id.x%32;
     float3 p[NODES]; float4 q[SEGMENTS];
-    [unroll] for(int n=0;n<NODES;n++) { BoneInfo b=RestNodesBuffer[blade*NODES+n]; BonesBuffer[pool*NODES+n]=b; p[n]=b.Position; }
-    [unroll] for(int s=0;s<SEGMENTS;s++) { Frame f; f.Rotation=RodsBuffer[blade*SEGMENTS+s].Rotation; f.AngularVelocity=0; f.Padding=0;
-        FramesBuffer[pool*SEGMENTS+s]=f; q[s]=f.Rotation; }
+    p[0]=0;
+    float4 parent=RodsBuffer[blade*SEGMENTS].Rotation;
+    [unroll] for(int s=0;s<SEGMENTS;s++)
+    {
+        Rod rod=RodsBuffer[blade*SEGMENTS+s];
+        float2 plastic=EnablePlasticity!=0?PlasticBendsBuffer[blade*SEGMENTS+s].xy:float2(0,0);
+        q[s]=QNormalize(QMul(parent,PlasticRest(rod.Relative,plastic)));
+        p[s+1]=p[s]+QRotate(q[s],float3(0,0,rod.Length)); parent=q[s];
+        Frame f; f.Rotation=q[s]; f.AngularVelocity=0; f.Padding=0; FramesBuffer[pool*SEGMENTS+s]=f;
+    }
+    [unroll] for(int n=0;n<NODES;n++)
+    { BoneInfo b=RestNodesBuffer[blade*NODES+n]; b.Position=p[n]; b.Predicted=p[n]; b.Velocities=0; BonesBuffer[pool*NODES+n]=b; }
     WriteGeometry(blade,p,q);
 }
 void Stretch(inout float3 pa,inout float3 pb,float length0,float wa,float wb,float h,inout float lambda)
@@ -164,11 +193,14 @@ void GroundContact(inout float3 p,float3 previous)
 void SimulateBlade(uint blade,uint pool)
 {
     float3 p[NODES],v[NODES]; float mass[NODES]; float4 q[SEGMENTS]; float3 omega[SEGMENTS]; Rod rod[SEGMENTS];
+    float2 plastic[SEGMENTS];
     float3 root=BladesBuffer[blade].Root;
     [unroll] for(int load=0;load<NODES;load++) { BoneInfo bone=BonesBuffer[pool*NODES+load]; p[load]=bone.Position;
         v[load]=bone.Velocities; mass[load]=InverseMassBuffer[blade*NODES+load]*InverseBladeMass; }
     [unroll] for(int loadFrame=0;loadFrame<SEGMENTS;loadFrame++) { Frame frame=FramesBuffer[pool*SEGMENTS+loadFrame];
-        q[loadFrame]=frame.Rotation; omega[loadFrame]=frame.AngularVelocity; rod[loadFrame]=RodsBuffer[blade*SEGMENTS+loadFrame]; }
+        q[loadFrame]=frame.Rotation; omega[loadFrame]=frame.AngularVelocity; rod[loadFrame]=RodsBuffer[blade*SEGMENTS+loadFrame];
+        plastic[loadFrame]=EnablePlasticity!=0?PlasticBendsBuffer[blade*SEGMENTS+loadFrame].xy:float2(0,0);
+        rod[loadFrame].Relative=PlasticRest(rod[loadFrame].Relative,plastic[loadFrame]); }
     float h=TickDt/NearSubsteps; float4 anchor=rod[0].Rotation;
     float2 scroll=SafeNormal(float3(WindForce.x,0,WindForce.z),float3(1,0,0)).xz;
     {
@@ -249,6 +281,21 @@ void SimulateBlade(uint blade,uint pool)
         BonesBuffer[n].Position=p[save]; BonesBuffer[n].Predicted=p[save]; BonesBuffer[n].Velocities=save==0?float3(0,0,0):v[save]; }
     [unroll] for(int saveFrame=0;saveFrame<SEGMENTS;saveFrame++) { uint s=pool*SEGMENTS+saveFrame;
         FramesBuffer[s].Rotation=q[saveFrame]; FramesBuffer[s].AngularVelocity=omega[saveFrame]; }
+    if(EnablePlasticity!=0)
+    {
+        // Material evolution runs once per physical substep, after the elastic/contact solve.
+        // Never accumulate plastic flow once per constraint iteration.
+        float2 basal=EvolvePlasticBend(QMul(QInv(anchor),q[0]),RodsBuffer[blade*SEGMENTS].Relative,
+            plastic[0],rod[0].Length,true,h);
+        PlasticBendsBuffer[blade*SEGMENTS]=float4(basal,0,0);
+        [unroll] for(int joint=1;joint<SEGMENTS;joint++)
+        {
+            float jointLength=.5*(rod[joint-1].Length+rod[joint].Length);
+            float2 next=EvolvePlasticBend(QMul(QInv(q[joint-1]),q[joint]),RodsBuffer[blade*SEGMENTS+joint].Relative,
+                plastic[joint],jointLength,false,h);
+            PlasticBendsBuffer[blade*SEGMENTS+joint]=float4(next,0,0);
+        }
+    }
     if(SubstepIndex==NearSubsteps-1)WriteGeometry(blade,p,q);
 }
 [numthreads(32,1,1)]
@@ -284,7 +331,7 @@ bool Occluded(float3 center, float radius)
 void GridCulling(uint3 id:SV_DispatchThreadID)
 {
     if(id.x>=(uint)ActiveGridCount)return;
-    ActiveGrid grid=ActiveGridsBuffer[id.x]; float3 center=grid.Position+float3(0,.3,0); float radius=1.5;
+    ActiveGrid grid=ActiveGridsBuffer[id.x]; float3 center=grid.Position; float radius=.707107+GrassReach;
     if(distance(center,camPos)>MaxDistance)return;
     [unroll] for(int i=0;i<6;i++)if(dot(FrustumPlanes[i].xyz,center)+FrustumPlanes[i].w < -radius)return;
     if(Occluded(center,radius))return;

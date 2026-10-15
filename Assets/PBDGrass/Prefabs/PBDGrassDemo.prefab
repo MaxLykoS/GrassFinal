@@ -63,6 +63,15 @@ MonoBehaviour:
   Frequency: 0.1
   TileAndOffset: {x: 0.01, y: 0.01, z: 0, w: 1}
   RandomSeed: 12345
+  BladeShape:
+    Height: 1.5
+    HeightVariation: 0.15
+    HalfWidth: 0.02
+    WidthVariation: 0.15
+    TiltDegrees: 6
+    TiltVariationDegrees: 4
+    BendRatio: 0.32
+    SideCurveRatio: 0.035
   Physics:
     MaxActiveBlades: 32768
     NearDistance: 24
@@ -75,15 +84,21 @@ MonoBehaviour:
     MaxCatchUpSteps: 4
     StretchCompliance: 0.00000001
     AlignmentCompliance: 0.000000001
-    SoftBendCompliance: 12
-    HardBendCompliance: 0.8
-    TwistCompliance: 3
-    BaseBendCompliance: 0.5
+    SoftBendCompliance: 3
+    HardBendCompliance: 0.2
+    TwistCompliance: 1
+    BaseBendCompliance: 0.08
     BladeMass: 0.01
     TipThicknessRatio: 0.45
     VelocityDamping: 2
     AngularDamping: 3
     Gravity: {x: 0, y: -9.81, z: 0}
+    EnablePlasticity: 1
+    PlasticYieldCurvature: 2.5
+    PlasticFlowRate: 6
+    PlasticMaxCurvature: 4
+    BaseYieldDegrees: 40
+    BaseMaxPlasticDegrees: 50
     ColliderRadius: 0.6
     CollisionMargin: 0.002
     Friction: 0.45

@@ -102,7 +102,9 @@ namespace GrassFinal.PBDGrass.Editor
         private static void Record(string name, float value) => report.metrics.Add(new Metric { name = name, value = value });
         private static XPBDGrassSettings Settings() => new XPBDGrassSettings
         {
-            Gravity = Vector3.zero, GroundCollision = false, NearDistance = 100, MaxDistance = 100
+            Gravity = Vector3.zero, GroundCollision = false, NearDistance = 100, MaxDistance = 100,
+            EnablePlasticity = false, // These legacy probes specifically validate reversible elasticity.
+            SoftBendCompliance = 12, HardBendCompliance = .8f, TwistCompliance = 3, BaseBendCompliance = .5f
         };
         private static PBDGrassPatch Patch(int size)
         {

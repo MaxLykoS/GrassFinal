@@ -24,7 +24,7 @@ namespace GrassFinal.PBDGrass
         private readonly IList<Transform> colliders;
         private readonly DepthTexMaker depthSource;
         private readonly int solveKernel, initializeKernel, cullKernel;
-        private readonly ComputeBuffer bones, frames, contacts, activeBuffer, initializeBuffer, drawArgs;
+        private readonly ComputeBuffer bones, frames, plasticBends, contacts, activeBuffer, initializeBuffer, drawArgs;
         private readonly ColliderMotion[] shapes, targets;
         private readonly Vector3[] motionStartA, motionStartB;
         private readonly GrassSimulationPool.ActiveGrid[] active;
@@ -59,6 +59,7 @@ namespace GrassFinal.PBDGrass
                 cullKernel = shader.FindKernel("GridCulling");
                 bones = NewBuffer(Pool.Capacity * 32 * NodesPerBlade, 48);
                 frames = NewBuffer(Pool.Capacity * 32 * GrassBladeData.Segments, 32);
+                plasticBends = Buffer(new Vector4[data.Blades.Length * GrassBladeData.Segments], 16);
                 ComputeBuffer rest = Buffer(data.RestNodes, 48), rods = Buffer(data.Rods, 64), blades = Buffer(data.Blades, 32);
                 ComputeBuffer masses = Buffer(data.InverseMass,4);
                 ComputeBuffer positions = Buffer(data.VerticesData,12), normals = Buffer(data.Normals,12);
@@ -77,6 +78,7 @@ namespace GrassFinal.PBDGrass
                 foreach (int kernel in new[] { solveKernel, initializeKernel })
                 {
                     shader.SetBuffer(kernel,"BonesBuffer",bones); shader.SetBuffer(kernel,"FramesBuffer",frames);
+                    shader.SetBuffer(kernel,"PlasticBendsBuffer",plasticBends);
                     shader.SetBuffer(kernel,"RestNodesBuffer",rest); shader.SetBuffer(kernel,"RodsBuffer",rods);
                     shader.SetBuffer(kernel,"BladesBuffer",blades);
                     shader.SetBuffer(kernel,"ResultPosBuffer",positions); shader.SetBuffer(kernel,"NormalBuffer",normals);
@@ -94,6 +96,8 @@ namespace GrassFinal.PBDGrass
                 material.SetBuffer("NormalBuffer",normals); material.SetBuffer("UvBuffer",uvs);
                 material.SetBuffer("GridsVisibleBuffer",visible);
                 material.SetBuffer("BladesBuffer",blades);
+                shader.SetInt("EnablePlasticity",settings.EnablePlasticity?1:0);
+                shader.SetFloat("GrassReach",data.MaximumBladeLength*1.1f+.1f);
                 SelectPool();
             }
             catch { Dispose(); throw; }
@@ -149,6 +153,7 @@ namespace GrassFinal.PBDGrass
             Mathf.Round(p.x*100000)*.00001f,Mathf.Round(p.y*100000)*.00001f,Mathf.Round(p.z*100000)*.00001f);
         private void Tick(float tick,float motionFraction)
         {
+            shader.SetInt("EnablePlasticity",settings.EnablePlasticity?1:0);
             SelectPool();
             for (int i=0;i<shapes.Length;i++)
             {
@@ -171,6 +176,11 @@ namespace GrassFinal.PBDGrass
             shader.SetFloat("AngularDamping",Mathf.Max(0,settings.AngularDamping));
             shader.SetFloat("CollisionMargin",Mathf.Max(0,settings.CollisionMargin));
             shader.SetFloat("GroundFriction",Mathf.Max(0,settings.Friction));
+            shader.SetFloat("PlasticYieldCurvature",Mathf.Max(.01f,settings.PlasticYieldCurvature));
+            shader.SetFloat("PlasticFlowRate",Mathf.Max(0,settings.PlasticFlowRate));
+            shader.SetFloat("PlasticMaxCurvature",Mathf.Max(0,settings.PlasticMaxCurvature));
+            shader.SetFloat("BaseYieldAngle",Mathf.Clamp(settings.BaseYieldDegrees,1,89)*Mathf.Deg2Rad);
+            shader.SetFloat("BaseMaxPlasticAngle",Mathf.Clamp(settings.BaseMaxPlasticDegrees,0,85)*Mathf.Deg2Rad);
             shader.SetInt("GroundCollision",settings.GroundCollision?1:0);
             shader.SetInt("NearSubsteps",Mathf.Clamp(settings.NearSubsteps,1,16));
             shader.SetInt("ConstraintIterations",Mathf.Clamp(settings.ConstraintIterations,1,6));
@@ -229,6 +239,26 @@ namespace GrassFinal.PBDGrass
                     data.Grids[g].IdOffset*GrassBladeData.Segments,32*GrassBladeData.Segments);
             }
             return result;
+        }
+        // Diagnostic read only; normal simulation and residency never read plastic state back.
+        public Vector4[] ReadPlasticBends()
+        {
+            var result=new Vector4[BladeCount*GrassBladeData.Segments]; plasticBends.GetData(result); return result;
+        }
+        public void ResetDeformation()
+        {
+            if(disposed)return;
+            plasticBends.SetData(new Vector4[BladeCount*GrassBladeData.Segments]);
+            shader.SetInt("EnablePlasticity",settings.EnablePlasticity?1:0);
+            int count=0;
+            for(int g=0;g<data.Grids.Length;g++)
+            {
+                int slot=Pool.SlotForGrid(g);
+                if(slot>=0)initialization[count++]=new Initialization { Slot=slot,Grid=data.Grids[g].IdOffset };
+            }
+            if(count==0)return;
+            initializeBuffer.SetData(initialization,0,0,count); shader.SetInt("InitializationCount",count);
+            shader.Dispatch(initializeKernel,(count*32+63)/64,1,1);
         }
         public void ImpulseBlade(int blade,Vector3 velocity,Vector3 angularVelocity)
         {

@@ -1,0 +1,144 @@
+{
+    "gpu": "NVIDIA GeForce RTX 3080 Ti",
+    "graphicsApi": "Direct3D11",
+    "passed": true,
+    "error": "",
+    "metrics": [
+        {
+            "name": "rest_drift_m",
+            "value": 0.00000986794475466013
+        },
+        {
+            "name": "fps_30_difference_m",
+            "value": 0.0
+        },
+        {
+            "name": "fps_60_difference_m",
+            "value": 0.0
+        },
+        {
+            "name": "fps_120_difference_m",
+            "value": 0.0
+        },
+        {
+            "name": "pool_capacity_blades",
+            "value": 128.0
+        },
+        {
+            "name": "pool_migration_initializations",
+            "value": 12.0
+        },
+        {
+            "name": "pool_cached_reentry_initializations",
+            "value": 0.0
+        },
+        {
+            "name": "odd_grid_and_hitch_guard",
+            "value": 1.0
+        },
+        {
+            "name": "soft_direction_peak_tip_m",
+            "value": 0.271526575088501
+        },
+        {
+            "name": "hard_direction_peak_tip_m",
+            "value": 0.1912112832069397
+        },
+        {
+            "name": "twist_impulse_peak_frame_rad",
+            "value": 0.08468825370073319
+        },
+        {
+            "name": "twist_impulse_recovered_frame_rad",
+            "value": 0.0
+        },
+        {
+            "name": "compliance_0.001_tip_m",
+            "value": 0.039240919053554538
+        },
+        {
+            "name": "compliance_0.001_bend_error_rad",
+            "value": 0.013760491274297238
+        },
+        {
+            "name": "compliance_0.001_max_stretch",
+            "value": 0.00006016025508870371
+        },
+        {
+            "name": "compliance_0.01_tip_m",
+            "value": 0.26849058270454409
+        },
+        {
+            "name": "compliance_0.01_bend_error_rad",
+            "value": 0.07903998345136643
+        },
+        {
+            "name": "compliance_0.01_max_stretch",
+            "value": 0.00010106607078341767
+        },
+        {
+            "name": "loaded_bend_error_rad",
+            "value": 0.07903998345136643
+        },
+        {
+            "name": "recovered_bend_error_rad",
+            "value": 0.0011662391480058432
+        },
+        {
+            "name": "moving_sphere_segment_penetration_m",
+            "value": 0.0
+        },
+        {
+            "name": "post_contact_max_stretch",
+            "value": 0.0000017124897340181633
+        },
+        {
+            "name": "between_nodes_probe_penetration_m",
+            "value": 0.0
+        },
+        {
+            "name": "moving_capsule_segment_penetration_m",
+            "value": 0.0
+        },
+        {
+            "name": "moving_capsule_mean_tip_peak_m",
+            "value": 0.013075699098408223
+        },
+        {
+            "name": "ground_friction_0_tip_slip_m",
+            "value": 1.4999486207962037
+        },
+        {
+            "name": "ground_friction_0.8_tip_slip_m",
+            "value": 0.5518353581428528
+        },
+        {
+            "name": "moving_contact_fps_30_difference_m",
+            "value": 0.0
+        },
+        {
+            "name": "moving_contact_fps_60_difference_m",
+            "value": 0.0
+        },
+        {
+            "name": "moving_contact_fps_120_difference_m",
+            "value": 0.0
+        },
+        {
+            "name": "blades_32768_synchronized_tick_ms",
+            "value": 5.022476673126221
+        },
+        {
+            "name": "blades_8192_synchronized_tick_ms",
+            "value": 1.4226232767105103
+        },
+        {
+            "name": "blades_32768_two_contacts_synchronized_tick_ms",
+            "value": 5.4535064697265629
+        },
+        {
+            "name": "preview_visible_grids",
+            "value": 64.0
+        }
+    ]
+}
