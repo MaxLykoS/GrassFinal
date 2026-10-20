@@ -1,0 +1,15 @@
+{
+    "passed": true,
+    "overheadWorked": true,
+    "returnedToGround": true,
+    "error": "",
+    "minActive": 32768,
+    "maxActive": 32768,
+    "shifts": 7,
+    "ticks": 348,
+    "observedFrames": 34629,
+    "startX": -12.0,
+    "endX": 27.51568603515625,
+    "lastGroundHeight": 2.5,
+    "droppedTime": 0.79920893907547
+}

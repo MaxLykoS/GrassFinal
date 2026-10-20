@@ -1,0 +1,57 @@
+{
+    "passed": true,
+    "statelessRevisit": true,
+    "physicalBuffersUnchanged": true,
+    "gpu": "NVIDIA GeForce RTX 3080 Ti",
+    "error": "",
+    "candidates": 604160,
+    "tiles": 988,
+    "coreBlades": 131072,
+    "activeMin": 32768,
+    "activeMax": 32768,
+    "reservedOuterBytes": 19350144,
+    "invalidInstances": 0,
+    "insideExcludedCore": 0,
+    "insideActiveCore": 0,
+    "farSamples": 68310,
+    "nearSamples": 55007,
+    "nearDensityRegion": 512,
+    "farDensityRegion": 490,
+    "rootMin": {
+        "x": -127.99923706054688,
+        "y": 0.0,
+        "z": -127.9970474243164
+    },
+    "rootMax": {
+        "x": 127.62434387207031,
+        "y": 0.0,
+        "z": 127.99527740478516
+    },
+    "views": [
+        {
+            "name": "OverheadDebug",
+            "drawnOuterBlades": 267600,
+            "outerTriangles": 1338000
+        },
+        {
+            "name": "OverheadLit",
+            "drawnOuterBlades": 267600,
+            "outerTriangles": 1338000
+        },
+        {
+            "name": "GroundLit",
+            "drawnOuterBlades": 107718,
+            "outerTriangles": 538590
+        },
+        {
+            "name": "BoundaryLit",
+            "drawnOuterBlades": 115575,
+            "outerTriangles": 577875
+        },
+        {
+            "name": "OuterLit",
+            "drawnOuterBlades": 55253,
+            "outerTriangles": 276265
+        }
+    ]
+}

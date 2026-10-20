@@ -1,0 +1,23 @@
+{
+  "date": "2026-10-15",
+  "unity": "2022.3.62f2c1",
+  "graphics": "D3D11",
+  "base_commit": "a000a183b67027c16dec4ea69e6d32e968f66aa9",
+  "note": "Uncommitted handoff prototype over the pushed plastic-grass baseline. SHA256 of source files tested.",
+  "sha256": {
+    "Runtime/PBDGrassPatchRenderer.cs": "9ad533fd8e47ade4cf6c4a993795224dd66b8461087fabd568d01f5b9856251f",
+    "Runtime/GrassLodHandoff.cs": "e83bb867218f0651c79773a6d770946fa2092fb8bab372458dc8085e1672bc4c",
+    "Runtime/GrassHandoffSettings.cs": "a20650cb3db45a63dcebc8ce003c0c0cfefba873bf366f8be5b898a14c41e930",
+    "Shaders/GrassHandoff.compute": "c84e34857c7a10a1b51550df49a421405800f949b89cc8ec440be23ca9428e16",
+    "Demo/GrassHandoffDemo.cs": "54defd59b115a39bfbafedcd1f8a52b4870eed642f0fb51eff5983a57ef6635e",
+    "Editor/GrassHandoffValidation.cs": "66162ae9e6cfb7547e6393e1332e7383e8c25bfc6ab303a1504741a8427b0c74",
+    "Editor/GrassHandoffSceneBuilder.cs": "73b669e584fdb097be5e96917af35315e9df6073cb196e947c5e578ac69f0dea",
+    "Scenes/PBDGrassHandoff.unity": "6fa73977e343a0afa6e0e60ea7a21252c4edd437052c83fe81661e693b1a4a71",
+    "Runtime/XPBDGrassSettings.cs": "75d6a91b474cfdf1c14edd6f49e5bd2cfc401dbb461abbfa9ee89e0eab9a7b46",
+    "Shaders/PBDSolverCS.compute": "421ee649d676a658737573d6a9abfcbb45d47ba37e494b1d3141ac7c83ef043b",
+    "Shaders/PBDGrassShaderDrawProcedual.shader": "6e8225ac97846c055aece2da03734f4d855c468ae0cbb971e26c29961b332dd0",
+    "Materials/PBDGrassProcedualMaterial.mat": "bda9ba9f519d1c0eb493099a24ceec1ca370dca888543c090fdf23af32a6d41d",
+    "Prefabs/PBDGrassDemo.prefab": "82a981905fe84017074391b3e2e99ff55b76e3b855c48d3a72efd2e5df02fcc2",
+    "Scenes/PBDGrassDemo.unity": "d409671e1c36a6fe0467d44428a3d3d43cdbeeb30d696677f2bdbc70e581f70c"
+  }
+}

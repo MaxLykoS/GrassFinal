@@ -1,0 +1,73 @@
+{
+  "passed": true,
+  "gpu": "NVIDIA GeForce RTX 3080 Ti",
+  "error": "",
+  "width": 1280,
+  "height": 720,
+  "dropped": 0,
+  "failed": 0,
+  "phases": [
+    {
+      "name": "overhead_core",
+      "samples": 180,
+      "minActive": 32768,
+      "maxActive": 32768,
+      "advanceGpuMean": 2.828372088888888,
+      "outerBuildMean": 0.000989866666666692,
+      "outerBuildP95": 0.001024000000000136,
+      "coreCullMean": 0.01028551111111108,
+      "renderMean": 0.595746133333333,
+      "renderP95": 0.8069120000000001,
+      "outerDrawMean": 0.0009272888888888812,
+      "outerDrawP95": 0.001024000000000136,
+      "cpuOuterMean": 0.0027266666666666663
+    },
+    {
+      "name": "overhead_outer",
+      "samples": 180,
+      "minActive": 32768,
+      "maxActive": 32768,
+      "advanceGpuMean": 2.9780142222222232,
+      "outerBuildMean": 0.04415075555555556,
+      "outerBuildP95": 0.03583999999999987,
+      "coreCullMean": 0.008243911111111129,
+      "renderMean": 1.0464938666666672,
+      "renderP95": 1.2072960000000004,
+      "outerDrawMean": 0.43452302222222144,
+      "outerDrawP95": 0.6430720000000001,
+      "cpuOuterMean": 0.024201666666666663
+    },
+    {
+      "name": "ground_core",
+      "samples": 180,
+      "minActive": 32768,
+      "maxActive": 32768,
+      "advanceGpuMean": 2.8524581333333328,
+      "outerBuildMean": 0.0009955555555555692,
+      "outerBuildP95": 0.001024000000000136,
+      "coreCullMean": 0.007981511111111112,
+      "renderMean": 0.5879295999999999,
+      "renderP95": 0.7823359999999999,
+      "outerDrawMean": 0.0009728000000000083,
+      "outerDrawP95": 0.001024000000000136,
+      "cpuOuterMean": 0.0028894444444444445
+    },
+    {
+      "name": "ground_outer",
+      "samples": 180,
+      "minActive": 32768,
+      "maxActive": 32768,
+      "advanceGpuMean": 2.951476800000001,
+      "outerBuildMean": 0.027398222222222227,
+      "outerBuildP95": 0.027647999999999673,
+      "coreCullMean": 0.009516977777777784,
+      "renderMean": 0.6977137777777777,
+      "renderP95": 0.9267199999999995,
+      "outerDrawMean": 0.15332124444444434,
+      "outerDrawP95": 0.14745600000000003,
+      "cpuOuterMean": 0.02214611111111111
+    }
+  ],
+  "scope": "Outer compute: GPU timestamp 1->2. Isolated outer forward draw: command-buffer timestamps 11->12 on an observer with the same view, without core occlusion. Native timing is temporary validation-only.",
+  "caveat": "Different sequential phases show contention variance. Do not subtract their combined render times or interpret their Advance intervals as a solver optimization. Occasional long samples can put the mean above P95."
+}

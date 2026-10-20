@@ -11,6 +11,11 @@ namespace GrassFinal.PBDGrass
         [Min(0)] public float PoolHysteresis = 2;
         [Min(1)] public float MaxDistance = 40;
         public bool UseOcclusionCulling;
+        [Tooltip("Reserve hysteresis in the full-pool ranking, not only the candidate radius.")]
+        public bool StablePoolSelection;
+        [Tooltip("Prioritize listed interaction colliders inside the compatible middle range, within the same fixed pool budget.")]
+        public bool PromoteInteractions;
+        [Min(1)] public float InteractionDistance = 28;
         [Header("Small Steps")]
         [Range(30, 120)] public int SimulationRate = 60;
         [Range(1, 16)] public int NearSubsteps = 8;

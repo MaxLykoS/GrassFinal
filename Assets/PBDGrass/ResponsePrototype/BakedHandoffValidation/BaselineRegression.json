@@ -1,0 +1,111 @@
+{
+    "passed": true,
+    "gpu": "NVIDIA GeForce RTX 3080 Ti",
+    "error": "",
+    "metrics": [
+        {
+            "name": "rest_min_height_m",
+            "value": 1.1063456535339356
+        },
+        {
+            "name": "rest_max_height_m",
+            "value": 1.5067574977874756
+        },
+        {
+            "name": "weak_wind_plastic_angle_rad",
+            "value": 0.0
+        },
+        {
+            "name": "weak_wind_max_stretch",
+            "value": 0.0000011447683618825977
+        },
+        {
+            "name": "light_contact_node_movement_m",
+            "value": 0.020035818219184877
+        },
+        {
+            "name": "light_contact_plastic_angle_rad",
+            "value": 0.0
+        },
+        {
+            "name": "light_contact_residual_tip_m",
+            "value": 0.0000979701362666674
+        },
+        {
+            "name": "elastic_pressed_tip_m",
+            "value": 1.8250160217285157
+        },
+        {
+            "name": "elastic_contact_state_rad",
+            "value": 0.0
+        },
+        {
+            "name": "elastic_residual_tip_m",
+            "value": 0.004443097393959761
+        },
+        {
+            "name": "elastic_contact_max_stretch",
+            "value": 7.662008556508226e-7
+        },
+        {
+            "name": "plastic_pressed_tip_m",
+            "value": 1.8822206258773804
+        },
+        {
+            "name": "plastic_contact_state_rad",
+            "value": 1.0456634759902955
+        },
+        {
+            "name": "plastic_residual_tip_m",
+            "value": 1.1576706171035767
+        },
+        {
+            "name": "plastic_contact_max_stretch",
+            "value": 7.662008556508226e-7
+        },
+        {
+            "name": "evicted_plastic_state_error",
+            "value": 0.0
+        },
+        {
+            "name": "reentered_tip_residual_m",
+            "value": 0.9118754863739014
+        },
+        {
+            "name": "reset_max_stretch",
+            "value": 8.395108466174861e-7
+        },
+        {
+            "name": "contact_fps_30_plastic_error_rad",
+            "value": 0.0
+        },
+        {
+            "name": "contact_fps_60_plastic_error_rad",
+            "value": 0.00010677145473891869
+        },
+        {
+            "name": "contact_fps_120_plastic_error_rad",
+            "value": 0.00010677145473891869
+        },
+        {
+            "name": "demo_32768_max_stretch",
+            "value": 0.00012163400242570788
+        },
+        {
+            "name": "demo_unpressed_plastic_angle_rad",
+            "value": 0.0
+        },
+        {
+            "name": "demo_main_visible_grids",
+            "value": 613.0
+        },
+        {
+            "name": "demo_scene_visible_grids",
+            "value": 613.0
+        },
+        {
+            "name": "demo_edit_preview_ticks",
+            "value": 0.0
+        }
+    ]
+}

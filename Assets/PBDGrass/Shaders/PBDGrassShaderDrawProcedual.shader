@@ -39,7 +39,34 @@ Shader "PBDGrass/Workspace/PBDGrassShaderDrawProcedual"
         StructuredBuffer<PBDGrid> GridsVisibleBuffer;
         StructuredBuffer<GrassBlade> BladesBuffer;
         float _NormalCurvature, _ClumpSize;
+        #if defined(GRASS_LOD_BASE_COLORS) || defined(GRASS_OUTER_COVERAGE)
+            struct GrassLodGridState { int poolOffset,changed; float started,padding; };
+            StructuredBuffer<GrassLodGridState> _GrassLodGridStates;
+        #endif
+        float4 _GrassCoverageTransition;
+        int _GrassRadialCoverage;
+        #if defined(GRASS_RADIAL_MIDDLE)
+            #include "GrassMiddlePresentation.cginc"
+        #endif
+        float CoreCoverage(float3 root)
+        {
+            float edge=_GrassRadialCoverage!=0?length(root.xz-_GrassCoverageTransition.xy):max(abs(root.x-_GrassCoverageTransition.x),abs(root.z-_GrassCoverageTransition.y));
+            return 1-smoothstep(_GrassCoverageTransition.z-_GrassCoverageTransition.w,_GrassCoverageTransition.z,edge);
+        }
         float3 SafeNormal(float3 v) { return v * rsqrt(max(dot(v,v),1e-8)); }
+        void PresentMiddle(uint index,inout float3 world,inout float3 normal,inout float3 width)
+        {
+            #if defined(GRASS_OUTER_COVERAGE) && defined(GRASS_RADIAL_MIDDLE)
+                uint blade=index/15;
+                if(_GrassRadialCoverage==0 || _GrassLodGridStates[blade/32].poolOffset>=0)return;
+                GrassBlade leaf=BladesBuffer[blade];float coverage=CoreCoverage(leaf.root);
+                if(coverage<leaf.seed)return;
+                float t=MiddlePresentationWeight(coverage,leaf.seed);
+                if(t<=0)return;
+                float3 target,tn,tw;MiddleOuterTarget(leaf.root,index%15,target,tn,tw);
+                world=lerp(world,target,t);normal=SafeNormal(lerp(normal,tn,t));width=SafeNormal(lerp(width,tw,t));
+            #endif
+        }
         uint LeafIndex(uint vertexID, uint instanceID)
         { return TriangleBuffer[GridsVisibleBuffer[instanceID].idOffset * 39 + vertexID]; }
         float HashClump(float2 p)
@@ -55,6 +82,9 @@ Shader "PBDGrass/Workspace/PBDGrassShaderDrawProcedual"
             #pragma fragment frag
             #pragma multi_compile_fwdbase nolightmap nodirlightmap nodynlightmap novertexlight
             #pragma multi_compile_fog
+            #pragma multi_compile_local __ GRASS_LOD_BASE_COLORS
+            #pragma multi_compile_local __ GRASS_OUTER_COVERAGE
+            #pragma multi_compile_local __ GRASS_RADIAL_MIDDLE
             #include "Lighting.cginc"
             #include "AutoLight.cginc"
             #include "UnityStandardBRDF.cginc"
@@ -63,17 +93,24 @@ Shader "PBDGrass/Workspace/PBDGrassShaderDrawProcedual"
             float _ColorVariation, _Roughness, _SpecularStrength, _SpecularAA;
             float _Transmission, _TransmissionPower, _RootOcclusion;
             float _DebugView;
+
             struct v2f
             {
                 float4 pos : SV_POSITION;
                 float2 uv : TEXCOORD0;
                 float3 world : TEXCOORD1;
                 float3 normal : TEXCOORD2;
+                #if defined(GRASS_OUTER_COVERAGE)
+                    nointerpolation float coverage : TEXCOORD9;
+                #endif
                 float3 width : TEXCOORD3;
                 float3 clumpNormal : TEXCOORD4;
                 nointerpolation float seed : TEXCOORD5;
                 SHADOW_COORDS(6)
                 UNITY_FOG_COORDS(7)
+                #if defined(GRASS_LOD_BASE_COLORS)
+                    nointerpolation float xpbd : TEXCOORD8;
+                #endif
             };
             v2f vert(uint vertexID : SV_VertexID, uint instanceID : SV_InstanceID)
             {
@@ -82,14 +119,21 @@ Shader "PBDGrass/Workspace/PBDGrassShaderDrawProcedual"
                 uint pair=blade*15+min((index%15)/2,6)*2;
                 GrassBlade leaf=BladesBuffer[blade];
                 o.world=VertexBuffer[index];
-                o.pos=UnityWorldToClipPos(o.world);
                 o.uv=UvBuffer[index];
                 o.normal=SafeNormal(NormalBuffer[index]);
                 o.width=SafeNormal(VertexBuffer[pair]-VertexBuffer[pair+1]);
+                PresentMiddle(index,o.world,o.normal,o.width);
+                o.pos=UnityWorldToClipPos(o.world);
                 // Coherent clump normals suppress independent leaf glints at small footprints.
                 float angle=HashClump(floor(leaf.root.xz/max(_ClumpSize,0.25)))*6.2831853;
                 o.clumpNormal=float3(cos(angle)*0.35,0.93675,sin(angle)*0.35);
                 o.seed=leaf.seed;
+                #if defined(GRASS_OUTER_COVERAGE)
+                    o.coverage=_GrassLodGridStates[blade/32].poolOffset>=0?1:CoreCoverage(leaf.root)-leaf.seed;
+                #endif
+                #if defined(GRASS_LOD_BASE_COLORS)
+                    o.xpbd=_GrassLodGridStates[blade/32].poolOffset>=0?1:0;
+                #endif
                 TRANSFER_SHADOW_WPOS(o,o.world);
                 UNITY_TRANSFER_FOG(o,o.pos);
                 return o;
@@ -112,6 +156,9 @@ Shader "PBDGrass/Workspace/PBDGrassShaderDrawProcedual"
             }
             half4 frag(v2f i, bool isFrontFace : SV_IsFrontFace) : SV_Target
             {
+                #if defined(GRASS_OUTER_COVERAGE)
+                    clip(i.coverage);
+                #endif
                 float3 v=SafeNormal(_WorldSpaceCameraPos.xyz-i.world);
                 float3 l=SafeNormal(UnityWorldSpaceLightDir(i.world));
                 float3 width=SafeNormal(i.width);
@@ -144,6 +191,11 @@ Shader "PBDGrass/Workspace/PBDGrassShaderDrawProcedual"
                 albedo*=tex2D(_ColorMap,float2(i.seed,i.uv.y)).rgb;
                 albedo*=tex2D(_VeinMap,float2(i.uv.x,0.5)).r;
                 albedo*=lerp(1,_AlternateColor.rgb,smoothstep(0.35,0.85,i.seed)*_ColorVariation);
+                #if defined(GRASS_LOD_BASE_COLORS)
+                    // Replace only the BRDF base color. Normal, GGX, transmission, AO,
+                    // light/shadow attenuation and fog continue through the same path.
+                    albedo=i.xpbd>0.5?float3(0,1,0):float3(0,0,1);
+                #endif
                 float nl=dot(n,l);
                 float3 diffuse=albedo*(unity_ColorSpaceDielectricSpec.a*(1-_Transmission*0.35)*saturate(nl)/UNITY_PI);
                 // Transmission follows the light's color, intensity and shadow attenuation.
@@ -171,12 +223,23 @@ Shader "PBDGrass/Workspace/PBDGrassShaderDrawProcedual"
             #pragma vertex shadowVert
             #pragma fragment shadowFrag
             #pragma multi_compile_shadowcaster
-            struct shadowV2F { V2F_SHADOW_CASTER; };
+            #pragma multi_compile_local __ GRASS_OUTER_COVERAGE
+            #pragma multi_compile_local __ GRASS_RADIAL_MIDDLE
+            struct shadowV2F { V2F_SHADOW_CASTER;
+                #if defined(GRASS_OUTER_COVERAGE)
+                    nointerpolation float coverage : TEXCOORD1;
+                #endif
+            };
             shadowV2F shadowVert(uint vertexID : SV_VertexID, uint instanceID : SV_InstanceID)
             {
                 shadowV2F o;
                 uint index=LeafIndex(vertexID,instanceID);
+                #if defined(GRASS_OUTER_COVERAGE)
+                    o.coverage=_GrassLodGridStates[index/(15*32)].poolOffset>=0?1:CoreCoverage(BladesBuffer[index/15].root)-BladesBuffer[index/15].seed;
+                #endif
                 float3 world=VertexBuffer[index], normal=SafeNormal(NormalBuffer[index]);
+                uint pair=(index/15)*15+min((index%15)/2,6)*2;
+                float3 width=SafeNormal(VertexBuffer[pair]-VertexBuffer[pair+1]);PresentMiddle(index,world,normal,width);
                 float cosine=dot(normal,SafeNormal(UnityWorldSpaceLightDir(world)));
                 normal*=cosine>=0?1:-1;
                 world-=normal*(unity_LightShadowBias.z*sqrt(saturate(1-cosine*cosine)));
@@ -186,7 +249,12 @@ Shader "PBDGrass/Workspace/PBDGrassShaderDrawProcedual"
                 #endif
                 return o;
             }
-            float4 shadowFrag(shadowV2F i) : SV_Target { SHADOW_CASTER_FRAGMENT(i) }
+            float4 shadowFrag(shadowV2F i) : SV_Target {
+                #if defined(GRASS_OUTER_COVERAGE)
+                    clip(i.coverage);
+                #endif
+                SHADOW_CASTER_FRAGMENT(i)
+            }
             ENDCG
         }
     }

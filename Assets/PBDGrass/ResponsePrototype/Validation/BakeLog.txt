@@ -1,0 +1,10 @@
+Unity 2022.3.62f2c1 / RTX 3080 Ti / D3D11
+GRASS_RESPONSE_TYPE 1 Short / Narrow / Firm maxSpeed=0.001848642 curveError=0.01576176 omega=(15.25, 15.50) damping=(0.08, 0.12) dynamicFit=(0.01, 0.07)
+GRASS_RESPONSE_TYPE 2 Short / Narrow / Soft maxSpeed=0.001867023 curveError=0.01584497 omega=(10.50, 10.50) damping=(0.12, 0.12) dynamicFit=(0.02, 0.04)
+GRASS_RESPONSE_TYPE 3 Short / Wide / Firm maxSpeed=0.001519914 curveError=0.01583435 omega=(11.00, 11.00) damping=(0.12, 0.12) dynamicFit=(0.03, 0.04)
+GRASS_RESPONSE_TYPE 4 Short / Wide / Soft maxSpeed=0.001828426 curveError=0.01598656 omega=(7.25, 7.25) damping=(0.16, 0.16) dynamicFit=(0.02, 0.03)
+GRASS_RESPONSE_TYPE 5 Tall / Narrow / Firm maxSpeed=0.001915817 curveError=0.0252667 omega=(5.50, 5.50) damping=(0.20, 0.20) dynamicFit=(0.01, 0.03)
+GRASS_RESPONSE_TYPE 6 Tall / Narrow / Soft maxSpeed=0.00177942 curveError=0.02577144 omega=(3.25, 3.50) damping=(0.32, 0.32) dynamicFit=(0.02, 0.03)
+GRASS_RESPONSE_TYPE 7 Tall / Wide / Firm maxSpeed=0.001988617 curveError=0.02570421 omega=(3.50, 3.75) damping=(0.32, 0.32) dynamicFit=(0.03, 0.03)
+GRASS_RESPONSE_TYPE 8 Tall / Wide / Soft maxSpeed=0.001942087 curveError=0.01405654 omega=(11.00, 8.75) damping=(1.00, 0.12) dynamicFit=(0.10, 0.03)
+GRASS_RESPONSE_BAKE_PASS

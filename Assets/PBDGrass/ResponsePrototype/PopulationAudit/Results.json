@@ -1,0 +1,70 @@
+{
+    "passed": true,
+    "gpu": "NVIDIA GeForce RTX 3080 Ti",
+    "error": "",
+    "generatedGrids": 4096,
+    "generatedBlades": 131072,
+    "activeXpbdBlades": 32768,
+    "bezierBlades": 98304,
+    "gpuXpbdBlades": 32768,
+    "gpuBezierBlades": 98304,
+    "gpuVertexCount": 1966080,
+    "nondegenerateBlades": 131072,
+    "invalidVertices": 0,
+    "minActiveBlades": 32768,
+    "maxActiveBlades": 32768,
+    "geometryMin": {
+        "x": -32.91244888305664,
+        "y": -0.002159327967092395,
+        "z": -32.961769104003909
+    },
+    "geometryMax": {
+        "x": 32.99726867675781,
+        "y": 1.5171951055526734,
+        "z": 32.97230529785156
+    },
+    "views": [
+        {
+            "width": 1920,
+            "height": 1080,
+            "drawnGrids": 4096,
+            "drawnBlades": 131072,
+            "submittedTriangles": 1703936,
+            "verticesOutsideView": 0,
+            "cameraPosition": {
+                "x": 0.0,
+                "y": 70.0,
+                "z": 0.0
+            },
+            "orthographicSize": 36.0
+        },
+        {
+            "width": 1200,
+            "height": 900,
+            "drawnGrids": 4096,
+            "drawnBlades": 131072,
+            "submittedTriangles": 1703936,
+            "verticesOutsideView": 0,
+            "cameraPosition": {
+                "x": 0.0,
+                "y": 70.0,
+                "z": 0.0
+            },
+            "orthographicSize": 36.0
+        },
+        {
+            "width": 900,
+            "height": 1600,
+            "drawnGrids": 4096,
+            "drawnBlades": 131072,
+            "submittedTriangles": 1703936,
+            "verticesOutsideView": 0,
+            "cameraPosition": {
+                "x": 0.0,
+                "y": 70.0,
+                "z": 0.0
+            },
+            "orthographicSize": 64.0
+        }
+    ]
+}

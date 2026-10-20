@@ -1,12 +1,30 @@
 # 近景 XPBD 草工作目录
 
-此目录是当前生成、模拟和渲染的开发入口；目录外的原有代码和资源继续作为 Archive。本版只实现近景，没有接入中景或远景。
+此目录是当前生成、模拟和渲染的开发入口；目录外的原有代码和资源继续作为 Archive。
 
-当前已接受版本作为优化前 baseline，配置与复现约定见 [OptimizationBaseline.md](Diagnostics/OptimizationBaseline.md)，Git 标签为 `baseline/xpbd-grass-pre-optimization`。
+**中景范围与交互调整：**打开 `Scenes/PBDGrassMidrange.unity`。兼容中景按径向完整显示到 28 米，28～36 米向无状态外围收敛并替换；驻留窗口扩到 96×96 米，XPBD 仍固定 32768 根。约 24 米外另有压草体，附近局部草临时进入同一 XPBD 池，`I` 开关这项交互。WASD / Shift / 右键、`T` / `V` / `B` 沿用流式场景操作。此场景开启满池滞回和随运动扩展的预热，说明与检查见 [ResponsePrototype/TieredState.md](ResponsePrototype/TieredState.md)，报告在 `ResponsePrototype/MidrangeValidation/`。
+
+**相机流式实验：**打开 `Scenes/PBDGrassStreaming.unity`。WASD 移动、Shift 加速、右键观察，`T` 自动前进、`V` 俯视/地面、`B` 分层颜色。主相机带动 64×64 米中心驻留区和 256×256 米外围窗口，每跨 8 米替换边缘格；中心持续保持 32768 XPBD + 98304 兼容贝塞尔，外围无状态。重叠区域保留模拟与倒伏，完全卸载后的倒伏丢弃，再加载时根位置/形态身份相同。当前为平地程序生成，不含地形资产的磁盘加载。机制、分项开销与验证见 [ResponsePrototype/TieredState.md](ResponsePrototype/TieredState.md)，报告和截图在 `ResponsePrototype/StreamingValidation/`。下面的原固定场景继续保留。
+
+**外围覆盖实验：**打开 `Scenes/PBDGrassOuterCoverage.unity`。中心保留 32768 XPBD + 98304 兼容贝塞尔，外围扩为 256×256 米，使用无碰撞、无踩踏历史的程序风草，距离密度 32→8→2、每叶 7 个几何顶点。`V` 切俯视/低位，`B` 切实际光照/分层调试色。说明和分项 GPU 实测见 [ResponsePrototype/TieredState.md](ResponsePrototype/TieredState.md)，数据与截图在 `ResponsePrototype/OuterCoverageValidation/`。
+
+**状态分层实验：**打开 `Scenes/PBDGrassTieredState.unity`。保持同样的 32768 根 XPBD + 98304 根外围草，将完整显示历史收缩到近景边界与正在交接的格，稳定近景直接使用 XPBD 几何输出。原联合 baseline 场景和默认路径保留，说明与验证见 [ResponsePrototype/TieredState.md](ResponsePrototype/TieredState.md)。
+
+**当前优化验收基准：**打开 `Scenes/PBDGrassCombinedBaseline.unity`。64 × 64 米草田中持续运行 **32768 根 XPBD + 外围 98304 根预计算贝塞尔草**，随机风、塑性压草和自动往返一起验证。优化必须通过两种表示的交接和烘焙兼容性回归，不能只测近景。配置、检查与数据见 [ResponsePrototype/CombinedBaseline.md](ResponsePrototype/CombinedBaseline.md)。
+
+**小规模预计算交接诊断：**打开 `Scenes/PBDGrassBakedHandoff.unity`。2048 根草使用已接受的第 6 种预计算材料，附近 XPBD，远离后保留塑性倒伏和风响应。`T` 手动/自动，`C` 压草球，`Space` 风，`G` 随机风，`R` 重置。机制与验证见 [ResponsePrototype/BakedHandoff.md](ResponsePrototype/BakedHandoff.md)。
+
+**近中景交接原型：**打开 `Scenes/PBDGrassHandoff.unity`，进入 Play 后自动往返。2048 根共享同一份草叶数据，附近运行 XPBD，其余用读取塑性历史的贝塞尔程序形态。`T` 切换自动/手动相机，`C` 开关压草碰撞，`Space` 开关风，`R` 清除倒伏。手动操作为 WASD / 右键观察。交接机制、误差、验证和下一阶段顺序见 [HandoffPrototype.md](Diagnostics/HandoffPrototype.md)。本原型不代替下面的 32768 根性能基准。
+
+已确认原型的站立草存在重力平衡形态差异；倒伏用例的厘米级误差不代表默认重力下的姿态质量，隔离测量见 [BirthEquilibriumAnalysis.md](Diagnostics/BirthEquilibriumAnalysis.md)。
+
+**八种草的预计算对照：**打开 `ResponsePrototype/GrassResponseComparison.unity`，左侧 XPBD、右侧贝塞尔，比较预计算重力平衡姿态和运行时风响应。`1～8` 近看，`0` 总览，`Space` 停风，`G` 随机风。说明和实测见 [ResponsePrototype/README.md](ResponsePrototype/README.md)。该并排对照继续保留，塑性和交接另由上面的独立场景演示。
+
+早期纯 XPBD baseline 的配置与复现约定见 [OptimizationBaseline.md](Diagnostics/OptimizationBaseline.md)，Git 标签为 `baseline/xpbd-grass-pre-optimization`。该标签是历史快照；当前优化验收以页首的联合场景为准。
 
 当前工作版本在该 baseline 上加入长叶建模和有限弯曲塑性，说明与实测见 [PlasticGrassValidation.md](Diagnostics/PlasticGrassValidation.md)。baseline 标签及其历史报告保持不变。
 
-2026-10-15 用户确认长叶塑性倒伏效果，并指定后续硬预算：**RTX 3080 Ti、32768 根活动草，每个完整模拟 tick 的 GPU 求解＋几何重建不超过 1 ms**。当前实测约 2.457 ms，尚未达标；优化需保留已认可的倒伏与卸载回弹。剔除、绘制和 CPU 池管理另行记录，不用未模拟帧的平均值或减少活动数量代替达标。
+2026-10-15 用户确认长叶塑性倒伏效果，并指定后续硬预算：**RTX 3080 Ti、32768 根活动草，每个完整模拟 tick 的 GPU 求解＋最终近景几何重建不超过 1 ms**。当前联合场景中 XPBD dispatch 平均约 2.282 ms，全场风响应/交接/最终几何约 1.498 ms，含绘制 GPU 区间约 4.312 ms，尚未达标。显示阶段仍包含近景最终几何，不能全部记为中景成本；细分方法见联合基准文档。优化需保留倒伏、卸载回弹、LOD 连续性和烘焙兼容性，不用未模拟帧平均值或减少活动数量代替达标。历史纯 XPBD 的约 2.457 ms 测量另保留。
 
 ## 查看效果
 

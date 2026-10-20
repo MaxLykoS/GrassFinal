@@ -1,0 +1,100 @@
+{
+    "passed": true,
+    "gpu": "NVIDIA GeForce RTX 3080 Ti",
+    "unity": "2022.3.62f2c1",
+    "error": "",
+    "totalBlades": 131072,
+    "minActiveBlades": 32768,
+    "maxActiveBlades": 32768,
+    "bezierBlades": 98304,
+    "exitedGrids": 1972,
+    "reenteredGrids": 1082,
+    "evictions": 1972,
+    "simulationTicks": 1440,
+    "visibleGrids": 1963,
+    "seedChecks": 4,
+    "maxSeedPositionError": 0.0,
+    "maxSeedVelocityError": 0.0,
+    "maxSeedRotationError": 0.0,
+    "maxSeedAngularError": 0.0,
+    "retainedPlasticError": 0.0,
+    "peakPlastic": 1.0878874063491822,
+    "lodgedGridEvicted": true,
+    "lodgedGridReturned": true,
+    "sceneViewPreserved": true,
+    "acceptedBankUnchanged": true,
+    "rebakes": [
+        {
+            "type": "Short / Narrow / Firm",
+            "maxNodeDifference": 0.0,
+            "maxControlDifference": 0.0,
+            "maxFrameDifferenceDegrees": 0.0,
+            "frequencyDifference": 0.0,
+            "dampingDifference": 0.0,
+            "maxTerminalSpeed": 0.0018486418994143606
+        },
+        {
+            "type": "Short / Narrow / Soft",
+            "maxNodeDifference": 0.0,
+            "maxControlDifference": 0.0,
+            "maxFrameDifferenceDegrees": 0.0,
+            "frequencyDifference": 0.0,
+            "dampingDifference": 0.0,
+            "maxTerminalSpeed": 0.001867022830992937
+        },
+        {
+            "type": "Short / Wide / Firm",
+            "maxNodeDifference": 0.0,
+            "maxControlDifference": 0.0,
+            "maxFrameDifferenceDegrees": 0.0,
+            "frequencyDifference": 0.0,
+            "dampingDifference": 0.0,
+            "maxTerminalSpeed": 0.0015199141344055534
+        },
+        {
+            "type": "Short / Wide / Soft",
+            "maxNodeDifference": 0.0,
+            "maxControlDifference": 0.0,
+            "maxFrameDifferenceDegrees": 0.0,
+            "frequencyDifference": 0.0,
+            "dampingDifference": 0.0,
+            "maxTerminalSpeed": 0.0018284262623637915
+        },
+        {
+            "type": "Tall / Narrow / Firm",
+            "maxNodeDifference": 0.0,
+            "maxControlDifference": 0.0,
+            "maxFrameDifferenceDegrees": 0.0,
+            "frequencyDifference": 0.0,
+            "dampingDifference": 0.0,
+            "maxTerminalSpeed": 0.0019158173818141223
+        },
+        {
+            "type": "Tall / Narrow / Soft",
+            "maxNodeDifference": 0.0,
+            "maxControlDifference": 0.0,
+            "maxFrameDifferenceDegrees": 0.0,
+            "frequencyDifference": 0.0,
+            "dampingDifference": 0.0,
+            "maxTerminalSpeed": 0.0017794204177334905
+        },
+        {
+            "type": "Tall / Wide / Firm",
+            "maxNodeDifference": 0.0,
+            "maxControlDifference": 0.0,
+            "maxFrameDifferenceDegrees": 0.0,
+            "frequencyDifference": 0.0,
+            "dampingDifference": 0.0,
+            "maxTerminalSpeed": 0.0019886165391653778
+        },
+        {
+            "type": "Tall / Wide / Soft",
+            "maxNodeDifference": 0.0,
+            "maxControlDifference": 0.0,
+            "maxFrameDifferenceDegrees": 0.0,
+            "frequencyDifference": 0.0,
+            "dampingDifference": 0.0,
+            "maxTerminalSpeed": 0.001942087197676301
+        }
+    ]
+}

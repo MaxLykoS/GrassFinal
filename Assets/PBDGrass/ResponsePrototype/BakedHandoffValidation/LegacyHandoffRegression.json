@@ -1,0 +1,115 @@
+{
+    "passed": true,
+    "gpu": "NVIDIA GeForce RTX 3080 Ti",
+    "error": "",
+    "metrics": [
+        {
+            "name": "near_plastic_tip_residual_m",
+            "value": 0.8772881031036377
+        },
+        {
+            "name": "plastic_peak_rad",
+            "value": 0.889083206653595
+        },
+        {
+            "name": "exit_selection_pose_jump_m",
+            "value": 0.0
+        },
+        {
+            "name": "evicted_plastic_drift_rad",
+            "value": 0.0
+        },
+        {
+            "name": "middle_plastic_tip_residual_m",
+            "value": 0.9054049253463745
+        },
+        {
+            "name": "near_middle_lodged_tip_difference_m",
+            "value": 0.02812269702553749
+        },
+        {
+            "name": "evicted_seed_position_error_m",
+            "value": 0.0
+        },
+        {
+            "name": "evicted_seed_velocity_error_mps",
+            "value": 0.0
+        },
+        {
+            "name": "evicted_seed_rotation_error_degrees",
+            "value": 0.0
+        },
+        {
+            "name": "evicted_seed_angular_error_radps",
+            "value": 0.0
+        },
+        {
+            "name": "reentry_max_display_step_m",
+            "value": 0.02911580167710781
+        },
+        {
+            "name": "reentry_max_stretch_ratio",
+            "value": 0.0013772996608167887
+        },
+        {
+            "name": "reentry_plastic_change_rad",
+            "value": 0.03297969698905945
+        },
+        {
+            "name": "rapid_reversal_selection_jump_m",
+            "value": 0.0
+        },
+        {
+            "name": "middle_wind_max_speed_mps",
+            "value": 0.01361854188144207
+        },
+        {
+            "name": "cached_seed_position_error_m",
+            "value": 0.0
+        },
+        {
+            "name": "cached_seed_velocity_error_mps",
+            "value": 0.0
+        },
+        {
+            "name": "cached_seed_rotation_error_degrees",
+            "value": 0.0
+        },
+        {
+            "name": "cached_seed_angular_error_radps",
+            "value": 0.0
+        },
+        {
+            "name": "draw_visible_grids",
+            "value": 16.0
+        },
+        {
+            "name": "draw_active_grids",
+            "value": 3.0
+        },
+        {
+            "name": "saved_scene_blades",
+            "value": 2048.0
+        },
+        {
+            "name": "saved_scene_active_blades",
+            "value": 96.0
+        },
+        {
+            "name": "tour_min_active_blades",
+            "value": 96.0
+        },
+        {
+            "name": "tour_max_active_blades",
+            "value": 640.0
+        },
+        {
+            "name": "tour_peak_plastic_rad",
+            "value": 1.2000001668930054
+        },
+        {
+            "name": "tour_entry_initializations",
+            "value": 80.0
+        }
+    ]
+}

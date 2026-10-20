@@ -1,0 +1,75 @@
+#pragma kernel AdvanceResponse
+#pragma kernel BuildGeometry
+struct Blade { float3 Root; float Length; uint Id; float Width,Height,Seed; };
+StructuredBuffer<Blade> BladesBuffer;
+StructuredBuffer<float4> Controls, SampleFrames, Segments;
+RWStructuredBuffer<float4> ResponseState;
+RWStructuredBuffer<float3> ResultPosBuffer, NormalBuffer;
+float4 Dynamics[8]; // omega X/Z, damping X/Z. One state per type in this uniform-wind test cell.
+float4 WindLimits[8];
+float3 Wind;
+float Dt;
+int TypeCount;
+float3 SafeNormal(float3 p,float3 fallback) { float a=dot(p,p); return a>1e-16?p*rsqrt(a):fallback; }
+float3 QRotate(float4 q,float3 v) { return v+2*cross(q.xyz,cross(q.xyz,v)+q.w*v); }
+float4 QBlend(float4 a,float4 b,float t) { if(dot(a,b)<0)b=-b; float4 q=lerp(a,b,t); return q*rsqrt(max(dot(q,q),1e-8)); }
+[numthreads(8,1,1)]
+void AdvanceResponse(uint3 id:SV_DispatchThreadID)
+{
+    if(id.x>=(uint)TypeCount)return;
+    float4 state=ResponseState[id.x],d=Dynamics[id.x];
+    float2 q=state.xy,v=state.zw,target=Wind.xz;
+    // A shared reduced response only; no per-leaf nodes or XPBD constraints are advanced here.
+    [unroll] for(int s=0;s<8;s++)
+    {
+        float h=Dt/8;
+        v+=(-2*d.zw*d.xy*v-d.xy*d.xy*(q-target))*h;
+        q+=v*h;
+    }
+    ResponseState[id.x]=float4(q,v);
+}
+float4 SampleControl(uint type,uint control,int2 cell,float2 f)
+{
+    uint index=(type*25+cell.y*5+cell.x)*3+control;
+    return lerp(lerp(Controls[index],Controls[index+3],f.x),lerp(Controls[index+15],Controls[index+18],f.x),f.y);
+}
+float4 SampleFrame(uint type,uint segment,int2 cell,float2 f)
+{
+    uint index=(type*25+cell.y*5+cell.x)*7+segment;
+    return QBlend(QBlend(SampleFrames[index],SampleFrames[index+7],f.x),
+        QBlend(SampleFrames[index+35],SampleFrames[index+42],f.x),f.y);
+}
+[numthreads(32,1,1)]
+void BuildGeometry(uint3 group:SV_GroupID,uint3 lane:SV_GroupThreadID)
+{
+    uint type=group.x,blade=type*32+lane.x;
+    float2 uv=(clamp(ResponseState[type].xy/max(WindLimits[type].x,.01),-1,1)+1)*2;
+    int2 cell=min((int2)floor(uv),3); float2 f=uv-cell;
+    float3 c1=SampleControl(type,0,cell,f).xyz,c2=SampleControl(type,1,cell,f).xyz,tip=SampleControl(type,2,cell,f).xyz;
+    float3 p[8]; p[0]=0;
+    [unroll] for(int s=0;s<7;s++)
+    {
+        float4 segment=Segments[type*7+s]; float t=segment.w,u=1-t;
+        float3 samplePosition=3*u*u*t*c1+3*u*t*t*c2+t*t*t*tip;
+        float3 direction=SafeNormal(samplePosition-p[s],float3(0,1,0));
+        if(p[s].y+direction.y*segment.x<.002)
+        {
+            float dy=clamp((.002-p[s].y)/max(segment.x,1e-6),-1,1);
+            direction=SafeNormal(float3(direction.x,0,direction.z),float3(1,0,0))*sqrt(max(0,1-dy*dy))+float3(0,dy,0);
+        }
+        p[s+1]=p[s]+direction*segment.x;
+    }
+    float3 root=BladesBuffer[blade].Root;
+    [unroll] for(int j=0;j<7;j++)
+    {
+        float3 tangent=SafeNormal(p[j+1]-p[j],float3(0,1,0));
+        float3 across=QRotate(SampleFrame(type,j,cell,f),float3(1,0,0));
+        across=SafeNormal(across-tangent*dot(across,tangent),float3(1,0,0));
+        float3 width=across*Segments[type*7+j].y;
+        uint vertex=blade*15+j*2;
+        ResultPosBuffer[vertex]=root+p[j]+width; ResultPosBuffer[vertex+1]=root+p[j]-width;
+        float3 normal=SafeNormal(cross(across,tangent),float3(0,0,1));
+        NormalBuffer[vertex]=normal; NormalBuffer[vertex+1]=normal;
+    }
+    ResultPosBuffer[blade*15+14]=root+p[7]; NormalBuffer[blade*15+14]=NormalBuffer[blade*15+13];
+}

@@ -1,0 +1,183 @@
+{
+    "passed": true,
+    "gpu": "NVIDIA GeForce RTX 3080 Ti",
+    "error": "",
+    "metrics": [
+        {
+            "name": "zero_wind_birth_max_node_drift_m",
+            "value": 0.023158082738518716
+        },
+        {
+            "name": "intact_rotated_random_wind_mean_tip_gap_m",
+            "value": 0.014254454523324967
+        },
+        {
+            "name": "intact_rotated_random_wind_max_tip_gap_m",
+            "value": 0.050925370305776599
+        },
+        {
+            "name": "intact_plastic_peak_rad",
+            "value": 0.0
+        },
+        {
+            "name": "wind_seed_position_error_m",
+            "value": 0.0
+        },
+        {
+            "name": "wind_seed_velocity_error_mps",
+            "value": 0.0
+        },
+        {
+            "name": "wind_seed_rotation_error_deg",
+            "value": 0.0
+        },
+        {
+            "name": "wind_seed_angular_error_radps",
+            "value": 0.0
+        },
+        {
+            "name": "light_touch_plastic_peak_rad",
+            "value": 0.0
+        },
+        {
+            "name": "elastic_exit_max_node_residual_m",
+            "value": 0.021959375590085985
+        },
+        {
+            "name": "pressed_plastic_peak_rad",
+            "value": 0.9570700526237488
+        },
+        {
+            "name": "near_lodged_tip_residual_m",
+            "value": 2.050309658050537
+        },
+        {
+            "name": "exit_selection_jump_m",
+            "value": 0.0
+        },
+        {
+            "name": "evicted_plastic_drift_rad",
+            "value": 0.0
+        },
+        {
+            "name": "lodged_near_middle_max_node_gap_m",
+            "value": 0.05933787301182747
+        },
+        {
+            "name": "lodged_near_middle_tip_gap_m",
+            "value": 0.05277221277356148
+        },
+        {
+            "name": "plastic_seed_position_error_m",
+            "value": 0.0
+        },
+        {
+            "name": "plastic_seed_velocity_error_mps",
+            "value": 0.0
+        },
+        {
+            "name": "plastic_seed_rotation_error_deg",
+            "value": 0.0
+        },
+        {
+            "name": "plastic_seed_angular_error_radps",
+            "value": 0.0
+        },
+        {
+            "name": "plastic_reentry_max_display_step_m",
+            "value": 0.005846853367984295
+        },
+        {
+            "name": "plastic_reentry_added_plastic_rad",
+            "value": 0.0
+        },
+        {
+            "name": "interrupted_selection_jump_m",
+            "value": 0.0
+        },
+        {
+            "name": "with_wind_pressed_plastic_peak_rad",
+            "value": 0.9570700526237488
+        },
+        {
+            "name": "with_wind_near_lodged_tip_residual_m",
+            "value": 2.024977445602417
+        },
+        {
+            "name": "with_wind_exit_selection_jump_m",
+            "value": 0.0
+        },
+        {
+            "name": "with_wind_evicted_plastic_drift_rad",
+            "value": 0.0
+        },
+        {
+            "name": "with_wind_lodged_near_middle_max_node_gap_m",
+            "value": 0.07855251431465149
+        },
+        {
+            "name": "with_wind_lodged_near_middle_tip_gap_m",
+            "value": 0.07540641725063324
+        },
+        {
+            "name": "with_wind_plastic_seed_position_error_m",
+            "value": 0.0
+        },
+        {
+            "name": "with_wind_plastic_seed_velocity_error_mps",
+            "value": 0.0
+        },
+        {
+            "name": "with_wind_plastic_seed_rotation_error_deg",
+            "value": 0.0
+        },
+        {
+            "name": "with_wind_plastic_seed_angular_error_radps",
+            "value": 0.0
+        },
+        {
+            "name": "with_wind_plastic_reentry_max_display_step_m",
+            "value": 0.008438563905656338
+        },
+        {
+            "name": "with_wind_plastic_reentry_added_plastic_rad",
+            "value": 0.0
+        },
+        {
+            "name": "with_wind_interrupted_selection_jump_m",
+            "value": 0.0
+        },
+        {
+            "name": "scene_total_blades",
+            "value": 2048.0
+        },
+        {
+            "name": "scene_min_active_blades",
+            "value": 96.0
+        },
+        {
+            "name": "scene_max_active_blades",
+            "value": 640.0
+        },
+        {
+            "name": "scene_peak_plastic_rad",
+            "value": 1.0878874063491822
+        },
+        {
+            "name": "scene_max_10hz_node_motion_m",
+            "value": 1.5703538656234742
+        },
+        {
+            "name": "scene_steady_middle_max_10hz_node_motion_m",
+            "value": 0.09995387494564057
+        },
+        {
+            "name": "scene_active_max_10hz_node_motion_m",
+            "value": 1.5703538656234742
+        },
+        {
+            "name": "scene_main_scene_visible_grids",
+            "value": 64.0
+        }
+    ]
+}

@@ -1,0 +1,47 @@
+{
+  "measurementValid": true,
+  "xpbdTargetMet": false,
+  "includesFinalNearGeometryInDisplay": true,
+  "error": "",
+  "gpu": "NVIDIA GeForce RTX 3080 Ti",
+  "api": "Direct3D11",
+  "generated": 131072,
+  "active": 32768,
+  "minActive": 32768,
+  "maxActive": 32768,
+  "bezier": 98304,
+  "width": 1280,
+  "height": 720,
+  "substeps": 8,
+  "iterations": 3,
+  "dropped": 0,
+  "failed": 0,
+  "summaries": [
+    {
+      "phase": "stationary",
+      "samples": 300,
+      "solveMean": 2.293708053333334,
+      "solveP95": 2.4878080000000002,
+      "displayMean": 1.4814242133333329,
+      "displayP95": 1.6977920000000002,
+      "selectionMean": 0.008551360000000003,
+      "cullMean": 0.007359146666666656,
+      "renderMean": 0.5480174933333336,
+      "totalGpuMean": 4.341251413333335,
+      "cpuAdvanceMean": 1.668402333333334
+    },
+    {
+      "phase": "moving_24s",
+      "samples": 1440,
+      "solveMean": 2.28233471111111,
+      "solveP95": 2.4934399999999997,
+      "displayMean": 1.4979320888888892,
+      "displayP95": 1.7479679999999997,
+      "selectionMean": 0.027288888888888915,
+      "cullMean": 0.008391822222222232,
+      "renderMean": 0.48873831111111027,
+      "totalGpuMean": 4.311766400000005,
+      "cpuAdvanceMean": 1.7049226388888934
+    }
+  ]
+}

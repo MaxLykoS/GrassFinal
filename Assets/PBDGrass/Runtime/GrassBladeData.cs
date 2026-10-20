@@ -15,22 +15,35 @@ namespace GrassFinal.PBDGrass
             public float HardScale, TwistScale, Padding0, Padding1;
         }
         public struct Frame { public Quaternion Rotation; public Vector3 AngularVelocity; public float Padding; }
-        public readonly Blade[] Blades;
-        public readonly BoneInfo[] RestNodes;
-        public readonly Rod[] Rods;
+        private readonly Blade[] blades;
+        private readonly BoneInfo[] restNodes;
+        private readonly Rod[] rods;
+        internal Action RefreshCpuWorld;
+        internal Blade[] BladeStorage => blades;
+        internal BoneInfo[] RestStorage => restNodes;
+        internal Rod[] RodStorage => rods;
+        // Streamed static metadata is generated on the GPU. Refresh CPU mirrors only
+        // when a diagnostic/editor consumer explicitly asks for the arrays.
+        public Blade[] Blades { get {RefreshCpuWorld?.Invoke();return blades;} }
+        public BoneInfo[] RestNodes { get {RefreshCpuWorld?.Invoke();return restNodes;} }
+        public Rod[] Rods { get {RefreshCpuWorld?.Invoke();return rods;} }
+        public int BladeCount => blades.Length;
         public readonly float[] InverseMass;
         public readonly GrassGridStruct[] Grids;
         public readonly Vector3[] VerticesData, Normals;
         public readonly int[] Triangles;
         public readonly Vector2[] UV;
-        public readonly Bounds Bounds;
+        public Bounds Bounds { get; private set; }
+        public readonly Quaternion[] WorldYaws;
+        private readonly int fieldSize;
         public float MaximumBladeLength { get; private set; }
-        public GrassBladeData(PBDGrassPatch patch, float tipThickness)
+        public GrassBladeData(PBDGrassPatch patch, float tipThickness,Quaternion[] worldYaws=null)
         {
+            WorldYaws=worldYaws; fieldSize=patch.Width;
             if (patch.SEGMENTS != Segments || patch.grids == null || patch.Bodies.Length != patch.grids.Length * 32)
                 throw new ArgumentException("Near ribbon requires 8 nodes and 32 blades per grid.");
-            Blades = new Blade[patch.Bodies.Length]; RestNodes = patch.GenBoneInfoArray();
-            Rods = new Rod[Blades.Length * Segments]; InverseMass = new float[RestNodes.Length];
+            blades = new Blade[patch.Bodies.Length]; restNodes = patch.GenBoneInfoArray();
+            rods = new Rod[Blades.Length * Segments]; InverseMass = new float[RestNodes.Length];
             Grids = patch.grids; VerticesData = patch.vertices; Normals = patch.PatchMesh.normals;
             Triangles = patch.PatchMesh.triangles; UV = patch.PatchMesh.uv;
             for (int b = 0; b < Blades.Length; b++)
@@ -81,5 +94,11 @@ namespace GrassFinal.PBDGrass
             float reach = MaximumBladeLength * 1.1f + .1f;
             Bounds = new Bounds(patch.Root, new Vector3(patch.Width + 2 * reach, 2 * reach, patch.Length + 2 * reach));
         }
+        public void MoveWorldBounds(Vector3 center)
+        {
+            float reach=MaximumBladeLength*1.1f+.1f;
+            Bounds=new Bounds(center,new Vector3(fieldSize+2*reach,2*reach,fieldSize+2*reach));
+        }
+        public Quaternion GridYaw(int grid) => WorldYaws!=null?WorldYaws[grid]:GrassResponseType.HandoffYaw(grid);
     }
 }

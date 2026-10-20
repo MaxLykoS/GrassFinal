@@ -1,0 +1,6 @@
+{
+  "name": "GrassFinal.PBDGrass.Response.Editor",
+  "references": ["GrassFinal.PBDGrass"],
+  "includePlatforms": ["Editor"],
+  "autoReferenced": false
+}

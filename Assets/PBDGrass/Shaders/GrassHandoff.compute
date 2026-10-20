@@ -1,0 +1,352 @@
+#pragma kernel ResetDisplay
+#pragma kernel CaptureTransition
+#pragma kernel SeedSimulation
+#pragma kernel UpdateDisplay
+#pragma kernel AdvanceBakedWind
+#define NODES 8
+#define SEGMENTS 7
+// Layouts match GrassBladeData and PBDSolverCS. All positions below are blade-root relative.
+struct BoneInfo { float3 Position, Predicted, Velocities, OriginPos; };
+struct Blade { float3 Root; float Length; uint Id; float Width, Height, Seed; };
+struct Rod { float4 Rotation, Relative; float Length, HalfWidth, InverseInertia, SoftScale; float HardScale, TwistScale, Padding0, Padding1; };
+struct Frame { float4 Rotation; float3 AngularVelocity; float Padding; };
+struct GridState { int PoolOffset, Changed; float Started, Padding; };
+struct ActiveGrid { float3 Position; int BladeOffset,PoolOffset,GridId,Padding0,Padding1; };
+StructuredBuffer<Blade> BladesBuffer;
+StructuredBuffer<Rod> RodsBuffer;
+StructuredBuffer<BoneInfo> RestNodesBuffer;
+StructuredBuffer<float4> PlasticBendsBuffer;
+StructuredBuffer<GridState> GridStates;
+StructuredBuffer<int2> Entries;
+StructuredBuffer<ActiveGrid> BakedGrids;
+StructuredBuffer<float4> BakedControls,BakedFrames,BakedYaw;
+RWStructuredBuffer<float4> BakedWindState;
+StructuredBuffer<float4> BakedWindRead;
+StructuredBuffer<float> BakedInverseMass;
+float3 BakedGravity;
+float BakedBladeMass;
+float LodgedAngularSpeed;
+float4 BakedMomentCompliance[7];
+RWStructuredBuffer<BoneInfo> BonesBuffer, DisplayNodes;
+RWStructuredBuffer<Frame> FramesBuffer, DisplayFrames;
+RWStructuredBuffer<float3> TransitionOffsets;
+RWStructuredBuffer<float4> TransitionRotations;
+RWStructuredBuffer<float3> ResultPosBuffer, NormalBuffer;
+Texture2D<float4> WindForceMap;
+SamplerState sampler_linear_repeat;
+int BladeCount, EntryCount, EnablePlasticity, GroundCollision;
+int EnableBakedResponse,GridCount;
+float4 BakedDynamics;
+float BakedMaxWind;
+float PoseTime, PoseDt, TransitionSeconds, WindDisplacement, WindFrequency, CollisionMargin;
+float3 WindForce;
+float4 WindTileOffset;
+float3 SafeNormal(float3 v,float3 fallback) { float l=dot(v,v); return l>1e-16?v*rsqrt(l):fallback; }
+float4 QMul(float4 a,float4 b) { return float4(a.w*b.xyz+b.w*a.xyz+cross(a.xyz,b.xyz),a.w*b.w-dot(a.xyz,b.xyz)); }
+float4 QInv(float4 q) { return float4(-q.xyz,q.w); }
+float3 QRotate(float4 q,float3 v) { return v+2*cross(q.xyz,cross(q.xyz,v)+q.w*v); }
+float4 QNormalize(float4 q) { return q*rsqrt(max(dot(q,q),1e-8)); }
+float4 QExp(float3 v)
+{ float a=length(v); return QNormalize(float4(v*(a>1e-6?sin(a*.5)/max(a,1e-6):.5),cos(a*.5))); }
+float3 QLog(float4 q)
+{ if(q.w<0)q=-q; float l=length(q.xyz); return q.xyz*(l>1e-6?2*atan2(l,q.w)/max(l,1e-6):2); }
+float4 QBlend(float4 a,float4 b,float t) { if(dot(a,b)<0)b=-b; return QNormalize(lerp(a,b,t)); }
+float4 AlignTangent(float4 q,float3 tangent)
+{
+    float3 old=QRotate(q,float3(0,0,1)); float d=dot(old,tangent);
+    float4 delta=d<-.9999?float4(QRotate(q,float3(1,0,0)),0):QNormalize(float4(cross(old,tangent),1+d));
+    return QNormalize(QMul(delta,q));
+}
+float3 SpatialWind(float3 root,float time)
+{
+    float2 scroll=SafeNormal(float3(WindForce.x,0,WindForce.z),float3(1,0,0)).xz;
+    float2 uv=root.xz*WindTileOffset.xy+WindTileOffset.zw+scroll*WindFrequency*time;
+    float2 noise=WindForceMap.SampleLevel(sampler_linear_repeat,uv,0).rg;
+    return WindForce*lerp(.55,1.45,noise.x)+cross(float3(0,1,0),WindForce)*(noise.y*2-1)*.2;
+}
+[numthreads(64,1,1)]
+void AdvanceBakedWind(uint3 id:SV_DispatchThreadID)
+{
+    if(id.x>=(uint)GridCount)return;
+    float3 wind=QRotate(QInv(BakedYaw[id.x]),SpatialWind(BakedGrids[id.x].Position,PoseTime));
+    float4 state=BakedWindState[id.x]; float2 q=state.xy,v=state.zw;
+    [unroll] for(int s=0;s<8;s++)
+    {
+        float h=PoseDt/8;
+        v+=(-2*BakedDynamics.zw*BakedDynamics.xy*v-BakedDynamics.xy*BakedDynamics.xy*(q-wind.xz))*h;
+        q+=v*h;
+    }
+    BakedWindState[id.x]=float4(q,v);
+}
+float3 ResponseControl(uint control,int2 cell,float2 f)
+{
+    uint index=(cell.y*5+cell.x)*3+control;
+    return lerp(lerp(BakedControls[index].xyz,BakedControls[index+3].xyz,f.x),
+        lerp(BakedControls[index+15].xyz,BakedControls[index+18].xyz,f.x),f.y);
+}
+float4 ResponseFrame(uint segment,int2 cell,float2 f)
+{
+    uint index=(cell.y*5+cell.x)*7+segment;
+    return QBlend(QBlend(BakedFrames[index],BakedFrames[index+7],f.x),QBlend(BakedFrames[index+35],BakedFrames[index+42],f.x),f.y);
+}
+float3 GroundDirection(float3 start,float3 direction,float segmentLength)
+{
+    if(GroundCollision!=0 && start.y+direction.y*segmentLength<CollisionMargin)
+    {
+        float dy=clamp((CollisionMargin-start.y)/max(segmentLength,1e-6),-1,1);
+        direction=SafeNormal(float3(direction.x,0,direction.z),float3(1,0,0))*sqrt(max(0,1-dy*dy))+float3(0,dy,0);
+    }
+    return direction;
+}
+void EvaluateBaked(uint blade,out float3 p[NODES],out float4 q[SEGMENTS])
+{
+    uint grid=blade/32;
+    float4 yaw=BakedYaw[grid];
+    float2 uv=(clamp(BakedWindRead[grid].xy/max(BakedMaxWind,.01),-1,1)+1)*2;
+    int2 cell=min((int2)floor(uv),3); float2 f=uv-cell;
+    float3 c1=QRotate(yaw,ResponseControl(0,cell,f)),c2=QRotate(yaw,ResponseControl(1,cell,f)),tip=QRotate(yaw,ResponseControl(2,cell,f));
+    float4 baseFrames[7]; float arc=0,total=BladesBuffer[blade].Length;
+    p[0]=0;
+    [unroll] for(int s=0;s<7;s++)
+    {
+        Rod rod=RodsBuffer[blade*7+s]; arc+=rod.Length; float t=arc/max(total,1e-6),u=1-t;
+        float3 samplePosition=3*u*u*t*c1+3*u*t*t*c2+t*t*t*tip;
+        float3 direction=GroundDirection(p[s],SafeNormal(samplePosition-p[s],float3(0,1,0)),rod.Length);
+        p[s+1]=p[s]+direction*rod.Length;
+        baseFrames[s]=AlignTangent(QMul(yaw,ResponseFrame(s,cell,f)),direction);
+    }
+    // Precomputed curves describe intact elastic load response. Permanent bend is composed in
+    // parent material coordinates, independent of simulation slot and grid wind history.
+    float4 anchor=RodsBuffer[blade*7].Rotation;
+    float2 basal=EnablePlasticity!=0?PlasticBendsBuffer[blade*7].xy:float2(0,0);
+    q[0]=QNormalize(QMul(anchor,QMul(QExp(float3(basal,0)),QMul(QInv(anchor),baseFrames[0]))));
+    p[1]=GroundDirection(0,QRotate(q[0],float3(0,0,1)),RodsBuffer[blade*7].Length)*RodsBuffer[blade*7].Length;
+    q[0]=AlignTangent(q[0],SafeNormal(p[1],float3(0,1,0)));
+    [unroll] for(int joint=1;joint<7;joint++)
+    {
+        float2 plastic=EnablePlasticity!=0?PlasticBendsBuffer[blade*7+joint].xy:float2(0,0);
+        float4 relative=QMul(QInv(baseFrames[joint-1]),baseFrames[joint]);
+        q[joint]=QNormalize(QMul(q[joint-1],QMul(QExp(float3(plastic,0)),relative)));
+        float len=RodsBuffer[blade*7+joint].Length;
+        float3 direction=GroundDirection(p[joint],QRotate(q[joint],float3(0,0,1)),len);
+        p[joint+1]=p[joint]+direction*len; q[joint]=AlignTangent(q[joint],direction);
+    }
+    float plasticAmount=0;
+    if(EnablePlasticity!=0) [unroll] for(int inspect=0;inspect<7;inspect++)plasticAmount+=dot(PlasticBendsBuffer[blade*7+inspect].xy,PlasticBendsBuffer[blade*7+inspect].xy);
+    if(plasticAmount<1e-8)return;
+    // A lodged rest curve changes gravity's lever arms. Correct the intact response using
+    // an algebraic beam-moment model; no far-field integration, XPBD constraints, or plastic flow.
+    // The reference term makes the correction zero for the intact baked response.
+    float3 referenceNodes[8],referenceMoment[7],bakedElastic[7],elastic[7];
+    referenceNodes[0]=0;
+    [unroll] for(int reference=0;reference<7;reference++)
+        referenceNodes[reference+1]=referenceNodes[reference]+QRotate(baseFrames[reference],float3(0,0,RodsBuffer[blade*7+reference].Length));
+    float4 referenceParent=anchor;
+    float3 filteredWind=QRotate(yaw,float3(BakedWindRead[grid].x,0,BakedWindRead[grid].y));
+    [unroll] for(int r=0;r<7;r++)
+    {
+        float3 moment=0;
+        [unroll] for(int node=r+1;node<8;node++)
+        {
+            float height=node/7.0, mass=BakedBladeMass/max(BakedInverseMass[blade*8+node],1e-8);
+            moment+=cross(referenceNodes[node]-referenceNodes[r],mass*(BakedGravity+filteredWind*height*height));
+        }
+        referenceMoment[r]=QRotate(QInv(referenceParent),moment);
+        bakedElastic[r]=QLog(QMul(QMul(QInv(referenceParent),baseFrames[r]),QInv(RodsBuffer[blade*7+r].Relative)));
+        elastic[r]=bakedElastic[r]; referenceParent=baseFrames[r];
+    }
+    [loop] for(int iteration=0;iteration<24;iteration++)
+    {
+        float4 previousParent=anchor;
+        [unroll] for(int r=0;r<7;r++)
+        {
+            float3 moment=0;
+            [unroll] for(int node=r+1;node<8;node++)
+            {
+                float height=node/7.0,mass=BakedBladeMass/max(BakedInverseMass[blade*8+node],1e-8);
+                moment+=cross(p[node]-p[r],mass*(BakedGravity+filteredWind*height*height));
+            }
+            float2 compliance=BakedMomentCompliance[r].xy;
+            float2 target=asin(clamp(sin(bakedElastic[r].xy)+compliance*(QRotate(QInv(previousParent),moment).xy-referenceMoment[r].xy),-.95,.95));
+            target=clamp(target,-1.2,1.2);
+            elastic[r].xy=lerp(elastic[r].xy,target,.2); previousParent=q[r];
+        }
+        float4 parentFrame=anchor; p[0]=0;
+        [unroll] for(int rebuild=0;rebuild<7;rebuild++)
+        {
+            Rod rod=RodsBuffer[blade*7+rebuild]; float2 plastic=PlasticBendsBuffer[blade*7+rebuild].xy;
+            float4 relative=QMul(QExp(elastic[rebuild]),QMul(QExp(float3(plastic,0)),rod.Relative));
+            q[rebuild]=QNormalize(QMul(parentFrame,relative));
+            float3 direction=GroundDirection(p[rebuild],QRotate(q[rebuild],float3(0,0,1)),rod.Length);
+            p[rebuild+1]=p[rebuild]+direction*rod.Length; q[rebuild]=AlignTangent(q[rebuild],direction); parentFrame=q[rebuild];
+        }
+    }
+}
+void EvaluateCurve(uint blade,float time,out float3 p[NODES],out float4 q[SEGMENTS])
+{
+    if(EnableBakedResponse!=0) { EvaluateBaked(blade,p,q); return; }
+    // Build the material's permanent rest skeleton, then least-squares fit ONE cubic Bezier.
+    // Root/tip are fixed; the two interior controls minimize error at the original arc samples.
+    p[0]=0; float4 parent=RodsBuffer[blade*7].Rotation;
+    [unroll] for(int s=0;s<7;s++)
+    {
+        Rod r=RodsBuffer[blade*7+s];
+        float2 plastic=EnablePlasticity!=0?PlasticBendsBuffer[blade*7+s].xy:float2(0,0);
+        q[s]=QNormalize(QMul(parent,QMul(QExp(float3(plastic,0)),r.Relative)));
+        p[s+1]=p[s]+QRotate(q[s],float3(0,0,r.Length)); parent=q[s];
+    }
+    float3 tip=p[7],rhs1=0,rhs2=0;
+    float aa=0,ab=0,bb=0,arc=0,total=BladesBuffer[blade].Length;
+    [unroll] for(int n=1;n<7;n++)
+    {
+        arc+=RodsBuffer[blade*7+n-1].Length;
+        float t=arc/max(total,1e-6),u=1-t,a=3*u*u*t,b=3*u*t*t;
+        float3 residual=p[n]-t*t*t*tip;
+        aa+=a*a; ab+=a*b; bb+=b*b; rhs1+=a*residual; rhs2+=b*residual;
+    }
+    float det=max(aa*bb-ab*ab,1e-8);
+    float3 c1=(bb*rhs1-ab*rhs2)/det,c2=(aa*rhs2-ab*rhs1)/det;
+    float3 root=BladesBuffer[blade].Root;
+    float2 scroll=SafeNormal(float3(WindForce.x,0,WindForce.z),float3(1,0,0)).xz;
+    float2 uv=root.xz*WindTileOffset.xy+WindTileOffset.zw+scroll*WindFrequency*time;
+    float2 noise=WindForceMap.SampleLevel(sampler_linear_repeat,uv,0).rg;
+    float3 wind=WindForce*lerp(.55,1.45,noise.x)+cross(float3(0,1,0),WindForce)*(noise.y*2-1)*.2;
+    // Shared spatial wind field, authored Bezier displacement; this is not another XPBD solve.
+    float wave=.75+.25*sin(time*2.1+root.x*.4+root.z*.27);
+    float3 displacement=wind*WindDisplacement*wave;
+    c1+=displacement*.08; c2+=displacement*.55; tip+=displacement;
+    arc=0;
+    [unroll] for(int j=0;j<7;j++)
+    {
+        Rod r=RodsBuffer[blade*7+j]; arc+=r.Length;
+        float t=arc/max(total,1e-6),u=1-t;
+        float3 sample=3*u*u*t*c1+3*u*t*t*c2+t*t*t*tip;
+        // Arc projection gives the incoming physical chain its exact segment lengths.
+        float3 direction=SafeNormal(sample-p[j],QRotate(q[j],float3(0,0,1)));
+        if(GroundCollision!=0 && p[j].y+direction.y*r.Length<CollisionMargin)
+        {
+            float dy=clamp((CollisionMargin-p[j].y)/max(r.Length,1e-6),-1,1);
+            float3 horizontal=SafeNormal(float3(direction.x,0,direction.z),float3(1,0,0));
+            direction=horizontal*sqrt(max(0,1-dy*dy))+float3(0,dy,0);
+        }
+        p[j+1]=p[j]+direction*r.Length; q[j]=AlignTangent(q[j],direction);
+    }
+}
+void WriteGeometry(uint blade,float3 p[NODES],float4 q[SEGMENTS])
+{
+    float3 root=BladesBuffer[blade].Root;
+    [unroll] for(int s=0;s<7;s++)
+    {
+        float3 tangent=SafeNormal(p[s+1]-p[s],float3(0,1,0));
+        float3 width=QRotate(q[s],float3(1,0,0));
+        width=SafeNormal(width-tangent*dot(width,tangent),float3(1,0,0))*RodsBuffer[blade*7+s].HalfWidth;
+        uint vertex=blade*15+s*2;
+        ResultPosBuffer[vertex]=root+p[s]+width; ResultPosBuffer[vertex+1]=root+p[s]-width;
+        float3 normal=SafeNormal(cross(width,tangent),float3(0,0,1));
+        NormalBuffer[vertex]=normal; NormalBuffer[vertex+1]=normal;
+    }
+    ResultPosBuffer[blade*15+14]=root+p[7]; NormalBuffer[blade*15+14]=NormalBuffer[blade*15+13];
+}
+[numthreads(64,1,1)]
+void ResetDisplay(uint3 id:SV_DispatchThreadID)
+{
+    uint blade=id.x; if(blade>=(uint)BladeCount)return;
+    float3 p[8],previous[8]; float4 q[7],previousQ[7];
+    EvaluateCurve(blade,PoseTime,p,q); EvaluateCurve(blade,PoseTime-.001,previous,previousQ);
+    [unroll] for(int n=0;n<8;n++)
+    {
+        BoneInfo node=RestNodesBuffer[blade*8+n]; node.Position=p[n]; node.Predicted=p[n]; node.Velocities=(p[n]-previous[n])*1000;
+        DisplayNodes[blade*8+n]=node; TransitionOffsets[blade*8+n]=0;
+    }
+    [unroll] for(int s=0;s<7;s++)
+    {
+        Frame frame; frame.Rotation=q[s]; frame.AngularVelocity=QLog(QMul(q[s],QInv(previousQ[s])))*1000; frame.Padding=0;
+        DisplayFrames[blade*7+s]=frame; TransitionRotations[blade*7+s]=float4(0,0,0,1);
+    }
+    WriteGeometry(blade,p,q);
+}
+[numthreads(64,1,1)]
+void CaptureTransition(uint3 id:SV_DispatchThreadID)
+{
+    uint blade=id.x; if(blade>=(uint)BladeCount || GridStates[blade/32].Changed==0)return;
+    float3 p[8]; float4 q[7]; EvaluateCurve(blade,PoseTime,p,q);
+    [unroll] for(int n=0;n<8;n++) TransitionOffsets[blade*8+n]=DisplayNodes[blade*8+n].Position-p[n];
+    [unroll] for(int s=0;s<7;s++) TransitionRotations[blade*7+s]=QMul(DisplayFrames[blade*7+s].Rotation,QInv(q[s]));
+}
+[numthreads(64,1,1)]
+void SeedSimulation(uint3 id:SV_DispatchThreadID)
+{
+    if(id.x>=(uint)EntryCount*32)return;
+    int2 entry=Entries[id.x/32]; uint blade=entry.y+id.x%32,pool=entry.x*32+id.x%32;
+    [unroll] for(int n=0;n<8;n++) BonesBuffer[pool*8+n]=DisplayNodes[blade*8+n];
+    [unroll] for(int s=0;s<7;s++) FramesBuffer[pool*7+s]=DisplayFrames[blade*7+s];
+}
+[numthreads(64,1,1)]
+void UpdateDisplay(uint3 id:SV_DispatchThreadID)
+{
+    uint blade=id.x; if(blade>=(uint)BladeCount)return;
+    GridState state=GridStates[blade/32];
+    float t=saturate((PoseTime-state.Started)/max(TransitionSeconds,.05)); t=t*t*(3-2*t);
+    float3 p[8]; float4 q[7]; EvaluateCurve(blade,PoseTime,p,q);
+    uint pool=max(state.PoolOffset,0)+blade%32;
+    [unroll] for(int n=0;n<8;n++)
+    {
+        uint index=blade*8+n;
+        float3 source=p[n]+TransitionOffsets[index];
+        float3 target=p[n]; if(state.PoolOffset>=0)target=BonesBuffer[pool*8+n].Position;
+        p[n]=lerp(source,target,t);
+    }
+    // Blending two valid curves can shorten their segments. Keep the displayed chain inextensible,
+    // including during interrupted handoffs, so it is also a safe state to seed back into XPBD.
+    p[0]=0;
+    [unroll] for(int segment=0;segment<7;segment++)
+    {
+        float3 direction=SafeNormal(p[segment+1]-p[segment],QRotate(q[segment],float3(0,0,1)));
+        p[segment+1]=p[segment]+direction*RodsBuffer[blade*7+segment].Length;
+    }
+    float permanentAmount=0;
+    if(EnableBakedResponse!=0 && EnablePlasticity!=0 && state.PoolOffset<0)
+        [unroll] for(int inspect=0;inspect<7;inspect++)permanentAmount+=dot(PlasticBendsBuffer[blade*7+inspect].xy,PlasticBendsBuffer[blade*7+inspect].xy);
+    bool limitLodged=permanentAmount>1e-8 && PoseDt>0;
+    [unroll] for(int s=0;s<7;s++)
+    {
+        uint index=blade*7+s;
+        float4 source=QMul(TransitionRotations[index],q[s]);
+        float4 target=q[s]; if(state.PoolOffset>=0)target=FramesBuffer[pool*7+s].Rotation;
+        q[s]=AlignTangent(QBlend(source,target,t),SafeNormal(p[s+1]-p[s],float3(0,1,0)));
+        if(limitLodged)
+        {
+            float4 previous=DisplayFrames[index].Rotation;
+            float angle=length(QLog(QMul(q[s],QInv(previous))));
+            q[s]=QBlend(previous,q[s],min(1.0,LodgedAngularSpeed*PoseDt/max(angle,1e-6)));
+        }
+    }
+    if(limitLodged)
+    {
+        // Static load response can change rapidly near a folding configuration. A finite display
+        // response prevents a far blade from snapping between these approximations. Material
+        // history is untouched; the existing displayed pose supplies the small temporal state.
+        p[0]=0;
+        [unroll] for(int rebuild=0;rebuild<7;rebuild++)
+        {
+            float len=RodsBuffer[blade*7+rebuild].Length;
+            float3 direction=GroundDirection(p[rebuild],QRotate(q[rebuild],float3(0,0,1)),len);
+            p[rebuild+1]=p[rebuild]+direction*len; q[rebuild]=AlignTangent(q[rebuild],direction);
+        }
+    }
+    [unroll] for(int save=0;save<8;save++)
+    {
+        uint index=blade*8+save;
+        BoneInfo old=DisplayNodes[index];
+        old.Velocities=PoseDt>0?(p[save]-old.Position)/max(PoseDt,1e-6):old.Velocities;
+        old.Position=p[save]; old.Predicted=p[save]; DisplayNodes[index]=old;
+    }
+    [unroll] for(int frame=0;frame<7;frame++)
+    {
+        uint index=blade*7+frame;
+        Frame old=DisplayFrames[index];
+        if(PoseDt>0)old.AngularVelocity=QLog(QMul(q[frame],QInv(old.Rotation)))/max(PoseDt,1e-6);
+        old.Rotation=q[frame]; DisplayFrames[index]=old;
+    }
+    WriteGeometry(blade,p,q);
+}

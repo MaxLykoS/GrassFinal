@@ -1,0 +1,99 @@
+{
+    "passed": true,
+    "gpu": "NVIDIA GeForce RTX 3080 Ti",
+    "error": "",
+    "metrics": [
+        {
+            "name": "type_1_middle_max_node_difference_m",
+            "value": 2.4575624024691935e-7
+        },
+        {
+            "name": "type_2_middle_max_node_difference_m",
+            "value": 2.6656007889869218e-7
+        },
+        {
+            "name": "type_3_middle_max_node_difference_m",
+            "value": 2.4575624024691935e-7
+        },
+        {
+            "name": "type_4_middle_max_node_difference_m",
+            "value": 2.731428025981586e-7
+        },
+        {
+            "name": "type_5_middle_max_node_difference_m",
+            "value": 2.920019426255749e-7
+        },
+        {
+            "name": "type_6_middle_max_node_difference_m",
+            "value": 3.3717478231665157e-7
+        },
+        {
+            "name": "type_7_middle_max_node_difference_m",
+            "value": 3.5762786865234377e-7
+        },
+        {
+            "name": "type_8_middle_max_node_difference_m",
+            "value": 2.528810796320613e-7
+        },
+        {
+            "name": "baseline_gpu_buffer_bytes",
+            "value": 390017008.0
+        },
+        {
+            "name": "tiered_gpu_buffer_bytes",
+            "value": 289517552.0
+        },
+        {
+            "name": "baseline_full_history_bytes",
+            "value": 106954752.0
+        },
+        {
+            "name": "tiered_full_history_bytes",
+            "value": 53477376.0
+        },
+        {
+            "name": "full_tour_max_node_difference_m",
+            "value": 0.03259501978754997
+        },
+        {
+            "name": "full_tour_active_tip_difference_m",
+            "value": 0.03259501978754997
+        },
+        {
+            "name": "full_tour_far_tip_difference_m",
+            "value": 0.0005252193659543991
+        },
+        {
+            "name": "full_tour_min_history_blades",
+            "value": 14208.0
+        },
+        {
+            "name": "full_tour_max_history_blades",
+            "value": 40448.0
+        },
+        {
+            "name": "full_tour_peak_transition_blades",
+            "value": 32864.0
+        },
+        {
+            "name": "full_tour_new_entries",
+            "value": 1972.0
+        },
+        {
+            "name": "full_tour_ticks",
+            "value": 1440.0
+        },
+        {
+            "name": "full_tour_plastic_difference_rad",
+            "value": 0.039118170738220218
+        },
+        {
+            "name": "field_8_history_bytes",
+            "value": 417792.0
+        },
+        {
+            "name": "field_12_history_bytes",
+            "value": 417792.0
+        }
+    ]
+}

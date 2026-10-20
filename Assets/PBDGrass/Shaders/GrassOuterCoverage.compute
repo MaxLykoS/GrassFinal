@@ -1,0 +1,74 @@
+#pragma kernel BuildVisible
+#include "GrassWorldIdentity.cginc"
+struct Tile { float2 Origin; int Count,Padding; };
+struct Instance { float3 Root; float Seed; float2 Facing; float WidthScale,Fade; };
+StructuredBuffer<Tile> Tiles;
+struct GridState { int PoolOffset,Changed; float Started,Transitioning; };
+StructuredBuffer<GridState> CoreStates;
+AppendStructuredBuffer<Instance> Visible;
+float4 FrustumPlanes[6],CoreBlend;
+float3 FieldOrigin,Focus;
+float SparseDistance,DensityFadeDistance,FarWidthScale;
+float OuterWindowHalf;
+int TileCount,CoreSize,StreamWorld,RadialMiddle;
+uint Hash(uint x) { x^=x>>16; x*=0x7feb352d; x^=x>>15; x*=0x846ca68b; return x^(x>>16); }
+float Unit(uint x) { return (Hash(x)&0xffffff)/16777216.0; }
+[numthreads(64,1,1)]
+void BuildVisible(uint3 group:SV_GroupID,uint lane:SV_GroupIndex)
+{
+    uint tileId=group.x; if(tileId>=(uint)TileCount)return;
+    Tile tile=Tiles[tileId]; float3 center=FieldOrigin+float3(tile.Origin.x+4,1,tile.Origin.y+4);
+    [unroll] for(int p=0;p<6;p++)if(dot(FrustumPlanes[p].xyz,center)+FrustumPlanes[p].w < -8)return;
+    float tileEdge=RadialMiddle!=0?length(center.xz-CoreBlend.xy)+5.657:max(abs(center.x-CoreBlend.x),abs(center.z-CoreBlend.y))+4;
+    if(StreamWorld!=0 && tileEdge<=CoreBlend.z-CoreBlend.w)return;
+    int stride=tile.Count==2048?1:4;
+    [loop] for(uint i=lane;i<(uint)tile.Count;i+=64)
+    {
+        uint cell=i*stride;
+        if(StreamWorld!=0)
+        {
+            uint perCell=tile.Count==2048?32:8,leaf=i%perCell,local=i/perCell;
+            int2 worldCell=(int2)FieldOrigin.xz+(int2)tile.Origin+int2(local%8,local/8);
+            float3 worldRoot=WorldRoot(worldCell,leaf,FieldOrigin.y);
+            int2 relative=worldCell-((int2)FieldOrigin.xz-CoreSize/2);
+            if(all(relative>=0) && all(relative<CoreSize) && CoreStates[WorldSlot(worldCell,CoreSize)].PoolOffset>=0)continue;
+            float worldEdge=RadialMiddle!=0?length(worldRoot.xz-CoreBlend.xy):max(abs(worldRoot.x-CoreBlend.x),abs(worldRoot.z-CoreBlend.y));
+            float blend=smoothstep(CoreBlend.z-CoreBlend.w,CoreBlend.z,worldEdge),worldSeed=WorldLeafSeed(worldCell,leaf);
+            // Complement the core's identical per-leaf threshold; no duplicate roots at the boundary.
+            if(worldSeed<=1-blend)continue;
+            float innerBlend=smoothstep(CoreBlend.z,CoreBlend.z+8,worldEdge);
+            float farBlend=smoothstep(SparseDistance,SparseDistance+DensityFadeDistance,length(worldRoot.xz-Focus.xz));
+            float desired=lerp(32,8,innerBlend)*lerp(1,.25,farBlend),presence=saturate(desired-leaf);
+            float windowEdge=max(abs(worldRoot.x-Focus.x),abs(worldRoot.z-Focus.z));
+            presence*=1-smoothstep(OuterWindowHalf-16,OuterWindowHalf-8,windowEdge);
+            if(presence<=0)continue;
+            float angle=WorldUnit(WorldSeed(worldCell,73))*6.28318530718;
+            Instance worldInstance;worldInstance.Root=worldRoot;worldInstance.Seed=worldSeed;worldInstance.Facing=float2(cos(angle),-sin(angle));
+            worldInstance.WidthScale=lerp(1,1.3,innerBlend)*lerp(1,FarWidthScale,farBlend);worldInstance.Fade=presence;Visible.Append(worldInstance);
+            continue;
+        }
+        uint identity=Hash(asuint((int)tile.Origin.x)*73856093u ^ asuint((int)tile.Origin.y)*19349663u ^ cell*83492791u);
+        float2 uv=(float2(cell%64,cell/64)+float2(Unit(identity),Unit(identity+1)))/float2(64,32);
+        float3 root=FieldOrigin+float3(tile.Origin.x+uv.x*8,0,tile.Origin.y+uv.y*8);
+        int2 coreCell=(int2)floor(root.xz-FieldOrigin.xz+CoreBlend.z);
+        if(all(coreCell>=0) && all(coreCell<CoreSize))
+        {
+            uint coreGrid=(CoreSize-1-coreCell.y)*CoreSize+coreCell.x;
+            if(CoreStates[coreGrid].PoolOffset>=0)continue;
+        }
+        float edge=max(abs(root.x-CoreBlend.x),abs(root.z-CoreBlend.y));
+        float fade=smoothstep(CoreBlend.z-CoreBlend.w,CoreBlend.z,edge);
+        float seed=Unit(identity+2); if(seed>=fade)continue;
+        // Full density at the core blend, 1/4 outside, then 1/16 in the distance.
+        float inner=smoothstep(CoreBlend.z,CoreBlend.z+8,edge);
+        float radial=length(root.xz-Focus.xz);
+        float far=smoothstep(SparseDistance,SparseDistance+DensityFadeDistance,radial);
+        float retention=lerp(1,.25,inner)*lerp(1,.25,far);
+        float presence=saturate((retention*stride-Unit(identity+3))/.08);
+        if(presence<=0)continue;
+        float angle=Unit(Hash(asuint((int)floor(root.x*.5))*9767u ^ asuint((int)floor(root.z*.5))*7649u))*6.2831853;
+        Instance instance; instance.Root=root; instance.Seed=seed; instance.Facing=float2(cos(angle),sin(angle));
+        instance.WidthScale=lerp(1,1.3,inner)*lerp(1,FarWidthScale,far); instance.Fade=min(saturate((fade-seed)/.08),presence);
+        Visible.Append(instance);
+    }
+}

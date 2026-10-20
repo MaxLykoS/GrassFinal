@@ -1,0 +1,211 @@
+{
+    "passed": true,
+    "gpu": "NVIDIA GeForce RTX 3080 Ti",
+    "unity": "2022.3.62f2c1",
+    "error": "",
+    "blades": 512,
+    "xpbdBlades": 256,
+    "proxyStates": 8,
+    "types": [
+        {
+            "name": "Short / Narrow / Firm",
+            "zeroTipGap": 0.008558107540011406,
+            "zeroNodeMaxGap": 0.015758158639073373,
+            "seededTipDrift": 0.00011844413529615849,
+            "unloadedToEquilibrium": 0.025427432730793954,
+            "steadyWindMeanTipGap": 0.008476660586893559,
+            "randomMeanTipGap": 0.008485634811222554,
+            "randomMaxTipGap": 0.008571337908506394,
+            "maxNodeSpeed": 0.32855892181396487,
+            "gustMeanTipGap": 0.008689990267157555,
+            "gustMaxTipGap": 0.01242641918361187,
+            "frequency": {
+                "x": 15.25,
+                "y": 15.5
+            },
+            "damping": {
+                "x": 0.07999999821186066,
+                "y": 0.11999999731779099
+            },
+            "dynamicFit": {
+                "x": 0.00880877859890461,
+                "y": 0.06511399894952774
+            }
+        },
+        {
+            "name": "Short / Narrow / Soft",
+            "zeroTipGap": 0.008680792525410653,
+            "zeroNodeMaxGap": 0.015754489228129388,
+            "seededTipDrift": 0.00015481706941500306,
+            "unloadedToEquilibrium": 0.053442537784576419,
+            "steadyWindMeanTipGap": 0.008488972671329975,
+            "randomMeanTipGap": 0.008496338501572609,
+            "randomMaxTipGap": 0.008749144151806832,
+            "maxNodeSpeed": 0.7807508707046509,
+            "gustMeanTipGap": 0.01081777922809124,
+            "gustMaxTipGap": 0.03227546066045761,
+            "frequency": {
+                "x": 10.5,
+                "y": 10.5
+            },
+            "damping": {
+                "x": 0.11999999731779099,
+                "y": 0.11999999731779099
+            },
+            "dynamicFit": {
+                "x": 0.02297486923635006,
+                "y": 0.03843417763710022
+            }
+        },
+        {
+            "name": "Short / Wide / Firm",
+            "zeroTipGap": 0.00859328918159008,
+            "zeroNodeMaxGap": 0.015677548944950105,
+            "seededTipDrift": 0.00005145230898051523,
+            "unloadedToEquilibrium": 0.049127452075481418,
+            "steadyWindMeanTipGap": 0.008564089424908162,
+            "randomMeanTipGap": 0.008551091887056828,
+            "randomMaxTipGap": 0.008997325785458088,
+            "maxNodeSpeed": 0.7468133568763733,
+            "gustMeanTipGap": 0.01027961540967226,
+            "gustMaxTipGap": 0.029449738562107087,
+            "frequency": {
+                "x": 11.0,
+                "y": 11.0
+            },
+            "damping": {
+                "x": 0.11999999731779099,
+                "y": 0.11999999731779099
+            },
+            "dynamicFit": {
+                "x": 0.030685869976878167,
+                "y": 0.03928267955780029
+            }
+        },
+        {
+            "name": "Short / Wide / Soft",
+            "zeroTipGap": 0.008529048413038254,
+            "zeroNodeMaxGap": 0.01537815947085619,
+            "seededTipDrift": 0.00010978288628393784,
+            "unloadedToEquilibrium": 0.11239930987358093,
+            "steadyWindMeanTipGap": 0.008328992873430252,
+            "randomMeanTipGap": 0.008359079249203205,
+            "randomMaxTipGap": 0.009224390611052513,
+            "maxNodeSpeed": 1.0538409948349,
+            "gustMeanTipGap": 0.01132717914879322,
+            "gustMaxTipGap": 0.05796978250145912,
+            "frequency": {
+                "x": 7.25,
+                "y": 7.25
+            },
+            "damping": {
+                "x": 0.1599999964237213,
+                "y": 0.1599999964237213
+            },
+            "dynamicFit": {
+                "x": 0.024810193106532098,
+                "y": 0.02866269461810589
+            }
+        },
+        {
+            "name": "Tall / Narrow / Firm",
+            "zeroTipGap": 0.012576795183122158,
+            "zeroNodeMaxGap": 0.02329535409808159,
+            "seededTipDrift": 0.001347252051346004,
+            "unloadedToEquilibrium": 0.18981419503688813,
+            "steadyWindMeanTipGap": 0.013196890242397786,
+            "randomMeanTipGap": 0.013150503858923912,
+            "randomMaxTipGap": 0.014192217029631138,
+            "maxNodeSpeed": 0.9150741696357727,
+            "gustMeanTipGap": 0.016343243420124055,
+            "gustMaxTipGap": 0.032827116549015048,
+            "frequency": {
+                "x": 5.5,
+                "y": 5.5
+            },
+            "damping": {
+                "x": 0.19999998807907105,
+                "y": 0.19999998807907105
+            },
+            "dynamicFit": {
+                "x": 0.011093405075371266,
+                "y": 0.029115591198205949
+            }
+        },
+        {
+            "name": "Tall / Narrow / Soft",
+            "zeroTipGap": 0.011235181242227555,
+            "zeroNodeMaxGap": 0.021730517968535425,
+            "seededTipDrift": 0.00008199123112717643,
+            "unloadedToEquilibrium": 0.5323573350906372,
+            "steadyWindMeanTipGap": 0.011509562842547894,
+            "randomMeanTipGap": 0.01168714091181755,
+            "randomMaxTipGap": 0.03411370515823364,
+            "maxNodeSpeed": 1.0491403341293336,
+            "gustMeanTipGap": 0.028644945472478868,
+            "gustMaxTipGap": 0.06402452290058136,
+            "frequency": {
+                "x": 3.25,
+                "y": 3.5
+            },
+            "damping": {
+                "x": 0.31999996304512026,
+                "y": 0.31999996304512026
+            },
+            "dynamicFit": {
+                "x": 0.015726080164313318,
+                "y": 0.0253349207341671
+            }
+        },
+        {
+            "name": "Tall / Wide / Firm",
+            "zeroTipGap": 0.011915265582501889,
+            "zeroNodeMaxGap": 0.022364191710948945,
+            "seededTipDrift": 0.00011009131412720308,
+            "unloadedToEquilibrium": 0.47335323691368105,
+            "steadyWindMeanTipGap": 0.012309936806559563,
+            "randomMeanTipGap": 0.011787211522459984,
+            "randomMaxTipGap": 0.029474608600139619,
+            "maxNodeSpeed": 1.0861115455627442,
+            "gustMeanTipGap": 0.02469741739332676,
+            "gustMaxTipGap": 0.055312175303697589,
+            "frequency": {
+                "x": 3.5,
+                "y": 3.75
+            },
+            "damping": {
+                "x": 0.31999996304512026,
+                "y": 0.31999996304512026
+            },
+            "dynamicFit": {
+                "x": 0.025110729038715364,
+                "y": 0.02828020602464676
+            }
+        },
+        {
+            "name": "Tall / Wide / Soft",
+            "zeroTipGap": 0.004539404530078173,
+            "zeroNodeMaxGap": 0.008276996202766896,
+            "seededTipDrift": 0.00013000804756302387,
+            "unloadedToEquilibrium": 1.2720508575439454,
+            "steadyWindMeanTipGap": 0.004801156464964151,
+            "randomMeanTipGap": 0.006575198378413916,
+            "randomMaxTipGap": 0.01887173391878605,
+            "maxNodeSpeed": 1.3340437412261963,
+            "gustMeanTipGap": 0.04816063120961189,
+            "gustMaxTipGap": 0.11433868110179901,
+            "frequency": {
+                "x": 11.0,
+                "y": 8.75
+            },
+            "damping": {
+                "x": 1.0000001192092896,
+                "y": 0.11999999731779099
+            },
+            "dynamicFit": {
+                "x": 0.10426417738199234,
+                "y": 0.030333802103996278
+            }
+        }
+    ]
+}
