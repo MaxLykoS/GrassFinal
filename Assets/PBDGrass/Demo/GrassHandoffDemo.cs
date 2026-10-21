@@ -49,19 +49,29 @@ namespace GrassFinal.PBDGrass
             {
                 Random.InitState(12345);
                 if(StreamWorld)WorldLayout=new GrassWorldLayout(PatchSize,Focus(),transform.position.y);
-                patch=StreamWorld?WorldLayout.CreatePatch(Handoff.BakedResponse):Handoff.BakedResponse!=null?GrassResponseType.CreateHandoffPatch(Handoff.BakedResponse,transform.position,Mathf.Max(2,PatchSize))
+                GrassBladeData prepared=null;
+                if(StreamWorld && Handoff.UseCompactMiddle)
+                    prepared=WorldLayout.CreateCompactData(Handoff.BakedResponse,Mathf.Clamp(Physics.TipThicknessRatio,.1f,1));
+                else patch=StreamWorld?WorldLayout.CreatePatch(Handoff.BakedResponse):Handoff.BakedResponse!=null?GrassResponseType.CreateHandoffPatch(Handoff.BakedResponse,transform.position,Mathf.Max(2,PatchSize))
                     :new PBDGrassPatch(transform.position,Mathf.Max(2,PatchSize),32,Shape);
                 var interactions=new List<Transform>();if(Interaction!=null)interactions.Add(Interaction);
                 if(AdditionalInteractions!=null)interactions.AddRange(AdditionalInteractions);
                 Renderer=new PBDGrassPatchRenderer(patch,Solver,GrassMaterial,Cam,WindNoise,Physics,
-                    interactions,Handoff,HandoffShader,WorldLayout,StreamingShader);
+                    interactions,Handoff,HandoffShader,WorldLayout,StreamingShader,prepared);
                 Renderer.SetWind(Wind,.1f,new Vector4(.01f,.01f,0,1));
+                ApplyInteractionCoverage();
                 Renderer.SimulationCenter=Focus(); Renderer.RefreshSimulationSelection(); Renderer.ResetDeformation();
                 savedWind=Wind;
             }
             finally { Random.state=random; if(patch!=null)GrassDemo.DestroyMesh(patch.PatchMesh); }
         }
         private Vector3 Focus() { var p=SimulationFocus!=null?SimulationFocus.position:Cam.transform.position; p.y=transform.position.y; return p; }
+        private void ApplyInteractionCoverage()
+        {
+            if(!Physics.InteractionsAcrossMiddle)return;
+            bool outer=OuterCoverage!=null && OuterCoverage.isActiveAndEnabled;
+            Renderer.SetOuterCoverage(outer?OuterCoverage.CoverageTransition:Vector4.zero,outer && OuterCoverage.RadialMiddle);
+        }
         public void ConfigureViewCamera()
         {
             if(Cam==null)return;
@@ -125,6 +135,7 @@ namespace GrassFinal.PBDGrass
             ConfigureViewCamera();
             Vector3 currentWind=RandomWind && Wind.sqrMagnitude>0?GrassResponseDemo.WindAt(Renderer.SimulationTime,true)*(Wind.magnitude/6):Wind;
             Renderer.SetWind(currentWind,.1f,new Vector4(.01f,.01f,0,1)); Renderer.SimulationCenter=Focus();
+            ApplyInteractionCoverage();
             if(StreamWorld)Renderer.StreamTo(Focus());
             if(playing)Renderer.Advance(Time.deltaTime);
         }
@@ -134,6 +145,7 @@ namespace GrassFinal.PBDGrass
         {
             if(!isActiveAndEnabled || !Ready || (target!=Cam && target.cameraType!=CameraType.SceneView))return;
             ConfigureViewCamera(); Initialize(); Renderer.SimulationCenter=Focus();
+            ApplyInteractionCoverage();
             if(StreamWorld)Renderer.StreamTo(Focus());
             if(!Application.IsPlaying(gameObject))Renderer.RefreshSimulationSelection();
             if(OuterCoverage!=null && OuterCoverage.isActiveAndEnabled)OuterCoverage.PrepareVisible();

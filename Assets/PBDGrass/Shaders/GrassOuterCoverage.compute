@@ -1,5 +1,6 @@
 #pragma kernel BuildVisible
 #include "GrassWorldIdentity.cginc"
+#include "GrassInteractionBlend.cginc"
 struct Tile { float2 Origin; int Count,Padding; };
 struct Instance { float3 Root; float Seed; float2 Facing; float WidthScale,Fade; };
 StructuredBuffer<Tile> Tiles;
@@ -31,9 +32,13 @@ void BuildVisible(uint3 group:SV_GroupID,uint lane:SV_GroupIndex)
             int2 worldCell=(int2)FieldOrigin.xz+(int2)tile.Origin+int2(local%8,local/8);
             float3 worldRoot=WorldRoot(worldCell,leaf,FieldOrigin.y);
             int2 relative=worldCell-((int2)FieldOrigin.xz-CoreSize/2);
-            if(all(relative>=0) && all(relative<CoreSize) && CoreStates[WorldSlot(worldCell,CoreSize)].PoolOffset>=0)continue;
+            float physical=0;
+            if(all(relative>=0) && all(relative<CoreSize))
+            {GridState state=CoreStates[WorldSlot(worldCell,CoreSize)];physical=GrassPhysicalWeight(state.PoolOffset,state.Started,state.Transitioning);}
+            if(physical>=1)continue;
             float worldEdge=RadialMiddle!=0?length(worldRoot.xz-CoreBlend.xy):max(abs(worldRoot.x-CoreBlend.x),abs(worldRoot.z-CoreBlend.y));
             float blend=smoothstep(CoreBlend.z-CoreBlend.w,CoreBlend.z,worldEdge),worldSeed=WorldLeafSeed(worldCell,leaf);
+            blend*=1-physical;
             // Complement the core's identical per-leaf threshold; no duplicate roots at the boundary.
             if(worldSeed<=1-blend)continue;
             float innerBlend=smoothstep(CoreBlend.z,CoreBlend.z+8,worldEdge);

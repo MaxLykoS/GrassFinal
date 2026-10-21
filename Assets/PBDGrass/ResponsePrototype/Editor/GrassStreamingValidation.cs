@@ -65,12 +65,12 @@ namespace GrassFinal.PBDGrass.Editor
                 for(int s=0;s<7;s++)
                 {var a=oldFrames[blade*7+s];var b=newFrames[blade*7+s];if(!a.Rotation.Equals(b.Rotation)||!a.AngularVelocity.Equals(b.AngularVelocity))report.retainedStateExact=false;if(!oldPlastic[blade*7+s].Equals(newPlastic[blade*7+s]))report.retainedPlasticExact=false;}
                 for(int g=0;g<world.Cells.Length;g++)if(oldCells[g]==world.Cells[g])for(int leaf=0;leaf<32;leaf++)
-                    Require(oldBlades[g*32+leaf].Root.Equals(r.Data.Blades[g*32+leaf].Root) && oldBlades[g*32+leaf].Seed==r.Data.Blades[g*32+leaf].Seed,"Overlapping grass moved or changed identity.");
-                Vector3 trackedRoot=r.Data.Blades[blade].Root;float trackedSeed=r.Data.Blades[blade].Seed;
+                    Require(oldBlades[g*32+leaf].Root.Equals(r.Data.GetBlade(g*32+leaf).Root) && oldBlades[g*32+leaf].Seed==r.Data.GetBlade(g*32+leaf).Seed,"Overlapping grass moved or changed identity.");
+                Vector3 trackedRoot=r.Data.GetBlade(blade).Root;float trackedSeed=r.Data.GetBlade(blade).Seed;
                 Move(demo,new Vector3(1024,2.5f,-1024));Require(world.LastLoadedCells==4096,"Teleport did not replace the core residency.");
                 var reboundPlastic=r.ReadPlasticBends();report.unloadedPlasticCleared=true;
                 for(int s=0;s<7;s++)if(!reboundPlastic[blade*7+s].Equals(Vector4.zero))report.unloadedPlasticCleared=false;
-                Move(demo,start);report.stableReload=r.Data.Blades[blade].Root.Equals(trackedRoot) && r.Data.Blades[blade].Seed==trackedSeed;
+                Move(demo,start);report.stableReload=r.Data.GetBlade(blade).Root.Equals(trackedRoot) && r.Data.GetBlade(blade).Seed==trackedSeed;
                 var returnedPlastic=r.ReadPlasticBends();Require(returnedPlastic[blade*7].Equals(Vector4.zero),"Unloaded lodging leaked into a reloaded world cell.");
                 var shiftTimes=new List<double>();
                 for(int tick=0;tick<720;tick++)
@@ -123,9 +123,9 @@ namespace GrassFinal.PBDGrass.Editor
             for(int g=0;g<r.Data.Grids.Length;g+=71)
             {
                 bladeBuffer.GetData(blade,0,g*32,32);rest.GetData(nodes,0,g*32*8,8);rods.GetData(rod,0,g*32*7,7);
-                for(int leaf=0;leaf<32;leaf++) {report.maxRootError=Mathf.Max(report.maxRootError,Vector3.Distance(blade[leaf].Root,r.Data.Blades[g*32+leaf].Root));Require(blade[leaf].Seed==r.Data.Blades[g*32+leaf].Seed,"GPU world seed differs.");}
-                for(int n=0;n<8;n++)report.maxCpuGpuRestError=Mathf.Max(report.maxCpuGpuRestError,Vector3.Distance(nodes[n].Position,r.Data.RestNodes[g*32*8+n].Position));
-                for(int s=0;s<7;s++)report.maxCpuGpuRodError=Mathf.Max(report.maxCpuGpuRodError,Quaternion.Angle(rod[s].Rotation,r.Data.Rods[g*32*7+s].Rotation));
+                for(int leaf=0;leaf<32;leaf++) {report.maxRootError=Mathf.Max(report.maxRootError,Vector3.Distance(blade[leaf].Root,r.Data.GetBlade(g*32+leaf).Root));Require(blade[leaf].Seed==r.Data.GetBlade(g*32+leaf).Seed,"GPU world seed differs.");}
+                for(int n=0;n<8;n++)report.maxCpuGpuRestError=Mathf.Max(report.maxCpuGpuRestError,Vector3.Distance(nodes[n].Position,r.Data.GetRestNode(g*32*8+n).Position));
+                for(int s=0;s<7;s++)report.maxCpuGpuRodError=Mathf.Max(report.maxCpuGpuRodError,Quaternion.Angle(rod[s].Rotation,r.Data.GetRod(g*32*7+s).Rotation));
             }
         }
         private static void VerifyOuter(GrassHandoffDemo demo,GrassOuterCoverage outer,Report report)

@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: CompactGrass
+  m_Shader: {fileID: 4800000, guid: e1864a52db0b4939a7abc8510fefbf6d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 1
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _ColorMap:
+        m_Texture: {fileID: 2800000, guid: c83f77504c0344419d8398fcdbd6f313, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _GlossMap:
+        m_Texture: {fileID: 2800000, guid: 5d1898b08a7e405693e6cbf16b599f26, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _VeinMap:
+        m_Texture: {fileID: 2800000, guid: 4dfc1933f7924403815bce23120e9868, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _ClumpSize: 1.5
+    - _ColorVariation: 0.35
+    - _DebugView: 0
+    - _NormalCurvature: 0.65
+    - _RootOcclusion: 0.65
+    - _Roughness: 0.48
+    - _SpecularAA: 1
+    - _SpecularStrength: 0.7
+    - _Transmission: 0.55
+    - _TransmissionPower: 4
+    m_Colors:
+    - _AlternateColor: {r: 1.12, g: 0.96, b: 0.72, a: 1}
+    - _BottomColor: {r: 0.12, g: 0.25, b: 0.055, a: 1}
+    - _TopColor: {r: 0.58, g: 0.72, b: 0.3, a: 1}
+    - _TransmissionColor: {r: 1, g: 0.94, b: 0.56, a: 1}
+  m_BuildTextureStacks: []

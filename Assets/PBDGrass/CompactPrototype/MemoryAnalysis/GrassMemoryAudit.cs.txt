@@ -1,0 +1,138 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.Profiling;
+using GrassFinal.PBDGrass;
+using Object=UnityEngine.Object;
+
+public static class GrassMemoryAudit
+{
+    [StructLayout(LayoutKind.Sequential)] struct ProcessMemory { public uint cb,pageFaults; public UIntPtr peakWorkingSet,workingSet,peakPaged,paged,peakNonPaged,nonPaged,pageFile,peakPageFile,privateUsage; }
+    [DllImport("kernel32.dll")] static extern IntPtr GetCurrentProcess();
+    [DllImport("psapi.dll")] static extern bool GetProcessMemoryInfo(IntPtr process,out ProcessMemory counters,uint size);
+    const BindingFlags Flags=BindingFlags.Public|BindingFlags.NonPublic|BindingFlags.Instance;
+    [Serializable] public class MemoryRow { public string stage; public long managedUsed,monoUsed,monoHeap,unityAllocated,unityReserved,workingSet,privateBytes,peakWorkingSet; public int active,history,historyCapacity,transition,outerVisible; public long gpuBufferBytes; }
+    [Serializable] public class Allocation { public string path,type; public int count,stride; public long bytes; }
+    [Serializable] public class Report { public string unity,gpu,error; public bool passed; public int blades,grids,outerCandidates,outerTiles; public List<MemoryRow> samples=new List<MemoryRow>(); public List<Allocation> gpuBuffers=new List<Allocation>(),cpuArraysInitial=new List<Allocation>(),cpuArraysStreamed=new List<Allocation>(); }
+    sealed class Identity : IEqualityComparer<object> { public new bool Equals(object a,object b)=>ReferenceEquals(a,b); public int GetHashCode(object a)=>RuntimeHelpers.GetHashCode(a); }
+    static Report report; static GrassHandoffDemo demo; static GrassShowcaseController lab; static RenderTexture rt; static int frame; static string output; static double started;
+    static object Field(object o,string name)=>o.GetType().GetField(name,Flags).GetValue(o);
+    static void Save()=>File.WriteAllText(Path.Combine(output,"Memory.json"),JsonUtility.ToJson(report,true));
+    public static void Run()
+    {
+        output=Environment.GetEnvironmentVariable("GRASS_MEMORY_OUTPUT");Directory.CreateDirectory(output);
+        report=new Report {unity=Application.unityVersion,gpu=SystemInfo.graphicsDeviceName};started=EditorApplication.timeSinceStartup;
+        try
+        {
+            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
+            Snapshot("empty_editor_gc",true);
+            EditorSceneManager.OpenScene("Assets/PBDGrass/Scenes/PBDGrassContactLab.unity");
+            demo=Object.FindObjectOfType<GrassHandoffDemo>();lab=Object.FindObjectOfType<GrassShowcaseController>();
+            demo.enabled=false;demo.OuterCoverage.enabled=false;lab.enabled=false;demo.Cam.enabled=false;
+            demo.AutoTour=false;lab.SetView(1);lab.ApplyActors(0,true);
+            Snapshot("scene_before_initialize_gc",true);
+            demo.Initialize();demo.OuterCoverage.Initialize();
+            report.blades=demo.Renderer.BladeCount;report.grids=demo.Renderer.Data.Grids.Length;
+            report.outerCandidates=demo.OuterCoverage.CandidateCount;report.outerTiles=demo.OuterCoverage.TileCount;
+            Snapshot("initialized_before_gc",false);
+            Snapshot("initialized_after_gc",true);
+            CaptureGpu(); CaptureCpu(report.cpuArraysInitial);Save();
+            rt=new RenderTexture(1600,900,24,RenderTextureFormat.DefaultHDR);rt.antiAliasing=4;rt.Create();demo.Cam.targetTexture=rt;demo.Cam.aspect=1600f/900;
+            EditorApplication.update+=Update;
+        }
+        catch(Exception e) {Finish(e);}
+    }
+    static void Snapshot(string stage,bool collect)
+    {
+        if(collect) {GC.Collect();GC.WaitForPendingFinalizers();GC.Collect();}
+        using(var p=Process.GetCurrentProcess())
+        {
+            if(!GetProcessMemoryInfo(GetCurrentProcess(),out var memory,(uint)Marshal.SizeOf(typeof(ProcessMemory))))throw new Exception("GetProcessMemoryInfo failed");
+            var r=new MemoryRow {stage=stage,managedUsed=GC.GetTotalMemory(false),monoUsed=Profiler.GetMonoUsedSizeLong(),monoHeap=Profiler.GetMonoHeapSizeLong(),unityAllocated=Profiler.GetTotalAllocatedMemoryLong(),unityReserved=Profiler.GetTotalReservedMemoryLong(),workingSet=(long)memory.workingSet.ToUInt64(),privateBytes=(long)memory.privateUsage.ToUInt64(),peakWorkingSet=(long)memory.peakWorkingSet.ToUInt64()};
+            if(demo!=null && demo.Renderer!=null)
+            {
+                r.active=demo.Renderer.ActiveBladeCount;r.history=demo.Renderer.Handoff.HistoryResidentBlades;r.historyCapacity=demo.Renderer.Handoff.HistoryCapacityBlades;r.transition=demo.Renderer.Handoff.TransitionBlades;
+                r.gpuBufferBytes=demo.Renderer.AllocatedGpuBytes+demo.OuterCoverage.AllocatedGpuBytes;
+                if(frame>0) {var args=new uint[4];demo.OuterCoverage.DiagnosticArguments.GetData(args);r.outerVisible=(int)args[1];}
+            }
+            report.samples.Add(r);Save();UnityEngine.Debug.Log("MEMORY_STAGE "+JsonUtility.ToJson(r));
+        }
+    }
+    static void CaptureGpu()
+    {
+        var renderer=demo.Renderer;var tier=Field(renderer.Handoff,"tiered");
+        foreach(var pair in new[]{new KeyValuePair<string,object>("renderer",renderer),new KeyValuePair<string,object>("history",tier),new KeyValuePair<string,object>("compact",renderer.Compact)})
+        {
+            int i=0;foreach(ComputeBuffer buffer in (IEnumerable)Field(pair.Value,"buffers"))
+            {
+                string label="buffer_"+i++;foreach(var f in pair.Value.GetType().GetFields(Flags))if(f.FieldType==typeof(ComputeBuffer)&&ReferenceEquals(f.GetValue(pair.Value),buffer)) {label=f.Name;break;}
+                report.gpuBuffers.Add(new Allocation {path=pair.Key+"."+label,type="ComputeBuffer",count=buffer.count,stride=buffer.stride,bytes=(long)buffer.count*buffer.stride});
+            }
+        }
+        foreach(var name in new[]{"tiles","instances","arguments","controls"}) {var b=(ComputeBuffer)Field(demo.OuterCoverage,name);report.gpuBuffers.Add(new Allocation {path="outer."+name,type="ComputeBuffer",count=b.count,stride=b.stride,bytes=(long)b.count*b.stride});}
+    }
+    static void CaptureCpu(List<Allocation> rows)
+    {
+        var seen=new HashSet<object>(new Identity());
+        Walk(demo.Renderer.Data,"data",seen,rows);Walk(demo.WorldLayout,"world",seen,rows);Walk(demo.Renderer.Pool,"pool",seen,rows);Walk(Field(demo.Renderer.Handoff,"tiered"),"handoff",seen,rows);Walk(demo.Renderer,"renderer",seen,rows);Walk(demo.OuterCoverage,"outer",seen,rows);
+    }
+    static void Walk(object obj,string path,HashSet<object> seen,List<Allocation> rows)
+    {
+        if(obj==null||!seen.Add(obj))return;var type=obj.GetType();
+        if(obj is Array array)
+        {
+            var elem=type.GetElementType();int stride=elem==typeof(bool)?1:elem.IsValueType?Marshal.SizeOf(elem):IntPtr.Size;
+            rows.Add(new Allocation {path=path,type=elem.Name,count=array.Length,stride=stride,bytes=(long)array.Length*stride});return;
+        }
+        bool collection=type.IsGenericType&&(type.GetGenericTypeDefinition()==typeof(List<>)||type.GetGenericTypeDefinition()==typeof(Stack<>));
+        string name=type.Name;
+        bool allow=collection||name=="GrassBladeData"||name=="GrassWorldLayout"||name=="GrassSimulationPool"||name=="GrassGridSet"||name=="GrassGridQuery"||name=="GrassTieredHandoff"||name=="GrassLodHandoff"||name=="PBDGrassPatchRenderer"||name=="GrassOuterCoverage"||name=="GrassCompactStorage";
+        if(!allow)return;
+        foreach(var field in type.GetFields(Flags))if(!field.FieldType.IsValueType&&field.FieldType!=typeof(string))Walk(field.GetValue(obj),path+"."+field.Name,seen,rows);
+    }
+    static void Update()
+    {
+        try
+        {
+            if(EditorApplication.timeSinceStartup-started>600)throw new TimeoutException();
+            float t=frame/60f;float x=frame<180?0:Mathf.PingPong((frame-180)/60f*12,48);
+            demo.Cam.transform.position=new Vector3(x,16,-14);lab.ApplyActors(t,true);
+            Vector3 focus=demo.Cam.transform.position;focus.y=0;
+            demo.Renderer.SimulationCenter=focus;demo.Renderer.StreamTo(focus);
+            demo.Renderer.SetWind(GrassResponseDemo.WindAt(t,true)*(demo.Wind.magnitude/6),.1f,new Vector4(.01f,.01f,0,1));demo.Renderer.Advance(1f/60);
+            demo.Renderer.Draw(demo.Cam);demo.OuterCoverage.PrepareVisible();demo.OuterCoverage.RenderPrepared(demo.Cam);demo.Cam.Render();frame++;
+            if(frame%60==0)Snapshot("tick_"+frame,false);
+            if(frame==180)Snapshot("steady_after_gc",true);
+            if(frame==780)
+            {
+                Snapshot("streamed_after_gc",true);CaptureCpu(report.cpuArraysStreamed);
+                // Release through the same ownership lifecycle. No retained reflection object graph.
+                typeof(GrassOuterCoverage).GetMethod("Release",Flags).Invoke(demo.OuterCoverage,null);
+                typeof(GrassHandoffDemo).GetMethod("Release",Flags).Invoke(demo,null);
+                demo.Cam.targetTexture=null;rt.Release();Object.DestroyImmediate(rt);rt=null;
+            }
+            if(frame==780) {EditorApplication.update-=Update;EditorApplication.update+=Released;}
+        }
+        catch(Exception e) {Finish(e);}
+    }
+    static void Released()
+    {
+        // Use a later callback so conservative stack roots from simulation/reflection are gone.
+        if(++frame<783)return;
+        EditorApplication.update-=Released;
+        try {Snapshot("released_after_gc",true);Finish(null);}catch(Exception e) {Finish(e);}
+    }
+    static void Finish(Exception error)
+    {
+        EditorApplication.update-=Update;report.error=error?.ToString();report.passed=error==null;Save();
+        if(error!=null)UnityEngine.Debug.LogException(error);EditorApplication.Exit(error==null?0:1);
+    }
+}

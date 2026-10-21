@@ -1,0 +1,20 @@
+{
+  "runtimeAndValidation": {
+    "Runtime/XPBDGrassSettings.cs": "905a0187139280c3139544cbaed2a7af551080335b1833ad7695b9e56500ed14",
+    "Runtime/GrassSimulationPool.cs": "e2873533149ae494cd2d6db51c58f5ebe675a2e1a99358bf545826e44d561a27",
+    "Runtime/PBDGrassPatchRenderer.cs": "9a88ec0380e1ef709f82599201f2163f8d77c2ea0bc71a39c68d7cf7a8016b5e",
+    "Runtime/GrassOuterCoverage.cs": "993a1a4faf892f85b4371af0d0f6854c0d9e45bd2d2e3db957eb140e76f7d7c1",
+    "Demo/GrassHandoffDemo.cs": "c19fe93e9a0693802a442c18dd05c24adf1c82908aa0096e37e4b793778da8db",
+    "CompactPrototype/Editor/GrassShowcaseSceneBuilder.cs": "323356e3c3f9d1a2424a74c884edc4994d6eb0b526c2416e2bcbb8a37b8dad9c",
+    "CompactPrototype/Showcase/GrassShowcaseController.cs": "944eae6d841e44cffade0ddca538eccca43cbb03d9c86d4d39a064670aa7ceec",
+    "CompactPrototype/Editor/GrassInteractionCoverageValidation.cs": "cd906251be8f304798bf61726371a70b5013506a913038c6bfbf9e3c5171bc02",
+    "Scenes/PBDGrassContactLab.unity": "ea2ab39cc52ccee967480c395d3b2b3f012af939ba9a20d67286db80c64d7744"
+  },
+  "solverAndBaseline": {
+    "CompactPrototype/Shaders/CompactGrassSolver.compute": "7ca300542a1860aa485f20bb36a4c89e108ce9a5c564e91b39dbd6a4e85483b5",
+    "CompactPrototype/Shaders/CompactGrassHandoff.compute": "f29e9c4a1fd9c3a50d87a40df995855b7b4e25b3f443079602666ce81a28edcc",
+    "CompactPrototype/Shaders/CompactGrassStreaming.compute": "98bcdbefc942d8d334b8d84216618cdbe78a98623bd953133e978ffbd12b202f",
+    "CompactPrototype/Shaders/CompactGrass.shader": "647c9ee937fb525177ab43a164e3d0b9d845863c174595a1755684cf19b8f2a8",
+    "Scenes/PBDGrassCombinedBaseline.unity": "a12e6872871c6fc20ca2d0db00ab971a6946aa6a8a301d5da54cfca445c86ebd"
+  }
+}

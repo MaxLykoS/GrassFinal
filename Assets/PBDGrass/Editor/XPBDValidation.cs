@@ -309,7 +309,7 @@ namespace GrassFinal.PBDGrass.Editor
                 using(var r=Renderer(1,Settings()))
                 {
                     r.SetWind(Vector3.zero,0,Vector4.zero);
-                    Quaternion q=r.Data.Rods[0].Rotation;
+                    Quaternion q=r.Data.GetRod(0).Rotation;
                     Vector3 direction=q*(axis==0?Vector3.up:Vector3.right);
                     r.ImpulseBlade(0,direction*1.5f,Vector3.zero);
                     float movement=0;
@@ -323,7 +323,7 @@ namespace GrassFinal.PBDGrass.Editor
             using(var r=Renderer(1,Settings()))
             {
                 r.SetWind(Vector3.zero,0,Vector4.zero);
-                Vector3 tangent=r.Data.Rods[0].Rotation*Vector3.forward;
+                Vector3 tangent=r.Data.GetRod(0).Rotation*Vector3.forward;
                 r.ImpulseBlade(0,Vector3.zero,tangent*12);
                 float peak=0;
                 for(int t=0;t<60;t++) { Ticks(r,1); peak=Mathf.Max(peak,FrameError(r)); }
@@ -335,7 +335,7 @@ namespace GrassFinal.PBDGrass.Editor
         private static float FrameError(PBDGrassPatchRenderer r)
         {
             var f=r.ReadFrames(); float sum=0;
-            for(int s=0;s<7;s++)sum+=Quaternion.Angle(f[s].Rotation,r.Data.Rods[s].Rotation)*Mathf.Deg2Rad;
+            for(int s=0;s<7;s++)sum+=Quaternion.Angle(f[s].Rotation,r.Data.GetRod(s).Rotation)*Mathf.Deg2Rad;
             foreach(var frame in f)
             {
                 float norm=frame.Rotation.x*frame.Rotation.x+frame.Rotation.y*frame.Rotation.y+frame.Rotation.z*frame.Rotation.z+frame.Rotation.w*frame.Rotation.w;

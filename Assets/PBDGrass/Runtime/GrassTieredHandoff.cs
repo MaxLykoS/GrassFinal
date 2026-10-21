@@ -14,6 +14,8 @@ namespace GrassFinal.PBDGrass
         private readonly XPBDGrassSettings physics;
         private readonly GrassHandoffSettings settings;
         private readonly ComputeShader shader;
+        private readonly Material material;
+        private readonly GrassSimulationPool simulationPool;
         private readonly List<ComputeBuffer> buffers=new List<ComputeBuffer>();
         private readonly ComputeBuffer states,mapping,initializations,changes,entries,windState,previousWind;
         private readonly ComputeBuffer worldYawBuffer,recycledGrids;
@@ -26,7 +28,12 @@ namespace GrassFinal.PBDGrass
         private readonly bool[] active,wanted;
         private readonly Stack<int> freeSlots=new Stack<int>();
         private readonly List<int> boundary=new List<int>();
-        private readonly int resetKernel,initializeKernel,captureKernel,seedKernel,displayKernel,windKernel,snapshotKernel;
+        private readonly GrassGridQuery gridQuery;
+        private readonly GrassGridSet work,warm,queryGrids,stateDirty,mapDirty;
+        private readonly List<int> activeIds=new List<int>(),wantedIds=new List<int>(),transitions=new List<int>();
+        private readonly int[] selectedOffsets;
+        private readonly float[] boundaryScores;
+        private readonly int resetKernel,initializeKernel,nearInitializeKernel,captureKernel,seedKernel,displayKernel,windKernel,snapshotKernel;
         private readonly int[] kernels;
         private Vector3 center;
         private float poseTime,poseDt=1f/60;
@@ -34,6 +41,7 @@ namespace GrassFinal.PBDGrass
         private float previousFocusTime=-1;
         public float WarmLookAheadMeters { get; private set; }
         private bool disposed;
+        private bool initializingNear;
         public ComputeBuffer CullingGrids { get; }
         public ComputeBuffer ClassificationStates => states;
         public int EntryInitializations { get; private set; }
@@ -46,17 +54,25 @@ namespace GrassFinal.PBDGrass
         public GrassTieredHandoff(GrassBladeData data,XPBDGrassSettings physics,GrassHandoffSettings settings,
             ComputeShader source,Material material,ComputeBuffer bones,ComputeBuffer frames,ComputeBuffer plastic,
             ComputeBuffer rest,ComputeBuffer rods,ComputeBuffer blades,ComputeBuffer masses,Texture wind,
-            ComputeBuffer positions,ComputeBuffer normals)
+            ComputeBuffer positions,ComputeBuffer normals,GrassCompactStorage compact=null,GrassGridQuery gridQuery=null,GrassSimulationPool simulationPool=null)
         {
             this.data=data; this.physics=physics; this.settings=settings;
+            this.material=material;this.simulationPool=simulationPool;
+            this.gridQuery=gridQuery??new GrassGridQuery(data.Grids);
+            int count=data.Grids.Length;
+            work=new GrassGridSet(count);warm=new GrassGridSet(count);queryGrids=new GrassGridSet(count);
+            stateDirty=new GrassGridSet(count);mapDirty=new GrassGridSet(count);
+            selectedOffsets=new int[count];boundaryScores=new float[count];
             shader=UnityEngine.Object.Instantiate(source);
             try
             {
                 resetKernel=shader.FindKernel("ResetGeometry"); initializeKernel=shader.FindKernel("InitializeHistory");
+                nearInitializeKernel=compact!=null?shader.FindKernel("InitializeNearHistory"):initializeKernel;
                 captureKernel=shader.FindKernel("CaptureTransition"); seedKernel=shader.FindKernel("SeedSimulation");
                 displayKernel=shader.FindKernel("UpdateTieredDisplay"); windKernel=shader.FindKernel("AdvanceBakedWind");
                 snapshotKernel=shader.FindKernel("DiagnosticSnapshot");
-                kernels=new[] { resetKernel,initializeKernel,captureKernel,seedKernel,displayKernel,snapshotKernel };
+                kernels=compact!=null?new[] { resetKernel,initializeKernel,nearInitializeKernel,captureKernel,seedKernel,displayKernel,snapshotKernel }
+                    :new[] { resetKernel,initializeKernel,captureKernel,seedKernel,displayKernel,snapshotKernel };
                 int grids=data.Grids.Length,capacity=Mathf.Min(grids,Mathf.Max(1,settings.MaxHistoryBlades/32));
                 gridStates=new GridState[grids]; historyMap=new Vector2Int[grids]; previousPool=new int[grids];
                 active=new bool[grids]; wanted=new bool[grids]; slotGrid=new int[capacity];
@@ -89,9 +105,15 @@ namespace GrassFinal.PBDGrass
                 var controlsBuffer=NewBuffer(75,16); controlsBuffer.SetData(controls);
                 var framesBuffer=NewBuffer(175,16); framesBuffer.SetData(bakedFrames);
                 var yawBuffer=NewBuffer(grids,16); yawBuffer.SetData(yaw);worldYawBuffer=yawBuffer;
-                shader.SetInt("EnableBakedResponse",response!=null?1:0); shader.SetInt("GridCount",grids); shader.SetInt("BladeCount",data.Blades.Length);
+                shader.SetInt("EnableBakedResponse",response!=null?1:0); shader.SetInt("GridCount",grids); shader.SetInt("BladeCount",data.BladeCount);
                 foreach(int k in kernels)
                 {
+                    compact?.Bind(shader,k);
+                    if(compact!=null)
+                    {
+                        shader.SetBuffer(k,"CompactBonesRead",bones);shader.SetBuffer(k,"CompactFramesRead",frames);
+                        shader.SetBuffer(k,"CompactOffsetsRead",offsets);shader.SetBuffer(k,"CompactRotationsRead",rotations);
+                    }
                     shader.SetBuffer(k,"BladesBuffer",blades); shader.SetBuffer(k,"RodsBuffer",rods); shader.SetBuffer(k,"RestNodesBuffer",rest);
                     shader.SetBuffer(k,"PlasticBendsBuffer",plastic); shader.SetBuffer(k,"GridStates",states); shader.SetBuffer(k,"HistoryMap",mapping);
                     shader.SetBuffer(k,"HistoryNodes",nodes); shader.SetBuffer(k,"HistoryFrames",directions);
@@ -103,6 +125,7 @@ namespace GrassFinal.PBDGrass
                     shader.SetBuffer(k,"BakedYaw",yawBuffer); shader.SetBuffer(k,"BakedInverseMass",masses); shader.SetTexture(k,"WindForceMap",wind);
                 }
                 shader.SetBuffer(initializeKernel,"HistoryInitializations",initializations);
+                if(compact!=null)shader.SetBuffer(nearInitializeKernel,"HistoryInitializations",initializations);
                 shader.SetBuffer(captureKernel,"ChangedEntries",changes); shader.SetBuffer(seedKernel,"Entries",entries);
                 shader.SetBuffer(windKernel,"BakedWindState",windState); shader.SetBuffer(windKernel,"PreviousWindState",previousWind);
                 shader.SetBuffer(windKernel,"BakedGrids",CullingGrids); shader.SetBuffer(windKernel,"BakedYaw",yawBuffer); shader.SetTexture(windKernel,"WindForceMap",wind);
@@ -112,6 +135,8 @@ namespace GrassFinal.PBDGrass
                     worldWindKernel=shader.FindKernel("ResetWorldWind");worldGeometryKernel=shader.FindKernel("ResetWorldGeometry");recycledGrids=NewBuffer(grids,4);
                     foreach(int k in new[] {worldWindKernel,worldGeometryKernel})
                     {
+                        compact?.Bind(shader,k);
+                        if(compact!=null)shader.SetBuffer(k,"GridStates",states);
                         shader.SetBuffer(k,"RecycledGrids",recycledGrids);shader.SetBuffer(k,"BakedGrids",CullingGrids);shader.SetBuffer(k,"BakedYaw",yawBuffer);
                         shader.SetBuffer(k,"BakedWindState",windState);shader.SetBuffer(k,"PreviousWindState",previousWind);
                         shader.SetBuffer(k,"BakedWindRead",windState);shader.SetBuffer(k,"BakedWindPrevious",previousWind);
@@ -129,6 +154,9 @@ namespace GrassFinal.PBDGrass
         private void Configure(float time)
         {
             poseTime=time; shader.SetFloat("PoseTime",time); shader.SetFloat("PoseDt",poseDt);
+            shader.SetFloat("ContactFadeSeconds",Mathf.Max(.05f,physics.ContactFadeSeconds));
+            material.SetFloat("GrassLifecycleTime",time);material.SetFloat("GrassLifecycleEntrySeconds",Mathf.Max(.05f,settings.TransitionSeconds));
+            material.SetFloat("GrassLifecycleExitSeconds",Mathf.Max(.05f,physics.ContactFadeSeconds));
             shader.SetFloat("TransitionSeconds",Mathf.Max(.05f,settings.TransitionSeconds)); shader.SetFloat("WindDisplacement",Mathf.Max(0,settings.WindDisplacement));
             shader.SetInt("EnablePlasticity",physics.EnablePlasticity?1:0); shader.SetInt("GroundCollision",physics.GroundCollision?1:0);
             shader.SetFloat("CollisionMargin",Mathf.Max(0,physics.CollisionMargin)); shader.SetFloat("LodgedAngularSpeed",Mathf.Max(.1f,settings.LodgedAngularSpeed));
@@ -147,96 +175,158 @@ namespace GrassFinal.PBDGrass
                 if(dt>1e-5f || previousFocusTime<0) {previousFocus=focus;previousFocusTime=time;}
             }
             WarmLookAheadMeters=settings.AdaptiveHistory?Mathf.Min(20,focusVelocity.magnitude*Mathf.Max(.05f,settings.TransitionSeconds)):0;
-            center=focus; Configure(time); Array.Clear(active,0,active.Length); Array.Clear(wanted,0,wanted.Length);
-            foreach(var grid in selected)active[grid.GridId]=true;
+            center=focus; Configure(time);
+            work.Clear();warm.Clear();stateDirty.Clear();mapDirty.Clear();
+            // Old near entries and unfinished transitions must survive a move/teleport
+            // even when they are outside the new spatial query.
+            foreach(int g in activeIds) {work.Add(g);active[g]=false;}
+            activeIds.Clear();
+            foreach(int g in transitions)work.Add(g);
+            foreach(int g in wantedIds)wanted[g]=false;
+            wantedIds.Clear();
+            for(int i=0;i<selected.Count;i++)
+            {
+                var grid=selected[i];int g=grid.GridId;
+                active[g]=true;selectedOffsets[g]=grid.PoolOffset;activeIds.Add(g);work.Add(g);
+            }
             float frontier=0;
-            foreach(var grid in selected) { var d=grid.Position-center; d.y=0;
-                if(!physics.PromoteInteractions || d.magnitude<=physics.NearDistance+physics.PoolHysteresis)frontier=Mathf.Max(frontier,d.sqrMagnitude); }
-            frontier=Mathf.Sqrt(frontier); boundary.Clear(); int required=0; TransitionBlades=0;
+            for(int i=0;i<selected.Count;i++) {var d=selected[i].Position-center;d.y=0;
+                if(!physics.PromoteInteractions || d.magnitude<=physics.NearDistance+physics.PoolHysteresis)frontier=Mathf.Max(frontier,d.sqrMagnitude);}
+            frontier=Mathf.Sqrt(frontier);boundary.Clear();transitions.Clear();int required=0;TransitionBlades=0;
+            float duration=Mathf.Max(.05f,settings.TransitionSeconds);
             float band=Mathf.Max(.1f,settings.HistoryBandWidth),inner=Mathf.Max(0,frontier-band),outer=frontier+band;
             float innerSquared=inner*inner,outerSquared=outer*outer;
-            for(int g=0;g<gridStates.Length;g++)
+            if(selected.Count>0)
             {
-                var state=gridStates[g]; previousPool[g]=state.PoolOffset;
-                state.Changed=active[g]!=(state.PoolOffset>=0)?1:0;
-                if(state.Changed!=0) { state.Started=time; state.Transitioning=1; }
-                if(time-state.Started>=Mathf.Max(.05f,settings.TransitionSeconds))state.Transitioning=0;
-                if(!active[g])state.PoolOffset=-1;
-                gridStates[g]=state;
-                if(state.Transitioning!=0) { wanted[g]=true; required++; TransitionBlades+=32; }
-                else if(selected.Count>0)
+                queryGrids.Clear();if(!physics.ContactDrivenSimulation)gridQuery.AddBounds(center.x,center.z,outer+WarmLookAheadMeters,queryGrids);
+                foreach(int g in queryGrids.Items)
                 {
-                    var d=data.Grids[g].Pos-center; d.y=0;
-                    float distance=d.sqrMagnitude;
-                    bool warm=distance>=innerSquared && distance<=outerSquared;
+                    var d=data.Grids[g].Pos-center;d.y=0;float distance=d.sqrMagnitude;
+                    bool keep=distance>=innerSquared && distance<=outerSquared;
                     if(settings.AdaptiveHistory && distance>=innerSquared)
                     {
-                        float extra=Mathf.Max(0,Vector3.Dot(d.normalized,focusVelocity))*Mathf.Max(.05f,settings.TransitionSeconds);
-                        float reach=outer+Mathf.Min(20,extra);warm|=distance<=reach*reach;
+                        float extra=Mathf.Max(0,Vector3.Dot(d.normalized,focusVelocity))*duration;
+                        float reach=outer+Mathf.Min(20,extra);keep|=distance<=reach*reach;
                     }
-                    if(interactions!=null)foreach(var region in interactions)
-                    {float dx=d.x+center.x-region.x,dz=d.z+center.z-region.y,reach=region.z+band;warm|=dx*dx+dz*dz<=reach*reach;}
-                    if(warm)boundary.Add(g);
+                    if(keep)warm.Add(g);
+                }
+                if(interactions!=null)for(int i=0;i<interactions.Count;i++)
+                {
+                    var region=interactions[i];float reach=region.z+band;
+                    queryGrids.Clear();gridQuery.AddBounds(region.x,region.y,Mathf.Abs(reach),queryGrids);
+                    foreach(int g in queryGrids.Items)
+                    {
+                        var d=data.Grids[g].Pos-center;
+                        float dx=d.x+center.x-region.x,dz=d.z+center.z-region.y;
+                        if(dx*dx+dz*dz<=reach*reach)warm.Add(g);
+                    }
+                }
+            }
+            foreach(int g in warm.Items)work.Add(g);
+            // Preserve the reference's ascending input order, including equal-distance
+            // ties in its optional-history sort and free-slot allocation order.
+            work.Items.Sort();
+            foreach(int g in work.Items)
+            {
+                var before=gridStates[g];var state=before;previousPool[g]=before.PoolOffset;
+                state.Changed=active[g]!=(before.PoolOffset>=0)?1:0;
+                if(state.Changed!=0) {state.Started=time;state.Transitioning=1;}
+                if(state.Transitioning!=2 && time-state.Started>=duration)state.Transitioning=0;
+                if(physics.ContactDrivenSimulation && active[g])
+                {
+                    float exit=simulationPool.ExitStartedAt(g);
+                    if(exit>=0 && time>=exit) {state.Started=exit;state.Transitioning=2;}
+                    else if(before.Transitioning==2)
+                    {
+                        // Resume from the displayed pose without seeding or resetting the live solver.
+                        float t=Mathf.Clamp01((time-before.Started)/Mathf.Max(.05f,physics.ContactFadeSeconds));
+                        float weight=1-t*t*(3-2*t);
+                        state.Started=time;state.Transitioning=-1-weight;state.Changed=1;
+                    }
+                }
+                if(!active[g] && before.Transitioning==2 && time>=before.Started+Mathf.Max(.05f,physics.ContactFadeSeconds))
+                    state.Transitioning=0; // Already faded while still simulated; do not start another exit.
+                state.PoolOffset=active[g]?selectedOffsets[g]:-1;
+                gridStates[g]=state;
+                if(state.PoolOffset!=before.PoolOffset || state.Changed!=before.Changed ||
+                    state.Started!=before.Started || state.Transitioning!=before.Transitioning)stateDirty.Add(g);
+                if(state.Transitioning!=0 || state.Changed!=0)
+                {wanted[g]=true;wantedIds.Add(g);transitions.Add(g);required++;TransitionBlades+=32;}
+                else if(warm.Contains(g))
+                {
+                    boundary.Add(g);
+                    boundaryScores[g]=Mathf.Abs((data.Grids[g].Pos-center).magnitude-frontier);
                 }
             }
             if(required>slotGrid.Length)throw new InvalidOperationException("Handoff history pool exhausted by interrupted transitions. Increase MaxHistoryBlades (required "+required*32+").");
-            if(settings.AdaptiveHistory)boundary.Sort((a,b)=>
-            {
-                // Keep the nearest approaching boundary first when optional warming reaches its budget.
-                float da=(data.Grids[a].Pos-center).magnitude,db=(data.Grids[b].Pos-center).magnitude;
-                return Mathf.Abs(da-frontier).CompareTo(Mathf.Abs(db-frontier));
-            });
-            // Transition states are mandatory. Warm boundary history uses the remaining budget.
-            foreach(int g in boundary)if(required<slotGrid.Length) { wanted[g]=true; required++; }
-            foreach(var grid in selected) { var state=gridStates[grid.GridId]; state.PoolOffset=grid.PoolOffset; gridStates[grid.GridId]=state; }
-            bool mappingChanged=false;
+            if(settings.AdaptiveHistory)boundary.Sort((a,b)=>boundaryScores[a].CompareTo(boundaryScores[b]));
+            foreach(int g in boundary)if(required<slotGrid.Length) {wanted[g]=true;wantedIds.Add(g);required++;}
             for(int slot=0;slot<slotGrid.Length;slot++)
             {
-                int g=slotGrid[slot]; if(g<0 || wanted[g])continue;
-                historyMap[g]=new Vector2Int(-1,0); slotGrid[slot]=-1; freeSlots.Push(slot); mappingChanged=true;
+                int g=slotGrid[slot];if(g<0 || wanted[g])continue;
+                historyMap[g]=new Vector2Int(-1,0);slotGrid[slot]=-1;freeSlots.Push(slot);mapDirty.Add(g);
             }
             int created=0,changed=0,seeds=0;
-            for(int g=0;g<wanted.Length;g++)
+            foreach(int g in work.Items)
             {
                 if(wanted[g] && historyMap[g].x<0)
                 {
-                    int slot=freeSlots.Pop(); slotGrid[slot]=g; historyMap[g]=new Vector2Int(slot,0);
-                    mappingChanged=true;
-                    newSlots[created++]=new Initialization { Slot=slot,BladeOffset=data.Grids[g].IdOffset,PreviousPool=previousPool[g] };
+                    int slot=freeSlots.Pop();slotGrid[slot]=g;historyMap[g]=new Vector2Int(slot,0);mapDirty.Add(g);
+                    newSlots[created++]=new Initialization {Slot=slot,BladeOffset=data.Grids[g].IdOffset,PreviousPool=previousPool[g]};
                 }
                 if(gridStates[g].Changed!=0)
                 {
                     changedEntries[changed++]=new Vector2Int(historyMap[g].x,data.Grids[g].IdOffset);
-                    if(active[g])seedEntries[seeds++]=new Vector2Int(gridStates[g].PoolOffset/32,data.Grids[g].IdOffset);
+                    if(active[g] && previousPool[g]<0)seedEntries[seeds++]=new Vector2Int(gridStates[g].PoolOffset/32,data.Grids[g].IdOffset);
                 }
             }
-            HistoryResidentBlades=(slotGrid.Length-freeSlots.Count)*32; SimulatedBlades=selected.Count*32;
-            states.SetData(gridStates); if(mappingChanged)mapping.SetData(historyMap);
+            HistoryResidentBlades=(slotGrid.Length-freeSlots.Count)*32;SimulatedBlades=selected.Count*32;
+            UploadDirty(states,gridStates,stateDirty);UploadDirty(mapping,historyMap,mapDirty);
             if(created>0)
             {
                 initializations.SetData(newSlots,0,0,created); shader.SetInt("HistoryInitializationCount",created);
                 shader.Dispatch(initializeKernel,(created*32+63)/64,1,1);
+                if(initializingNear)shader.Dispatch(nearInitializeKernel,(created*32+63)/64,1,1);
             }
             if(changed>0)
             { changes.SetData(changedEntries,0,0,changed); shader.SetInt("ChangedCount",changed); shader.Dispatch(captureKernel,(changed*32+63)/64,1,1); }
             if(seeds>0)
             { entries.SetData(seedEntries,0,0,seeds); shader.SetInt("EntryCount",seeds); shader.Dispatch(seedKernel,(seeds*32+63)/64,1,1); EntryInitializations+=seeds; }
         }
+        private static void UploadDirty(ComputeBuffer buffer,Array values,GrassGridSet dirty)
+        {
+            var ids=dirty.Items;if(ids.Count==0)return;
+            ids.Sort();int first=ids[0],last=first,ranges=1;
+            for(int i=1;i<ids.Count;i++)if(ids[i]-ids[i-1]>16)ranges++;
+            // Bound driver calls on fragmented transitions; dense changes are cheaper
+            // as one contiguous transfer. Ordinary stationary frames upload nothing.
+            if(ranges>32) {buffer.SetData(values,first,first,ids[ids.Count-1]-first+1);return;}
+            for(int i=1;i<ids.Count;i++)
+            {
+                int next=ids[i];
+                if(next-last>16) {buffer.SetData(values,first,first,last-first+1);first=next;}
+                last=next;
+            }
+            buffer.SetData(values,first,first,last-first+1);
+        }
         public void UpdateDisplay(float time,float tick)
         { poseDt=tick; Configure(time); if(settings.BakedResponse!=null)shader.Dispatch(windKernel,(data.Grids.Length+63)/64,1,1);
-            shader.Dispatch(displayKernel,(data.Blades.Length+63)/64,1,1); }
+            // Reading Blades refreshes streamed CPU diagnostic mirrors. Dispatch only
+            // needs the count; newly loaded geometry is already generated on the GPU.
+            shader.Dispatch(displayKernel,(data.BladeCount+63)/64,1,1); }
         public void RecycleWorldGrids(IReadOnlyList<int> grids,float time)
         {
             if(recycledGrids==null)throw new InvalidOperationException("Not a streamed field.");
-            var ids=new int[grids.Count];int i=0;
+            var ids=new int[grids.Count];int i=0;stateDirty.Clear();mapDirty.Clear();
             foreach(int g in grids)
             {
                 ids[i++]=g;int slot=historyMap[g].x;
                 if(slot>=0) {slotGrid[slot]=-1;freeSlots.Push(slot);}
                 historyMap[g]=new Vector2Int(-1,0);gridStates[g]=new GridState { PoolOffset=-1 };previousPool[g]=-1;active[g]=wanted[g]=false;
-                renderGrids[g].Position=data.Grids[g].Pos;
+                renderGrids[g].Position=data.Grids[g].Pos;stateDirty.Add(g);mapDirty.Add(g);
             }
-            states.SetData(gridStates);mapping.SetData(historyMap);CullingGrids.SetData(renderGrids);worldYawBuffer.SetData(data.WorldYaws);
+            UploadDirty(states,gridStates,stateDirty);UploadDirty(mapping,historyMap,mapDirty);
+            UploadDirty(CullingGrids,renderGrids,stateDirty);UploadDirty(worldYawBuffer,data.WorldYaws,stateDirty);
             recycledGrids.SetData(ids);shader.SetInt("RecycledCount",ids.Length);Configure(time);
             shader.Dispatch(worldWindKernel,(ids.Length+63)/64,1,1);
             shader.Dispatch(worldGeometryKernel,(ids.Length*32+63)/64,1,1);
@@ -244,21 +334,38 @@ namespace GrassFinal.PBDGrass
         public void Reset(IReadOnlyList<GrassSimulationPool.ActiveGrid> selected,float time)
         {
             previousFocusTime=-1;focusVelocity=Vector3.zero;WarmLookAheadMeters=0;
+            activeIds.Clear();wantedIds.Clear();transitions.Clear();
+            Array.Clear(active,0,active.Length);Array.Clear(wanted,0,wanted.Length);
             freeSlots.Clear(); for(int s=slotGrid.Length-1;s>=0;s--) { slotGrid[s]=-1; freeSlots.Push(s); }
             for(int g=0;g<gridStates.Length;g++) { gridStates[g]=new GridState { PoolOffset=-1 }; historyMap[g]=new Vector2Int(-1,0); }
             states.SetData(gridStates); mapping.SetData(historyMap); windState.SetData(new Vector4[gridStates.Length]); previousWind.SetData(new Vector4[gridStates.Length]);
-            Configure(time); shader.Dispatch(resetKernel,(data.Blades.Length+63)/64,1,1); Select(selected,time,center);
+            Configure(time);
+            if(settings.UseCompactMiddle)
+            {
+                // Birth/reset of already-near grass uses its full precision render cache.
+                // Quantization is confined to the middle representation and actual LOD entries.
+                foreach(var grid in selected)gridStates[grid.GridId]=new GridState {PoolOffset=grid.PoolOffset};
+                states.SetData(gridStates);
+            }
+            shader.Dispatch(resetKernel,(data.BladeCount+63)/64,1,1);
+            if(settings.UseCompactMiddle)
+            {
+                foreach(var grid in selected)gridStates[grid.GridId]=new GridState {PoolOffset=-1};
+                states.SetData(gridStates);shader.SetInt("CompactInitialSeeding",1);initializingNear=true;
+            }
+            Select(selected,time,center);
+            if(settings.UseCompactMiddle) {shader.SetInt("CompactInitialSeeding",0);initializingNear=false;}
         }
         private void Snapshot(out BoneInfo[] nodes,out GrassBladeData.Frame[] frames,bool readNodes)
         {
             Configure(poseTime); nodes=null; frames=null;
-            using(var nodeBuffer=new ComputeBuffer(data.Blades.Length*8,48))using(var frameBuffer=new ComputeBuffer(data.Blades.Length*7,32))
+            using(var nodeBuffer=new ComputeBuffer(data.BladeCount*8,48))using(var frameBuffer=new ComputeBuffer(data.BladeCount*7,32))
             {
                 shader.SetBuffer(snapshotKernel,"DiagnosticNodes",nodeBuffer); shader.SetBuffer(snapshotKernel,"DiagnosticFrames",frameBuffer);
-                shader.Dispatch(snapshotKernel,(data.Blades.Length+63)/64,1,1);
-                if(readNodes) { nodes=new BoneInfo[data.Blades.Length*8]; nodeBuffer.GetData(nodes);
-                    for(int b=0;b<data.Blades.Length;b++)for(int n=0;n<8;n++)nodes[b*8+n].Position+=data.Blades[b].Root; }
-                else { frames=new GrassBladeData.Frame[data.Blades.Length*7]; frameBuffer.GetData(frames); }
+                shader.Dispatch(snapshotKernel,(data.BladeCount+63)/64,1,1);
+                if(readNodes) { nodes=new BoneInfo[data.BladeCount*8]; nodeBuffer.GetData(nodes);
+                    for(int b=0;b<data.BladeCount;b++)for(int n=0;n<8;n++)nodes[b*8+n].Position+=data.GetBlade(b).Root; }
+                else { frames=new GrassBladeData.Frame[data.BladeCount*7]; frameBuffer.GetData(frames); }
             }
         }
         public BoneInfo[] ReadDisplayNodes() { Snapshot(out var nodes,out var frames,true); return nodes; }

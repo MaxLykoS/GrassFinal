@@ -97,13 +97,13 @@ namespace GrassFinal.PBDGrass.Editor
             Vector3 cameraPosition=camera.transform.position; Quaternion cameraRotation=camera.transform.rotation;
             using(var r=Renderer(32,go.transform,true))
             {
-                Vector3 view=r.Data.Rods[0].Rotation*new Vector3(.55f,1,0).normalized;
-                camera.transform.position=r.Data.Blades[0].Root+Vector3.up*.7f+view*3;
-                camera.transform.LookAt(r.Data.Blades[0].Root+Vector3.up*.7f); camera.fieldOfView=40;
+                Vector3 view=r.Data.GetRod(0).Rotation*new Vector3(.55f,1,0).normalized;
+                camera.transform.position=r.Data.GetBlade(0).Root+Vector3.up*.7f+view*3;
+                camera.transform.LookAt(r.Data.GetBlade(0).Root+Vector3.up*.7f); camera.fieldOfView=40;
                 foreach(var light in Object.FindObjectsOfType<Light>())light.transform.rotation=Quaternion.LookRotation(-view+Vector3.down*.7f);
                 Ticks(r,90);
                 var rest=r.Handoff.ReadDisplayNodes(); Capture("01_rest",r);
-                Vector3 root=r.Data.Blades[0].Root, direction=r.Data.Rods[0].Rotation*Vector3.up;
+                Vector3 root=r.Data.GetBlade(0).Root, direction=r.Data.GetRod(0).Rotation*Vector3.up;
                 for(int t=0;t<120;t++)
                 { go.transform.position=root+Vector3.up*.65f+direction*Mathf.Lerp(1.2f,-.15f,Mathf.Clamp01(t/60f)); Ticks(r,1); }
                 go.SetActive(false); Ticks(r,180);
@@ -130,7 +130,7 @@ namespace GrassFinal.PBDGrass.Editor
                 {
                     Ticks(r,1); var pose=r.Handoff.ReadDisplayNodes(); maxStep=Mathf.Max(maxStep,Difference(last,pose,0)); last=pose;
                     var physical=r.ReadNodes();
-                    for(int s=0;s<7;s++)maxStretch=Mathf.Max(maxStretch,Mathf.Abs(Vector3.Distance(physical[s+1].Position,physical[s].Position)/r.Data.Rods[s].Length-1));
+                    for(int s=0;s<7;s++)maxStretch=Mathf.Max(maxStretch,Mathf.Abs(Vector3.Distance(physical[s+1].Position,physical[s].Position)/r.Data.GetRod(s).Length-1));
                 }
                 Record("reentry_max_display_step_m",maxStep); Record("reentry_max_stretch_ratio",maxStretch);
                 float returnDrift=0; var returnedPlastic=r.ReadPlasticBends();

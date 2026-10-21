@@ -1,0 +1,102 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using UnityEngine;
+using GrassFinal.PBDGrass;
+public sealed class ContactRealtimeRunner : MonoBehaviour
+{
+    public static Action<bool> Completed;
+    [Serializable] public sealed class Row
+    {
+        public double frameIntervalMs,cpuMs,advanceCpuMs,poolCpuMs,handoffCpuMs;
+        public int ticks,active;
+        public float droppedSeconds;
+    }
+    [Serializable] public sealed class Report
+    {
+        public bool passed;
+        public string caseName,error,gpu,cpu,unity,startUtc,endUtc;
+        public bool editor;
+        public int patchSize,width=1600,height=900,msaa;
+        public float warmSeconds=10,measureSeconds=20;
+        public List<Row> rows=new List<Row>();
+    }
+    static Report report;GrassHandoffDemo demo;GrassShowcaseController lab;RenderTexture target;
+    double previous,started;
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+    static void Boot()
+    {
+        if(Application.isEditor)return;
+        if(string.IsNullOrEmpty(Environment.GetEnvironmentVariable("GRASS_REALTIME_CASE")))return;
+        new GameObject("Contact realtime benchmark").AddComponent<ContactRealtimeRunner>();
+    }
+    void Start()
+    {
+        string name=Environment.GetEnvironmentVariable("GRASS_REALTIME_CASE");
+        report=new Report {caseName=name,gpu=SystemInfo.graphicsDeviceName,cpu=SystemInfo.processorType,
+            unity=Application.unityVersion,startUtc=DateTime.UtcNow.ToString("O"),editor=Application.isEditor};
+        try
+        {
+            QualitySettings.vSyncCount=0;Application.targetFrameRate=-1;Application.runInBackground=true;
+            demo=FindObjectOfType<GrassHandoffDemo>();lab=FindObjectOfType<GrassShowcaseController>();
+            demo.enabled=false;demo.OuterCoverage.enabled=false;lab.enabled=false;demo.Cam.enabled=false;
+            demo.PatchSize=name.StartsWith("small")?96:144;
+            demo.OuterCoverage.MiddleFullDistance=demo.PatchSize==96?28:52;
+            demo.OuterCoverage.MiddleOuterDistance=demo.PatchSize==96?36:64;
+            demo.Handoff.DebugLodBaseColors=true;demo.AutoTour=false;lab.SetView(1);
+            demo.ContactEnabled=!name.Contains("no_contact");
+            lab.ApplyActors(0,demo.ContactEnabled);
+            demo.Initialize();demo.OuterCoverage.Initialize();
+            report.patchSize=demo.PatchSize;report.msaa=Mathf.Max(1,QualitySettings.antiAliasing);
+            target=new RenderTexture(1600,900,24,RenderTextureFormat.DefaultHDR);target.antiAliasing=report.msaa;target.Create();
+            demo.Cam.aspect=1600f/900;demo.Cam.targetTexture=target;
+            ContactGpuHooks.Active=false;
+            previous=started=Time.realtimeSinceStartupAsDouble;
+        }
+        catch(Exception e) {Finish(e);}
+    }
+    void Update()
+    {
+        if(demo==null || report==null)return;
+        try
+        {
+            double now=Time.realtimeSinceStartupAsDouble,elapsed=now-previous;previous=now;
+            if(now-started>report.warmSeconds+report.measureSeconds) {Finish(null);return;}
+            long total=ContactGpuHooks.Stamp();ContactGpuHooks.ResetCpu();
+            lab.ApplyActors(demo.Renderer.SimulationTime,demo.ContactEnabled);
+            foreach(var label in lab.Labels)if(label!=null)label.rotation=demo.Cam.transform.rotation;
+            var focus=demo.Cam.transform.position;focus.y=0;
+            demo.Renderer.StreamTo(focus);
+            demo.Renderer.SetWind(GrassResponseDemo.WindAt(demo.Renderer.SimulationTime,true)*(demo.Wind.magnitude/6),.1f,new Vector4(.01f,.01f,0,1));
+            int ticks=demo.Renderer.SimulationTicks;float dropped=demo.Renderer.DroppedTime;long advance=ContactGpuHooks.Stamp();
+            demo.Renderer.Advance((float)elapsed);
+            double advanceMs=ContactGpuHooks.Ms(advance);
+            demo.Renderer.Draw(demo.Cam);demo.OuterCoverage.PrepareVisible();demo.OuterCoverage.RenderPrepared(demo.Cam);demo.Cam.Render();
+            if(now-started>=report.warmSeconds)
+                report.rows.Add(new Row {frameIntervalMs=elapsed*1000,cpuMs=ContactGpuHooks.Ms(total),advanceCpuMs=advanceMs,
+                    poolCpuMs=ContactGpuHooks.PoolCpu,handoffCpuMs=ContactGpuHooks.HandoffCpu,
+                    ticks=demo.Renderer.SimulationTicks-ticks,active=demo.Renderer.ActiveBladeCount,
+                    droppedSeconds=demo.Renderer.DroppedTime-dropped});
+        }
+        catch(Exception e) {Finish(e);}
+    }
+    void Finish(Exception error)
+    {
+        if(report==null)return;
+        report.endUtc=DateTime.UtcNow.ToString("O");report.error=error?.ToString();
+        report.passed=error==null && report.rows.Count>30 && report.rows.TrueForAll(r=>r.active==32768);
+        string output=Environment.GetEnvironmentVariable("GRASS_PROFILE_OUTPUT");Directory.CreateDirectory(output);
+        File.WriteAllText(Path.Combine(output,report.caseName+"_realtime.json"),JsonUtility.ToJson(report,true));
+        if(target!=null)
+        {
+            var previous=RenderTexture.active;RenderTexture.active=target;
+            var image=new Texture2D(target.width,target.height,TextureFormat.RGB24,false);
+            image.ReadPixels(new Rect(0,0,target.width,target.height),0,0);image.Apply();
+            File.WriteAllBytes(Path.Combine(output,report.caseName+"_realtime.png"),image.EncodeToPNG());
+            RenderTexture.active=previous;Destroy(image);
+        }
+        Debug.Log("CONTACT_REALTIME_DONE "+report.caseName+" "+report.passed+" "+report.error);
+        bool passed=report.passed;report=null;enabled=false;
+        if(Completed!=null)Completed(passed);else Application.Quit(passed?0:1);
+    }
+}

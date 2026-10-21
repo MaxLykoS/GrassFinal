@@ -1,0 +1,30 @@
+{
+  "scene": "Assets/PBDGrass/Scenes/PBDGrassContactLab.unity",
+  "unity": "2022.3.62f2c1",
+  "gpu": "RTX 3080 Ti",
+  "api": "D3D11",
+  "existingRuntimeAndShadersChanged": false,
+  "physicsTimeBenchmark": false,
+  "sha256": {
+    "Scenes/PBDGrassContactLab.unity": "348675344b1aa575b94d6841f838e608d11d4417072d462c917c8060fc2112b3",
+    "CompactPrototype/Showcase/GrassShowcaseController.cs": "e9861e7bac562263e156518f70fc81e40fb2eb48e69387dc5298464292c984bd",
+    "CompactPrototype/Editor/GrassShowcaseSceneBuilder.cs": "f50ef6b313e9dea19a2becbbc7349be97a095947a933542421b55e31ac1a021d",
+    "CompactPrototype/Editor/GrassShowcaseValidation.cs": "11aef745ef9515a9616b7eb76a2bc0b94ded06e69f28024c99a93a3b4d5b040f"
+  },
+  "date": "2026-10-21",
+  "gpuBufferBytes": 224852832,
+  "residentCapacity": 663552,
+  "activeXPBD": 32768,
+  "middleFullDistance": 52,
+  "middleOuterDistance": 64,
+  "validationSha256": {
+    "Results.json": "e1d1510bb5ccd3a78f46a2201b521d7cddcba7e3881cc7b7574d43a2d2094808",
+    "ElevatedContacts.png": "0b03a2640f5232b037d855d1527110d578fe6609f673a59afcfcac8e1e1b4fb8",
+    "AfterContact.png": "30def6e186264d589ffe9b017f00b0a94104b8f0978cbf8345218403526e25fc",
+    "MiddleTrail.png": "bcdd56340006783daeff21e25128996ff1cfca32a081e631b0e29ea956154bae",
+    "ReturnedTrail.png": "c53db4953a52e0dcb2ba462c6f640dc6550421f8bebe4582906b3109b941c845",
+    "CloseView.png": "5519e2d515cf08f20847af3051210ebe72b664cacf32d6a9b4592ec929a0224e",
+    "TopView.png": "ccaca919d778c97173d02eed60bc9b21f7ca1a68c2f6d1e816cb5d568466bf2b",
+    "TierOverview.png": "e7f72ae93133e3c44da68bc3d91fb1356cf43cdb57c17ac0f4103583810c0d21"
+  }
+}

@@ -1,0 +1,17 @@
+{
+    "passed": true,
+    "overheadWorked": true,
+    "returnedToGround": true,
+    "compact": true,
+    "error": "",
+    "minActive": 32768,
+    "maxActive": 32768,
+    "shifts": 9,
+    "ticks": 480,
+    "observedFrames": 3412,
+    "outerDrawn": 83705,
+    "startX": -12.0,
+    "endX": 36.740562438964847,
+    "droppedTime": 0.14216125011444093,
+    "gpuBufferBytes": 159575264
+}

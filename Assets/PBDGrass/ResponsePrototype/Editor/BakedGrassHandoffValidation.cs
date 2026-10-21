@@ -161,8 +161,8 @@ namespace GrassFinal.PBDGrass.Editor
             var go=new GameObject("Press sphere"); go.transform.position=Vector3.up*10;
             using(var r=Renderer(32,go.transform,true))
             {
-                Vector3 root=r.Data.Blades[0].Root, direction=r.Data.Rods[0].Rotation*Vector3.up;
-                Vector3 view=r.Data.Rods[0].Rotation*new Vector3(.7f,1,.1f).normalized;
+                Vector3 root=r.Data.GetBlade(0).Root, direction=r.Data.GetRod(0).Rotation*Vector3.up;
+                Vector3 view=r.Data.GetRod(0).Rotation*new Vector3(.7f,1,.1f).normalized;
                 camera.transform.position=root+Vector3.up*.55f+view*3.2f; camera.transform.LookAt(root+Vector3.up*.55f); camera.fieldOfView=40;
                 Ticks(r,180); var initial=r.Handoff.ReadDisplayNodes(); Capture("01_intact",r);
                 for(int tick=0;tick<120;tick++)

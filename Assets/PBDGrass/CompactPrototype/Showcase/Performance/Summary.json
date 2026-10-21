@@ -1,0 +1,2352 @@
+{
+  "gpuTimestampMethod": "D3D11 timestamp/disjoint queries, nonblocking DONOTFLUSH polling; no simulation-buffer readback",
+  "fixedTickScope": "Isolated Unity Editor batch process, explicit 1600x900 HDR 4x MSAA Camera.Render; one complete 1/60s tick per sampled frame",
+  "realtimeScope": "Windows Mono Development Player and isolated Editor Play Mode (editor field). VSync off, uncapped, same offscreen target; wall-clock delta into original 60Hz accumulator, max 4 catch-up ticks",
+  "caveats": [
+    "CPU and GPU overlap; do not add CPU and GPU times or invert fixed-tick GPU samples to claim Editor FPS.",
+    "GPU selection/stream/whole-frame elapsed timestamp intervals can include GPU idle waiting for CPU submission.",
+    "Camera render interval includes scene geometry, shadow/depth work and target resolve; opaque is a subset, not an extra sum.",
+    "CPU allocation counter values in raw fixed-tick rows were not validated on this Unity Mono runtime and are not used.",
+    "Other user Unity processes were left running; absolute GPU samples are subject to contention and clock variability.",
+    "C: had about 200 MB free and the old C: validation import crashed. All valid runs used a new D: project; no files were deleted."
+  ],
+  "fixedTick": {
+    "small_elevated": {
+      "passed": true,
+      "colors": true,
+      "contacts": true,
+      "moving": false,
+      "error": "",
+      "caseName": "small_elevated",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "cpu": "AMD Ryzen 7 5800X 8-Core Processor ",
+      "api": "Direct3D11",
+      "unity": "2022.3.62f2c1",
+      "patchSize": 96,
+      "blades": 294912,
+      "colliders": 12,
+      "substeps": 8,
+      "iterations": 3,
+      "width": 1600,
+      "height": 900,
+      "msaa": 4,
+      "warmup": 120,
+      "sampleTarget": 300,
+      "dropped": 0,
+      "failed": 0,
+      "gpuBufferBytes": 159575904,
+      "middleFull": 28.0,
+      "middleOuter": 36.0,
+      "stats": {
+        "streamGpu": {
+          "count": 300,
+          "mean": 0.0009181866666666666,
+          "median": 0.001024,
+          "p95": 0.001024,
+          "p99": 0.001696,
+          "max": 0.002048
+        },
+        "selectionGpu": {
+          "count": 300,
+          "mean": 0.46707456,
+          "median": 0.012847999999999998,
+          "p95": 0.121856,
+          "p99": 10.352160000000001,
+          "max": 12.699648000000002
+        },
+        "solveGpu": {
+          "count": 300,
+          "mean": 3.0360999466666665,
+          "median": 3.0361599999999997,
+          "p95": 3.472384,
+          "p99": 3.77856,
+          "max": 4.062208
+        },
+        "windGpu": {
+          "count": 300,
+          "mean": 0.007505920000000027,
+          "median": 0.007168000000000063,
+          "p95": 0.008192000000000199,
+          "p99": 0.009216000000000335,
+          "max": 0.013312000000000879
+        },
+        "displayGpu": {
+          "count": 300,
+          "mean": 0.42513749333333334,
+          "median": 0.38707199999999986,
+          "p95": 0.702464,
+          "p99": 0.7567359999999996,
+          "max": 0.9328639999999999
+        },
+        "coreCullGpu": {
+          "count": 300,
+          "mean": 0.008154453333333332,
+          "median": 0.008192000000000199,
+          "p95": 0.009215999999998559,
+          "p99": 0.009216000000000335,
+          "max": 0.011264000000000607
+        },
+        "outerGpu": {
+          "count": 300,
+          "mean": 0.04061386666666669,
+          "median": 0.03481600000000018,
+          "p95": 0.035840000000000316,
+          "p99": 0.2836479999999999,
+          "max": 0.504832
+        },
+        "renderGpu": {
+          "count": 300,
+          "mean": 0.7905874133333333,
+          "median": 0.7336480000000001,
+          "p95": 1.047488,
+          "p99": 1.3260800000000001,
+          "max": 1.626112
+        },
+        "opaqueGpu": {
+          "count": 300,
+          "mean": 0.7277056000000001,
+          "median": 0.6707200000000002,
+          "p95": 0.9830400000000004,
+          "p99": 1.2625919999999997,
+          "max": 1.5626239999999996
+        },
+        "totalGpu": {
+          "count": 300,
+          "mean": 4.77989888,
+          "median": 4.289536,
+          "p95": 5.233664,
+          "p99": 14.934016,
+          "max": 16.979968
+        },
+        "streamCpu": {
+          "count": 300,
+          "mean": 0.0008693333333333333,
+          "median": 0.0008,
+          "p95": 0.0013,
+          "p99": 0.0016,
+          "max": 0.0149
+        },
+        "poolCpu": {
+          "count": 300,
+          "mean": 3.557808666666667,
+          "median": 3.4074,
+          "p95": 4.1678,
+          "p99": 6.089,
+          "max": 8.8421
+        },
+        "handoffCpu": {
+          "count": 300,
+          "mean": 5.682406,
+          "median": 5.5373,
+          "p95": 6.2371,
+          "p99": 8.0913,
+          "max": 10.7189
+        },
+        "selectionCpu": {
+          "count": 300,
+          "mean": 9.298472333333333,
+          "median": 9.03265,
+          "p95": 10.4943,
+          "p99": 14.1533,
+          "max": 14.6856
+        },
+        "advanceCpu": {
+          "count": 300,
+          "mean": 9.401689,
+          "median": 9.1264,
+          "p95": 10.6365,
+          "p99": 14.2781,
+          "max": 14.8171
+        },
+        "coreCullCpu": {
+          "count": 300,
+          "mean": 0.037359333333333335,
+          "median": 0.034,
+          "p95": 0.0595,
+          "p99": 0.0886,
+          "max": 0.1653
+        },
+        "outerCpu": {
+          "count": 300,
+          "mean": 0.03149333333333333,
+          "median": 0.02955,
+          "p95": 0.0445,
+          "p99": 0.0609,
+          "max": 0.1175
+        },
+        "renderCpu": {
+          "count": 300,
+          "mean": 0.277206,
+          "median": 0.26439999999999997,
+          "p95": 0.3798,
+          "p99": 0.4676,
+          "max": 0.5155
+        },
+        "totalCpu": {
+          "count": 300,
+          "mean": 9.782634,
+          "median": 9.4897,
+          "p95": 11.0439,
+          "p99": 14.7687,
+          "max": 15.3987
+        }
+      },
+      "activeRange": [
+        32768,
+        32768
+      ],
+      "tickRange": [
+        1,
+        1
+      ],
+      "shiftedSamples": 0
+    },
+    "small_overview": {
+      "passed": true,
+      "colors": true,
+      "contacts": true,
+      "moving": false,
+      "error": "",
+      "caseName": "small_overview",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "cpu": "AMD Ryzen 7 5800X 8-Core Processor ",
+      "api": "Direct3D11",
+      "unity": "2022.3.62f2c1",
+      "patchSize": 96,
+      "blades": 294912,
+      "colliders": 12,
+      "substeps": 8,
+      "iterations": 3,
+      "width": 1600,
+      "height": 900,
+      "msaa": 4,
+      "warmup": 120,
+      "sampleTarget": 300,
+      "dropped": 0,
+      "failed": 0,
+      "gpuBufferBytes": 159575904,
+      "middleFull": 28.0,
+      "middleOuter": 36.0,
+      "stats": {
+        "streamGpu": {
+          "count": 300,
+          "mean": 0.0009335466666666666,
+          "median": 0.001024,
+          "p95": 0.001568,
+          "p99": 0.002048,
+          "max": 0.002048
+        },
+        "selectionGpu": {
+          "count": 300,
+          "mean": 0.33702368,
+          "median": 0.012912,
+          "p95": 0.036864,
+          "p99": 10.157056,
+          "max": 10.672128
+        },
+        "solveGpu": {
+          "count": 300,
+          "mean": 2.995925973333333,
+          "median": 3.001344,
+          "p95": 3.506176,
+          "p99": 3.827712,
+          "max": 4.171776
+        },
+        "windGpu": {
+          "count": 300,
+          "mean": 0.007570773333333298,
+          "median": 0.007168000000000063,
+          "p95": 0.008192000000000199,
+          "p99": 0.009215999999999891,
+          "max": 0.010240000000000027
+        },
+        "displayGpu": {
+          "count": 300,
+          "mean": 0.3391419733333334,
+          "median": 0.3102720000000003,
+          "p95": 0.6113280000000003,
+          "p99": 0.7413760000000007,
+          "max": 0.7884800000000003
+        },
+        "coreCullGpu": {
+          "count": 300,
+          "mean": 0.01031509333333332,
+          "median": 0.008192000000000199,
+          "p95": 0.009216000000000335,
+          "p99": 0.011263999999999719,
+          "max": 0.33587200000000017
+        },
+        "outerGpu": {
+          "count": 300,
+          "mean": 0.03773685333333332,
+          "median": 0.037888000000000144,
+          "p95": 0.038911999999999836,
+          "p99": 0.03891200000000028,
+          "max": 0.0400640000000001
+        },
+        "renderGpu": {
+          "count": 300,
+          "mean": 1.8578544000000001,
+          "median": 1.7203199999999998,
+          "p95": 2.2241280000000003,
+          "p99": 2.5784320000000003,
+          "max": 2.6941439999999997
+        },
+        "opaqueGpu": {
+          "count": 300,
+          "mean": 1.8203921066666666,
+          "median": 1.683456,
+          "p95": 2.18624,
+          "p99": 2.53952,
+          "max": 2.65728
+        },
+        "totalGpu": {
+          "count": 300,
+          "mean": 5.59037952,
+          "median": 5.18144,
+          "p95": 6.202368,
+          "p99": 15.081472,
+          "max": 16.183904
+        },
+        "streamCpu": {
+          "count": 300,
+          "mean": 0.0008873333333333333,
+          "median": 0.0008,
+          "p95": 0.0014,
+          "p99": 0.002,
+          "max": 0.0023
+        },
+        "poolCpu": {
+          "count": 300,
+          "mean": 3.5172133333333333,
+          "median": 3.44555,
+          "p95": 3.7767,
+          "p99": 5.1495,
+          "max": 5.5886
+        },
+        "handoffCpu": {
+          "count": 300,
+          "mean": 5.888949333333334,
+          "median": 5.79125,
+          "p95": 6.2242,
+          "p99": 7.3927,
+          "max": 10.724
+        },
+        "selectionCpu": {
+          "count": 300,
+          "mean": 9.463427333333334,
+          "median": 9.32205,
+          "p95": 9.9695,
+          "p99": 11.647,
+          "max": 14.1339
+        },
+        "advanceCpu": {
+          "count": 300,
+          "mean": 9.565607333333332,
+          "median": 9.42105,
+          "p95": 10.1215,
+          "p99": 11.7632,
+          "max": 14.2265
+        },
+        "coreCullCpu": {
+          "count": 300,
+          "mean": 0.039162333333333334,
+          "median": 0.03515,
+          "p95": 0.0646,
+          "p99": 0.0875,
+          "max": 0.164
+        },
+        "outerCpu": {
+          "count": 300,
+          "mean": 0.030939333333333333,
+          "median": 0.0285,
+          "p95": 0.0459,
+          "p99": 0.059,
+          "max": 0.09
+        },
+        "renderCpu": {
+          "count": 300,
+          "mean": 0.27708266666666664,
+          "median": 0.25875000000000004,
+          "p95": 0.4068,
+          "p99": 0.4517,
+          "max": 0.5179
+        },
+        "totalCpu": {
+          "count": 300,
+          "mean": 9.947241666666667,
+          "median": 9.7933,
+          "p95": 10.6591,
+          "p99": 12.1839,
+          "max": 14.5829
+        }
+      },
+      "activeRange": [
+        32768,
+        32768
+      ],
+      "tickRange": [
+        1,
+        1
+      ],
+      "shiftedSamples": 0
+    },
+    "wide_elevated": {
+      "passed": true,
+      "colors": true,
+      "contacts": true,
+      "moving": false,
+      "error": "",
+      "caseName": "wide_elevated",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "cpu": "AMD Ryzen 7 5800X 8-Core Processor ",
+      "api": "Direct3D11",
+      "unity": "2022.3.62f2c1",
+      "patchSize": 144,
+      "blades": 663552,
+      "colliders": 12,
+      "substeps": 8,
+      "iterations": 3,
+      "width": 1600,
+      "height": 900,
+      "msaa": 4,
+      "warmup": 120,
+      "sampleTarget": 300,
+      "dropped": 0,
+      "failed": 0,
+      "gpuBufferBytes": 224852832,
+      "middleFull": 52.0,
+      "middleOuter": 64.0,
+      "stats": {
+        "streamGpu": {
+          "count": 300,
+          "mean": 0.0011229866666666666,
+          "median": 0.001024,
+          "p95": 0.002048,
+          "p99": 0.002048,
+          "max": 0.002048
+        },
+        "selectionGpu": {
+          "count": 300,
+          "mean": 1.6822715733333333,
+          "median": 0.022208,
+          "p95": 19.479551999999998,
+          "p99": 20.123648,
+          "max": 20.706304
+        },
+        "solveGpu": {
+          "count": 300,
+          "mean": 4.23699456,
+          "median": 4.260352000000001,
+          "p95": 4.885504,
+          "p99": 5.2101120000000005,
+          "max": 5.337088
+        },
+        "windGpu": {
+          "count": 300,
+          "mean": 0.011601919999999957,
+          "median": 0.011264000000000607,
+          "p95": 0.01331199999999999,
+          "p99": 0.015360000000000262,
+          "max": 0.016384000000000398
+        },
+        "displayGpu": {
+          "count": 300,
+          "mean": 0.9367278933333334,
+          "median": 0.8806400000000001,
+          "p95": 1.2799999999999994,
+          "p99": 1.605632,
+          "max": 1.98144
+        },
+        "coreCullGpu": {
+          "count": 300,
+          "mean": 0.011629226666666664,
+          "median": 0.010240000000000471,
+          "p95": 0.011264000000000607,
+          "p99": 0.01331199999999999,
+          "max": 0.3031039999999998
+        },
+        "outerGpu": {
+          "count": 300,
+          "mean": 0.049093973333333325,
+          "median": 0.047104000000000035,
+          "p95": 0.05017600000000044,
+          "p99": 0.05324799999999996,
+          "max": 0.388096
+        },
+        "renderGpu": {
+          "count": 300,
+          "mean": 1.1897856,
+          "median": 1.1422719999999997,
+          "p95": 1.5032319999999997,
+          "p99": 1.7950719999999993,
+          "max": 2.1442560000000004
+        },
+        "opaqueGpu": {
+          "count": 300,
+          "mean": 1.07257856,
+          "median": 1.0219519999999997,
+          "p95": 1.385472,
+          "p99": 1.6762879999999996,
+          "max": 2.0244479999999996
+        },
+        "totalGpu": {
+          "count": 300,
+          "mean": 8.123787946666667,
+          "median": 6.576639999999999,
+          "p95": 25.816064,
+          "p99": 26.891264,
+          "max": 27.65824
+        },
+        "streamCpu": {
+          "count": 300,
+          "mean": 0.0008766666666666667,
+          "median": 0.0008,
+          "p95": 0.0013,
+          "p99": 0.0016,
+          "max": 0.0043
+        },
+        "poolCpu": {
+          "count": 300,
+          "mean": 7.145768666666667,
+          "median": 7.08485,
+          "p95": 7.4298,
+          "p99": 7.6529,
+          "max": 9.4163
+        },
+        "handoffCpu": {
+          "count": 300,
+          "mean": 11.250295333333334,
+          "median": 11.16905,
+          "p95": 11.6239,
+          "p99": 12.1925,
+          "max": 15.4263
+        },
+        "selectionCpu": {
+          "count": 300,
+          "mean": 18.454152666666666,
+          "median": 18.3266,
+          "p95": 19.0081,
+          "p99": 20.0862,
+          "max": 22.5953
+        },
+        "advanceCpu": {
+          "count": 300,
+          "mean": 18.558985333333332,
+          "median": 18.43135,
+          "p95": 19.1212,
+          "p99": 20.2393,
+          "max": 22.6931
+        },
+        "coreCullCpu": {
+          "count": 300,
+          "mean": 0.040502666666666666,
+          "median": 0.0376,
+          "p95": 0.0607,
+          "p99": 0.0736,
+          "max": 0.105
+        },
+        "outerCpu": {
+          "count": 300,
+          "mean": 0.03198,
+          "median": 0.0306,
+          "p95": 0.0414,
+          "p99": 0.0451,
+          "max": 0.0737
+        },
+        "renderCpu": {
+          "count": 300,
+          "mean": 0.285604,
+          "median": 0.2721,
+          "p95": 0.3823,
+          "p99": 0.4284,
+          "max": 0.5407
+        },
+        "totalCpu": {
+          "count": 300,
+          "mean": 18.951598,
+          "median": 18.8327,
+          "p95": 19.5943,
+          "p99": 20.6399,
+          "max": 23.0855
+        }
+      },
+      "activeRange": [
+        32768,
+        32768
+      ],
+      "tickRange": [
+        1,
+        1
+      ],
+      "shiftedSamples": 0
+    },
+    "wide_elevated_repeat": {
+      "passed": true,
+      "colors": true,
+      "contacts": true,
+      "moving": false,
+      "error": "",
+      "caseName": "wide_elevated_repeat",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "cpu": "AMD Ryzen 7 5800X 8-Core Processor ",
+      "api": "Direct3D11",
+      "unity": "2022.3.62f2c1",
+      "patchSize": 144,
+      "blades": 663552,
+      "colliders": 12,
+      "substeps": 8,
+      "iterations": 3,
+      "width": 1600,
+      "height": 900,
+      "msaa": 4,
+      "warmup": 120,
+      "sampleTarget": 300,
+      "dropped": 0,
+      "failed": 0,
+      "gpuBufferBytes": 224852832,
+      "middleFull": 52.0,
+      "middleOuter": 64.0,
+      "stats": {
+        "streamGpu": {
+          "count": 300,
+          "mean": 0.0010376533333333333,
+          "median": 0.001024,
+          "p95": 0.001824,
+          "p99": 0.002048,
+          "max": 0.002048
+        },
+        "selectionGpu": {
+          "count": 300,
+          "mean": 1.5858468266666665,
+          "median": 0.023871999999999997,
+          "p95": 19.54304,
+          "p99": 20.770816000000003,
+          "max": 21.2992
+        },
+        "solveGpu": {
+          "count": 300,
+          "mean": 3.7117713066666664,
+          "median": 3.426304,
+          "p95": 4.979712,
+          "p99": 5.266432,
+          "max": 5.561344
+        },
+        "windGpu": {
+          "count": 300,
+          "mean": 0.01106944000000002,
+          "median": 0.009215999999999891,
+          "p95": 0.012288000000000743,
+          "p99": 0.015360000000000262,
+          "max": 0.3860480000000006
+        },
+        "displayGpu": {
+          "count": 300,
+          "mean": 0.8174728533333333,
+          "median": 0.6533120000000001,
+          "p95": 1.318912,
+          "p99": 1.8175999999999997,
+          "max": 2.052095999999999
+        },
+        "coreCullGpu": {
+          "count": 300,
+          "mean": 0.009553920000000053,
+          "median": 0.009216000000000335,
+          "p95": 0.011264000000000607,
+          "p99": 0.012288000000001631,
+          "max": 0.015360000000000262
+        },
+        "outerGpu": {
+          "count": 300,
+          "mean": 0.045578666666666656,
+          "median": 0.038911999999999836,
+          "p95": 0.05119999999999969,
+          "p99": 0.05324799999999996,
+          "max": 0.6973439999999993
+        },
+        "renderGpu": {
+          "count": 300,
+          "mean": 1.0872418133333333,
+          "median": 0.9395200000000001,
+          "p95": 1.585152,
+          "p99": 1.847296,
+          "max": 2.2630399999999993
+        },
+        "opaqueGpu": {
+          "count": 300,
+          "mean": 1.0013661866666668,
+          "median": 0.871936,
+          "p95": 1.471488,
+          "p99": 1.778687999999999,
+          "max": 2.141184
+        },
+        "totalGpu": {
+          "count": 300,
+          "mean": 7.27387136,
+          "median": 5.404,
+          "p95": 25.158656,
+          "p99": 26.62496,
+          "max": 28.130304
+        },
+        "streamCpu": {
+          "count": 300,
+          "mean": 0.0010533333333333334,
+          "median": 0.001,
+          "p95": 0.0016,
+          "p99": 0.0019,
+          "max": 0.0031
+        },
+        "poolCpu": {
+          "count": 300,
+          "mean": 7.46891,
+          "median": 7.29335,
+          "p95": 7.9775,
+          "p99": 10.9316,
+          "max": 15.8619
+        },
+        "handoffCpu": {
+          "count": 300,
+          "mean": 11.497094,
+          "median": 11.13585,
+          "p95": 12.539,
+          "p99": 14.444,
+          "max": 68.7916
+        },
+        "selectionCpu": {
+          "count": 300,
+          "mean": 19.031259,
+          "median": 18.529049999999998,
+          "p95": 20.922,
+          "p99": 24.8085,
+          "max": 84.7148
+        },
+        "advanceCpu": {
+          "count": 300,
+          "mean": 19.149880666666668,
+          "median": 18.64585,
+          "p95": 21.0484,
+          "p99": 24.9674,
+          "max": 84.8501
+        },
+        "coreCullCpu": {
+          "count": 300,
+          "mean": 0.04821633333333333,
+          "median": 0.048049999999999995,
+          "p95": 0.0723,
+          "p99": 0.09,
+          "max": 0.1107
+        },
+        "outerCpu": {
+          "count": 300,
+          "mean": 0.03639266666666666,
+          "median": 0.0361,
+          "p95": 0.0486,
+          "p99": 0.0627,
+          "max": 0.0702
+        },
+        "renderCpu": {
+          "count": 300,
+          "mean": 0.3279126666666667,
+          "median": 0.32255,
+          "p95": 0.4602,
+          "p99": 0.5245,
+          "max": 0.6333
+        },
+        "totalCpu": {
+          "count": 300,
+          "mean": 19.599246,
+          "median": 19.078400000000002,
+          "p95": 21.5494,
+          "p99": 25.5081,
+          "max": 85.4269
+        }
+      },
+      "activeRange": [
+        32768,
+        32768
+      ],
+      "tickRange": [
+        1,
+        1
+      ],
+      "shiftedSamples": 0
+    },
+    "wide_moving": {
+      "passed": true,
+      "colors": true,
+      "contacts": true,
+      "moving": true,
+      "error": "",
+      "caseName": "wide_moving",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "cpu": "AMD Ryzen 7 5800X 8-Core Processor ",
+      "api": "Direct3D11",
+      "unity": "2022.3.62f2c1",
+      "patchSize": 144,
+      "blades": 663552,
+      "colliders": 12,
+      "substeps": 8,
+      "iterations": 3,
+      "width": 1600,
+      "height": 900,
+      "msaa": 4,
+      "warmup": 120,
+      "sampleTarget": 1440,
+      "dropped": 0,
+      "failed": 0,
+      "gpuBufferBytes": 224852832,
+      "middleFull": 52.0,
+      "middleOuter": 64.0,
+      "stats": {
+        "streamGpu": {
+          "count": 1440,
+          "mean": 0.10718668888888888,
+          "median": 0.001024,
+          "p95": 0.001568,
+          "p99": 0.002048,
+          "max": 43.506688
+        },
+        "selectionGpu": {
+          "count": 1440,
+          "mean": 1.6141592444444444,
+          "median": 0.129024,
+          "p95": 13.210624000000001,
+          "p99": 20.248576,
+          "max": 81.80656
+        },
+        "solveGpu": {
+          "count": 1440,
+          "mean": 3.4602624444444445,
+          "median": 3.067904,
+          "p95": 4.460544,
+          "p99": 5.028863999999999,
+          "max": 45.697024
+        },
+        "windGpu": {
+          "count": 1440,
+          "mean": 0.01033600000000001,
+          "median": 0.008192000000000199,
+          "p95": 0.012287999999999855,
+          "p99": 0.014336000000000126,
+          "max": 0.5795839999999997
+        },
+        "displayGpu": {
+          "count": 1440,
+          "mean": 0.8271615999999999,
+          "median": 0.7639040000000001,
+          "p95": 1.258496,
+          "p99": 1.385472,
+          "max": 20.791296000000003
+        },
+        "coreCullGpu": {
+          "count": 1440,
+          "mean": 0.009856000000000005,
+          "median": 0.008192000000000199,
+          "p95": 0.011263999999999719,
+          "p99": 0.012287999999999855,
+          "max": 0.3174400000000004
+        },
+        "outerGpu": {
+          "count": 1440,
+          "mean": 0.04315520000000001,
+          "median": 0.037888000000000144,
+          "p95": 0.04915200000000031,
+          "p99": 0.054272000000000986,
+          "max": 0.3696640000000002
+        },
+        "renderGpu": {
+          "count": 1440,
+          "mean": 1.3600924444444444,
+          "median": 1.3260159999999999,
+          "p95": 1.6547840000000003,
+          "p99": 1.8462080000000003,
+          "max": 20.857855999999998
+        },
+        "opaqueGpu": {
+          "count": 1440,
+          "mean": 1.2698702222222222,
+          "median": 1.2605439999999999,
+          "p95": 1.5810560000000002,
+          "p99": 1.763328,
+          "max": 16.861183999999994
+        },
+        "totalGpu": {
+          "count": 1440,
+          "mean": 7.436468822222222,
+          "median": 5.552128,
+          "p95": 19.907584,
+          "p99": 27.083776,
+          "max": 89.001984
+        },
+        "streamCpu": {
+          "count": 1440,
+          "mean": 5.016364722222222,
+          "median": 0.0009,
+          "p95": 0.0014,
+          "p99": 0.0018,
+          "max": 7124.704
+        },
+        "poolCpu": {
+          "count": 1440,
+          "mean": 5.385698194444444,
+          "median": 5.12715,
+          "p95": 7.5388,
+          "p99": 8.3841,
+          "max": 65.6571
+        },
+        "handoffCpu": {
+          "count": 1440,
+          "mean": 8.841849444444444,
+          "median": 8.636800000000001,
+          "p95": 11.4964,
+          "p99": 12.06,
+          "max": 67.0328
+        },
+        "selectionCpu": {
+          "count": 1440,
+          "mean": 14.285346180555555,
+          "median": 13.82375,
+          "p95": 19.095,
+          "p99": 21.3364,
+          "max": 82.8815
+        },
+        "advanceCpu": {
+          "count": 1440,
+          "mean": 14.40980888888889,
+          "median": 13.8997,
+          "p95": 19.2244,
+          "p99": 22.4261,
+          "max": 83.0001
+        },
+        "coreCullCpu": {
+          "count": 1440,
+          "mean": 0.03602673611111111,
+          "median": 0.033,
+          "p95": 0.0572,
+          "p99": 0.0797,
+          "max": 0.1356
+        },
+        "outerCpu": {
+          "count": 1440,
+          "mean": 0.029637291666666666,
+          "median": 0.0284,
+          "p95": 0.0417,
+          "p99": 0.0536,
+          "max": 0.0877
+        },
+        "renderCpu": {
+          "count": 1440,
+          "mean": 0.27341777777777776,
+          "median": 0.26415,
+          "p95": 0.378,
+          "p99": 0.4484,
+          "max": 0.5685
+        },
+        "totalCpu": {
+          "count": 1440,
+          "mean": 19.797557847222222,
+          "median": 14.23225,
+          "p95": 19.6525,
+          "p99": 22.9079,
+          "max": 7163.0576
+        }
+      },
+      "activeRange": [
+        32768,
+        32768
+      ],
+      "tickRange": [
+        1,
+        1
+      ],
+      "shiftedSamples": 8,
+      "shiftedStats": {
+        "streamCpu": {
+          "count": 8,
+          "mean": 902.7833499999999,
+          "median": 14.3706,
+          "p95": 7124.704,
+          "p99": 7124.704,
+          "max": 7124.704
+        },
+        "streamGpu": {
+          "count": 8,
+          "mean": 19.117532,
+          "median": 18.562431999999998,
+          "p95": 43.506688,
+          "p99": 43.506688,
+          "max": 43.506688
+        },
+        "totalCpu": {
+          "count": 8,
+          "mean": 935.6381875,
+          "median": 46.75975,
+          "p95": 7163.0576,
+          "p99": 7163.0576,
+          "max": 7163.0576
+        },
+        "selectionCpu": {
+          "count": 8,
+          "mean": 26.8084125,
+          "median": 26.25705,
+          "p95": 36.2436,
+          "p99": 36.2436,
+          "max": 36.2436
+        },
+        "loadedCells": {
+          "count": 8,
+          "mean": 1152,
+          "median": 1152.0,
+          "p95": 1152,
+          "p99": 1152,
+          "max": 1152
+        }
+      }
+    },
+    "wide_moving_repeat": {
+      "passed": true,
+      "colors": true,
+      "contacts": true,
+      "moving": true,
+      "error": "",
+      "caseName": "wide_moving_repeat",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "cpu": "AMD Ryzen 7 5800X 8-Core Processor ",
+      "api": "Direct3D11",
+      "unity": "2022.3.62f2c1",
+      "patchSize": 144,
+      "blades": 663552,
+      "colliders": 12,
+      "substeps": 8,
+      "iterations": 3,
+      "width": 1600,
+      "height": 900,
+      "msaa": 4,
+      "warmup": 120,
+      "sampleTarget": 1440,
+      "dropped": 0,
+      "failed": 0,
+      "gpuBufferBytes": 224852832,
+      "middleFull": 52.0,
+      "middleOuter": 64.0,
+      "stats": {
+        "streamGpu": {
+          "count": 1440,
+          "mean": 0.10210317777777778,
+          "median": 0.001024,
+          "p95": 0.001024,
+          "p99": 0.002048,
+          "max": 41.74336
+        },
+        "selectionGpu": {
+          "count": 1440,
+          "mean": 1.5163222,
+          "median": 0.126976,
+          "p95": 13.498368000000001,
+          "p99": 21.479423999999998,
+          "max": 42.37824
+        },
+        "solveGpu": {
+          "count": 1440,
+          "mean": 3.7357694222222224,
+          "median": 3.746816,
+          "p95": 4.483072000000001,
+          "p99": 4.798464,
+          "max": 5.3360639999999995
+        },
+        "windGpu": {
+          "count": 1440,
+          "mean": 0.008636444444444455,
+          "median": 0.008192000000000199,
+          "p95": 0.010240000000000027,
+          "p99": 0.011264000000000163,
+          "max": 0.26214400000000015
+        },
+        "displayGpu": {
+          "count": 1440,
+          "mean": 0.8911466666666666,
+          "median": 0.7516160000000001,
+          "p95": 1.539072,
+          "p99": 1.8257920000000003,
+          "max": 2.156544
+        },
+        "coreCullGpu": {
+          "count": 1440,
+          "mean": 0.011003022222222214,
+          "median": 0.008192000000000199,
+          "p95": 0.009216000000002111,
+          "p99": 0.011264000000000163,
+          "max": 0.6563840000000001
+        },
+        "outerGpu": {
+          "count": 1440,
+          "mean": 0.05083246666666665,
+          "median": 0.03788799999999881,
+          "p95": 0.04096000000000011,
+          "p99": 0.5038080000000003,
+          "max": 0.940032
+        },
+        "renderGpu": {
+          "count": 1440,
+          "mean": 1.5249278888888889,
+          "median": 1.52832,
+          "p95": 2.3274239999999997,
+          "p99": 2.514944,
+          "max": 3.2512000000000043
+        },
+        "opaqueGpu": {
+          "count": 1440,
+          "mean": 1.4459712,
+          "median": 1.439232,
+          "p95": 2.255872,
+          "p99": 2.409472,
+          "max": 3.1918079999999946
+        },
+        "totalGpu": {
+          "count": 1440,
+          "mean": 7.845442555555556,
+          "median": 6.532608,
+          "p95": 20.212736,
+          "p99": 27.956224,
+          "max": 48.602112
+        },
+        "streamCpu": {
+          "count": 1440,
+          "mean": 0.10059215277777778,
+          "median": 0.0011,
+          "p95": 0.0016,
+          "p99": 0.0023,
+          "max": 39.7405
+        },
+        "poolCpu": {
+          "count": 1440,
+          "mean": 5.582018263888889,
+          "median": 5.46115,
+          "p95": 8.0452,
+          "p99": 9.2796,
+          "max": 16.1764
+        },
+        "handoffCpu": {
+          "count": 1440,
+          "mean": 9.319916805555556,
+          "median": 8.98225,
+          "p95": 12.2869,
+          "p99": 14.0742,
+          "max": 70.9896
+        },
+        "selectionCpu": {
+          "count": 1440,
+          "mean": 14.970355902777778,
+          "median": 14.645199999999999,
+          "p95": 20.3826,
+          "p99": 22.4444,
+          "max": 87.2455
+        },
+        "advanceCpu": {
+          "count": 1440,
+          "mean": 15.128578472222221,
+          "median": 14.76415,
+          "p95": 20.524,
+          "p99": 23.0151,
+          "max": 87.3669
+        },
+        "coreCullCpu": {
+          "count": 1440,
+          "mean": 0.05392020833333333,
+          "median": 0.0522,
+          "p95": 0.0759,
+          "p99": 0.097,
+          "max": 0.1824
+        },
+        "outerCpu": {
+          "count": 1440,
+          "mean": 0.03964145833333333,
+          "median": 0.0377,
+          "p95": 0.0559,
+          "p99": 0.0728,
+          "max": 0.2292
+        },
+        "renderCpu": {
+          "count": 1440,
+          "mean": 0.37196701388888886,
+          "median": 0.3664,
+          "p95": 0.4641,
+          "p99": 0.5551,
+          "max": 0.823
+        },
+        "totalCpu": {
+          "count": 1440,
+          "mean": 15.732684375,
+          "median": 15.26705,
+          "p95": 21.0913,
+          "p99": 23.5192,
+          "max": 87.932
+        }
+      },
+      "activeRange": [
+        32768,
+        32768
+      ],
+      "tickRange": [
+        1,
+        1
+      ],
+      "shiftedSamples": 8,
+      "shiftedStats": {
+        "streamCpu": {
+          "count": 8,
+          "mean": 17.9111625,
+          "median": 15.2494,
+          "p95": 39.7405,
+          "p99": 39.7405,
+          "max": 39.7405
+        },
+        "streamGpu": {
+          "count": 8,
+          "mean": 18.20822,
+          "median": 16.063376,
+          "p95": 41.74336,
+          "p99": 41.74336,
+          "max": 41.74336
+        },
+        "totalCpu": {
+          "count": 8,
+          "mean": 53.154725,
+          "median": 49.345,
+          "p95": 79.9883,
+          "p99": 79.9883,
+          "max": 79.9883
+        },
+        "selectionCpu": {
+          "count": 8,
+          "mean": 28.1457125,
+          "median": 27.39395,
+          "p95": 38.7491,
+          "p99": 38.7491,
+          "max": 38.7491
+        },
+        "loadedCells": {
+          "count": 8,
+          "mean": 1152,
+          "median": 1152.0,
+          "p95": 1152,
+          "p99": 1152,
+          "max": 1152
+        }
+      }
+    },
+    "wide_natural": {
+      "passed": true,
+      "colors": false,
+      "contacts": true,
+      "moving": false,
+      "error": "",
+      "caseName": "wide_natural",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "cpu": "AMD Ryzen 7 5800X 8-Core Processor ",
+      "api": "Direct3D11",
+      "unity": "2022.3.62f2c1",
+      "patchSize": 144,
+      "blades": 663552,
+      "colliders": 12,
+      "substeps": 8,
+      "iterations": 3,
+      "width": 1600,
+      "height": 900,
+      "msaa": 4,
+      "warmup": 120,
+      "sampleTarget": 300,
+      "dropped": 0,
+      "failed": 0,
+      "gpuBufferBytes": 224852832,
+      "middleFull": 52.0,
+      "middleOuter": 64.0,
+      "stats": {
+        "streamGpu": {
+          "count": 300,
+          "mean": 0.0011560533333333334,
+          "median": 0.001024,
+          "p95": 0.002048,
+          "p99": 0.002048,
+          "max": 0.002048
+        },
+        "selectionGpu": {
+          "count": 300,
+          "mean": 1.31009408,
+          "median": 0.025312,
+          "p95": 19.22768,
+          "p99": 21.077280000000002,
+          "max": 34.593792
+        },
+        "solveGpu": {
+          "count": 300,
+          "mean": 4.1074176,
+          "median": 4.067328000000001,
+          "p95": 4.950016000000001,
+          "p99": 5.334016000000005,
+          "max": 5.629952
+        },
+        "windGpu": {
+          "count": 300,
+          "mean": 0.012154879999999917,
+          "median": 0.011263999999999719,
+          "p95": 0.014336000000000126,
+          "p99": 0.015360000000000262,
+          "max": 0.3604479999999999
+        },
+        "displayGpu": {
+          "count": 300,
+          "mean": 0.9059089066666667,
+          "median": 0.8693759999999999,
+          "p95": 1.3086719999999996,
+          "p99": 1.5810559999999998,
+          "max": 1.8944
+        },
+        "coreCullGpu": {
+          "count": 300,
+          "mean": 0.01021610666666669,
+          "median": 0.010239999999999583,
+          "p95": 0.011264000000000607,
+          "p99": 0.012288000000000743,
+          "max": 0.01331199999999999
+        },
+        "outerGpu": {
+          "count": 300,
+          "mean": 0.04656469333333331,
+          "median": 0.0460799999999999,
+          "p95": 0.04915200000000031,
+          "p99": 0.05119999999999969,
+          "max": 0.3768320000000003
+        },
+        "renderGpu": {
+          "count": 300,
+          "mean": 1.2218606933333334,
+          "median": 1.154048,
+          "p95": 1.6711680000000007,
+          "p99": 2.1790720000000006,
+          "max": 2.4043520000000003
+        },
+        "opaqueGpu": {
+          "count": 300,
+          "mean": 1.1176174933333334,
+          "median": 1.0393600000000003,
+          "p95": 1.5421439999999995,
+          "p99": 2.067456,
+          "max": 2.3439360000000002
+        },
+        "totalGpu": {
+          "count": 300,
+          "mean": 7.61998912,
+          "median": 6.46912,
+          "p95": 24.229664,
+          "p99": 27.396096,
+          "max": 41.672704
+        },
+        "streamCpu": {
+          "count": 300,
+          "mean": 0.0011583333333333333,
+          "median": 0.0011,
+          "p95": 0.0018,
+          "p99": 0.0024,
+          "max": 0.0057
+        },
+        "poolCpu": {
+          "count": 300,
+          "mean": 7.738041333333333,
+          "median": 7.4448,
+          "p95": 9.5358,
+          "p99": 12.9183,
+          "max": 16.1914
+        },
+        "handoffCpu": {
+          "count": 300,
+          "mean": 11.894366666666667,
+          "median": 11.34145,
+          "p95": 14.8535,
+          "p99": 18.5752,
+          "max": 69.6788
+        },
+        "selectionCpu": {
+          "count": 300,
+          "mean": 19.705852333333333,
+          "median": 18.892049999999998,
+          "p95": 24.5516,
+          "p99": 29.4641,
+          "max": 85.9443
+        },
+        "advanceCpu": {
+          "count": 300,
+          "mean": 19.841257,
+          "median": 19.015549999999998,
+          "p95": 24.7055,
+          "p99": 29.6369,
+          "max": 86.0959
+        },
+        "coreCullCpu": {
+          "count": 300,
+          "mean": 0.058297,
+          "median": 0.0584,
+          "p95": 0.0882,
+          "p99": 0.1064,
+          "max": 0.1336
+        },
+        "outerCpu": {
+          "count": 300,
+          "mean": 0.04163833333333333,
+          "median": 0.0408,
+          "p95": 0.0608,
+          "p99": 0.0775,
+          "max": 0.0809
+        },
+        "renderCpu": {
+          "count": 300,
+          "mean": 0.41027933333333333,
+          "median": 0.37029999999999996,
+          "p95": 0.5227,
+          "p99": 0.6508,
+          "max": 11.3487
+        },
+        "totalCpu": {
+          "count": 300,
+          "mean": 20.391988,
+          "median": 19.4936,
+          "p95": 25.3368,
+          "p99": 31.5975,
+          "max": 86.7124
+        }
+      },
+      "activeRange": [
+        32768,
+        32768
+      ],
+      "tickRange": [
+        1,
+        1
+      ],
+      "shiftedSamples": 0
+    },
+    "wide_no_contact": {
+      "passed": true,
+      "colors": true,
+      "contacts": false,
+      "moving": false,
+      "error": "",
+      "caseName": "wide_no_contact",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "cpu": "AMD Ryzen 7 5800X 8-Core Processor ",
+      "api": "Direct3D11",
+      "unity": "2022.3.62f2c1",
+      "patchSize": 144,
+      "blades": 663552,
+      "colliders": 12,
+      "substeps": 8,
+      "iterations": 3,
+      "width": 1600,
+      "height": 900,
+      "msaa": 4,
+      "warmup": 120,
+      "sampleTarget": 300,
+      "dropped": 0,
+      "failed": 0,
+      "gpuBufferBytes": 224852832,
+      "middleFull": 52.0,
+      "middleOuter": 64.0,
+      "stats": {
+        "streamGpu": {
+          "count": 300,
+          "mean": 0.00099168,
+          "median": 0.001024,
+          "p95": 0.001632,
+          "p99": 0.002048,
+          "max": 0.002048
+        },
+        "selectionGpu": {
+          "count": 300,
+          "mean": 0.7665504,
+          "median": 0.02024,
+          "p95": 1.9253120000000001,
+          "p99": 12.464608,
+          "max": 60.668927999999994
+        },
+        "solveGpu": {
+          "count": 300,
+          "mean": 2.3945579733333333,
+          "median": 2.251776,
+          "p95": 2.8672,
+          "p99": 3.088384,
+          "max": 3.441664
+        },
+        "windGpu": {
+          "count": 300,
+          "mean": 0.008956586666666709,
+          "median": 0.008192000000000199,
+          "p95": 0.010240000000000027,
+          "p99": 0.010240000000000027,
+          "max": 0.2416640000000001
+        },
+        "displayGpu": {
+          "count": 300,
+          "mean": 0.5388219733333334,
+          "median": 0.49561600000000006,
+          "p95": 0.789504,
+          "p99": 1.0117120000000002,
+          "max": 1.0915839999999997
+        },
+        "coreCullGpu": {
+          "count": 300,
+          "mean": 0.008304639999999988,
+          "median": 0.008192000000000199,
+          "p95": 0.009215999999999891,
+          "p99": 0.009216000000000335,
+          "max": 0.011263999999999719
+        },
+        "outerGpu": {
+          "count": 300,
+          "mean": 0.03472821333333334,
+          "median": 0.03481600000000018,
+          "p95": 0.035840000000000316,
+          "p99": 0.03599999999999959,
+          "max": 0.03686400000000001
+        },
+        "renderGpu": {
+          "count": 300,
+          "mean": 0.87805856,
+          "median": 0.813056,
+          "p95": 1.174528,
+          "p99": 1.5011840000000003,
+          "max": 1.5952639999999998
+        },
+        "opaqueGpu": {
+          "count": 300,
+          "mean": 0.8126122666666667,
+          "median": 0.7475200000000009,
+          "p95": 1.107968,
+          "p99": 1.435648,
+          "max": 1.528832
+        },
+        "totalGpu": {
+          "count": 300,
+          "mean": 4.635305066666667,
+          "median": 3.833344,
+          "p95": 5.482336,
+          "p99": 16.103424,
+          "max": 64.272192
+        },
+        "streamCpu": {
+          "count": 300,
+          "mean": 0.0012266666666666667,
+          "median": 0.0012,
+          "p95": 0.0018,
+          "p99": 0.0027,
+          "max": 0.0031
+        },
+        "poolCpu": {
+          "count": 300,
+          "mean": 3.5468853333333334,
+          "median": 3.243,
+          "p95": 5.2986,
+          "p99": 6.2088,
+          "max": 13.0079
+        },
+        "handoffCpu": {
+          "count": 300,
+          "mean": 7.212887333333334,
+          "median": 6.60715,
+          "p95": 9.5792,
+          "p99": 11.4287,
+          "max": 67.1931
+        },
+        "selectionCpu": {
+          "count": 300,
+          "mean": 10.821169666666666,
+          "median": 9.9735,
+          "p95": 14.7933,
+          "p99": 17.7625,
+          "max": 80.2738
+        },
+        "advanceCpu": {
+          "count": 300,
+          "mean": 10.966305666666667,
+          "median": 10.10385,
+          "p95": 15.0053,
+          "p99": 18.0088,
+          "max": 80.4335
+        },
+        "coreCullCpu": {
+          "count": 300,
+          "mean": 0.06570733333333334,
+          "median": 0.0604,
+          "p95": 0.1072,
+          "p99": 0.1454,
+          "max": 0.3245
+        },
+        "outerCpu": {
+          "count": 300,
+          "mean": 0.047788333333333335,
+          "median": 0.042749999999999996,
+          "p95": 0.0774,
+          "p99": 0.1034,
+          "max": 0.3722
+        },
+        "renderCpu": {
+          "count": 300,
+          "mean": 0.3561566666666667,
+          "median": 0.3357,
+          "p95": 0.5392,
+          "p99": 0.8775,
+          "max": 1.0947
+        },
+        "totalCpu": {
+          "count": 300,
+          "mean": 11.480489333333333,
+          "median": 10.6067,
+          "p95": 15.7316,
+          "p99": 18.8839,
+          "max": 81.009
+        }
+      },
+      "activeRange": [
+        32768,
+        32768
+      ],
+      "tickRange": [
+        1,
+        1
+      ],
+      "shiftedSamples": 0
+    },
+    "wide_overview": {
+      "passed": true,
+      "colors": true,
+      "contacts": true,
+      "moving": false,
+      "error": "",
+      "caseName": "wide_overview",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "cpu": "AMD Ryzen 7 5800X 8-Core Processor ",
+      "api": "Direct3D11",
+      "unity": "2022.3.62f2c1",
+      "patchSize": 144,
+      "blades": 663552,
+      "colliders": 12,
+      "substeps": 8,
+      "iterations": 3,
+      "width": 1600,
+      "height": 900,
+      "msaa": 4,
+      "warmup": 120,
+      "sampleTarget": 300,
+      "dropped": 0,
+      "failed": 0,
+      "gpuBufferBytes": 224852832,
+      "middleFull": 52.0,
+      "middleOuter": 64.0,
+      "stats": {
+        "streamGpu": {
+          "count": 300,
+          "mean": 0.00093792,
+          "median": 0.001024,
+          "p95": 0.001024,
+          "p99": 0.00176,
+          "max": 0.002048
+        },
+        "selectionGpu": {
+          "count": 300,
+          "mean": 1.9293424,
+          "median": 0.023296,
+          "p95": 19.772416,
+          "p99": 20.41168,
+          "max": 23.213055999999998
+        },
+        "solveGpu": {
+          "count": 300,
+          "mean": 2.872656533333333,
+          "median": 2.76992,
+          "p95": 3.2399359999999997,
+          "p99": 3.50208,
+          "max": 3.727360000000001
+        },
+        "windGpu": {
+          "count": 300,
+          "mean": 0.008939519999999939,
+          "median": 0.008192000000000199,
+          "p95": 0.009215999999998559,
+          "p99": 0.009216000000000335,
+          "max": 0.2734079999999999
+        },
+        "displayGpu": {
+          "count": 300,
+          "mean": 0.55327744,
+          "median": 0.5160960000000001,
+          "p95": 0.809984,
+          "p99": 0.966656,
+          "max": 1.2328960000000002
+        },
+        "coreCullGpu": {
+          "count": 300,
+          "mean": 0.009332053333333321,
+          "median": 0.008192000000000199,
+          "p95": 0.009216000000000335,
+          "p99": 0.009216000000002111,
+          "max": 0.23552000000000106
+        },
+        "outerGpu": {
+          "count": 300,
+          "mean": 0.04267466666666667,
+          "median": 0.03993599999999997,
+          "p95": 0.040000000000000036,
+          "p99": 0.2652159999999988,
+          "max": 0.2734079999999999
+        },
+        "renderGpu": {
+          "count": 300,
+          "mean": 3.466286613333333,
+          "median": 3.317712,
+          "p95": 3.946496,
+          "p99": 4.157439999999999,
+          "max": 4.503552
+        },
+        "opaqueGpu": {
+          "count": 300,
+          "mean": 3.4237269333333336,
+          "median": 3.27424,
+          "p95": 3.9045120000000004,
+          "p99": 4.11648,
+          "max": 4.461568
+        },
+        "totalGpu": {
+          "count": 300,
+          "mean": 8.88741472,
+          "median": 6.944255999999999,
+          "p95": 26.57984,
+          "p99": 27.635712,
+          "max": 30.40256
+        },
+        "streamCpu": {
+          "count": 300,
+          "mean": 0.001175,
+          "median": 0.0011,
+          "p95": 0.0016,
+          "p99": 0.0018,
+          "max": 0.0022
+        },
+        "poolCpu": {
+          "count": 300,
+          "mean": 7.332550666666667,
+          "median": 7.2193000000000005,
+          "p95": 7.613,
+          "p99": 10.1374,
+          "max": 15.2341
+        },
+        "handoffCpu": {
+          "count": 300,
+          "mean": 11.527709333333334,
+          "median": 11.26345,
+          "p95": 11.8268,
+          "p99": 13.377,
+          "max": 65.0827
+        },
+        "selectionCpu": {
+          "count": 300,
+          "mean": 18.919442,
+          "median": 18.5735,
+          "p95": 19.4204,
+          "p99": 21.8814,
+          "max": 80.3739
+        },
+        "advanceCpu": {
+          "count": 300,
+          "mean": 19.025692,
+          "median": 18.6815,
+          "p95": 19.5311,
+          "p99": 21.9817,
+          "max": 80.5105
+        },
+        "coreCullCpu": {
+          "count": 300,
+          "mean": 0.04157466666666667,
+          "median": 0.036750000000000005,
+          "p95": 0.0668,
+          "p99": 0.104,
+          "max": 0.1436
+        },
+        "outerCpu": {
+          "count": 300,
+          "mean": 0.03170933333333333,
+          "median": 0.0303,
+          "p95": 0.0443,
+          "p99": 0.0561,
+          "max": 0.0673
+        },
+        "renderCpu": {
+          "count": 300,
+          "mean": 0.2861146666666667,
+          "median": 0.2716,
+          "p95": 0.4086,
+          "p99": 0.4509,
+          "max": 0.475
+        },
+        "totalCpu": {
+          "count": 300,
+          "mean": 19.419195,
+          "median": 19.069200000000002,
+          "p95": 20.0624,
+          "p99": 22.4458,
+          "max": 81.0739
+        }
+      },
+      "activeRange": [
+        32768,
+        32768
+      ],
+      "tickRange": [
+        1,
+        1
+      ],
+      "shiftedSamples": 0
+    }
+  },
+  "realtime": {
+    "small_editor_realtime": {
+      "passed": true,
+      "caseName": "small_editor",
+      "error": "",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "cpu": "AMD Ryzen 7 5800X 8-Core Processor ",
+      "unity": "2022.3.62f2c1",
+      "startUtc": "2026-10-20T17:29:49.0718801Z",
+      "endUtc": "2026-10-20T17:30:29.5444073Z",
+      "editor": true,
+      "patchSize": 96,
+      "width": 1600,
+      "height": 900,
+      "msaa": 4,
+      "warmSeconds": 10.0,
+      "measureSeconds": 20.0,
+      "fps": 892.2810390279207,
+      "actualSimTicksPerSecond": 59.99872502709317,
+      "ticksPerFrame": {
+        "count": 17846,
+        "mean": 0.06724195898240502,
+        "median": 0.0,
+        "p95": 1,
+        "p99": 1,
+        "max": 3
+      },
+      "tickHistogram": {
+        "0": 16651,
+        "1": 1192,
+        "2": 1,
+        "3": 2,
+        "4": 0
+      },
+      "droppedSeconds": 0.0,
+      "advanceCpuMsPerExecutedTick": 9.557985666666667,
+      "stats": {
+        "frameIntervalMs": {
+          "count": 17846,
+          "mean": 1.12072313123389,
+          "median": 0.3570000000010509,
+          "p95": 9.73569999999313,
+          "p99": 10.568800000001488,
+          "max": 52.675899999997
+        },
+        "cpuMs": {
+          "count": 17846,
+          "mean": 0.8867164910904405,
+          "median": 0.2244,
+          "p95": 9.5341,
+          "p99": 10.2923,
+          "max": 45.5008
+        },
+        "advanceCpuMs": {
+          "count": 17846,
+          "mean": 0.6432252493555979,
+          "median": 0.0005,
+          "p95": 9.2113,
+          "p99": 9.8944,
+          "max": 44.9876
+        },
+        "poolCpuMs": {
+          "count": 17846,
+          "mean": 0.24324500168104898,
+          "median": 0.0,
+          "p95": 3.4308,
+          "p99": 3.7403,
+          "max": 39.1394
+        },
+        "handoffCpuMs": {
+          "count": 17846,
+          "mean": 0.38847964810041463,
+          "median": 0.0,
+          "p95": 5.5871,
+          "p99": 6.0033,
+          "max": 16.7096
+        }
+      }
+    },
+    "small_realtime": {
+      "passed": true,
+      "caseName": "small",
+      "error": "",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "cpu": "AMD Ryzen 7 5800X 8-Core Processor ",
+      "unity": "2022.3.62f2c1",
+      "startUtc": "2026-10-20T17:24:41.4495443Z",
+      "endUtc": "2026-10-20T17:25:17.6189182Z",
+      "patchSize": 96,
+      "width": 1600,
+      "height": 900,
+      "msaa": 4,
+      "warmSeconds": 10.0,
+      "measureSeconds": 20.0,
+      "fps": 866.0537240310135,
+      "actualSimTicksPerSecond": 60.000258001109415,
+      "ticksPerFrame": {
+        "count": 17321,
+        "mean": 0.06928006466139368,
+        "median": 0,
+        "p95": 1,
+        "p99": 1,
+        "max": 1
+      },
+      "tickHistogram": {
+        "0": 16121,
+        "1": 1200,
+        "2": 0,
+        "3": 0,
+        "4": 0
+      },
+      "droppedSeconds": 0.0,
+      "advanceCpuMsPerExecutedTick": 6.084172583333333,
+      "stats": {
+        "frameIntervalMs": {
+          "count": 17321,
+          "mean": 1.1546627792852604,
+          "median": 0.6634000000005358,
+          "p95": 6.211199999999195,
+          "p99": 6.814800000000787,
+          "max": 12.884299999999627
+        },
+        "cpuMs": {
+          "count": 17321,
+          "mean": 0.6292433520004619,
+          "median": 0.1929,
+          "p95": 6.1079,
+          "p99": 6.6596,
+          "max": 12.6666
+        },
+        "advanceCpuMs": {
+          "count": 17321,
+          "mean": 0.42165665954621556,
+          "median": 0.0001,
+          "p95": 5.8605,
+          "p99": 6.351,
+          "max": 12.2455
+        },
+        "poolCpuMs": {
+          "count": 17321,
+          "mean": 0.15590706079325675,
+          "median": 0.0,
+          "p95": 2.1366,
+          "p99": 2.3697,
+          "max": 8.4728
+        },
+        "handoffCpuMs": {
+          "count": 17321,
+          "mean": 0.2570419317591363,
+          "median": 0.0,
+          "p95": 3.5585,
+          "p99": 3.8512,
+          "max": 9.5298
+        }
+      }
+    },
+    "wide_editor_realtime": {
+      "passed": true,
+      "caseName": "wide_editor",
+      "error": "",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "cpu": "AMD Ryzen 7 5800X 8-Core Processor ",
+      "unity": "2022.3.62f2c1",
+      "startUtc": "2026-10-20T17:27:56.2859559Z",
+      "endUtc": "2026-10-20T17:28:49.4864835Z",
+      "editor": true,
+      "patchSize": 144,
+      "width": 1600,
+      "height": 900,
+      "msaa": 4,
+      "warmSeconds": 10.0,
+      "measureSeconds": 20.0,
+      "fps": 13.038828392263452,
+      "actualSimTicksPerSecond": 52.15531356905381,
+      "ticksPerFrame": {
+        "count": 260,
+        "mean": 4,
+        "median": 4.0,
+        "p95": 4,
+        "p99": 4,
+        "max": 4
+      },
+      "tickHistogram": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 260
+      },
+      "droppedSeconds": 2.6071078777313232,
+      "advanceCpuMsPerExecutedTick": 18.82020951923077,
+      "stats": {
+        "frameIntervalMs": {
+          "count": 260,
+          "mean": 76.69400730769237,
+          "median": 74.9454499999942,
+          "p95": 81.09120000000303,
+          "p99": 137.33050000000446,
+          "max": 139.00940000000617
+        },
+        "cpuMs": {
+          "count": 260,
+          "mean": 75.79392538461539,
+          "median": 74.6288,
+          "p95": 77.7099,
+          "p99": 132.6994,
+          "max": 138.6556
+        },
+        "advanceCpuMs": {
+          "count": 260,
+          "mean": 75.28083807692308,
+          "median": 74.12299999999999,
+          "p95": 77.2096,
+          "p99": 132.2077,
+          "max": 138.1661
+        },
+        "poolCpuMs": {
+          "count": 260,
+          "mean": 29.783140384615386,
+          "median": 29.05855,
+          "p95": 30.2592,
+          "p99": 42.7187,
+          "max": 93.01500000000001
+        },
+        "handoffCpuMs": {
+          "count": 260,
+          "mean": 44.899389615384614,
+          "median": 44.3782,
+          "p95": 46.096000000000004,
+          "p99": 49.8084,
+          "max": 105.6155
+        }
+      }
+    },
+    "wide_no_contact_realtime": {
+      "passed": true,
+      "caseName": "wide_no_contact",
+      "error": "",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "cpu": "AMD Ryzen 7 5800X 8-Core Processor ",
+      "unity": "2022.3.62f2c1",
+      "startUtc": "2026-10-20T17:25:18.9582716Z",
+      "endUtc": "2026-10-20T17:26:03.0083093Z",
+      "patchSize": 144,
+      "width": 1600,
+      "height": 900,
+      "msaa": 4,
+      "warmSeconds": 10.0,
+      "measureSeconds": 20.0,
+      "fps": 858.4848692041804,
+      "actualSimTicksPerSecond": 59.99894251863812,
+      "ticksPerFrame": {
+        "count": 17170,
+        "mean": 0.06988934187536401,
+        "median": 0.0,
+        "p95": 1,
+        "p99": 1,
+        "max": 2
+      },
+      "tickHistogram": {
+        "0": 15975,
+        "1": 1190,
+        "2": 5,
+        "3": 0,
+        "4": 0
+      },
+      "droppedSeconds": 0.0,
+      "advanceCpuMsPerExecutedTick": 6.413859166666667,
+      "stats": {
+        "frameIntervalMs": {
+          "count": 17170,
+          "mean": 1.1648428945835758,
+          "median": 0.7165999999969586,
+          "p95": 6.513200000000552,
+          "p99": 6.992499999999069,
+          "max": 36.28590000000287
+        },
+        "cpuMs": {
+          "count": 17170,
+          "mean": 0.61760888177053,
+          "median": 0.1575,
+          "p95": 6.4219,
+          "p99": 6.8644,
+          "max": 13.5257
+        },
+        "advanceCpuMs": {
+          "count": 17170,
+          "mean": 0.44837476412347116,
+          "median": 0.0001,
+          "p95": 6.2246,
+          "p99": 6.613,
+          "max": 13.1414
+        },
+        "poolCpuMs": {
+          "count": 17170,
+          "mean": 0.15046678509027372,
+          "median": 0.0,
+          "p95": 2.0642,
+          "p99": 2.2561,
+          "max": 5.357
+        },
+        "handoffCpuMs": {
+          "count": 17170,
+          "mean": 0.29074321490972627,
+          "median": 0.0,
+          "p95": 4.0401,
+          "p99": 4.2793,
+          "max": 8.366700000000002
+        }
+      }
+    },
+    "wide_realtime": {
+      "passed": true,
+      "caseName": "wide",
+      "error": "",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "cpu": "AMD Ryzen 7 5800X 8-Core Processor ",
+      "unity": "2022.3.62f2c1",
+      "startUtc": "2026-10-20T17:23:55.2381539Z",
+      "endUtc": "2026-10-20T17:24:39.2987368Z",
+      "patchSize": 144,
+      "width": 1600,
+      "height": 900,
+      "msaa": 4,
+      "warmSeconds": 10.0,
+      "measureSeconds": 20.0,
+      "fps": 684.8910983142517,
+      "actualSimTicksPerSecond": 60.01674587243333,
+      "ticksPerFrame": {
+        "count": 13694,
+        "mean": 0.08762961881115817,
+        "median": 0.0,
+        "p95": 1,
+        "p99": 1,
+        "max": 3
+      },
+      "tickHistogram": {
+        "0": 12507,
+        "1": 1176,
+        "2": 9,
+        "3": 2,
+        "4": 0
+      },
+      "droppedSeconds": 0.0,
+      "advanceCpuMsPerExecutedTick": 12.112997083333333,
+      "stats": {
+        "frameIntervalMs": {
+          "count": 13694,
+          "mean": 1.4600861399152911,
+          "median": 0.2651000000000181,
+          "p95": 12.248100000000761,
+          "p99": 13.430300000003115,
+          "max": 49.5151000000007
+        },
+        "cpuMs": {
+          "count": 13694,
+          "mean": 1.2741137067328756,
+          "median": 0.18655,
+          "p95": 12.0885,
+          "p99": 13.1826,
+          "max": 38.12
+        },
+        "advanceCpuMs": {
+          "count": 13694,
+          "mean": 1.0616038484007595,
+          "median": 0.0002,
+          "p95": 11.7513,
+          "p99": 12.7734,
+          "max": 37.3832
+        },
+        "poolCpuMs": {
+          "count": 13694,
+          "mean": 0.4173611946838031,
+          "median": 0.0,
+          "p95": 4.6169,
+          "p99": 5.0374,
+          "max": 14.692300000000001
+        },
+        "handoffCpuMs": {
+          "count": 13694,
+          "mean": 0.6319904337666131,
+          "median": 0.0,
+          "p95": 6.9816,
+          "p99": 7.5964,
+          "max": 22.2222
+        }
+      }
+    }
+  },
+  "combinedWideElevated": {
+    "streamGpu": {
+      "count": 600,
+      "mean": 0.00108032,
+      "median": 0.001024,
+      "p95": 0.001952,
+      "p99": 0.002048,
+      "max": 0.002048
+    },
+    "selectionGpu": {
+      "count": 600,
+      "mean": 1.6340592,
+      "median": 0.023615999999999998,
+      "p95": 19.530752,
+      "p99": 20.322304,
+      "max": 21.2992
+    },
+    "solveGpu": {
+      "count": 600,
+      "mean": 3.9743829333333336,
+      "median": 4.0704,
+      "p95": 4.94592,
+      "p99": 5.264384,
+      "max": 5.561344
+    },
+    "windGpu": {
+      "count": 600,
+      "mean": 0.011335679999999989,
+      "median": 0.011263999999999719,
+      "p95": 0.013311999999999102,
+      "p99": 0.015360000000000262,
+      "max": 0.3860480000000006
+    },
+    "displayGpu": {
+      "count": 600,
+      "mean": 0.8771003733333333,
+      "median": 0.8744959999999997,
+      "p95": 1.304576,
+      "p99": 1.74592,
+      "max": 2.052095999999999
+    },
+    "coreCullGpu": {
+      "count": 600,
+      "mean": 0.01059157333333336,
+      "median": 0.010239999999999583,
+      "p95": 0.011264000000000607,
+      "p99": 0.01331199999999999,
+      "max": 0.3031039999999998
+    },
+    "outerGpu": {
+      "count": 600,
+      "mean": 0.047336319999999994,
+      "median": 0.047104000000000035,
+      "p95": 0.05119999999999969,
+      "p99": 0.05324799999999996,
+      "max": 0.6973439999999993
+    },
+    "renderGpu": {
+      "count": 600,
+      "mean": 1.1385137066666666,
+      "median": 1.134592,
+      "p95": 1.5636479999999997,
+      "p99": 1.833984,
+      "max": 2.2630399999999993
+    },
+    "opaqueGpu": {
+      "count": 600,
+      "mean": 1.0369723733333334,
+      "median": 1.0127359999999999,
+      "p95": 1.444864,
+      "p99": 1.7223680000000003,
+      "max": 2.141184
+    },
+    "totalGpu": {
+      "count": 600,
+      "mean": 7.698829653333333,
+      "median": 6.386176000000001,
+      "p95": 25.611264,
+      "p99": 26.891264,
+      "max": 28.130304
+    },
+    "streamCpu": {
+      "count": 600,
+      "mean": 0.000965,
+      "median": 0.0009,
+      "p95": 0.0015,
+      "p99": 0.0019,
+      "max": 0.0043
+    },
+    "poolCpu": {
+      "count": 600,
+      "mean": 7.307339333333333,
+      "median": 7.186400000000001,
+      "p95": 7.6895,
+      "p99": 10.1675,
+      "max": 15.8619
+    },
+    "handoffCpu": {
+      "count": 600,
+      "mean": 11.373694666666667,
+      "median": 11.15655,
+      "p95": 11.768,
+      "p99": 14.0602,
+      "max": 68.7916
+    },
+    "selectionCpu": {
+      "count": 600,
+      "mean": 18.742705833333332,
+      "median": 18.413649999999997,
+      "p95": 19.8669,
+      "p99": 22.5953,
+      "max": 84.7148
+    },
+    "advanceCpu": {
+      "count": 600,
+      "mean": 18.854433,
+      "median": 18.52635,
+      "p95": 20.0237,
+      "p99": 22.6931,
+      "max": 84.8501
+    },
+    "coreCullCpu": {
+      "count": 600,
+      "mean": 0.0443595,
+      "median": 0.0402,
+      "p95": 0.0679,
+      "p99": 0.0896,
+      "max": 0.1107
+    },
+    "outerCpu": {
+      "count": 600,
+      "mean": 0.03418633333333333,
+      "median": 0.0325,
+      "p95": 0.0451,
+      "p99": 0.0611,
+      "max": 0.0737
+    },
+    "renderCpu": {
+      "count": 600,
+      "mean": 0.30675833333333336,
+      "median": 0.2943,
+      "p95": 0.4349,
+      "p99": 0.5169,
+      "max": 0.6333
+    },
+    "totalCpu": {
+      "count": 600,
+      "mean": 19.275422,
+      "median": 18.9526,
+      "p95": 20.4605,
+      "p99": 23.0855,
+      "max": 85.4269
+    }
+  }
+}

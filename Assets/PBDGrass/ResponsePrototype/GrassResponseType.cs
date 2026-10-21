@@ -59,7 +59,7 @@ namespace GrassFinal.PBDGrass
         public Vector4[] MomentCompliance(GrassBladeData data)
         {
             var numerator=new Vector2[7]; var denominator=new Vector2[7];
-            Quaternion anchor=Quaternion.Inverse(data.GridYaw(0))*data.Rods[0].Rotation;
+            Quaternion anchor=Quaternion.Inverse(data.GridYaw(0))*data.GetRod(0).Rotation;
             for(int sample=0;sample<Samples.Length;sample++)
             {
                 Vector3 forceWind=new Vector3((sample%5-2)*MaxWind/2,0,(sample/5-2)*MaxWind/2);
@@ -69,11 +69,11 @@ namespace GrassFinal.PBDGrass
                     Vector3 moment=Vector3.zero;
                     for(int n=j+1;n<8;n++)
                     {
-                        float mass=Physics.BladeMass/Mathf.Max(data.InverseMass[n],1e-8f),height=n/7f;
+                        float mass=Physics.BladeMass/Mathf.Max(data.GetInverseMass(n),1e-8f),height=n/7f;
                         moment+=Vector3.Cross(pose.Nodes[n]-pose.Nodes[j],mass*(Physics.Gravity+forceWind*height*height));
                     }
                     moment=Quaternion.Inverse(parent)*moment;
-                    Quaternion error=Quaternion.Inverse(parent)*pose.Frames[j]*Quaternion.Inverse(data.Rods[j].Relative);
+                    Quaternion error=Quaternion.Inverse(parent)*pose.Frames[j]*Quaternion.Inverse(data.GetRod(j).Relative);
                     if(error.w<0)error=new Quaternion(-error.x,-error.y,-error.z,-error.w);
                     float length=new Vector3(error.x,error.y,error.z).magnitude;
                     Vector3 angle=new Vector3(error.x,error.y,error.z)*(length>1e-6f?2*Mathf.Atan2(length,error.w)/length:2);
@@ -84,8 +84,8 @@ namespace GrassFinal.PBDGrass
             var result=new Vector4[7];
             for(int j=0;j<7;j++)
             {
-                float x=j==0?Physics.BaseBendCompliance:Physics.SoftBendCompliance*data.Rods[j].SoftScale;
-                float y=j==0?Physics.BaseBendCompliance:Physics.HardBendCompliance*data.Rods[j].HardScale;
+                float x=j==0?Physics.BaseBendCompliance:Physics.SoftBendCompliance*data.GetRod(j).SoftScale;
+                float y=j==0?Physics.BaseBendCompliance:Physics.HardBendCompliance*data.GetRod(j).HardScale;
                 result[j]=new Vector4(Mathf.Clamp(numerator[j].x/Mathf.Max(denominator[j].x,1e-12f),x*.25f,x*4),
                     Mathf.Clamp(numerator[j].y/Mathf.Max(denominator[j].y,1e-12f),y*.25f,y*4),0,0);
             }

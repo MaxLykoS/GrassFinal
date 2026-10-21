@@ -76,7 +76,7 @@ namespace GrassFinal.PBDGrass.Editor
                 {
                     int start=blade*15; Vector3 point=(vertices[start]+vertices[start+1])*.5f; float arc=0;
                     for(int n=1;n<8;n++) { Vector3 next=n==7?vertices[start+14]:(vertices[start+n*2]+vertices[start+n*2+1])*.5f; arc+=Vector3.Distance(point,next); point=next; }
-                    if((vertices[start]-vertices[start+1]).sqrMagnitude>1e-10f && arc>r.Data.Blades[blade].Length*.95f)report.nondegenerateBlades++;
+                    if((vertices[start]-vertices[start+1]).sqrMagnitude>1e-10f && arc>r.Data.GetBlade(blade).Length*.95f)report.nondegenerateBlades++;
                 }
                 foreach(var size in new[] { new Vector2Int(1920,1080),new Vector2Int(1200,900),new Vector2Int(900,1600) })
                 {

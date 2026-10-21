@@ -18,6 +18,8 @@ namespace GrassFinal.PBDGrass
         [Header("Experimental tiered state")]
         [Tooltip("Use a separate bounded history pool around the XPBD boundary; requires TieredGrassHandoff.compute.")]
         public bool UseTieredState;
+        [Tooltip("Opt-in compact middle storage. Requires the compact solver/handoff/draw/streaming assets and a homogeneous streamed response type.")]
+        public bool UseCompactMiddle;
         [Min(.1f)] public float HistoryBandWidth=2;
         [Tooltip("Warm incoming history in the movement direction over TransitionSeconds; discontinuous jumps use cold entry.")]
         public bool AdaptiveHistory;

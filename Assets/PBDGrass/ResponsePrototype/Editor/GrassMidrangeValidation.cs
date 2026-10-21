@@ -99,7 +99,7 @@ namespace GrassFinal.PBDGrass.Editor
             var probe=new Material(Shader.Find("Hidden/PBDGrass/MiddlePresentationProbe"));var rt=new RenderTexture(15,1,0,RenderTextureFormat.ARGBFloat);rt.Create();var image=new Texture2D(15,1,TextureFormat.RGBAFloat,false,true);
             try
             {
-                var leaf=r.Data.Blades[blade];probe.SetBuffer("ProbePositions",positions);probe.SetInt("ProbeBlade",blade);probe.SetVector("ProbeRoot",leaf.Root);probe.SetFloat("ProbeSeed",leaf.Seed);
+                var leaf=r.Data.GetBlade(blade);probe.SetBuffer("ProbePositions",positions);probe.SetInt("ProbeBlade",blade);probe.SetVector("ProbeRoot",leaf.Root);probe.SetFloat("ProbeSeed",leaf.Seed);
                 probe.SetBuffer("OuterControls",Field<ComputeBuffer>(demo.OuterCoverage,"controls"));probe.SetTexture("OuterWindNoise",demo.WindNoise);probe.SetVector("OuterWind",Vector3.zero);probe.SetFloat("OuterMaxWind",demo.Handoff.BakedResponse.MaxWind);probe.SetFloat("OuterHalfWidth",demo.Handoff.BakedResponse.Shape.HalfWidth);
                 probe.SetFloat("ProbeCoverage",1);var initial=ReadProbe(probe,rt,image);for(int n=0;n<15;n++)report.initialPresentationError=Mathf.Max(report.initialPresentationError,Vector3.Distance(Position(initial[n]),original[n]));
                 probe.SetFloat("ProbeCoverage",leaf.Seed);var terminal=ReadProbe(probe,rt,image);

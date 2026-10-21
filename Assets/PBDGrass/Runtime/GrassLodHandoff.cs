@@ -26,8 +26,8 @@ namespace GrassFinal.PBDGrass
         private int entryInitializations,simulatedBlades;
         public int EntryInitializations => tiered!=null?tiered.EntryInitializations:entryInitializations;
         public int SimulatedBlades => tiered!=null?tiered.SimulatedBlades:simulatedBlades;
-        public int HistoryCapacityBlades => tiered!=null?tiered.HistoryCapacityBlades:data.Blades.Length;
-        public int HistoryResidentBlades => tiered!=null?tiered.HistoryResidentBlades:data.Blades.Length;
+        public int HistoryCapacityBlades => tiered!=null?tiered.HistoryCapacityBlades:data.BladeCount;
+        public int HistoryResidentBlades => tiered!=null?tiered.HistoryResidentBlades:data.BladeCount;
         public int TransitionBlades => tiered!=null?tiered.TransitionBlades:0;
         public float WarmLookAheadMeters => tiered!=null?tiered.WarmLookAheadMeters:0;
         public long HistoryBytes => (long)HistoryCapacityBlades*816;
@@ -40,12 +40,12 @@ namespace GrassFinal.PBDGrass
         internal GrassLodHandoff(GrassBladeData data, XPBDGrassSettings physics, GrassHandoffSettings settings,
             ComputeShader source, Material material, ComputeBuffer bones, ComputeBuffer frames,
             ComputeBuffer plastic, ComputeBuffer rest, ComputeBuffer rods, ComputeBuffer blades,ComputeBuffer masses, Texture wind,
-            ComputeBuffer physicsPositions,ComputeBuffer physicsNormals)
+            ComputeBuffer physicsPositions,ComputeBuffer physicsNormals,GrassCompactStorage compact=null,GrassGridQuery gridQuery=null,GrassSimulationPool simulationPool=null)
         {
             this.data=data; this.physics=physics; this.settings=settings;
             if(settings.UseTieredState)
             {
-                tiered=new GrassTieredHandoff(data,physics,settings,source,material,bones,frames,plastic,rest,rods,blades,masses,wind,physicsPositions,physicsNormals);
+                tiered=new GrassTieredHandoff(data,physics,settings,source,material,bones,frames,plastic,rest,rods,blades,masses,wind,physicsPositions,physicsNormals,compact,gridQuery,simulationPool);
                 CullingGrids=tiered.CullingGrids; return;
             }
             shader=UnityEngine.Object.Instantiate(source);
@@ -54,7 +54,7 @@ namespace GrassFinal.PBDGrass
                 resetKernel=shader.FindKernel("ResetDisplay"); captureKernel=shader.FindKernel("CaptureTransition");
                 seedKernel=shader.FindKernel("SeedSimulation"); displayKernel=shader.FindKernel("UpdateDisplay");
                 windKernel=shader.FindKernel("AdvanceBakedWind");
-                int count=data.Blades.Length;
+                int count=data.BladeCount;
                 displayNodes=NewBuffer(count*8,48); displayFrames=NewBuffer(count*7,32);
                 var offsets=NewBuffer(count*8,12); var rotations=NewBuffer(count*7,16);
                 states=NewBuffer(data.Grids.Length,16); entries=NewBuffer(data.Grids.Length,8);
@@ -168,7 +168,7 @@ namespace GrassFinal.PBDGrass
             }
             states.SetData(gridStates);
             bool anyChange=false; foreach(var state in gridStates) anyChange|=state.Changed!=0;
-            if(anyChange) shader.Dispatch(captureKernel,(data.Blades.Length+63)/64,1,1);
+            if(anyChange) shader.Dispatch(captureKernel,(data.BladeCount+63)/64,1,1);
             if(count==0)return;
             entries.SetData(initializations,0,0,count); shader.SetInt("EntryCount",count);
             shader.Dispatch(seedKernel,(count*32+63)/64,1,1); entryInitializations+=count;
@@ -178,7 +178,7 @@ namespace GrassFinal.PBDGrass
             if(tiered!=null) { tiered.UpdateDisplay(time,tick); return; }
             Configure(time); shader.SetFloat("PoseDt",tick);
             if(settings.BakedResponse!=null)shader.Dispatch(windKernel,(data.Grids.Length+63)/64,1,1);
-            shader.Dispatch(displayKernel,(data.Blades.Length+63)/64,1,1);
+            shader.Dispatch(displayKernel,(data.BladeCount+63)/64,1,1);
         }
         internal void Reset(IReadOnlyList<GrassSimulationPool.ActiveGrid> active,float time)
         {
@@ -186,20 +186,20 @@ namespace GrassFinal.PBDGrass
             for(int g=0;g<gridStates.Length;g++) gridStates[g]=new GridState { PoolOffset=-1, Started=time };
             states.SetData(gridStates); Configure(time);
             windState.SetData(new Vector4[gridStates.Length]);
-            shader.Dispatch(resetKernel,(data.Blades.Length+63)/64,1,1);
+            shader.Dispatch(resetKernel,(data.BladeCount+63)/64,1,1);
             Select(active,time,Vector3.zero);
         }
         // Explicit validation reads only. Runtime handoff never reads GPU simulation state back.
         public BoneInfo[] ReadDisplayNodes()
         {
             if(tiered!=null)return tiered.ReadDisplayNodes();
-            var values=new BoneInfo[data.Blades.Length*8]; displayNodes.GetData(values);
-            for(int b=0;b<data.Blades.Length;b++) for(int n=0;n<8;n++) values[b*8+n].Position+=data.Blades[b].Root;
+            var values=new BoneInfo[data.BladeCount*8]; displayNodes.GetData(values);
+            for(int b=0;b<data.BladeCount;b++) for(int n=0;n<8;n++) values[b*8+n].Position+=data.GetBlade(b).Root;
             return values;
         }
         public GrassBladeData.Frame[] ReadDisplayFrames()
         { if(tiered!=null)return tiered.ReadDisplayFrames();
-            var values=new GrassBladeData.Frame[data.Blades.Length*7]; displayFrames.GetData(values); return values; }
+            var values=new GrassBladeData.Frame[data.BladeCount*7]; displayFrames.GetData(values); return values; }
         public Vector4[] ReadBakedWindState()
         { if(tiered!=null)return tiered.ReadBakedWindState();
             var values=new Vector4[data.Grids.Length]; windState.GetData(values); return values; }

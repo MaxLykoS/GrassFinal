@@ -1,0 +1,28 @@
+// Generated storage variant; equations come from the accepted source.
+// Regenerate with CompactPrototype/Editor/generate_compact_shaders.py.
+#pragma kernel RebindWorldCells
+#include "../../Shaders/GrassWorldIdentity.cginc"
+struct BoneInfo { float3 Position,Predicted,Velocities,OriginPos; };
+struct Blade { float3 Root; float Length; uint Id; float Width,Height,Seed; };
+struct Rod { float4 Rotation,Relative; float Length,HalfWidth,InverseInertia,SoftScale; float HardScale,TwistScale,Padding0,Padding1; };
+StructuredBuffer<int4> WorldAssignments;
+StructuredBuffer<BoneInfo> WorldTemplateNodes;
+StructuredBuffer<Rod> WorldTemplateRods;
+StructuredBuffer<Blade> WorldTemplateBlade;
+RWStructuredBuffer<BoneInfo> WorldRest;
+RWStructuredBuffer<Rod> WorldRods;
+RWStructuredBuffer<Blade> WorldBlades;
+RWStructuredBuffer<uint> WorldPlastic;
+RWStructuredBuffer<float4> WorldAnchors;
+float WorldGround;
+float3 Rotate(float4 q,float3 v) { return v+2*cross(q.xyz,cross(q.xyz,v)+q.w*v); }
+float4 Multiply(float4 a,float4 b) { return float4(a.w*b.xyz+b.w*a.xyz+cross(a.xyz,b.xyz),a.w*b.w-dot(a.xyz,b.xyz)); }
+[numthreads(32,1,1)]
+void RebindWorldCells(uint3 group:SV_GroupID,uint lane:SV_GroupIndex)
+{
+    int4 assignment=WorldAssignments[group.x]; uint b=assignment.x*32+lane; int2 cell=assignment.yz;
+    float4 yaw=WorldYaw(cell); Blade blade=WorldTemplateBlade[0];blade.Root=WorldRoot(cell,lane,WorldGround);blade.Id=b;blade.Seed=WorldLeafSeed(cell,lane);WorldBlades[b]=blade;
+    // Same operation and GPU identity as the accepted streaming path.
+    if(lane==0)WorldAnchors[assignment.x]=Multiply(yaw,WorldTemplateRods[0].Rotation);
+    [unroll] for(uint s=0;s<8;s++)WorldPlastic[b*8+s]=0;
+}

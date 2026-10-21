@@ -1,0 +1,1765 @@
+{
+    "unity": "2022.3.62f2c1",
+    "gpu": "NVIDIA GeForce RTX 3080 Ti",
+    "error": "",
+    "passed": true,
+    "blades": 663552,
+    "grids": 20736,
+    "outerCandidates": 1138688,
+    "outerTiles": 1024,
+    "samples": [
+        {
+            "stage": "empty_editor_gc",
+            "managedUsed": 4218880,
+            "monoUsed": 4218880,
+            "monoHeap": 5873664,
+            "unityAllocated": 87452491,
+            "unityReserved": 276783104,
+            "workingSet": 438882304,
+            "privateBytes": 638439424,
+            "peakWorkingSet": 438886400,
+            "active": 0,
+            "history": 0,
+            "historyCapacity": 0,
+            "transition": 0,
+            "outerVisible": 0,
+            "gpuBufferBytes": 0
+        },
+        {
+            "stage": "scene_before_initialize_gc",
+            "managedUsed": 4235264,
+            "monoUsed": 4235264,
+            "monoHeap": 5873664,
+            "unityAllocated": 88199778,
+            "unityReserved": 299851776,
+            "workingSet": 442990592,
+            "privateBytes": 664739840,
+            "peakWorkingSet": 442994688,
+            "active": 0,
+            "history": 0,
+            "historyCapacity": 0,
+            "transition": 0,
+            "outerVisible": 0,
+            "gpuBufferBytes": 0
+        },
+        {
+            "stage": "initialized_before_gc",
+            "managedUsed": 3026464768,
+            "monoUsed": 3026464768,
+            "monoHeap": 3079929856,
+            "unityAllocated": 90309860,
+            "unityReserved": 300908544,
+            "workingSet": 3814801408,
+            "privateBytes": 4334739456,
+            "peakWorkingSet": 4201246720,
+            "active": 32768,
+            "history": 46592,
+            "historyCapacity": 65536,
+            "transition": 32768,
+            "outerVisible": 0,
+            "gpuBufferBytes": 224852832
+        },
+        {
+            "stage": "initialized_after_gc",
+            "managedUsed": 1041690624,
+            "monoUsed": 1041690624,
+            "monoHeap": 3079929856,
+            "unityAllocated": 90311207,
+            "unityReserved": 300908544,
+            "workingSet": 3906527232,
+            "privateBytes": 4421533696,
+            "peakWorkingSet": 4201246720,
+            "active": 32768,
+            "history": 46592,
+            "historyCapacity": 65536,
+            "transition": 32768,
+            "outerVisible": 0,
+            "gpuBufferBytes": 224852832
+        },
+        {
+            "stage": "tick_60",
+            "managedUsed": 1043783680,
+            "monoUsed": 1043783680,
+            "monoHeap": 3079929856,
+            "unityAllocated": 91907714,
+            "unityReserved": 302546944,
+            "workingSet": 3769610240,
+            "privateBytes": 4404953088,
+            "peakWorkingSet": 4201246720,
+            "active": 32768,
+            "history": 28704,
+            "historyCapacity": 65536,
+            "transition": 64,
+            "outerVisible": 51101,
+            "gpuBufferBytes": 224852832
+        },
+        {
+            "stage": "tick_120",
+            "managedUsed": 1043906560,
+            "monoUsed": 1043906560,
+            "monoHeap": 3079929856,
+            "unityAllocated": 91909269,
+            "unityReserved": 302546944,
+            "workingSet": 3770077184,
+            "privateBytes": 4405350400,
+            "peakWorkingSet": 4201246720,
+            "active": 32768,
+            "history": 28576,
+            "historyCapacity": 65536,
+            "transition": 64,
+            "outerVisible": 51101,
+            "gpuBufferBytes": 224852832
+        },
+        {
+            "stage": "tick_180",
+            "managedUsed": 1044045824,
+            "monoUsed": 1044045824,
+            "monoHeap": 3079929856,
+            "unityAllocated": 91912055,
+            "unityReserved": 302546944,
+            "workingSet": 3770277888,
+            "privateBytes": 4405522432,
+            "peakWorkingSet": 4201246720,
+            "active": 32768,
+            "history": 28768,
+            "historyCapacity": 65536,
+            "transition": 192,
+            "outerVisible": 51101,
+            "gpuBufferBytes": 224852832
+        },
+        {
+            "stage": "steady_after_gc",
+            "managedUsed": 1042718720,
+            "monoUsed": 1042718720,
+            "monoHeap": 3079929856,
+            "unityAllocated": 91898925,
+            "unityReserved": 302546944,
+            "workingSet": 3770277888,
+            "privateBytes": 4405522432,
+            "peakWorkingSet": 4201246720,
+            "active": 32768,
+            "history": 28768,
+            "historyCapacity": 65536,
+            "transition": 192,
+            "outerVisible": 51101,
+            "gpuBufferBytes": 224852832
+        },
+        {
+            "stage": "tick_240",
+            "managedUsed": 1042829312,
+            "monoUsed": 1042829312,
+            "monoHeap": 3079929856,
+            "unityAllocated": 92065931,
+            "unityReserved": 302546944,
+            "workingSet": 3790352384,
+            "privateBytes": 4425539584,
+            "peakWorkingSet": 4201246720,
+            "active": 32768,
+            "history": 41792,
+            "historyCapacity": 65536,
+            "transition": 9952,
+            "outerVisible": 51953,
+            "gpuBufferBytes": 224852832
+        },
+        {
+            "stage": "tick_300",
+            "managedUsed": 1042968576,
+            "monoUsed": 1042968576,
+            "monoHeap": 3079929856,
+            "unityAllocated": 92067438,
+            "unityReserved": 302546944,
+            "workingSet": 3777028096,
+            "privateBytes": 4412133376,
+            "peakWorkingSet": 4201246720,
+            "active": 32768,
+            "history": 35680,
+            "historyCapacity": 65536,
+            "transition": 12768,
+            "outerVisible": 51246,
+            "gpuBufferBytes": 224852832
+        },
+        {
+            "stage": "tick_360",
+            "managedUsed": 1043111936,
+            "monoUsed": 1043111936,
+            "monoHeap": 3079929856,
+            "unityAllocated": 92068897,
+            "unityReserved": 302546944,
+            "workingSet": 3777703936,
+            "privateBytes": 4412596224,
+            "peakWorkingSet": 4201246720,
+            "active": 32768,
+            "history": 26624,
+            "historyCapacity": 65536,
+            "transition": 11264,
+            "outerVisible": 52177,
+            "gpuBufferBytes": 224852832
+        },
+        {
+            "stage": "tick_420",
+            "managedUsed": 1043263488,
+            "monoUsed": 1043263488,
+            "monoHeap": 3079929856,
+            "unityAllocated": 92070356,
+            "unityReserved": 302546944,
+            "workingSet": 3778039808,
+            "privateBytes": 4412858368,
+            "peakWorkingSet": 4201246720,
+            "active": 32768,
+            "history": 26624,
+            "historyCapacity": 65536,
+            "transition": 11264,
+            "outerVisible": 51275,
+            "gpuBufferBytes": 224852832
+        },
+        {
+            "stage": "tick_480",
+            "managedUsed": 1043431424,
+            "monoUsed": 1043431424,
+            "monoHeap": 3079929856,
+            "unityAllocated": 92071815,
+            "unityReserved": 302546944,
+            "workingSet": 3779084288,
+            "privateBytes": 4413833216,
+            "peakWorkingSet": 4201246720,
+            "active": 32768,
+            "history": 26624,
+            "historyCapacity": 65536,
+            "transition": 11264,
+            "outerVisible": 52144,
+            "gpuBufferBytes": 224852832
+        },
+        {
+            "stage": "tick_540",
+            "managedUsed": 1043587072,
+            "monoUsed": 1043587072,
+            "monoHeap": 3079929856,
+            "unityAllocated": 92073274,
+            "unityReserved": 302546944,
+            "workingSet": 3779706880,
+            "privateBytes": 4414390272,
+            "peakWorkingSet": 4201246720,
+            "active": 32768,
+            "history": 31040,
+            "historyCapacity": 65536,
+            "transition": 13280,
+            "outerVisible": 51224,
+            "gpuBufferBytes": 224852832
+        },
+        {
+            "stage": "tick_600",
+            "managedUsed": 1043750912,
+            "monoUsed": 1043750912,
+            "monoHeap": 3079929856,
+            "unityAllocated": 92074733,
+            "unityReserved": 302546944,
+            "workingSet": 3779932160,
+            "privateBytes": 4414550016,
+            "peakWorkingSet": 4201246720,
+            "active": 32768,
+            "history": 36448,
+            "historyCapacity": 65536,
+            "transition": 13536,
+            "outerVisible": 51966,
+            "gpuBufferBytes": 224852832
+        },
+        {
+            "stage": "tick_660",
+            "managedUsed": 1043898368,
+            "monoUsed": 1043898368,
+            "monoHeap": 3079929856,
+            "unityAllocated": 92076192,
+            "unityReserved": 302546944,
+            "workingSet": 3780075520,
+            "privateBytes": 4414623744,
+            "peakWorkingSet": 4201246720,
+            "active": 32768,
+            "history": 40928,
+            "historyCapacity": 65536,
+            "transition": 8960,
+            "outerVisible": 51114,
+            "gpuBufferBytes": 224852832
+        },
+        {
+            "stage": "tick_720",
+            "managedUsed": 1044066304,
+            "monoUsed": 1044066304,
+            "monoHeap": 3079929856,
+            "unityAllocated": 92077651,
+            "unityReserved": 302546944,
+            "workingSet": 3780272128,
+            "privateBytes": 4414754816,
+            "peakWorkingSet": 4201246720,
+            "active": 32768,
+            "history": 41056,
+            "historyCapacity": 65536,
+            "transition": 10016,
+            "outerVisible": 51953,
+            "gpuBufferBytes": 224852832
+        },
+        {
+            "stage": "tick_780",
+            "managedUsed": 1044226048,
+            "monoUsed": 1044226048,
+            "monoHeap": 3079929856,
+            "unityAllocated": 92079110,
+            "unityReserved": 302546944,
+            "workingSet": 3780890624,
+            "privateBytes": 4415258624,
+            "peakWorkingSet": 4201246720,
+            "active": 32768,
+            "history": 35200,
+            "historyCapacity": 65536,
+            "transition": 11712,
+            "outerVisible": 51246,
+            "gpuBufferBytes": 224852832
+        },
+        {
+            "stage": "streamed_after_gc",
+            "managedUsed": 1042755584,
+            "monoUsed": 1042755584,
+            "monoHeap": 3079929856,
+            "unityAllocated": 92080569,
+            "unityReserved": 302546944,
+            "workingSet": 3780890624,
+            "privateBytes": 4415258624,
+            "peakWorkingSet": 4201246720,
+            "active": 32768,
+            "history": 35200,
+            "historyCapacity": 65536,
+            "transition": 11712,
+            "outerVisible": 51246,
+            "gpuBufferBytes": 224852832
+        },
+        {
+            "stage": "released_after_gc",
+            "managedUsed": 22061056,
+            "monoUsed": 22061056,
+            "monoHeap": 3079929856,
+            "unityAllocated": 89680747,
+            "unityReserved": 302546944,
+            "workingSet": 3780898816,
+            "privateBytes": 4415258624,
+            "peakWorkingSet": 4201246720,
+            "active": 0,
+            "history": 0,
+            "historyCapacity": 0,
+            "transition": 0,
+            "outerVisible": 0,
+            "gpuBufferBytes": 0
+        }
+    ],
+    "gpuBuffers": [
+        {
+            "path": "renderer.bones",
+            "type": "ComputeBuffer",
+            "count": 262144,
+            "stride": 48,
+            "bytes": 12582912
+        },
+        {
+            "path": "renderer.frames",
+            "type": "ComputeBuffer",
+            "count": 229376,
+            "stride": 32,
+            "bytes": 7340032
+        },
+        {
+            "path": "renderer.plasticBends",
+            "type": "ComputeBuffer",
+            "count": 229376,
+            "stride": 16,
+            "bytes": 3670016
+        },
+        {
+            "path": "renderer.buffer_3",
+            "type": "ComputeBuffer",
+            "count": 8,
+            "stride": 48,
+            "bytes": 384
+        },
+        {
+            "path": "renderer.buffer_4",
+            "type": "ComputeBuffer",
+            "count": 7,
+            "stride": 64,
+            "bytes": 448
+        },
+        {
+            "path": "renderer.bladeMetadata",
+            "type": "ComputeBuffer",
+            "count": 663552,
+            "stride": 32,
+            "bytes": 21233664
+        },
+        {
+            "path": "renderer.buffer_6",
+            "type": "ComputeBuffer",
+            "count": 8,
+            "stride": 4,
+            "bytes": 32
+        },
+        {
+            "path": "renderer.positions",
+            "type": "ComputeBuffer",
+            "count": 491520,
+            "stride": 12,
+            "bytes": 5898240
+        },
+        {
+            "path": "renderer.normals",
+            "type": "ComputeBuffer",
+            "count": 491520,
+            "stride": 12,
+            "bytes": 5898240
+        },
+        {
+            "path": "renderer.buffer_9",
+            "type": "ComputeBuffer",
+            "count": 39,
+            "stride": 4,
+            "bytes": 156
+        },
+        {
+            "path": "renderer.buffer_10",
+            "type": "ComputeBuffer",
+            "count": 15,
+            "stride": 8,
+            "bytes": 120
+        },
+        {
+            "path": "renderer.buffer_11",
+            "type": "ComputeBuffer",
+            "count": 7,
+            "stride": 4,
+            "bytes": 28
+        },
+        {
+            "path": "renderer.activeBuffer",
+            "type": "ComputeBuffer",
+            "count": 1024,
+            "stride": 32,
+            "bytes": 32768
+        },
+        {
+            "path": "renderer.initializeBuffer",
+            "type": "ComputeBuffer",
+            "count": 1024,
+            "stride": 8,
+            "bytes": 8192
+        },
+        {
+            "path": "renderer.buffer_14",
+            "type": "ComputeBuffer",
+            "count": 20736,
+            "stride": 16,
+            "bytes": 331776
+        },
+        {
+            "path": "renderer.drawArgs",
+            "type": "ComputeBuffer",
+            "count": 4,
+            "stride": 4,
+            "bytes": 16
+        },
+        {
+            "path": "renderer.contacts",
+            "type": "ComputeBuffer",
+            "count": 12,
+            "stride": 64,
+            "bytes": 768
+        },
+        {
+            "path": "renderer.worldAssignments",
+            "type": "ComputeBuffer",
+            "count": 20736,
+            "stride": 16,
+            "bytes": 331776
+        },
+        {
+            "path": "renderer.buffer_18",
+            "type": "ComputeBuffer",
+            "count": 8,
+            "stride": 48,
+            "bytes": 384
+        },
+        {
+            "path": "renderer.buffer_19",
+            "type": "ComputeBuffer",
+            "count": 7,
+            "stride": 64,
+            "bytes": 448
+        },
+        {
+            "path": "renderer.buffer_20",
+            "type": "ComputeBuffer",
+            "count": 1,
+            "stride": 32,
+            "bytes": 32
+        },
+        {
+            "path": "history.states",
+            "type": "ComputeBuffer",
+            "count": 20736,
+            "stride": 16,
+            "bytes": 331776
+        },
+        {
+            "path": "history.mapping",
+            "type": "ComputeBuffer",
+            "count": 20736,
+            "stride": 8,
+            "bytes": 165888
+        },
+        {
+            "path": "history.initializations",
+            "type": "ComputeBuffer",
+            "count": 2048,
+            "stride": 16,
+            "bytes": 32768
+        },
+        {
+            "path": "history.changes",
+            "type": "ComputeBuffer",
+            "count": 20736,
+            "stride": 8,
+            "bytes": 165888
+        },
+        {
+            "path": "history.entries",
+            "type": "ComputeBuffer",
+            "count": 20736,
+            "stride": 8,
+            "bytes": 165888
+        },
+        {
+            "path": "history.buffer_5",
+            "type": "ComputeBuffer",
+            "count": 524288,
+            "stride": 48,
+            "bytes": 25165824
+        },
+        {
+            "path": "history.buffer_6",
+            "type": "ComputeBuffer",
+            "count": 458752,
+            "stride": 32,
+            "bytes": 14680064
+        },
+        {
+            "path": "history.buffer_7",
+            "type": "ComputeBuffer",
+            "count": 524288,
+            "stride": 12,
+            "bytes": 6291456
+        },
+        {
+            "path": "history.buffer_8",
+            "type": "ComputeBuffer",
+            "count": 458752,
+            "stride": 16,
+            "bytes": 7340032
+        },
+        {
+            "path": "history.windState",
+            "type": "ComputeBuffer",
+            "count": 20736,
+            "stride": 16,
+            "bytes": 331776
+        },
+        {
+            "path": "history.previousWind",
+            "type": "ComputeBuffer",
+            "count": 20736,
+            "stride": 16,
+            "bytes": 331776
+        },
+        {
+            "path": "history.<CullingGrids>k__BackingField",
+            "type": "ComputeBuffer",
+            "count": 20736,
+            "stride": 32,
+            "bytes": 663552
+        },
+        {
+            "path": "history.buffer_12",
+            "type": "ComputeBuffer",
+            "count": 75,
+            "stride": 16,
+            "bytes": 1200
+        },
+        {
+            "path": "history.buffer_13",
+            "type": "ComputeBuffer",
+            "count": 175,
+            "stride": 16,
+            "bytes": 2800
+        },
+        {
+            "path": "history.worldYawBuffer",
+            "type": "ComputeBuffer",
+            "count": 20736,
+            "stride": 16,
+            "bytes": 331776
+        },
+        {
+            "path": "history.recycledGrids",
+            "type": "ComputeBuffer",
+            "count": 20736,
+            "stride": 4,
+            "bytes": 82944
+        },
+        {
+            "path": "compact.Pose",
+            "type": "ComputeBuffer",
+            "count": 13271040,
+            "stride": 4,
+            "bytes": 53084160
+        },
+        {
+            "path": "compact.Plastic",
+            "type": "ComputeBuffer",
+            "count": 5308416,
+            "stride": 4,
+            "bytes": 21233664
+        },
+        {
+            "path": "compact.Yaw",
+            "type": "ComputeBuffer",
+            "count": 20736,
+            "stride": 16,
+            "bytes": 331776
+        },
+        {
+            "path": "compact.Anchors",
+            "type": "ComputeBuffer",
+            "count": 20736,
+            "stride": 16,
+            "bytes": 331776
+        },
+        {
+            "path": "outer.tiles",
+            "type": "ComputeBuffer",
+            "count": 1024,
+            "stride": 16,
+            "bytes": 16384
+        },
+        {
+            "path": "outer.instances",
+            "type": "ComputeBuffer",
+            "count": 1138688,
+            "stride": 32,
+            "bytes": 36438016
+        },
+        {
+            "path": "outer.arguments",
+            "type": "ComputeBuffer",
+            "count": 4,
+            "stride": 4,
+            "bytes": 16
+        },
+        {
+            "path": "outer.controls",
+            "type": "ComputeBuffer",
+            "count": 75,
+            "stride": 16,
+            "bytes": 1200
+        }
+    ],
+    "cpuArraysInitial": [
+        {
+            "path": "data.blades",
+            "type": "Blade",
+            "count": 663552,
+            "stride": 32,
+            "bytes": 21233664
+        },
+        {
+            "path": "data.restNodes",
+            "type": "BoneInfo",
+            "count": 5308416,
+            "stride": 48,
+            "bytes": 254803968
+        },
+        {
+            "path": "data.rods",
+            "type": "Rod",
+            "count": 4644864,
+            "stride": 64,
+            "bytes": 297271296
+        },
+        {
+            "path": "data.InverseMass",
+            "type": "Single",
+            "count": 5308416,
+            "stride": 4,
+            "bytes": 21233664
+        },
+        {
+            "path": "data.Grids",
+            "type": "GrassGridStruct",
+            "count": 20736,
+            "stride": 16,
+            "bytes": 331776
+        },
+        {
+            "path": "data.VerticesData",
+            "type": "Vector3",
+            "count": 9953280,
+            "stride": 12,
+            "bytes": 119439360
+        },
+        {
+            "path": "data.Normals",
+            "type": "Vector3",
+            "count": 9953280,
+            "stride": 12,
+            "bytes": 119439360
+        },
+        {
+            "path": "data.Triangles",
+            "type": "Int32",
+            "count": 25878528,
+            "stride": 4,
+            "bytes": 103514112
+        },
+        {
+            "path": "data.UV",
+            "type": "Vector2",
+            "count": 9953280,
+            "stride": 8,
+            "bytes": 79626240
+        },
+        {
+            "path": "data.WorldYaws",
+            "type": "Quaternion",
+            "count": 20736,
+            "stride": 16,
+            "bytes": 331776
+        },
+        {
+            "path": "world.Cells",
+            "type": "Vector2Int",
+            "count": 20736,
+            "stride": 8,
+            "bytes": 165888
+        },
+        {
+            "path": "world.Changed._items",
+            "type": "Int32",
+            "count": 32768,
+            "stride": 4,
+            "bytes": 131072
+        },
+        {
+            "path": "world.Replacements._items",
+            "type": "Vector4Int",
+            "count": 32768,
+            "stride": 16,
+            "bytes": 524288
+        },
+        {
+            "path": "world.<TemplateNodes>k__BackingField",
+            "type": "BoneInfo",
+            "count": 8,
+            "stride": 48,
+            "bytes": 384
+        },
+        {
+            "path": "world.<TemplateRods>k__BackingField",
+            "type": "Rod",
+            "count": 7,
+            "stride": 64,
+            "bytes": 448
+        },
+        {
+            "path": "world.rotatedNodes",
+            "type": "BoneInfo",
+            "count": 8,
+            "stride": 48,
+            "bytes": 384
+        },
+        {
+            "path": "world.rotatedRods",
+            "type": "Rod",
+            "count": 7,
+            "stride": 64,
+            "bytes": 448
+        },
+        {
+            "path": "world.templateMass",
+            "type": "Single",
+            "count": 8,
+            "stride": 4,
+            "bytes": 32
+        },
+        {
+            "path": "world.cpuDirty",
+            "type": "Boolean",
+            "count": 20736,
+            "stride": 1,
+            "bytes": 20736
+        },
+        {
+            "path": "pool.gridSlot",
+            "type": "Int32",
+            "count": 20736,
+            "stride": 4,
+            "bytes": 82944
+        },
+        {
+            "path": "pool.slotGrid",
+            "type": "Int32",
+            "count": 1024,
+            "stride": 4,
+            "bytes": 4096
+        },
+        {
+            "path": "pool.lastUsed",
+            "type": "Int32",
+            "count": 1024,
+            "stride": 4,
+            "bytes": 4096
+        },
+        {
+            "path": "pool.active",
+            "type": "Boolean",
+            "count": 20736,
+            "stride": 1,
+            "bytes": 20736
+        },
+        {
+            "path": "pool.reserved",
+            "type": "Boolean",
+            "count": 1024,
+            "stride": 1,
+            "bytes": 1024
+        },
+        {
+            "path": "pool.scores",
+            "type": "Single",
+            "count": 20736,
+            "stride": 4,
+            "bytes": 82944
+        },
+        {
+            "path": "pool.interactionPriority",
+            "type": "Boolean",
+            "count": 20736,
+            "stride": 1,
+            "bytes": 20736
+        },
+        {
+            "path": "pool.nearby.contains",
+            "type": "Boolean",
+            "count": 20736,
+            "stride": 1,
+            "bytes": 20736
+        },
+        {
+            "path": "pool.nearby.Items._items",
+            "type": "Int32",
+            "count": 2048,
+            "stride": 4,
+            "bytes": 8192
+        },
+        {
+            "path": "pool.regionGrids.contains",
+            "type": "Boolean",
+            "count": 20736,
+            "stride": 1,
+            "bytes": 20736
+        },
+        {
+            "path": "pool.regionGrids.Items._items",
+            "type": "Int32",
+            "count": 256,
+            "stride": 4,
+            "bytes": 1024
+        },
+        {
+            "path": "pool.priorityGrids.contains",
+            "type": "Boolean",
+            "count": 20736,
+            "stride": 1,
+            "bytes": 20736
+        },
+        {
+            "path": "pool.priorityGrids.Items._items",
+            "type": "Int32",
+            "count": 512,
+            "stride": 4,
+            "bytes": 2048
+        },
+        {
+            "path": "pool.candidates._items",
+            "type": "Int32",
+            "count": 2048,
+            "stride": 4,
+            "bytes": 8192
+        },
+        {
+            "path": "pool.selected._items",
+            "type": "ActiveGrid",
+            "count": 1024,
+            "stride": 32,
+            "bytes": 32768
+        },
+        {
+            "path": "pool.InitializedSlots._items",
+            "type": "Int32",
+            "count": 1024,
+            "stride": 4,
+            "bytes": 4096
+        },
+        {
+            "path": "handoff.buffers._items",
+            "type": "ComputeBuffer",
+            "count": 16,
+            "stride": 8,
+            "bytes": 128
+        },
+        {
+            "path": "handoff.renderGrids",
+            "type": "ActiveGrid",
+            "count": 20736,
+            "stride": 32,
+            "bytes": 663552
+        },
+        {
+            "path": "handoff.gridStates",
+            "type": "GridState",
+            "count": 20736,
+            "stride": 16,
+            "bytes": 331776
+        },
+        {
+            "path": "handoff.historyMap",
+            "type": "Vector2Int",
+            "count": 20736,
+            "stride": 8,
+            "bytes": 165888
+        },
+        {
+            "path": "handoff.changedEntries",
+            "type": "Vector2Int",
+            "count": 20736,
+            "stride": 8,
+            "bytes": 165888
+        },
+        {
+            "path": "handoff.seedEntries",
+            "type": "Vector2Int",
+            "count": 20736,
+            "stride": 8,
+            "bytes": 165888
+        },
+        {
+            "path": "handoff.newSlots",
+            "type": "Initialization",
+            "count": 2048,
+            "stride": 16,
+            "bytes": 32768
+        },
+        {
+            "path": "handoff.slotGrid",
+            "type": "Int32",
+            "count": 2048,
+            "stride": 4,
+            "bytes": 8192
+        },
+        {
+            "path": "handoff.previousPool",
+            "type": "Int32",
+            "count": 20736,
+            "stride": 4,
+            "bytes": 82944
+        },
+        {
+            "path": "handoff.active",
+            "type": "Boolean",
+            "count": 20736,
+            "stride": 1,
+            "bytes": 20736
+        },
+        {
+            "path": "handoff.wanted",
+            "type": "Boolean",
+            "count": 20736,
+            "stride": 1,
+            "bytes": 20736
+        },
+        {
+            "path": "handoff.freeSlots._array",
+            "type": "Int32",
+            "count": 2048,
+            "stride": 4,
+            "bytes": 8192
+        },
+        {
+            "path": "handoff.boundary._items",
+            "type": "Int32",
+            "count": 1024,
+            "stride": 4,
+            "bytes": 4096
+        },
+        {
+            "path": "handoff.work.contains",
+            "type": "Boolean",
+            "count": 20736,
+            "stride": 1,
+            "bytes": 20736
+        },
+        {
+            "path": "handoff.work.Items._items",
+            "type": "Int32",
+            "count": 2048,
+            "stride": 4,
+            "bytes": 8192
+        },
+        {
+            "path": "handoff.warm.contains",
+            "type": "Boolean",
+            "count": 20736,
+            "stride": 1,
+            "bytes": 20736
+        },
+        {
+            "path": "handoff.warm.Items._items",
+            "type": "Int32",
+            "count": 1024,
+            "stride": 4,
+            "bytes": 4096
+        },
+        {
+            "path": "handoff.queryGrids.contains",
+            "type": "Boolean",
+            "count": 20736,
+            "stride": 1,
+            "bytes": 20736
+        },
+        {
+            "path": "handoff.queryGrids.Items._items",
+            "type": "Int32",
+            "count": 4096,
+            "stride": 4,
+            "bytes": 16384
+        },
+        {
+            "path": "handoff.stateDirty.contains",
+            "type": "Boolean",
+            "count": 20736,
+            "stride": 1,
+            "bytes": 20736
+        },
+        {
+            "path": "handoff.stateDirty.Items._items",
+            "type": "Int32",
+            "count": 2048,
+            "stride": 4,
+            "bytes": 8192
+        },
+        {
+            "path": "handoff.mapDirty.contains",
+            "type": "Boolean",
+            "count": 20736,
+            "stride": 1,
+            "bytes": 20736
+        },
+        {
+            "path": "handoff.mapDirty.Items._items",
+            "type": "Int32",
+            "count": 2048,
+            "stride": 4,
+            "bytes": 8192
+        },
+        {
+            "path": "handoff.activeIds._items",
+            "type": "Int32",
+            "count": 1024,
+            "stride": 4,
+            "bytes": 4096
+        },
+        {
+            "path": "handoff.wantedIds._items",
+            "type": "Int32",
+            "count": 2048,
+            "stride": 4,
+            "bytes": 8192
+        },
+        {
+            "path": "handoff.transitions._items",
+            "type": "Int32",
+            "count": 2048,
+            "stride": 4,
+            "bytes": 8192
+        },
+        {
+            "path": "handoff.selectedOffsets",
+            "type": "Int32",
+            "count": 20736,
+            "stride": 4,
+            "bytes": 82944
+        },
+        {
+            "path": "handoff.boundaryScores",
+            "type": "Single",
+            "count": 20736,
+            "stride": 4,
+            "bytes": 82944
+        },
+        {
+            "path": "handoff.kernels",
+            "type": "Int32",
+            "count": 7,
+            "stride": 4,
+            "bytes": 28
+        },
+        {
+            "path": "renderer.buffers._items",
+            "type": "ComputeBuffer",
+            "count": 32,
+            "stride": 8,
+            "bytes": 256
+        },
+        {
+            "path": "renderer.colliders._items",
+            "type": "Transform",
+            "count": 12,
+            "stride": 8,
+            "bytes": 96
+        },
+        {
+            "path": "renderer.<Compact>k__BackingField.buffers._items",
+            "type": "ComputeBuffer",
+            "count": 4,
+            "stride": 8,
+            "bytes": 32
+        },
+        {
+            "path": "renderer.shapes",
+            "type": "ColliderMotion",
+            "count": 12,
+            "stride": 64,
+            "bytes": 768
+        },
+        {
+            "path": "renderer.targets",
+            "type": "ColliderMotion",
+            "count": 12,
+            "stride": 64,
+            "bytes": 768
+        },
+        {
+            "path": "renderer.motionStartA",
+            "type": "Vector3",
+            "count": 12,
+            "stride": 12,
+            "bytes": 144
+        },
+        {
+            "path": "renderer.motionStartB",
+            "type": "Vector3",
+            "count": 12,
+            "stride": 12,
+            "bytes": 144
+        },
+        {
+            "path": "renderer.active",
+            "type": "ActiveGrid",
+            "count": 1024,
+            "stride": 32,
+            "bytes": 32768
+        },
+        {
+            "path": "renderer.initialization",
+            "type": "Initialization",
+            "count": 1024,
+            "stride": 8,
+            "bytes": 8192
+        },
+        {
+            "path": "renderer.emptyDraw",
+            "type": "UInt32",
+            "count": 4,
+            "stride": 4,
+            "bytes": 16
+        },
+        {
+            "path": "renderer.frustum",
+            "type": "Vector4",
+            "count": 6,
+            "stride": 16,
+            "bytes": 96
+        },
+        {
+            "path": "renderer.interactionRegions._items",
+            "type": "Vector4",
+            "count": 16,
+            "stride": 16,
+            "bytes": 256
+        },
+        {
+            "path": "renderer.<Handoff>k__BackingField.buffers._items",
+            "type": "ComputeBuffer",
+            "count": 0,
+            "stride": 8,
+            "bytes": 0
+        },
+        {
+            "path": "outer.planes",
+            "type": "Vector4",
+            "count": 6,
+            "stride": 16,
+            "bytes": 96
+        }
+    ],
+    "cpuArraysStreamed": [
+        {
+            "path": "data.blades",
+            "type": "Blade",
+            "count": 663552,
+            "stride": 32,
+            "bytes": 21233664
+        },
+        {
+            "path": "data.restNodes",
+            "type": "BoneInfo",
+            "count": 5308416,
+            "stride": 48,
+            "bytes": 254803968
+        },
+        {
+            "path": "data.rods",
+            "type": "Rod",
+            "count": 4644864,
+            "stride": 64,
+            "bytes": 297271296
+        },
+        {
+            "path": "data.InverseMass",
+            "type": "Single",
+            "count": 5308416,
+            "stride": 4,
+            "bytes": 21233664
+        },
+        {
+            "path": "data.Grids",
+            "type": "GrassGridStruct",
+            "count": 20736,
+            "stride": 16,
+            "bytes": 331776
+        },
+        {
+            "path": "data.VerticesData",
+            "type": "Vector3",
+            "count": 9953280,
+            "stride": 12,
+            "bytes": 119439360
+        },
+        {
+            "path": "data.Normals",
+            "type": "Vector3",
+            "count": 9953280,
+            "stride": 12,
+            "bytes": 119439360
+        },
+        {
+            "path": "data.Triangles",
+            "type": "Int32",
+            "count": 25878528,
+            "stride": 4,
+            "bytes": 103514112
+        },
+        {
+            "path": "data.UV",
+            "type": "Vector2",
+            "count": 9953280,
+            "stride": 8,
+            "bytes": 79626240
+        },
+        {
+            "path": "data.WorldYaws",
+            "type": "Quaternion",
+            "count": 20736,
+            "stride": 16,
+            "bytes": 331776
+        },
+        {
+            "path": "world.Cells",
+            "type": "Vector2Int",
+            "count": 20736,
+            "stride": 8,
+            "bytes": 165888
+        },
+        {
+            "path": "world.Changed._items",
+            "type": "Int32",
+            "count": 32768,
+            "stride": 4,
+            "bytes": 131072
+        },
+        {
+            "path": "world.Replacements._items",
+            "type": "Vector4Int",
+            "count": 32768,
+            "stride": 16,
+            "bytes": 524288
+        },
+        {
+            "path": "world.<TemplateNodes>k__BackingField",
+            "type": "BoneInfo",
+            "count": 8,
+            "stride": 48,
+            "bytes": 384
+        },
+        {
+            "path": "world.<TemplateRods>k__BackingField",
+            "type": "Rod",
+            "count": 7,
+            "stride": 64,
+            "bytes": 448
+        },
+        {
+            "path": "world.rotatedNodes",
+            "type": "BoneInfo",
+            "count": 8,
+            "stride": 48,
+            "bytes": 384
+        },
+        {
+            "path": "world.rotatedRods",
+            "type": "Rod",
+            "count": 7,
+            "stride": 64,
+            "bytes": 448
+        },
+        {
+            "path": "world.templateMass",
+            "type": "Single",
+            "count": 8,
+            "stride": 4,
+            "bytes": 32
+        },
+        {
+            "path": "world.cpuDirty",
+            "type": "Boolean",
+            "count": 20736,
+            "stride": 1,
+            "bytes": 20736
+        },
+        {
+            "path": "pool.gridSlot",
+            "type": "Int32",
+            "count": 20736,
+            "stride": 4,
+            "bytes": 82944
+        },
+        {
+            "path": "pool.slotGrid",
+            "type": "Int32",
+            "count": 1024,
+            "stride": 4,
+            "bytes": 4096
+        },
+        {
+            "path": "pool.lastUsed",
+            "type": "Int32",
+            "count": 1024,
+            "stride": 4,
+            "bytes": 4096
+        },
+        {
+            "path": "pool.active",
+            "type": "Boolean",
+            "count": 20736,
+            "stride": 1,
+            "bytes": 20736
+        },
+        {
+            "path": "pool.reserved",
+            "type": "Boolean",
+            "count": 1024,
+            "stride": 1,
+            "bytes": 1024
+        },
+        {
+            "path": "pool.scores",
+            "type": "Single",
+            "count": 20736,
+            "stride": 4,
+            "bytes": 82944
+        },
+        {
+            "path": "pool.interactionPriority",
+            "type": "Boolean",
+            "count": 20736,
+            "stride": 1,
+            "bytes": 20736
+        },
+        {
+            "path": "pool.nearby.contains",
+            "type": "Boolean",
+            "count": 20736,
+            "stride": 1,
+            "bytes": 20736
+        },
+        {
+            "path": "pool.nearby.Items._items",
+            "type": "Int32",
+            "count": 2048,
+            "stride": 4,
+            "bytes": 8192
+        },
+        {
+            "path": "pool.regionGrids.contains",
+            "type": "Boolean",
+            "count": 20736,
+            "stride": 1,
+            "bytes": 20736
+        },
+        {
+            "path": "pool.regionGrids.Items._items",
+            "type": "Int32",
+            "count": 256,
+            "stride": 4,
+            "bytes": 1024
+        },
+        {
+            "path": "pool.priorityGrids.contains",
+            "type": "Boolean",
+            "count": 20736,
+            "stride": 1,
+            "bytes": 20736
+        },
+        {
+            "path": "pool.priorityGrids.Items._items",
+            "type": "Int32",
+            "count": 512,
+            "stride": 4,
+            "bytes": 2048
+        },
+        {
+            "path": "pool.candidates._items",
+            "type": "Int32",
+            "count": 2048,
+            "stride": 4,
+            "bytes": 8192
+        },
+        {
+            "path": "pool.selected._items",
+            "type": "ActiveGrid",
+            "count": 1024,
+            "stride": 32,
+            "bytes": 32768
+        },
+        {
+            "path": "pool.InitializedSlots._items",
+            "type": "Int32",
+            "count": 1024,
+            "stride": 4,
+            "bytes": 4096
+        },
+        {
+            "path": "handoff.buffers._items",
+            "type": "ComputeBuffer",
+            "count": 16,
+            "stride": 8,
+            "bytes": 128
+        },
+        {
+            "path": "handoff.renderGrids",
+            "type": "ActiveGrid",
+            "count": 20736,
+            "stride": 32,
+            "bytes": 663552
+        },
+        {
+            "path": "handoff.gridStates",
+            "type": "GridState",
+            "count": 20736,
+            "stride": 16,
+            "bytes": 331776
+        },
+        {
+            "path": "handoff.historyMap",
+            "type": "Vector2Int",
+            "count": 20736,
+            "stride": 8,
+            "bytes": 165888
+        },
+        {
+            "path": "handoff.changedEntries",
+            "type": "Vector2Int",
+            "count": 20736,
+            "stride": 8,
+            "bytes": 165888
+        },
+        {
+            "path": "handoff.seedEntries",
+            "type": "Vector2Int",
+            "count": 20736,
+            "stride": 8,
+            "bytes": 165888
+        },
+        {
+            "path": "handoff.newSlots",
+            "type": "Initialization",
+            "count": 2048,
+            "stride": 16,
+            "bytes": 32768
+        },
+        {
+            "path": "handoff.slotGrid",
+            "type": "Int32",
+            "count": 2048,
+            "stride": 4,
+            "bytes": 8192
+        },
+        {
+            "path": "handoff.previousPool",
+            "type": "Int32",
+            "count": 20736,
+            "stride": 4,
+            "bytes": 82944
+        },
+        {
+            "path": "handoff.active",
+            "type": "Boolean",
+            "count": 20736,
+            "stride": 1,
+            "bytes": 20736
+        },
+        {
+            "path": "handoff.wanted",
+            "type": "Boolean",
+            "count": 20736,
+            "stride": 1,
+            "bytes": 20736
+        },
+        {
+            "path": "handoff.freeSlots._array",
+            "type": "Int32",
+            "count": 2048,
+            "stride": 4,
+            "bytes": 8192
+        },
+        {
+            "path": "handoff.boundary._items",
+            "type": "Int32",
+            "count": 2048,
+            "stride": 4,
+            "bytes": 8192
+        },
+        {
+            "path": "handoff.work.contains",
+            "type": "Boolean",
+            "count": 20736,
+            "stride": 1,
+            "bytes": 20736
+        },
+        {
+            "path": "handoff.work.Items._items",
+            "type": "Int32",
+            "count": 2048,
+            "stride": 4,
+            "bytes": 8192
+        },
+        {
+            "path": "handoff.warm.contains",
+            "type": "Boolean",
+            "count": 20736,
+            "stride": 1,
+            "bytes": 20736
+        },
+        {
+            "path": "handoff.warm.Items._items",
+            "type": "Int32",
+            "count": 2048,
+            "stride": 4,
+            "bytes": 8192
+        },
+        {
+            "path": "handoff.queryGrids.contains",
+            "type": "Boolean",
+            "count": 20736,
+            "stride": 1,
+            "bytes": 20736
+        },
+        {
+            "path": "handoff.queryGrids.Items._items",
+            "type": "Int32",
+            "count": 4096,
+            "stride": 4,
+            "bytes": 16384
+        },
+        {
+            "path": "handoff.stateDirty.contains",
+            "type": "Boolean",
+            "count": 20736,
+            "stride": 1,
+            "bytes": 20736
+        },
+        {
+            "path": "handoff.stateDirty.Items._items",
+            "type": "Int32",
+            "count": 2048,
+            "stride": 4,
+            "bytes": 8192
+        },
+        {
+            "path": "handoff.mapDirty.contains",
+            "type": "Boolean",
+            "count": 20736,
+            "stride": 1,
+            "bytes": 20736
+        },
+        {
+            "path": "handoff.mapDirty.Items._items",
+            "type": "Int32",
+            "count": 2048,
+            "stride": 4,
+            "bytes": 8192
+        },
+        {
+            "path": "handoff.activeIds._items",
+            "type": "Int32",
+            "count": 1024,
+            "stride": 4,
+            "bytes": 4096
+        },
+        {
+            "path": "handoff.wantedIds._items",
+            "type": "Int32",
+            "count": 2048,
+            "stride": 4,
+            "bytes": 8192
+        },
+        {
+            "path": "handoff.transitions._items",
+            "type": "Int32",
+            "count": 2048,
+            "stride": 4,
+            "bytes": 8192
+        },
+        {
+            "path": "handoff.selectedOffsets",
+            "type": "Int32",
+            "count": 20736,
+            "stride": 4,
+            "bytes": 82944
+        },
+        {
+            "path": "handoff.boundaryScores",
+            "type": "Single",
+            "count": 20736,
+            "stride": 4,
+            "bytes": 82944
+        },
+        {
+            "path": "handoff.kernels",
+            "type": "Int32",
+            "count": 7,
+            "stride": 4,
+            "bytes": 28
+        },
+        {
+            "path": "renderer.buffers._items",
+            "type": "ComputeBuffer",
+            "count": 32,
+            "stride": 8,
+            "bytes": 256
+        },
+        {
+            "path": "renderer.colliders._items",
+            "type": "Transform",
+            "count": 12,
+            "stride": 8,
+            "bytes": 96
+        },
+        {
+            "path": "renderer.<Compact>k__BackingField.buffers._items",
+            "type": "ComputeBuffer",
+            "count": 4,
+            "stride": 8,
+            "bytes": 32
+        },
+        {
+            "path": "renderer.shapes",
+            "type": "ColliderMotion",
+            "count": 12,
+            "stride": 64,
+            "bytes": 768
+        },
+        {
+            "path": "renderer.targets",
+            "type": "ColliderMotion",
+            "count": 12,
+            "stride": 64,
+            "bytes": 768
+        },
+        {
+            "path": "renderer.motionStartA",
+            "type": "Vector3",
+            "count": 12,
+            "stride": 12,
+            "bytes": 144
+        },
+        {
+            "path": "renderer.motionStartB",
+            "type": "Vector3",
+            "count": 12,
+            "stride": 12,
+            "bytes": 144
+        },
+        {
+            "path": "renderer.active",
+            "type": "ActiveGrid",
+            "count": 1024,
+            "stride": 32,
+            "bytes": 32768
+        },
+        {
+            "path": "renderer.initialization",
+            "type": "Initialization",
+            "count": 1024,
+            "stride": 8,
+            "bytes": 8192
+        },
+        {
+            "path": "renderer.emptyDraw",
+            "type": "UInt32",
+            "count": 4,
+            "stride": 4,
+            "bytes": 16
+        },
+        {
+            "path": "renderer.frustum",
+            "type": "Vector4",
+            "count": 6,
+            "stride": 16,
+            "bytes": 96
+        },
+        {
+            "path": "renderer.interactionRegions._items",
+            "type": "Vector4",
+            "count": 16,
+            "stride": 16,
+            "bytes": 256
+        },
+        {
+            "path": "renderer.<Handoff>k__BackingField.buffers._items",
+            "type": "ComputeBuffer",
+            "count": 0,
+            "stride": 8,
+            "bytes": 0
+        },
+        {
+            "path": "outer.planes",
+            "type": "Vector4",
+            "count": 6,
+            "stride": 16,
+            "bytes": 96
+        }
+    ]
+}

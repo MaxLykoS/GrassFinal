@@ -1,0 +1,15 @@
+using System;
+using UnityEditor;
+using UnityEditor.Build.Reporting;
+public static class BuildContactPlayer
+{
+    public static void Run()
+    {
+        var result=BuildPipeline.BuildPlayer(new BuildPlayerOptions {
+            scenes=new[]{"Assets/PBDGrass/Scenes/PBDGrassContactLab.unity"},
+            locationPathName=Environment.GetEnvironmentVariable("GRASS_PROFILE_PLAYER"),
+            target=BuildTarget.StandaloneWindows64,options=BuildOptions.Development
+        });
+        EditorApplication.Exit(result.summary.result==BuildResult.Succeeded?0:1);
+    }
+}

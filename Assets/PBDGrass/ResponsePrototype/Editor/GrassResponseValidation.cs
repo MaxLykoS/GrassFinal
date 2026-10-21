@@ -56,7 +56,7 @@ namespace GrassFinal.PBDGrass.Editor
                     var nodes=demo.References[t].ReadNodes(); initial[t]=new Vector3[8];
                     for(int n=0;n<8;n++)initial[t][n]=nodes[n].Position;
                     var result=new TypeResult { name=type.DisplayName,frequency=type.AngularFrequency,damping=type.DampingRatio,dynamicFit=type.DynamicFitError };
-                    result.unloadedToEquilibrium=Vector3.Distance(nodes[7].Position,demo.References[t].Data.Blades[0].Root+demo.References[t].Data.RestNodes[7].Position);
+                    result.unloadedToEquilibrium=Vector3.Distance(nodes[7].Position,demo.References[t].Data.GetBlade(0).Root+demo.References[t].Data.GetRestNode(7).Position);
                     report.types.Add(result);
                 }
                 for(int tick=0;tick<180;tick++)demo.Step(Vector3.zero);

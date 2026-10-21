@@ -24,6 +24,9 @@ namespace GrassFinal.PBDGrass
         private readonly BoneInfo[] rotatedNodes=new BoneInfo[8];
         private readonly GrassBladeData.Rod[] rotatedRods=new GrassBladeData.Rod[7];
         private float[] templateMass;
+        public float[] TemplateMass => templateMass;
+        public Vector2[] TemplateUV { get; private set; }
+        public int[] TemplateTriangles { get; private set; }
         private readonly bool[] cpuDirty;
         private int dirtyCount;
         public GrassWorldLayout(int size,Vector3 focus,float ground)
@@ -65,14 +68,52 @@ namespace GrassFinal.PBDGrass
         }
         public void Attach(GrassBladeData data)
         {
+            ExtractTemplate(data);
+            foreach(int g in Changed)Fill(data,g);
+            data.MoveWorldBounds(Center);
+            data.RefreshCpuWorld=()=>RefreshCpu(data);
+        }
+        private void ExtractTemplate(GrassBladeData data)
+        {
             TemplateNodes=new BoneInfo[8]; TemplateRods=new GrassBladeData.Rod[7]; templateMass=new float[8];
             Quaternion inverse=Quaternion.Inverse(Yaws[0]);
             for(int n=0;n<8;n++) { var node=data.RestNodes[n]; node.Position=inverse*node.Position;node.Predicted=node.Position;node.OriginPos=node.Position;node.Velocities=Vector3.zero;TemplateNodes[n]=node;templateMass[n]=data.InverseMass[n]; }
             for(int s=0;s<7;s++) { var rod=data.Rods[s];rod.Rotation=inverse*rod.Rotation;TemplateRods[s]=rod; }
             TemplateBlade=data.Blades[0];
-            foreach(int g in Changed)Fill(data,g);
-            data.MoveWorldBounds(Center);
-            data.RefreshCpuWorld=()=>RefreshCpu(data);
+            TemplateUV=new Vector2[15];TemplateTriangles=new int[39];
+            Array.Copy(data.UV,TemplateUV,15);Array.Copy(data.Triangles,TemplateTriangles,39);
+        }
+        public GrassBladeData CreateCompactData(GrassResponseType type,float tipThickness)
+        {
+            // Reproduce the old first cell, including world-space float rounding before
+            // extracting its material frame. A canonical local-space replacement can
+            // change the basal quaternion enough to diverge during contact solving.
+            PBDGrassPatch sample=null;var random=UnityEngine.Random.state;
+            try
+            {
+                UnityEngine.Random.InitState(12345);sample=new PBDGrassPatch(Center,1,32,type.Shape);
+                var uv=new Vector2[32*15];var indices=new int[32*39];Vector3[] local=null;
+                for(int b=0;b<32;b++)
+                {
+                    var body=new PBDGrassBody(ref sample.vertices,ref uv,ref indices,b*15,b*39,Vector3.zero,7,type.Shape.Height,type.Shape.HalfWidth,0,1,type.Shape);
+                    if(b==0)local=(Vector3[])body.OriginPos.Clone();
+                    body.Transform(Matrix4x4.TRS(GrassWorldIdentity.Root(Cells[0],b,Ground),Yaws[0],Vector3.one));sample.Bodies[b]=body;
+                }
+                sample.UpdateMesh();sample.PatchMesh.uv=uv;sample.PatchMesh.triangles=indices;sample.PatchMesh.RecalculateNormals();
+                ExtractTemplate(new GrassBladeData(sample,tipThickness,new[] {Yaws[0]}));
+                // Preserve the old maximum reach exactly, without allocating per-blade
+                // bodies, constraints, mesh, nodes or rods for the whole field.
+                float maximum=0;
+                for(int g=0;g<Cells.Length;g++)for(int leaf=0;leaf<32;leaf++)
+                {
+                    var matrix=Matrix4x4.TRS(GrassWorldIdentity.Root(Cells[g],leaf,Ground),Yaws[g],Vector3.one);
+                    Vector3 previous=matrix.MultiplyPoint3x4(local[0]);float length=0;
+                    for(int n=1;n<8;n++) {Vector3 next=matrix.MultiplyPoint3x4(local[n]);length+=Vector3.Distance(previous,next);previous=next;}
+                    maximum=Mathf.Max(maximum,length);
+                }
+                return new GrassBladeData(this,maximum);
+            }
+            finally {UnityEngine.Random.state=random;if(sample!=null)GrassDemo.DestroyMesh(sample.PatchMesh);}
         }
         public bool Move(Vector3 focus,GrassBladeData data)
         {
@@ -81,7 +122,7 @@ namespace GrassFinal.PBDGrass
             foreach(int g in Changed)
             {
                 data.Grids[g].Pos=new Vector3(Cells[g].x+.5f,Ground,Cells[g].y+.5f);
-                if(!cpuDirty[g]) {cpuDirty[g]=true;dirtyCount++;}
+                if(!data.UsesCompactTemplate && !cpuDirty[g]) {cpuDirty[g]=true;dirtyCount++;}
             }
             data.MoveWorldBounds(Center); Version++; return true;
         }

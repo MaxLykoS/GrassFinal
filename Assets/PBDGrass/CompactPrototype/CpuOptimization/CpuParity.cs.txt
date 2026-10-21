@@ -1,0 +1,130 @@
+// Validation only: installed beside renamed pre-optimization classes in an isolated project.
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using GrassFinal.PBDGrass;
+using Object=UnityEngine.Object;
+public static class CpuParity
+{
+    [Serializable] public class Check {public string phase;public long identicalGpuBytes;}
+    [Serializable] public class Report
+    {
+        public bool passed;public string error;public int poolCases,comparedSteps,minActive=32768,maxActive=32768,pageShifts;
+        public int patchSize=144;public float middleFull=52,middleOuter=64;public List<Check> checkpoints=new List<Check>();
+    }
+    static Report report=new Report();static string output;static int step;
+    static object Field(object o,string n)=>o.GetType().GetField(n,BindingFlags.Instance|BindingFlags.NonPublic).GetValue(o);
+    static void Require(bool ok,string message) {if(!ok)throw new Exception("Step "+step+": "+message);}
+    static int[] Words(Array a)
+    {
+        int bytes=a.Length*Marshal.SizeOf(a.GetType().GetElementType());var result=new int[bytes/4];
+        var pin=GCHandle.Alloc(a,GCHandleType.Pinned);try {Marshal.Copy(pin.AddrOfPinnedObject(),result,0,result.Length);}finally {pin.Free();}return result;
+    }
+    static void Equal(int[] a,int[] b,string label)
+    {Require(a.Length==b.Length,label+" size");for(int i=0;i<a.Length;i++)if(a[i]!=b[i])throw new Exception("Step "+step+": "+label+" word "+i+" "+a[i]+" != "+b[i]);}
+    static void Arrays(object a,object b,string name) {Equal(Words((Array)Field(a,name)),Words((Array)Field(b,name)),name);}
+    static long Buffers(ComputeBuffer a,ComputeBuffer b,string label)
+    {
+        Require(a.count==b.count && a.stride==b.stride,label+" shape");
+        var x=new int[a.count*a.stride/4];var y=new int[x.Length];a.GetData(x);b.GetData(y);Equal(x,y,label);return (long)x.Length*4;
+    }
+    static void Pools(GrassSimulationPool a,LegacyGrassSimulationPool b)
+    {
+        Require(a.ActiveBlades==b.ActiveBlades && a.BudgetRejectedGrids==b.BudgetRejectedGrids && a.InteractionBlades==b.InteractionBlades && a.InitializationCount==b.InitializationCount,"pool counts");
+        for(int i=0;i<a.Selected.Count;i++)
+        {var x=a.Selected[i];var y=b.Selected[i];Require(x.GridId==y.GridId && x.PoolOffset==y.PoolOffset && x.BladeOffset==y.BladeOffset && x.Position==y.Position,"pool ordered selection "+i);}
+        Arrays(a,b,"gridSlot");Arrays(a,b,"slotGrid");Arrays(a,b,"lastUsed");
+    }
+    static void PoolCases()
+    {
+        var random=new System.Random(8871);var grids=new GrassGridStruct[5000];
+        for(int i=0;i<grids.Length;i++)grids[i]=new GrassGridStruct {Pos=new Vector3((float)random.NextDouble()*100-50,(float)random.NextDouble()*3,(float)random.NextDouble()*100-50),IdOffset=i*32};
+        for(int mode=0;mode<2;mode++)
+        {
+            var a=new GrassSimulationPool(grids,2048);var b=new LegacyGrassSimulationPool(grids,2048);
+            var contacts=new List<Vector4>();
+            for(step=0;step<300;step++)
+            {
+                float t=step*.1f;var center=new Vector3(Mathf.Sin(t)*33,3,Mathf.Cos(t*.7f)*33);
+                contacts.Clear();if(step%23<19)for(int c=0;c<12;c++)contacts.Add(new Vector4(Mathf.Sin(t+c)*35,Mathf.Cos(t*.5f+c)*35,1+c*.4f,0));
+                a.Select(center,10,.35f,step,(s,g)=>{},mode==1,contacts);b.Select(center,10,.35f,step,(s,g)=>{},mode==1,contacts);Pools(a,b);report.poolCases++;
+                if(step%37==0) {var recycle=new int[] {step%grids.Length,(step+142)%grids.Length};a.ForgetGrids(recycle);b.ForgetGrids(recycle);}
+            }
+        }
+    }
+    public static void Run()
+    {
+        output=Environment.GetEnvironmentVariable("GRASS_CPU_OUTPUT");Directory.CreateDirectory(output);
+        try {PoolCases();RunScene(true);RunScene(false);report.passed=true;}
+        catch(Exception e) {report.error=e.ToString();Debug.LogError(e);}
+        File.WriteAllText(Path.Combine(output,"Parity.json"),JsonUtility.ToJson(report,true));Debug.Log("CPU_PARITY "+JsonUtility.ToJson(report));EditorApplication.Exit(report.passed?0:1);
+    }
+    static void RunScene(bool streamed)
+    {
+        string scene=streamed?"Assets/PBDGrass/Scenes/PBDGrassContactLab.unity":"Assets/PBDGrass/Scenes/PBDGrassCombinedBaseline.unity";
+        EditorSceneManager.OpenScene(scene);var demo=Object.FindObjectOfType<GrassHandoffDemo>();var lab=Object.FindObjectOfType<GrassShowcaseController>();
+        demo.enabled=false;demo.Cam.enabled=false;if(demo.OuterCoverage!=null)demo.OuterCoverage.enabled=false;if(lab!=null)lab.enabled=false;
+        if(lab!=null) {lab.SetView(1);lab.ApplyActors(0,true);}
+        demo.AutoTour=false;demo.Initialize();var a=demo.Renderer;
+        var center=demo.Cam.transform.position;center.y=demo.transform.position.y;
+        var world=streamed?new GrassWorldLayout(demo.PatchSize,center,demo.transform.position.y):null;
+        var patch=streamed?world.CreatePatch(demo.Handoff.BakedResponse):GrassResponseType.CreateHandoffPatch(demo.Handoff.BakedResponse,demo.transform.position,demo.PatchSize);
+        var colliders=new List<Transform>();if(demo.Interaction!=null)colliders.Add(demo.Interaction);colliders.AddRange(demo.AdditionalInteractions);
+        using(var b=new LegacyPBDGrassPatchRenderer(patch,demo.Solver,demo.GrassMaterial,demo.Cam,demo.WindNoise,demo.Physics,colliders,demo.Handoff,demo.HandoffShader,world,demo.StreamingShader))
+        {
+            Object.DestroyImmediate(patch.PatchMesh);
+            b.SetWind(demo.Wind,.1f,new Vector4(.01f,.01f,0,1));b.SimulationCenter=center;b.RefreshSimulationSelection();b.ResetDeformation();
+            var ta=Field(a.Handoff,"tiered");var tb=Field(b.Handoff,"tiered");
+            Compare(a,b,ta,tb);Checkpoint(a,b,ta,tb,streamed?"stream_birth":"combined_birth");
+            int count=streamed?1800:600;
+            for(step=1;step<=count;step++)
+            {
+                float t=step/60f;Vector3 focus=center;
+                if(streamed)
+                {
+                    float x=t<6?0:t<12?Mathf.SmoothStep(0,36,(t-6)/6):t<15?36:t<21?Mathf.SmoothStep(36,0,(t-15)/6):0;
+                    focus.x+=x;
+                    if(step==1500 || step==1501)focus.x+=160;
+                    if(step>=1620 && step<1680)focus+=new Vector3(-16,0,-8);
+                    if(step==1080)demo.Handoff.AdaptiveHistory=false;
+                    if(step==1140)demo.Handoff.AdaptiveHistory=true;
+                    lab.ApplyActors(t,step<360 || step>=1200 && step<1440);
+                    a.StreamTo(focus);b.StreamTo(focus);
+                    Compare(a,b,ta,tb); // includes the extra classification on a page change
+                }
+                else {focus=demo.TourPosition(t);focus.y=0;}
+                a.SimulationCenter=focus;b.SimulationCenter=focus;
+                if(step==1740 || !streamed && step==500) {a.ResetDeformation();b.ResetDeformation();Compare(a,b,ta,tb);}
+                var wind=GrassResponseDemo.WindAt(t,true)*(demo.Wind.magnitude/6);
+                a.SetWind(wind,.1f,new Vector4(.01f,.01f,0,1));b.SetWind(wind,.1f,new Vector4(.01f,.01f,0,1));
+                a.Advance(1f/60);b.Advance(1f/60);Compare(a,b,ta,tb);report.comparedSteps++;
+                report.minActive=Math.Min(report.minActive,a.ActiveBladeCount);report.maxActive=Math.Max(report.maxActive,a.ActiveBladeCount);Require(a.ActiveBladeCount==32768,"full near workload");
+                if(step==1 || step==300 || step==600 || step==900 || step==1320 || step==1500 || step==1502 || step==1620 || step==1800)
+                    Checkpoint(a,b,ta,tb,(streamed?"stream_":"combined_")+step);
+            }
+            if(streamed)report.pageShifts=a.World.Version;
+        }
+        a.Dispose();GC.Collect();
+    }
+    static void Compare(PBDGrassPatchRenderer a,LegacyPBDGrassPatchRenderer b,object ta,object tb)
+    {
+        Pools(a.Pool,b.Pool);Require(a.SimulationTicks==b.SimulationTicks,"ticks");
+        Require(a.Handoff.HistoryResidentBlades==b.Handoff.HistoryResidentBlades && a.Handoff.TransitionBlades==b.Handoff.TransitionBlades && a.Handoff.EntryInitializations==b.Handoff.EntryInitializations,"history counts");
+        if(ta!=null) {Arrays(ta,tb,"gridStates");Arrays(ta,tb,"historyMap");Arrays(ta,tb,"slotGrid");}
+        else Arrays(a.Handoff,b.Handoff,"gridStates");
+    }
+    static void Checkpoint(PBDGrassPatchRenderer a,LegacyPBDGrassPatchRenderer b,object ta,object tb,string phase)
+    {
+        long bytes=0;
+        foreach(string name in new[] {"bones","frames","plasticBends","positions","normals"})bytes+=Buffers((ComputeBuffer)Field(a,name),(ComputeBuffer)Field(b,name),name);
+        if(a.Compact!=null) {bytes+=Buffers(a.Compact.Pose,b.Compact.Pose,"compactPose");bytes+=Buffers(a.Compact.Plastic,b.Compact.Plastic,"compactPlastic");}
+        foreach(string name in ta!=null?new[] {"states","mapping","windState","previousWind"}:new[] {"states","windState"})
+            bytes+=Buffers((ComputeBuffer)Field(ta??a.Handoff,name),(ComputeBuffer)Field(tb??b.Handoff,name),name);
+        report.checkpoints.Add(new Check {phase=phase,identicalGpuBytes=bytes});Debug.Log("CPU_PARITY_CHECK "+phase+" bytes="+bytes);
+    }
+}

@@ -1,0 +1,43 @@
+#pragma kernel Encode
+#pragma kernel Compare
+#define COMPACT_POSE_WRITABLE
+#include "GrassCompactPacking.cginc"
+struct BoneInfo {float3 Position,Predicted,Velocities,OriginPos;};
+struct Frame {float4 Rotation;float3 AngularVelocity;float Padding;};
+StructuredBuffer<BoneInfo> CodecNodes;
+StructuredBuffer<Frame> CodecFrames;
+StructuredBuffer<float> CodecWidths;
+RWStructuredBuffer<float4> CodecErrors;
+int CodecCount;
+float3 SafeNormal(float3 v,float3 fallback) {float l=dot(v,v);return l>1e-16?v*rsqrt(l):fallback;}
+float3 QRotate(float4 q,float3 v) {return v+2*cross(q.xyz,cross(q.xyz,v)+q.w*v);}
+#include "GrassCompactEncode.cginc"
+[numthreads(64,1,1)]
+void Encode(uint3 id:SV_DispatchThreadID)
+{
+    if(id.x>=(uint)CodecCount)return;
+    float3 p[8];float4 q[7];
+    [unroll] for(uint n=0;n<8;n++)p[n]=CodecNodes[id.x*8+n].Position;
+    [unroll] for(uint s=0;s<7;s++)q[s]=CodecFrames[id.x*7+s].Rotation;
+    WriteCompactPose(id.x,p,q);
+}
+[numthreads(64,1,1)]
+void Compare(uint3 id:SV_DispatchThreadID)
+{
+    if(id.x>=(uint)CodecCount)return;
+    uint blade=id.x;float nodeError=0,normalError=0,edgeError=0;
+    [unroll] for(uint n=0;n<8;n++)nodeError=max(nodeError,distance(CompactPosition(blade,n),CodecNodes[blade*8+n].Position));
+    [unroll] for(uint s=0;s<7;s++)
+    {
+        float3 original=CodecNodes[blade*8+s].Position,decoded=CompactPosition(blade,s);
+        float3 t=SafeNormal(CodecNodes[blade*8+s+1].Position-original,float3(0,1,0));
+        float3 w=QRotate(CodecFrames[blade*7+s].Rotation,float3(1,0,0));w=SafeNormal(w-t*dot(w,t),float3(1,0,0));
+        float3 td=SafeNormal(CompactPosition(blade,s+1)-decoded,float3(0,1,0));
+        float3 wd=CompactWidth(blade,s);wd=SafeNormal(wd-td*dot(wd,td),float3(1,0,0));
+        float3 normal=SafeNormal(cross(w,t),float3(0,0,1)),nd=SafeNormal(cross(wd,td),float3(0,0,1));
+        // atan2 is stable near zero, unlike acos(dot) at float precision.
+        normalError=max(normalError,atan2(length(cross(normal,nd)),dot(normal,nd))*57.2957795);
+        edgeError=max(edgeError,max(distance(original+w*CodecWidths[s],decoded+wd*CodecWidths[s]),distance(original-w*CodecWidths[s],decoded-wd*CodecWidths[s])));
+    }
+    CodecErrors[blade]=float4(nodeError,normalError,edgeError,0);
+}

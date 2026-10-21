@@ -1,0 +1,2619 @@
+{
+    "passed": true,
+    "caseName": "wide_editor",
+    "error": "",
+    "gpu": "NVIDIA GeForce RTX 3080 Ti",
+    "cpu": "AMD Ryzen 7 5800X 8-Core Processor ",
+    "unity": "2022.3.62f2c1",
+    "startUtc": "2026-10-20T17:27:56.2859559Z",
+    "endUtc": "2026-10-20T17:28:49.4864835Z",
+    "editor": true,
+    "patchSize": 144,
+    "width": 1600,
+    "height": 900,
+    "msaa": 4,
+    "warmSeconds": 10.0,
+    "measureSeconds": 20.0,
+    "rows": [
+        {
+            "frameIntervalMs": 74.29090000000827,
+            "cpuMs": 77.2846,
+            "advanceCpuMs": 76.6969,
+            "poolCpuMs": 28.934600000000004,
+            "handoffCpuMs": 47.1439,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007624268531799316
+        },
+        {
+            "frameIntervalMs": 81.11710000000017,
+            "cpuMs": 132.6994,
+            "advanceCpuMs": 132.2077,
+            "poolCpuMs": 87.7986,
+            "handoffCpuMs": 43.8051,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.014450430870056153
+        },
+        {
+            "frameIntervalMs": 133.03390000000094,
+            "cpuMs": 74.3171,
+            "advanceCpuMs": 73.8324,
+            "poolCpuMs": 29.3517,
+            "handoffCpuMs": 43.9208,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.0663672685623169
+        },
+        {
+            "frameIntervalMs": 74.66370000000211,
+            "cpuMs": 76.3594,
+            "advanceCpuMs": 75.8511,
+            "poolCpuMs": 29.6817,
+            "handoffCpuMs": 45.4765,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.00799703598022461
+        },
+        {
+            "frameIntervalMs": 76.72169999999312,
+            "cpuMs": 74.777,
+            "advanceCpuMs": 74.3041,
+            "poolCpuMs": 29.2846,
+            "handoffCpuMs": 44.402499999999999,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.010055065155029297
+        },
+        {
+            "frameIntervalMs": 75.08699999999635,
+            "cpuMs": 74.224,
+            "advanceCpuMs": 73.5845,
+            "poolCpuMs": 28.8637,
+            "handoffCpuMs": 44.17,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008420348167419434
+        },
+        {
+            "frameIntervalMs": 74.57850000000122,
+            "cpuMs": 73.8993,
+            "advanceCpuMs": 73.4113,
+            "poolCpuMs": 28.9941,
+            "handoffCpuMs": 43.8856,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.0079118013381958
+        },
+        {
+            "frameIntervalMs": 74.19070000000261,
+            "cpuMs": 73.7787,
+            "advanceCpuMs": 73.3086,
+            "poolCpuMs": 28.8762,
+            "handoffCpuMs": 43.8851,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007524013519287109
+        },
+        {
+            "frameIntervalMs": 74.14060000000689,
+            "cpuMs": 75.2306,
+            "advanceCpuMs": 74.6237,
+            "poolCpuMs": 29.8094,
+            "handoffCpuMs": 44.2892,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007473945617675781
+        },
+        {
+            "frameIntervalMs": 75.61259999999948,
+            "cpuMs": 77.2291,
+            "advanceCpuMs": 76.6282,
+            "poolCpuMs": 29.9771,
+            "handoffCpuMs": 46.0144,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008945941925048828
+        },
+        {
+            "frameIntervalMs": 77.62419999998827,
+            "cpuMs": 75.4729,
+            "advanceCpuMs": 74.9906,
+            "poolCpuMs": 29.7679,
+            "handoffCpuMs": 44.543800000000008,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.010957479476928711
+        },
+        {
+            "frameIntervalMs": 75.84560000000806,
+            "cpuMs": 73.755,
+            "advanceCpuMs": 73.2728,
+            "poolCpuMs": 28.8544,
+            "handoffCpuMs": 43.8442,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.009178876876831055
+        },
+        {
+            "frameIntervalMs": 74.09379999999999,
+            "cpuMs": 73.8467,
+            "advanceCpuMs": 73.3585,
+            "poolCpuMs": 28.911700000000005,
+            "handoffCpuMs": 43.8704,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007427096366882324
+        },
+        {
+            "frameIntervalMs": 74.1452000000038,
+            "cpuMs": 73.8357,
+            "advanceCpuMs": 73.191,
+            "poolCpuMs": 28.843899999999999,
+            "handoffCpuMs": 43.800200000000007,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007478475570678711
+        },
+        {
+            "frameIntervalMs": 74.19459999999845,
+            "cpuMs": 73.7187,
+            "advanceCpuMs": 73.2321,
+            "poolCpuMs": 28.9069,
+            "handoffCpuMs": 43.794399999999999,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007527947425842285
+        },
+        {
+            "frameIntervalMs": 74.01129999999512,
+            "cpuMs": 75.849,
+            "advanceCpuMs": 75.3772,
+            "poolCpuMs": 28.9426,
+            "handoffCpuMs": 45.8746,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007344603538513184
+        },
+        {
+            "frameIntervalMs": 76.18949999999814,
+            "cpuMs": 76.5675,
+            "advanceCpuMs": 76.0835,
+            "poolCpuMs": 29.947400000000003,
+            "handoffCpuMs": 45.5501,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.009522795677185059
+        },
+        {
+            "frameIntervalMs": 76.94329999999639,
+            "cpuMs": 73.9849,
+            "advanceCpuMs": 73.5035,
+            "poolCpuMs": 29.0179,
+            "handoffCpuMs": 43.9414,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.0102766752243042
+        },
+        {
+            "frameIntervalMs": 74.30500000000962,
+            "cpuMs": 75.9062,
+            "advanceCpuMs": 75.4217,
+            "poolCpuMs": 29.5818,
+            "handoffCpuMs": 45.1828,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007638335227966309
+        },
+        {
+            "frameIntervalMs": 76.25849999999446,
+            "cpuMs": 74.6266,
+            "advanceCpuMs": 74.0229,
+            "poolCpuMs": 29.0678,
+            "handoffCpuMs": 44.3481,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.009591817855834961
+        },
+        {
+            "frameIntervalMs": 74.95839999999987,
+            "cpuMs": 77.6711,
+            "advanceCpuMs": 77.1974,
+            "poolCpuMs": 29.5754,
+            "handoffCpuMs": 46.9826,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.00829172134399414
+        },
+        {
+            "frameIntervalMs": 78.00249999999665,
+            "cpuMs": 75.7234,
+            "advanceCpuMs": 75.1194,
+            "poolCpuMs": 29.8632,
+            "handoffCpuMs": 44.646300000000007,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.01133584976196289
+        },
+        {
+            "frameIntervalMs": 76.0648000000117,
+            "cpuMs": 77.2616,
+            "advanceCpuMs": 76.7707,
+            "poolCpuMs": 30.329900000000003,
+            "handoffCpuMs": 45.851299999999998,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.009398102760314942
+        },
+        {
+            "frameIntervalMs": 77.5701999999967,
+            "cpuMs": 74.0433,
+            "advanceCpuMs": 73.5324,
+            "poolCpuMs": 28.830099999999999,
+            "handoffCpuMs": 44.1294,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.010903477668762207
+        },
+        {
+            "frameIntervalMs": 74.42269999999951,
+            "cpuMs": 74.0018,
+            "advanceCpuMs": 73.5149,
+            "poolCpuMs": 28.9174,
+            "handoffCpuMs": 44.0184,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.00775599479675293
+        },
+        {
+            "frameIntervalMs": 74.2925999999926,
+            "cpuMs": 73.7741,
+            "advanceCpuMs": 73.3002,
+            "poolCpuMs": 28.959799999999999,
+            "handoffCpuMs": 43.7999,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007625937461853027
+        },
+        {
+            "frameIntervalMs": 74.12899999999923,
+            "cpuMs": 73.8172,
+            "advanceCpuMs": 73.3413,
+            "poolCpuMs": 28.8933,
+            "handoffCpuMs": 43.8913,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.0074623823165893559
+        },
+        {
+            "frameIntervalMs": 74.17200000000435,
+            "cpuMs": 74.8555,
+            "advanceCpuMs": 74.28,
+            "poolCpuMs": 29.1753,
+            "handoffCpuMs": 44.5287,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007505297660827637
+        },
+        {
+            "frameIntervalMs": 75.17490000000749,
+            "cpuMs": 77.5037,
+            "advanceCpuMs": 76.9637,
+            "poolCpuMs": 30.414,
+            "handoffCpuMs": 45.937000000000008,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.00850820541381836
+        },
+        {
+            "frameIntervalMs": 78.08679999999413,
+            "cpuMs": 75.0698,
+            "advanceCpuMs": 74.5567,
+            "poolCpuMs": 29.4257,
+            "handoffCpuMs": 44.522800000000007,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.011420130729675293
+        },
+        {
+            "frameIntervalMs": 75.42039999999872,
+            "cpuMs": 76.2701,
+            "advanceCpuMs": 75.7807,
+            "poolCpuMs": 29.3317,
+            "handoffCpuMs": 45.7818,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008753776550292969
+        },
+        {
+            "frameIntervalMs": 76.56319999999539,
+            "cpuMs": 76.2169,
+            "advanceCpuMs": 75.7335,
+            "poolCpuMs": 29.7264,
+            "handoffCpuMs": 45.392700000000008,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.009896516799926758
+        },
+        {
+            "frameIntervalMs": 76.56510000001049,
+            "cpuMs": 75.227,
+            "advanceCpuMs": 74.6909,
+            "poolCpuMs": 29.4804,
+            "handoffCpuMs": 44.654900000000008,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.00989842414855957
+        },
+        {
+            "frameIntervalMs": 75.56629999999132,
+            "cpuMs": 74.9053,
+            "advanceCpuMs": 74.417,
+            "poolCpuMs": 29.5611,
+            "handoffCpuMs": 44.2328,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008899688720703125
+        },
+        {
+            "frameIntervalMs": 75.25619999999833,
+            "cpuMs": 74.2251,
+            "advanceCpuMs": 73.7344,
+            "poolCpuMs": 28.8771,
+            "handoffCpuMs": 44.2894,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008589506149291993
+        },
+        {
+            "frameIntervalMs": 74.57709999999907,
+            "cpuMs": 74.1892,
+            "advanceCpuMs": 73.7114,
+            "poolCpuMs": 28.8973,
+            "handoffCpuMs": 44.2609,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007910490036010743
+        },
+        {
+            "frameIntervalMs": 74.494300000012,
+            "cpuMs": 73.8242,
+            "advanceCpuMs": 73.3341,
+            "poolCpuMs": 28.891199999999999,
+            "handoffCpuMs": 43.9106,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.00782763957977295
+        },
+        {
+            "frameIntervalMs": 74.19929999998942,
+            "cpuMs": 74.1735,
+            "advanceCpuMs": 73.6609,
+            "poolCpuMs": 28.857,
+            "handoffCpuMs": 44.199999999999999,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007532596588134766
+        },
+        {
+            "frameIntervalMs": 74.48990000000322,
+            "cpuMs": 75.6144,
+            "advanceCpuMs": 75.0514,
+            "poolCpuMs": 29.261699999999999,
+            "handoffCpuMs": 45.215199999999999,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.00782322883605957
+        },
+        {
+            "frameIntervalMs": 75.98070000000235,
+            "cpuMs": 74.5392,
+            "advanceCpuMs": 74.0547,
+            "poolCpuMs": 29.3855,
+            "handoffCpuMs": 44.05350000000001,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.00931406021118164
+        },
+        {
+            "frameIntervalMs": 74.87340000000131,
+            "cpuMs": 73.999,
+            "advanceCpuMs": 73.468,
+            "poolCpuMs": 28.8211,
+            "handoffCpuMs": 44.108799999999998,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008206725120544434
+        },
+        {
+            "frameIntervalMs": 74.3329000000017,
+            "cpuMs": 74.0844,
+            "advanceCpuMs": 73.5431,
+            "poolCpuMs": 28.984100000000006,
+            "handoffCpuMs": 44.0035,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007666230201721191
+        },
+        {
+            "frameIntervalMs": 74.44219999999291,
+            "cpuMs": 75.4962,
+            "advanceCpuMs": 75.0317,
+            "poolCpuMs": 29.354,
+            "handoffCpuMs": 45.0777,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007775545120239258
+        },
+        {
+            "frameIntervalMs": 75.8870000000087,
+            "cpuMs": 75.0577,
+            "advanceCpuMs": 74.5635,
+            "poolCpuMs": 29.5008,
+            "handoffCpuMs": 44.49850000000001,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.009220361709594727
+        },
+        {
+            "frameIntervalMs": 75.43509999999287,
+            "cpuMs": 73.8084,
+            "advanceCpuMs": 73.3329,
+            "poolCpuMs": 28.852,
+            "handoffCpuMs": 43.9314,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008768439292907715
+        },
+        {
+            "frameIntervalMs": 74.14459999999679,
+            "cpuMs": 74.5444,
+            "advanceCpuMs": 74.0467,
+            "poolCpuMs": 29.473,
+            "handoffCpuMs": 43.941500000000008,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007477879524230957
+        },
+        {
+            "frameIntervalMs": 74.84770000000651,
+            "cpuMs": 74.58,
+            "advanceCpuMs": 74.0251,
+            "poolCpuMs": 28.9545,
+            "handoffCpuMs": 44.498,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008180975914001465
+        },
+        {
+            "frameIntervalMs": 75.00129999999672,
+            "cpuMs": 74.4927,
+            "advanceCpuMs": 73.9608,
+            "poolCpuMs": 29.261499999999999,
+            "handoffCpuMs": 44.0938,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008334636688232422
+        },
+        {
+            "frameIntervalMs": 74.84619999999609,
+            "cpuMs": 73.8033,
+            "advanceCpuMs": 73.3437,
+            "poolCpuMs": 28.907400000000004,
+            "handoffCpuMs": 43.914,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008179545402526856
+        },
+        {
+            "frameIntervalMs": 74.08930000001135,
+            "cpuMs": 73.8805,
+            "advanceCpuMs": 73.3983,
+            "poolCpuMs": 28.9163,
+            "handoffCpuMs": 43.906400000000008,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007422685623168945
+        },
+        {
+            "frameIntervalMs": 74.26169999999388,
+            "cpuMs": 73.9593,
+            "advanceCpuMs": 73.4487,
+            "poolCpuMs": 28.9561,
+            "handoffCpuMs": 43.9268,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007595062255859375
+        },
+        {
+            "frameIntervalMs": 74.26329999999837,
+            "cpuMs": 73.8716,
+            "advanceCpuMs": 73.2639,
+            "poolCpuMs": 28.885,
+            "handoffCpuMs": 43.830600000000007,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007596611976623535
+        },
+        {
+            "frameIntervalMs": 74.60869999999886,
+            "cpuMs": 77.2146,
+            "advanceCpuMs": 76.7239,
+            "poolCpuMs": 30.225100000000006,
+            "handoffCpuMs": 45.886300000000009,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.0079420804977417
+        },
+        {
+            "frameIntervalMs": 77.51989999999864,
+            "cpuMs": 77.6116,
+            "advanceCpuMs": 77.1099,
+            "poolCpuMs": 30.3656,
+            "handoffCpuMs": 46.053399999999999,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.010853290557861328
+        },
+        {
+            "frameIntervalMs": 77.91520000000674,
+            "cpuMs": 76.2467,
+            "advanceCpuMs": 75.7382,
+            "poolCpuMs": 29.5007,
+            "handoffCpuMs": 45.664500000000007,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.011248588562011719
+        },
+        {
+            "frameIntervalMs": 76.5956999999986,
+            "cpuMs": 73.8691,
+            "advanceCpuMs": 73.395,
+            "poolCpuMs": 28.7902,
+            "handoffCpuMs": 44.0805,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.009929060935974121
+        },
+        {
+            "frameIntervalMs": 74.21850000000063,
+            "cpuMs": 77.7099,
+            "advanceCpuMs": 77.2096,
+            "poolCpuMs": 28.9459,
+            "handoffCpuMs": 47.6753,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007551789283752441
+        },
+        {
+            "frameIntervalMs": 81.32369999999867,
+            "cpuMs": 136.9668,
+            "advanceCpuMs": 136.4571,
+            "poolCpuMs": 30.1179,
+            "handoffCpuMs": 105.6155,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.014657020568847657
+        },
+        {
+            "frameIntervalMs": 137.33050000000447,
+            "cpuMs": 73.836,
+            "advanceCpuMs": 73.3562,
+            "poolCpuMs": 28.8988,
+            "handoffCpuMs": 43.892700000000008,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.07066380977630615
+        },
+        {
+            "frameIntervalMs": 74.14719999999875,
+            "cpuMs": 74.5431,
+            "advanceCpuMs": 73.97,
+            "poolCpuMs": 28.8527,
+            "handoffCpuMs": 44.5243,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007480502128601074
+        },
+        {
+            "frameIntervalMs": 74.91480000000195,
+            "cpuMs": 74.4893,
+            "advanceCpuMs": 74.014,
+            "poolCpuMs": 29.2502,
+            "handoffCpuMs": 44.140299999999999,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008248090744018555
+        },
+        {
+            "frameIntervalMs": 74.84660000000076,
+            "cpuMs": 76.4342,
+            "advanceCpuMs": 75.9307,
+            "poolCpuMs": 30.2001,
+            "handoffCpuMs": 45.155699999999999,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008179903030395508
+        },
+        {
+            "frameIntervalMs": 76.7328999999961,
+            "cpuMs": 75.4195,
+            "advanceCpuMs": 74.9377,
+            "poolCpuMs": 29.311,
+            "handoffCpuMs": 45.0557,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.01006627082824707
+        },
+        {
+            "frameIntervalMs": 75.76449999999113,
+            "cpuMs": 75.7162,
+            "advanceCpuMs": 75.2333,
+            "poolCpuMs": 29.7379,
+            "handoffCpuMs": 44.915800000000007,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.009097814559936524
+        },
+        {
+            "frameIntervalMs": 76.06130000000633,
+            "cpuMs": 73.8497,
+            "advanceCpuMs": 73.3668,
+            "poolCpuMs": 28.871199999999999,
+            "handoffCpuMs": 43.9574,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.009394645690917969
+        },
+        {
+            "frameIntervalMs": 74.14909999999964,
+            "cpuMs": 74.1887,
+            "advanceCpuMs": 73.6619,
+            "poolCpuMs": 28.8919,
+            "handoffCpuMs": 44.22,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.0074825286865234379
+        },
+        {
+            "frameIntervalMs": 74.58560000000603,
+            "cpuMs": 73.8095,
+            "advanceCpuMs": 73.34,
+            "poolCpuMs": 28.857400000000003,
+            "handoffCpuMs": 43.980199999999999,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007918834686279297
+        },
+        {
+            "frameIntervalMs": 74.11429999999086,
+            "cpuMs": 75.361,
+            "advanceCpuMs": 74.8319,
+            "poolCpuMs": 29.231,
+            "handoffCpuMs": 45.012800000000009,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007447719573974609
+        },
+        {
+            "frameIntervalMs": 75.71550000000116,
+            "cpuMs": 74.4123,
+            "advanceCpuMs": 73.925,
+            "poolCpuMs": 29.187400000000005,
+            "handoffCpuMs": 44.1415,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.009048938751220703
+        },
+        {
+            "frameIntervalMs": 74.7616000000022,
+            "cpuMs": 73.914,
+            "advanceCpuMs": 73.4215,
+            "poolCpuMs": 28.9229,
+            "handoffCpuMs": 43.9605,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008095026016235352
+        },
+        {
+            "frameIntervalMs": 74.23620000000142,
+            "cpuMs": 74.0334,
+            "advanceCpuMs": 73.5417,
+            "poolCpuMs": 28.906100000000003,
+            "handoffCpuMs": 44.0781,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007569551467895508
+        },
+        {
+            "frameIntervalMs": 74.43279999999675,
+            "cpuMs": 74.7853,
+            "advanceCpuMs": 74.213,
+            "poolCpuMs": 29.0578,
+            "handoffCpuMs": 44.5509,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007766246795654297
+        },
+        {
+            "frameIntervalMs": 75.11110000000088,
+            "cpuMs": 76.4393,
+            "advanceCpuMs": 75.9546,
+            "poolCpuMs": 29.5351,
+            "handoffCpuMs": 45.8221,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008444547653198243
+        },
+        {
+            "frameIntervalMs": 76.78939999999557,
+            "cpuMs": 76.3862,
+            "advanceCpuMs": 75.9191,
+            "poolCpuMs": 30.319000000000004,
+            "handoffCpuMs": 45.041599999999998,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.01012277603149414
+        },
+        {
+            "frameIntervalMs": 76.72960000000728,
+            "cpuMs": 73.7392,
+            "advanceCpuMs": 73.2558,
+            "poolCpuMs": 28.772499999999999,
+            "handoffCpuMs": 43.95569999999999,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.010062932968139649
+        },
+        {
+            "frameIntervalMs": 74.03399999999749,
+            "cpuMs": 74.703,
+            "advanceCpuMs": 74.202,
+            "poolCpuMs": 29.4609,
+            "handoffCpuMs": 44.139399999999998,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007367372512817383
+        },
+        {
+            "frameIntervalMs": 75.07740000000496,
+            "cpuMs": 74.4313,
+            "advanceCpuMs": 73.951,
+            "poolCpuMs": 28.8801,
+            "handoffCpuMs": 44.50919999999999,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.00841069221496582
+        },
+        {
+            "frameIntervalMs": 74.78849999999682,
+            "cpuMs": 74.2149,
+            "advanceCpuMs": 73.7329,
+            "poolCpuMs": 29.266499999999998,
+            "handoffCpuMs": 43.9078,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008121728897094727
+        },
+        {
+            "frameIntervalMs": 74.52050000000554,
+            "cpuMs": 74.0647,
+            "advanceCpuMs": 73.5702,
+            "poolCpuMs": 28.825499999999999,
+            "handoffCpuMs": 44.1793,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.00785374641418457
+        },
+        {
+            "frameIntervalMs": 74.41980000000115,
+            "cpuMs": 74.3172,
+            "advanceCpuMs": 73.7736,
+            "poolCpuMs": 28.8666,
+            "handoffCpuMs": 44.3662,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007753133773803711
+        },
+        {
+            "frameIntervalMs": 74.65360000000487,
+            "cpuMs": 73.8474,
+            "advanceCpuMs": 73.3445,
+            "poolCpuMs": 28.8128,
+            "handoffCpuMs": 44.019,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007987022399902344
+        },
+        {
+            "frameIntervalMs": 74.18269999999439,
+            "cpuMs": 74.0415,
+            "advanceCpuMs": 73.5722,
+            "poolCpuMs": 28.9698,
+            "handoffCpuMs": 44.0779,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007516145706176758
+        },
+        {
+            "frameIntervalMs": 74.42129999999736,
+            "cpuMs": 74.6188,
+            "advanceCpuMs": 74.1468,
+            "poolCpuMs": 29.0423,
+            "handoffCpuMs": 44.4773,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.00775456428527832
+        },
+        {
+            "frameIntervalMs": 74.94880000000137,
+            "cpuMs": 75.1705,
+            "advanceCpuMs": 74.6826,
+            "poolCpuMs": 29.3694,
+            "handoffCpuMs": 44.7438,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008282184600830078
+        },
+        {
+            "frameIntervalMs": 75.5034999999964,
+            "cpuMs": 74.3922,
+            "advanceCpuMs": 73.8848,
+            "poolCpuMs": 29.1042,
+            "handoffCpuMs": 44.1875,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008836746215820313
+        },
+        {
+            "frameIntervalMs": 74.7065000000049,
+            "cpuMs": 74.7569,
+            "advanceCpuMs": 74.2069,
+            "poolCpuMs": 28.9816,
+            "handoffCpuMs": 44.6383,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.00803995132446289
+        },
+        {
+            "frameIntervalMs": 75.27199999999823,
+            "cpuMs": 75.191,
+            "advanceCpuMs": 74.6922,
+            "poolCpuMs": 29.2983,
+            "handoffCpuMs": 44.795300000000008,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008605241775512696
+        },
+        {
+            "frameIntervalMs": 75.53740000000176,
+            "cpuMs": 75.6178,
+            "advanceCpuMs": 75.1161,
+            "poolCpuMs": 29.3337,
+            "handoffCpuMs": 45.18379999999999,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008870840072631836
+        },
+        {
+            "frameIntervalMs": 75.92739999999765,
+            "cpuMs": 75.9277,
+            "advanceCpuMs": 75.442,
+            "poolCpuMs": 29.7764,
+            "handoffCpuMs": 45.0614,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.00926065444946289
+        },
+        {
+            "frameIntervalMs": 76.29169999999874,
+            "cpuMs": 75.2226,
+            "advanceCpuMs": 74.7399,
+            "poolCpuMs": 29.9548,
+            "handoffCpuMs": 44.2161,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.009624958038330078
+        },
+        {
+            "frameIntervalMs": 75.52720000001045,
+            "cpuMs": 76.3041,
+            "advanceCpuMs": 75.8172,
+            "poolCpuMs": 29.5978,
+            "handoffCpuMs": 45.6182,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008860588073730469
+        },
+        {
+            "frameIntervalMs": 76.65399999999068,
+            "cpuMs": 74.3799,
+            "advanceCpuMs": 73.844,
+            "poolCpuMs": 29.2312,
+            "handoffCpuMs": 44.024,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.009987354278564453
+        },
+        {
+            "frameIntervalMs": 74.7062000000085,
+            "cpuMs": 74.0403,
+            "advanceCpuMs": 73.516,
+            "poolCpuMs": 28.8968,
+            "handoffCpuMs": 44.0581,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008039474487304688
+        },
+        {
+            "frameIntervalMs": 74.41059999999311,
+            "cpuMs": 75.1565,
+            "advanceCpuMs": 74.5686,
+            "poolCpuMs": 28.983600000000004,
+            "handoffCpuMs": 44.8583,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.00774383544921875
+        },
+        {
+            "frameIntervalMs": 75.57830000000365,
+            "cpuMs": 76.3173,
+            "advanceCpuMs": 75.6038,
+            "poolCpuMs": 29.718200000000004,
+            "handoffCpuMs": 45.1338,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008911609649658203
+        },
+        {
+            "frameIntervalMs": 76.70919999999626,
+            "cpuMs": 80.8721,
+            "advanceCpuMs": 80.3393,
+            "poolCpuMs": 32.2,
+            "handoffCpuMs": 47.2752,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.010042428970336914
+        },
+        {
+            "frameIntervalMs": 81.26479999999958,
+            "cpuMs": 76.9625,
+            "advanceCpuMs": 76.3524,
+            "poolCpuMs": 29.9159,
+            "handoffCpuMs": 45.5805,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.01459813117980957
+        },
+        {
+            "frameIntervalMs": 77.32540000000654,
+            "cpuMs": 76.2951,
+            "advanceCpuMs": 75.6848,
+            "poolCpuMs": 29.808299999999997,
+            "handoffCpuMs": 45.068599999999999,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.010658740997314453
+        },
+        {
+            "frameIntervalMs": 76.68819999999244,
+            "cpuMs": 75.172,
+            "advanceCpuMs": 74.6565,
+            "poolCpuMs": 29.1621,
+            "handoffCpuMs": 44.828100000000009,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.010021448135375977
+        },
+        {
+            "frameIntervalMs": 75.55920000000072,
+            "cpuMs": 74.7904,
+            "advanceCpuMs": 74.2711,
+            "poolCpuMs": 28.9596,
+            "handoffCpuMs": 44.6709,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008892536163330078
+        },
+        {
+            "frameIntervalMs": 75.10279999999625,
+            "cpuMs": 74.0484,
+            "advanceCpuMs": 73.5675,
+            "poolCpuMs": 28.884,
+            "handoffCpuMs": 44.1245,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008436203002929688
+        },
+        {
+            "frameIntervalMs": 74.38660000001107,
+            "cpuMs": 74.0189,
+            "advanceCpuMs": 73.5236,
+            "poolCpuMs": 28.9009,
+            "handoffCpuMs": 44.115700000000007,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007719993591308594
+        },
+        {
+            "frameIntervalMs": 74.39629999998943,
+            "cpuMs": 74.274,
+            "advanceCpuMs": 73.8031,
+            "poolCpuMs": 28.921599999999999,
+            "handoffCpuMs": 44.3262,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007729530334472656
+        },
+        {
+            "frameIntervalMs": 74.58160000000192,
+            "cpuMs": 74.2345,
+            "advanceCpuMs": 73.7541,
+            "poolCpuMs": 29.0396,
+            "handoffCpuMs": 44.12520000000001,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007915019989013672
+        },
+        {
+            "frameIntervalMs": 74.57060000000127,
+            "cpuMs": 75.0114,
+            "advanceCpuMs": 74.5434,
+            "poolCpuMs": 29.554100000000003,
+            "handoffCpuMs": 44.4638,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007904052734375
+        },
+        {
+            "frameIntervalMs": 75.29580000000635,
+            "cpuMs": 74.9934,
+            "advanceCpuMs": 74.5003,
+            "poolCpuMs": 29.2612,
+            "handoffCpuMs": 44.666799999999998,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008629083633422852
+        },
+        {
+            "frameIntervalMs": 75.37189999999328,
+            "cpuMs": 75.4825,
+            "advanceCpuMs": 74.9966,
+            "poolCpuMs": 29.519900000000005,
+            "handoffCpuMs": 44.8564,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.00870513916015625
+        },
+        {
+            "frameIntervalMs": 75.82449999999597,
+            "cpuMs": 74.2286,
+            "advanceCpuMs": 73.7279,
+            "poolCpuMs": 29.0109,
+            "handoffCpuMs": 44.1663,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.009157896041870118
+        },
+        {
+            "frameIntervalMs": 74.52800000000082,
+            "cpuMs": 74.3286,
+            "advanceCpuMs": 73.865,
+            "poolCpuMs": 29.0514,
+            "handoffCpuMs": 44.309599999999999,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.00786137580871582
+        },
+        {
+            "frameIntervalMs": 74.6882000000113,
+            "cpuMs": 76.1997,
+            "advanceCpuMs": 75.7267,
+            "poolCpuMs": 29.4309,
+            "handoffCpuMs": 45.5526,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.00802159309387207
+        },
+        {
+            "frameIntervalMs": 76.49680000000103,
+            "cpuMs": 74.5318,
+            "advanceCpuMs": 73.9971,
+            "poolCpuMs": 29.0593,
+            "handoffCpuMs": 44.3725,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.009830236434936524
+        },
+        {
+            "frameIntervalMs": 74.94079999999315,
+            "cpuMs": 74.0579,
+            "advanceCpuMs": 73.5718,
+            "poolCpuMs": 28.973100000000004,
+            "handoffCpuMs": 44.0408,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008274078369140625
+        },
+        {
+            "frameIntervalMs": 74.41339999999741,
+            "cpuMs": 74.1183,
+            "advanceCpuMs": 73.6137,
+            "poolCpuMs": 28.9264,
+            "handoffCpuMs": 44.1285,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007746696472167969
+        },
+        {
+            "frameIntervalMs": 74.43460000000357,
+            "cpuMs": 78.002,
+            "advanceCpuMs": 77.5236,
+            "poolCpuMs": 29.314,
+            "handoffCpuMs": 47.6295,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007767915725708008
+        },
+        {
+            "frameIntervalMs": 81.6755000000029,
+            "cpuMs": 75.0997,
+            "advanceCpuMs": 74.571,
+            "poolCpuMs": 29.3254,
+            "handoffCpuMs": 44.6427,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.015008926391601563
+        },
+        {
+            "frameIntervalMs": 137.28879999999323,
+            "cpuMs": 74.1884,
+            "advanceCpuMs": 73.6449,
+            "poolCpuMs": 28.9428,
+            "handoffCpuMs": 44.035399999999999,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.07062220573425293
+        },
+        {
+            "frameIntervalMs": 74.55520000000604,
+            "cpuMs": 75.5771,
+            "advanceCpuMs": 75.0467,
+            "poolCpuMs": 29.3145,
+            "handoffCpuMs": 45.126000000000008,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007888555526733399
+        },
+        {
+            "frameIntervalMs": 75.91499999999485,
+            "cpuMs": 74.2002,
+            "advanceCpuMs": 73.6697,
+            "poolCpuMs": 28.920399999999998,
+            "handoffCpuMs": 44.1749,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.00924825668334961
+        },
+        {
+            "frameIntervalMs": 74.52600000000587,
+            "cpuMs": 74.6675,
+            "advanceCpuMs": 74.1808,
+            "poolCpuMs": 29.2098,
+            "handoffCpuMs": 44.3839,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007859230041503907
+        },
+        {
+            "frameIntervalMs": 75.00109999999438,
+            "cpuMs": 74.1085,
+            "advanceCpuMs": 73.6204,
+            "poolCpuMs": 28.8841,
+            "handoffCpuMs": 44.169900000000009,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.00833439826965332
+        },
+        {
+            "frameIntervalMs": 74.46350000000735,
+            "cpuMs": 75.0129,
+            "advanceCpuMs": 74.5157,
+            "poolCpuMs": 29.4478,
+            "handoffCpuMs": 44.469899999999999,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007796764373779297
+        },
+        {
+            "frameIntervalMs": 75.34599999999614,
+            "cpuMs": 74.8896,
+            "advanceCpuMs": 74.3486,
+            "poolCpuMs": 29.401600000000003,
+            "handoffCpuMs": 44.3579,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008679389953613282
+        },
+        {
+            "frameIntervalMs": 75.24879999999712,
+            "cpuMs": 73.6579,
+            "advanceCpuMs": 72.9868,
+            "poolCpuMs": 28.8042,
+            "handoffCpuMs": 43.6464,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008582115173339844
+        },
+        {
+            "frameIntervalMs": 74.00060000000508,
+            "cpuMs": 74.2564,
+            "advanceCpuMs": 73.6907,
+            "poolCpuMs": 28.9975,
+            "handoffCpuMs": 44.108,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007333993911743164
+        },
+        {
+            "frameIntervalMs": 74.63099999999656,
+            "cpuMs": 76.2936,
+            "advanceCpuMs": 75.7796,
+            "poolCpuMs": 28.831799999999999,
+            "handoffCpuMs": 46.388400000000007,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007964372634887696
+        },
+        {
+            "frameIntervalMs": 76.63200000000359,
+            "cpuMs": 74.8846,
+            "advanceCpuMs": 74.3585,
+            "poolCpuMs": 29.400100000000003,
+            "handoffCpuMs": 44.3891,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.00996541976928711
+        },
+        {
+            "frameIntervalMs": 75.22339999999872,
+            "cpuMs": 73.8869,
+            "advanceCpuMs": 73.3901,
+            "poolCpuMs": 28.9615,
+            "handoffCpuMs": 43.875,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008556842803955078
+        },
+        {
+            "frameIntervalMs": 74.22749999999212,
+            "cpuMs": 73.7461,
+            "advanceCpuMs": 73.263,
+            "poolCpuMs": 28.860799999999999,
+            "handoffCpuMs": 43.8433,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.00756072998046875
+        },
+        {
+            "frameIntervalMs": 74.06050000000164,
+            "cpuMs": 74.4991,
+            "advanceCpuMs": 74.0248,
+            "poolCpuMs": 28.9734,
+            "handoffCpuMs": 44.4975,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007393836975097656
+        },
+        {
+            "frameIntervalMs": 74.86049999999978,
+            "cpuMs": 73.7014,
+            "advanceCpuMs": 73.2363,
+            "poolCpuMs": 28.8418,
+            "handoffCpuMs": 43.859700000000007,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008193731307983399
+        },
+        {
+            "frameIntervalMs": 74.03100000000507,
+            "cpuMs": 74.0127,
+            "advanceCpuMs": 73.4375,
+            "poolCpuMs": 28.9249,
+            "handoffCpuMs": 43.9572,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.0073642730712890629
+        },
+        {
+            "frameIntervalMs": 74.36749999999393,
+            "cpuMs": 74.0595,
+            "advanceCpuMs": 73.5857,
+            "poolCpuMs": 28.8186,
+            "handoffCpuMs": 44.1637,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007700920104980469
+        },
+        {
+            "frameIntervalMs": 74.45380000000057,
+            "cpuMs": 74.336,
+            "advanceCpuMs": 73.8644,
+            "poolCpuMs": 29.0462,
+            "handoffCpuMs": 44.24720000000001,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007787227630615234
+        },
+        {
+            "frameIntervalMs": 74.67700000000832,
+            "cpuMs": 75.9856,
+            "advanceCpuMs": 75.5153,
+            "poolCpuMs": 29.836499999999999,
+            "handoffCpuMs": 45.1125,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008010387420654297
+        },
+        {
+            "frameIntervalMs": 76.27279999999814,
+            "cpuMs": 76.287,
+            "advanceCpuMs": 75.7977,
+            "poolCpuMs": 29.813399999999999,
+            "handoffCpuMs": 45.370599999999999,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.009606122970581055
+        },
+        {
+            "frameIntervalMs": 76.659499999991,
+            "cpuMs": 74.6314,
+            "advanceCpuMs": 74.1107,
+            "poolCpuMs": 29.0882,
+            "handoffCpuMs": 44.4109,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.009992837905883789
+        },
+        {
+            "frameIntervalMs": 74.93190000000993,
+            "cpuMs": 74.2252,
+            "advanceCpuMs": 73.7531,
+            "poolCpuMs": 29.197699999999999,
+            "handoffCpuMs": 43.9953,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008265256881713868
+        },
+        {
+            "frameIntervalMs": 74.56369999999879,
+            "cpuMs": 75.4775,
+            "advanceCpuMs": 74.9215,
+            "poolCpuMs": 29.576,
+            "handoffCpuMs": 44.7543,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007897138595581055
+        },
+        {
+            "frameIntervalMs": 75.90820000000065,
+            "cpuMs": 75.1042,
+            "advanceCpuMs": 74.5886,
+            "poolCpuMs": 29.035300000000004,
+            "handoffCpuMs": 44.9279,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.009241580963134766
+        },
+        {
+            "frameIntervalMs": 75.40629999999737,
+            "cpuMs": 73.9237,
+            "advanceCpuMs": 73.4381,
+            "poolCpuMs": 29.0029,
+            "handoffCpuMs": 43.845,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008739709854125977
+        },
+        {
+            "frameIntervalMs": 74.2697000000021,
+            "cpuMs": 74.6075,
+            "advanceCpuMs": 74.1143,
+            "poolCpuMs": 28.8665,
+            "handoffCpuMs": 44.7093,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.0076029300689697269
+        },
+        {
+            "frameIntervalMs": 74.93979999999567,
+            "cpuMs": 73.7219,
+            "advanceCpuMs": 73.2415,
+            "poolCpuMs": 28.8001,
+            "handoffCpuMs": 43.8873,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008273124694824219
+        },
+        {
+            "frameIntervalMs": 74.06350000000828,
+            "cpuMs": 76.5862,
+            "advanceCpuMs": 75.9521,
+            "poolCpuMs": 29.703200000000004,
+            "handoffCpuMs": 45.437000000000008,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.0073969364166259769
+        },
+        {
+            "frameIntervalMs": 76.98239999999146,
+            "cpuMs": 78.6097,
+            "advanceCpuMs": 78.0711,
+            "poolCpuMs": 32.4709,
+            "handoffCpuMs": 44.8726,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.010315656661987305
+        },
+        {
+            "frameIntervalMs": 78.95800000000009,
+            "cpuMs": 76.7012,
+            "advanceCpuMs": 76.0791,
+            "poolCpuMs": 29.278900000000005,
+            "handoffCpuMs": 45.953199999999998,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.012291431427001953
+        },
+        {
+            "frameIntervalMs": 77.15009999999723,
+            "cpuMs": 82.1333,
+            "advanceCpuMs": 81.5064,
+            "poolCpuMs": 30.8381,
+            "handoffCpuMs": 49.8084,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.010483503341674805
+        },
+        {
+            "frameIntervalMs": 82.53350000001092,
+            "cpuMs": 74.4337,
+            "advanceCpuMs": 73.9277,
+            "poolCpuMs": 29.137,
+            "handoffCpuMs": 44.1877,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.015866756439208986
+        },
+        {
+            "frameIntervalMs": 74.74719999999025,
+            "cpuMs": 75.5198,
+            "advanceCpuMs": 74.9504,
+            "poolCpuMs": 29.1733,
+            "handoffCpuMs": 45.101299999999998,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008080482482910157
+        },
+        {
+            "frameIntervalMs": 75.98690000000375,
+            "cpuMs": 75.0417,
+            "advanceCpuMs": 74.5065,
+            "poolCpuMs": 29.564100000000005,
+            "handoffCpuMs": 44.2822,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.009320259094238282
+        },
+        {
+            "frameIntervalMs": 75.35330000000329,
+            "cpuMs": 74.7798,
+            "advanceCpuMs": 74.2822,
+            "poolCpuMs": 29.3855,
+            "handoffCpuMs": 44.238,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008686542510986328
+        },
+        {
+            "frameIntervalMs": 75.13939999999764,
+            "cpuMs": 73.8484,
+            "advanceCpuMs": 73.3681,
+            "poolCpuMs": 28.88,
+            "handoffCpuMs": 43.943799999999999,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008472681045532227
+        },
+        {
+            "frameIntervalMs": 74.26580000000627,
+            "cpuMs": 74.6695,
+            "advanceCpuMs": 74.1603,
+            "poolCpuMs": 28.902900000000004,
+            "handoffCpuMs": 44.6562,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.0075991153717041019
+        },
+        {
+            "frameIntervalMs": 74.9734999999987,
+            "cpuMs": 74.8642,
+            "advanceCpuMs": 74.3835,
+            "poolCpuMs": 28.9966,
+            "handoffCpuMs": 44.822,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008306741714477539
+        },
+        {
+            "frameIntervalMs": 75.2209999999991,
+            "cpuMs": 75.059,
+            "advanceCpuMs": 74.5795,
+            "poolCpuMs": 29.2881,
+            "handoffCpuMs": 44.749700000000007,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008554220199584961
+        },
+        {
+            "frameIntervalMs": 75.40379999998948,
+            "cpuMs": 74.1006,
+            "advanceCpuMs": 73.5791,
+            "poolCpuMs": 29.0321,
+            "handoffCpuMs": 43.9422,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.00873708724975586
+        },
+        {
+            "frameIntervalMs": 74.45320000000777,
+            "cpuMs": 75.2261,
+            "advanceCpuMs": 74.7243,
+            "poolCpuMs": 29.3181,
+            "handoffCpuMs": 44.7909,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.00778651237487793
+        },
+        {
+            "frameIntervalMs": 75.59069999999224,
+            "cpuMs": 78.4064,
+            "advanceCpuMs": 77.7497,
+            "poolCpuMs": 30.232,
+            "handoffCpuMs": 46.8187,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008924007415771485
+        },
+        {
+            "frameIntervalMs": 78.72280000000842,
+            "cpuMs": 76.3999,
+            "advanceCpuMs": 75.77,
+            "poolCpuMs": 29.7539,
+            "handoffCpuMs": 45.2692,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.012056112289428711
+        },
+        {
+            "frameIntervalMs": 76.79929999999047,
+            "cpuMs": 75.2834,
+            "advanceCpuMs": 74.7243,
+            "poolCpuMs": 29.0824,
+            "handoffCpuMs": 44.9343,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.010132551193237305
+        },
+        {
+            "frameIntervalMs": 75.64070000000811,
+            "cpuMs": 76.4794,
+            "advanceCpuMs": 75.9526,
+            "poolCpuMs": 30.4099,
+            "handoffCpuMs": 44.830600000000007,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008974075317382813
+        },
+        {
+            "frameIntervalMs": 76.78760000000296,
+            "cpuMs": 75.4687,
+            "advanceCpuMs": 74.8858,
+            "poolCpuMs": 29.2266,
+            "handoffCpuMs": 44.9478,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.010120868682861328
+        },
+        {
+            "frameIntervalMs": 75.87709999999959,
+            "cpuMs": 75.1123,
+            "advanceCpuMs": 74.5363,
+            "poolCpuMs": 29.3074,
+            "handoffCpuMs": 44.580200000000008,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.009210348129272461
+        },
+        {
+            "frameIntervalMs": 75.45770000000118,
+            "cpuMs": 75.7539,
+            "advanceCpuMs": 75.2037,
+            "poolCpuMs": 29.3818,
+            "handoffCpuMs": 45.1126,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008790969848632813
+        },
+        {
+            "frameIntervalMs": 76.11129999999378,
+            "cpuMs": 75.2836,
+            "advanceCpuMs": 74.7225,
+            "poolCpuMs": 29.6184,
+            "handoffCpuMs": 44.4392,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.009444713592529297
+        },
+        {
+            "frameIntervalMs": 75.63989999999876,
+            "cpuMs": 76.8059,
+            "advanceCpuMs": 76.2748,
+            "poolCpuMs": 30.1971,
+            "handoffCpuMs": 45.3343,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008973121643066407
+        },
+        {
+            "frameIntervalMs": 77.15059999999596,
+            "cpuMs": 74.8953,
+            "advanceCpuMs": 74.3756,
+            "poolCpuMs": 29.2863,
+            "handoffCpuMs": 44.431999999999998,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.010483980178833008
+        },
+        {
+            "frameIntervalMs": 75.25380000001292,
+            "cpuMs": 75.0586,
+            "advanceCpuMs": 74.518,
+            "poolCpuMs": 29.2318,
+            "handoffCpuMs": 44.6232,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008587121963500977
+        },
+        {
+            "frameIntervalMs": 75.43739999999844,
+            "cpuMs": 75.4268,
+            "advanceCpuMs": 74.9291,
+            "poolCpuMs": 29.670900000000004,
+            "handoffCpuMs": 44.5473,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.00877070426940918
+        },
+        {
+            "frameIntervalMs": 75.76779999999417,
+            "cpuMs": 74.1503,
+            "advanceCpuMs": 73.6672,
+            "poolCpuMs": 28.9803,
+            "handoffCpuMs": 44.1418,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.009101152420043946
+        },
+        {
+            "frameIntervalMs": 74.52910000000657,
+            "cpuMs": 74.5232,
+            "advanceCpuMs": 74.0616,
+            "poolCpuMs": 29.0791,
+            "handoffCpuMs": 44.423,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007862329483032227
+        },
+        {
+            "frameIntervalMs": 74.81659999999124,
+            "cpuMs": 77.8827,
+            "advanceCpuMs": 77.3772,
+            "poolCpuMs": 29.2607,
+            "handoffCpuMs": 47.5068,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008149862289428711
+        },
+        {
+            "frameIntervalMs": 81.45040000000847,
+            "cpuMs": 75.4939,
+            "advanceCpuMs": 75.0125,
+            "poolCpuMs": 29.5689,
+            "handoffCpuMs": 44.8295,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.014783620834350586
+        },
+        {
+            "frameIntervalMs": 138.73209999999859,
+            "cpuMs": 73.8973,
+            "advanceCpuMs": 73.4015,
+            "poolCpuMs": 28.8815,
+            "handoffCpuMs": 43.923899999999999,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.07206535339355469
+        },
+        {
+            "frameIntervalMs": 74.22919999999067,
+            "cpuMs": 74.6768,
+            "advanceCpuMs": 74.1317,
+            "poolCpuMs": 28.9867,
+            "handoffCpuMs": 44.5466,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.0075626373291015629
+        },
+        {
+            "frameIntervalMs": 75.09290000000135,
+            "cpuMs": 74.8971,
+            "advanceCpuMs": 74.4222,
+            "poolCpuMs": 29.2697,
+            "handoffCpuMs": 44.5533,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008426189422607422
+        },
+        {
+            "frameIntervalMs": 75.19360000000575,
+            "cpuMs": 74.161,
+            "advanceCpuMs": 73.625,
+            "poolCpuMs": 28.8579,
+            "handoffCpuMs": 44.2213,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008527040481567383
+        },
+        {
+            "frameIntervalMs": 74.56480000000454,
+            "cpuMs": 74.5624,
+            "advanceCpuMs": 74.0012,
+            "poolCpuMs": 28.9377,
+            "handoffCpuMs": 44.4949,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007898092269897461
+        },
+        {
+            "frameIntervalMs": 74.96639999999388,
+            "cpuMs": 74.204,
+            "advanceCpuMs": 73.7165,
+            "poolCpuMs": 28.9411,
+            "handoffCpuMs": 44.1743,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008299827575683594
+        },
+        {
+            "frameIntervalMs": 74.50599999999952,
+            "cpuMs": 74.1022,
+            "advanceCpuMs": 73.5125,
+            "poolCpuMs": 28.877599999999999,
+            "handoffCpuMs": 44.0812,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007839441299438477
+        },
+        {
+            "frameIntervalMs": 74.47020000000748,
+            "cpuMs": 73.9442,
+            "advanceCpuMs": 73.4655,
+            "poolCpuMs": 28.8183,
+            "handoffCpuMs": 44.11279999999999,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007803440093994141
+        },
+        {
+            "frameIntervalMs": 74.24879999999235,
+            "cpuMs": 74.1025,
+            "advanceCpuMs": 73.5982,
+            "poolCpuMs": 28.9032,
+            "handoffCpuMs": 44.1503,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007582187652587891
+        },
+        {
+            "frameIntervalMs": 74.49069999999836,
+            "cpuMs": 75.386,
+            "advanceCpuMs": 74.8983,
+            "poolCpuMs": 29.935899999999998,
+            "handoffCpuMs": 44.285199999999999,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007823944091796875
+        },
+        {
+            "frameIntervalMs": 75.73539999999923,
+            "cpuMs": 74.7908,
+            "advanceCpuMs": 74.1548,
+            "poolCpuMs": 29.288700000000003,
+            "handoffCpuMs": 44.2997,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.009068727493286133
+        },
+        {
+            "frameIntervalMs": 75.11499999999671,
+            "cpuMs": 75.8748,
+            "advanceCpuMs": 75.3765,
+            "poolCpuMs": 29.680000000000005,
+            "handoffCpuMs": 45.097500000000007,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008448362350463868
+        },
+        {
+            "frameIntervalMs": 76.23190000001046,
+            "cpuMs": 73.9058,
+            "advanceCpuMs": 73.4293,
+            "poolCpuMs": 28.893,
+            "handoffCpuMs": 43.9598,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.009565114974975586
+        },
+        {
+            "frameIntervalMs": 74.26879999999869,
+            "cpuMs": 74.0272,
+            "advanceCpuMs": 73.5503,
+            "poolCpuMs": 28.8481,
+            "handoffCpuMs": 44.1054,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007602214813232422
+        },
+        {
+            "frameIntervalMs": 74.32430000000068,
+            "cpuMs": 74.2257,
+            "advanceCpuMs": 73.6771,
+            "poolCpuMs": 29.0169,
+            "handoffCpuMs": 44.0749,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007657527923583984
+        },
+        {
+            "frameIntervalMs": 74.6026999999998,
+            "cpuMs": 74.0009,
+            "advanceCpuMs": 73.492,
+            "poolCpuMs": 28.8673,
+            "handoffCpuMs": 44.1009,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.00793600082397461
+        },
+        {
+            "frameIntervalMs": 74.33469999999432,
+            "cpuMs": 74.3543,
+            "advanceCpuMs": 73.8806,
+            "poolCpuMs": 29.1504,
+            "handoffCpuMs": 44.1154,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007668018341064453
+        },
+        {
+            "frameIntervalMs": 74.73120000000222,
+            "cpuMs": 73.8872,
+            "advanceCpuMs": 73.4086,
+            "poolCpuMs": 28.840400000000004,
+            "handoffCpuMs": 44.03130000000001,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008064508438110352
+        },
+        {
+            "frameIntervalMs": 74.18509999999401,
+            "cpuMs": 74.5144,
+            "advanceCpuMs": 74.0375,
+            "poolCpuMs": 29.1882,
+            "handoffCpuMs": 44.215199999999999,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.0075185298919677738
+        },
+        {
+            "frameIntervalMs": 74.82620000000395,
+            "cpuMs": 75.0436,
+            "advanceCpuMs": 74.5627,
+            "poolCpuMs": 29.362099999999999,
+            "handoffCpuMs": 44.664,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008159637451171875
+        },
+        {
+            "frameIntervalMs": 75.38680000000397,
+            "cpuMs": 75.7399,
+            "advanceCpuMs": 75.2697,
+            "poolCpuMs": 29.4224,
+            "handoffCpuMs": 45.236900000000009,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008720159530639649
+        },
+        {
+            "frameIntervalMs": 76.08089999999379,
+            "cpuMs": 75.5482,
+            "advanceCpuMs": 75.0521,
+            "poolCpuMs": 29.8048,
+            "handoffCpuMs": 44.630399999999998,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.009414196014404297
+        },
+        {
+            "frameIntervalMs": 75.85970000000941,
+            "cpuMs": 73.9705,
+            "advanceCpuMs": 73.5002,
+            "poolCpuMs": 28.7942,
+            "handoffCpuMs": 44.2298,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.009192943572998047
+        },
+        {
+            "frameIntervalMs": 74.30279999999812,
+            "cpuMs": 73.9659,
+            "advanceCpuMs": 73.4981,
+            "poolCpuMs": 28.7982,
+            "handoffCpuMs": 44.215900000000008,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007636070251464844
+        },
+        {
+            "frameIntervalMs": 74.25680000000057,
+            "cpuMs": 74.4142,
+            "advanceCpuMs": 73.866,
+            "poolCpuMs": 29.0378,
+            "handoffCpuMs": 44.2102,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007590055465698242
+        },
+        {
+            "frameIntervalMs": 74.79189999999392,
+            "cpuMs": 74.3641,
+            "advanceCpuMs": 73.8992,
+            "poolCpuMs": 29.1912,
+            "handoffCpuMs": 44.1437,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.00812530517578125
+        },
+        {
+            "frameIntervalMs": 74.72370000000694,
+            "cpuMs": 73.8966,
+            "advanceCpuMs": 73.4062,
+            "poolCpuMs": 28.7963,
+            "handoffCpuMs": 44.1148,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008057117462158203
+        },
+        {
+            "frameIntervalMs": 74.21529999999166,
+            "cpuMs": 74.0611,
+            "advanceCpuMs": 73.5915,
+            "poolCpuMs": 28.860899999999999,
+            "handoffCpuMs": 44.155300000000007,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.00754857063293457
+        },
+        {
+            "frameIntervalMs": 74.41830000000494,
+            "cpuMs": 74.113,
+            "advanceCpuMs": 73.6558,
+            "poolCpuMs": 29.0255,
+            "handoffCpuMs": 44.0387,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.0077517032623291019
+        },
+        {
+            "frameIntervalMs": 74.46120000000178,
+            "cpuMs": 74.6448,
+            "advanceCpuMs": 74.1619,
+            "poolCpuMs": 28.874200000000003,
+            "handoffCpuMs": 44.771699999999999,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007794618606567383
+        },
+        {
+            "frameIntervalMs": 74.93660000000091,
+            "cpuMs": 73.7654,
+            "advanceCpuMs": 73.3055,
+            "poolCpuMs": 28.838,
+            "handoffCpuMs": 43.9665,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008270025253295899
+        },
+        {
+            "frameIntervalMs": 74.10869999999648,
+            "cpuMs": 74.2585,
+            "advanceCpuMs": 73.789,
+            "poolCpuMs": 29.0112,
+            "handoffCpuMs": 44.21719999999999,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007441997528076172
+        },
+        {
+            "frameIntervalMs": 74.59110000000635,
+            "cpuMs": 74.136,
+            "advanceCpuMs": 73.6689,
+            "poolCpuMs": 28.825400000000003,
+            "handoffCpuMs": 44.2935,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007924318313598633
+        },
+        {
+            "frameIntervalMs": 74.43539999999871,
+            "cpuMs": 73.9315,
+            "advanceCpuMs": 73.4453,
+            "poolCpuMs": 28.844700000000004,
+            "handoffCpuMs": 44.1083,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.0077686309814453129
+        },
+        {
+            "frameIntervalMs": 74.27129999999238,
+            "cpuMs": 74.1199,
+            "advanceCpuMs": 73.5891,
+            "poolCpuMs": 28.887900000000003,
+            "handoffCpuMs": 44.1789,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.0076045989990234379
+        },
+        {
+            "frameIntervalMs": 74.48980000000916,
+            "cpuMs": 74.2168,
+            "advanceCpuMs": 73.7378,
+            "poolCpuMs": 28.9864,
+            "handoffCpuMs": 44.1522,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.00782322883605957
+        },
+        {
+            "frameIntervalMs": 74.55789999998786,
+            "cpuMs": 74.08,
+            "advanceCpuMs": 73.5787,
+            "poolCpuMs": 28.9823,
+            "handoffCpuMs": 44.0537,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007891178131103516
+        },
+        {
+            "frameIntervalMs": 74.41760000000386,
+            "cpuMs": 73.9902,
+            "advanceCpuMs": 73.5196,
+            "poolCpuMs": 28.8373,
+            "handoffCpuMs": 44.1507,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007750988006591797
+        },
+        {
+            "frameIntervalMs": 74.27859999999953,
+            "cpuMs": 74.1734,
+            "advanceCpuMs": 73.7086,
+            "poolCpuMs": 28.8654,
+            "handoffCpuMs": 44.308099999999999,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007611989974975586
+        },
+        {
+            "frameIntervalMs": 74.52260000000877,
+            "cpuMs": 73.9489,
+            "advanceCpuMs": 73.3728,
+            "poolCpuMs": 28.8138,
+            "handoffCpuMs": 44.0209,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007855892181396485
+        },
+        {
+            "frameIntervalMs": 74.32309999998665,
+            "cpuMs": 74.7905,
+            "advanceCpuMs": 74.3183,
+            "poolCpuMs": 28.9705,
+            "handoffCpuMs": 44.7638,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.0076563358306884769
+        },
+        {
+            "frameIntervalMs": 75.09480000000224,
+            "cpuMs": 74.1411,
+            "advanceCpuMs": 73.6563,
+            "poolCpuMs": 28.999900000000005,
+            "handoffCpuMs": 44.0669,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008428096771240235
+        },
+        {
+            "frameIntervalMs": 74.49950000000172,
+            "cpuMs": 74.3963,
+            "advanceCpuMs": 73.9007,
+            "poolCpuMs": 28.882400000000005,
+            "handoffCpuMs": 44.439099999999999,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007832765579223633
+        },
+        {
+            "frameIntervalMs": 74.7074000000083,
+            "cpuMs": 74.2594,
+            "advanceCpuMs": 73.7814,
+            "poolCpuMs": 29.119000000000005,
+            "handoffCpuMs": 44.0802,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008040666580200196
+        },
+        {
+            "frameIntervalMs": 74.60109999999531,
+            "cpuMs": 74.3403,
+            "advanceCpuMs": 73.8317,
+            "poolCpuMs": 28.9227,
+            "handoffCpuMs": 44.352,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007934331893920899
+        },
+        {
+            "frameIntervalMs": 74.70530000000508,
+            "cpuMs": 74.631,
+            "advanceCpuMs": 74.1452,
+            "poolCpuMs": 28.9004,
+            "handoffCpuMs": 44.6772,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008038520812988282
+        },
+        {
+            "frameIntervalMs": 74.94209999998702,
+            "cpuMs": 74.4554,
+            "advanceCpuMs": 73.8735,
+            "poolCpuMs": 29.0048,
+            "handoffCpuMs": 44.2478,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008275508880615235
+        },
+        {
+            "frameIntervalMs": 74.8564000000016,
+            "cpuMs": 74.2696,
+            "advanceCpuMs": 73.7367,
+            "poolCpuMs": 28.878800000000003,
+            "handoffCpuMs": 44.2747,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008189678192138672
+        },
+        {
+            "frameIntervalMs": 74.59460000001173,
+            "cpuMs": 75.2257,
+            "advanceCpuMs": 74.6146,
+            "poolCpuMs": 29.358400000000004,
+            "handoffCpuMs": 44.550000000000007,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007927894592285157
+        },
+        {
+            "frameIntervalMs": 75.63049999998839,
+            "cpuMs": 76.3861,
+            "advanceCpuMs": 75.8396,
+            "poolCpuMs": 30.291700000000004,
+            "handoffCpuMs": 44.832499999999999,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008963823318481446
+        },
+        {
+            "frameIntervalMs": 76.72390000000462,
+            "cpuMs": 101.1328,
+            "advanceCpuMs": 100.6226,
+            "poolCpuMs": 42.7187,
+            "handoffCpuMs": 56.6748,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.010057210922241211
+        },
+        {
+            "frameIntervalMs": 101.43340000000478,
+            "cpuMs": 76.5717,
+            "advanceCpuMs": 76.1003,
+            "poolCpuMs": 29.7283,
+            "handoffCpuMs": 45.768800000000009,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.03476667404174805
+        },
+        {
+            "frameIntervalMs": 76.94200000000251,
+            "cpuMs": 77.5698,
+            "advanceCpuMs": 77.0767,
+            "poolCpuMs": 30.2592,
+            "handoffCpuMs": 46.096000000000007,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.01027536392211914
+        },
+        {
+            "frameIntervalMs": 77.8650999999968,
+            "cpuMs": 76.328,
+            "advanceCpuMs": 75.7724,
+            "poolCpuMs": 29.7139,
+            "handoffCpuMs": 45.35380000000001,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.01119852066040039
+        },
+        {
+            "frameIntervalMs": 76.68679999999029,
+            "cpuMs": 80.5584,
+            "advanceCpuMs": 79.9204,
+            "poolCpuMs": 33.2232,
+            "handoffCpuMs": 45.9708,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.010020017623901368
+        },
+        {
+            "frameIntervalMs": 81.09120000000303,
+            "cpuMs": 77.7459,
+            "advanceCpuMs": 77.2544,
+            "poolCpuMs": 29.1938,
+            "handoffCpuMs": 47.446099999999997,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.014424562454223633
+        },
+        {
+            "frameIntervalMs": 81.22350000000722,
+            "cpuMs": 75.3454,
+            "advanceCpuMs": 74.8751,
+            "poolCpuMs": 29.3418,
+            "handoffCpuMs": 44.9383,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.014556884765625
+        },
+        {
+            "frameIntervalMs": 78.97819999999456,
+            "cpuMs": 138.6556,
+            "advanceCpuMs": 138.1661,
+            "poolCpuMs": 93.01500000000002,
+            "handoffCpuMs": 44.505100000000009,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.012311458587646485
+        },
+        {
+            "frameIntervalMs": 139.00940000000618,
+            "cpuMs": 74.8572,
+            "advanceCpuMs": 74.3766,
+            "poolCpuMs": 28.906399999999999,
+            "handoffCpuMs": 44.8138,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.0723426342010498
+        },
+        {
+            "frameIntervalMs": 75.15859999999464,
+            "cpuMs": 74.2744,
+            "advanceCpuMs": 73.7868,
+            "poolCpuMs": 28.8976,
+            "handoffCpuMs": 44.3453,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008491992950439453
+        },
+        {
+            "frameIntervalMs": 74.61399999999685,
+            "cpuMs": 73.7775,
+            "advanceCpuMs": 73.2532,
+            "poolCpuMs": 28.909899999999998,
+            "handoffCpuMs": 43.849199999999999,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007947444915771485
+        },
+        {
+            "frameIntervalMs": 74.13160000000119,
+            "cpuMs": 74.8164,
+            "advanceCpuMs": 74.3279,
+            "poolCpuMs": 29.3182,
+            "handoffCpuMs": 44.4076,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007464885711669922
+        },
+        {
+            "frameIntervalMs": 75.15740000000904,
+            "cpuMs": 75.0344,
+            "advanceCpuMs": 74.5548,
+            "poolCpuMs": 29.1879,
+            "handoffCpuMs": 44.7745,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008490800857543946
+        },
+        {
+            "frameIntervalMs": 75.37409999999056,
+            "cpuMs": 73.8973,
+            "advanceCpuMs": 73.4197,
+            "poolCpuMs": 28.8663,
+            "handoffCpuMs": 43.9966,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008707523345947266
+        },
+        {
+            "frameIntervalMs": 74.19749999999681,
+            "cpuMs": 73.9866,
+            "advanceCpuMs": 73.5219,
+            "poolCpuMs": 28.909200000000003,
+            "handoffCpuMs": 44.1219,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007530927658081055
+        },
+        {
+            "frameIntervalMs": 74.32150000001059,
+            "cpuMs": 74.1164,
+            "advanceCpuMs": 73.6209,
+            "poolCpuMs": 28.912999999999998,
+            "handoffCpuMs": 44.2154,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007654905319213867
+        },
+        {
+            "frameIntervalMs": 74.42929999999137,
+            "cpuMs": 74.6992,
+            "advanceCpuMs": 74.164,
+            "poolCpuMs": 29.1074,
+            "handoffCpuMs": 44.418800000000008,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.0077626705169677738
+        },
+        {
+            "frameIntervalMs": 75.09070000000406,
+            "cpuMs": 75.2481,
+            "advanceCpuMs": 74.6771,
+            "poolCpuMs": 28.924,
+            "handoffCpuMs": 45.17,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008424043655395508
+        },
+        {
+            "frameIntervalMs": 75.60159999999883,
+            "cpuMs": 76.2804,
+            "advanceCpuMs": 75.7378,
+            "poolCpuMs": 29.9492,
+            "handoffCpuMs": 45.2398,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008934974670410157
+        },
+        {
+            "frameIntervalMs": 76.57469999999478,
+            "cpuMs": 74.651,
+            "advanceCpuMs": 74.1654,
+            "poolCpuMs": 29.0412,
+            "handoffCpuMs": 44.5446,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.009907960891723633
+        },
+        {
+            "frameIntervalMs": 75.00180000000967,
+            "cpuMs": 74.4489,
+            "advanceCpuMs": 73.952,
+            "poolCpuMs": 29.2468,
+            "handoffCpuMs": 44.076899999999998,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008335113525390625
+        },
+        {
+            "frameIntervalMs": 74.7909999999905,
+            "cpuMs": 74.1447,
+            "advanceCpuMs": 73.5316,
+            "poolCpuMs": 28.8502,
+            "handoffCpuMs": 44.147400000000008,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008124351501464844
+        },
+        {
+            "frameIntervalMs": 74.44330000001287,
+            "cpuMs": 77.7489,
+            "advanceCpuMs": 77.2615,
+            "poolCpuMs": 30.195299999999997,
+            "handoffCpuMs": 46.414699999999999,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007776737213134766
+        },
+        {
+            "frameIntervalMs": 78.10519999999599,
+            "cpuMs": 76.2689,
+            "advanceCpuMs": 75.7865,
+            "poolCpuMs": 29.7916,
+            "handoffCpuMs": 45.3668,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.011438608169555664
+        },
+        {
+            "frameIntervalMs": 76.58130000000085,
+            "cpuMs": 74.419,
+            "advanceCpuMs": 73.9381,
+            "poolCpuMs": 29.014,
+            "handoffCpuMs": 44.2789,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.009914636611938477
+        },
+        {
+            "frameIntervalMs": 74.78009999999813,
+            "cpuMs": 74.6654,
+            "advanceCpuMs": 74.1932,
+            "poolCpuMs": 28.8403,
+            "handoffCpuMs": 44.8013,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008113384246826172
+        },
+        {
+            "frameIntervalMs": 75.09720000000186,
+            "cpuMs": 76.3673,
+            "advanceCpuMs": 75.7982,
+            "poolCpuMs": 29.7438,
+            "handoffCpuMs": 45.479800000000007,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.00843048095703125
+        },
+        {
+            "frameIntervalMs": 76.68989999999099,
+            "cpuMs": 75.7144,
+            "advanceCpuMs": 75.2383,
+            "poolCpuMs": 29.686099999999997,
+            "handoffCpuMs": 44.98479999999999,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.010023117065429688
+        },
+        {
+            "frameIntervalMs": 76.10050000000968,
+            "cpuMs": 73.9334,
+            "advanceCpuMs": 73.2513,
+            "poolCpuMs": 28.755899999999998,
+            "handoffCpuMs": 43.938500000000008,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.009433746337890625
+        },
+        {
+            "frameIntervalMs": 74.28969999999424,
+            "cpuMs": 74.6247,
+            "advanceCpuMs": 74.1092,
+            "poolCpuMs": 28.859499999999998,
+            "handoffCpuMs": 44.6734,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007622957229614258
+        },
+        {
+            "frameIntervalMs": 74.94060000000502,
+            "cpuMs": 75.8466,
+            "advanceCpuMs": 75.3693,
+            "poolCpuMs": 30.148400000000004,
+            "handoffCpuMs": 44.573899999999998,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008273839950561524
+        },
+        {
+            "frameIntervalMs": 76.18469999999889,
+            "cpuMs": 75.6116,
+            "advanceCpuMs": 74.9703,
+            "poolCpuMs": 29.475099999999999,
+            "handoffCpuMs": 44.92659999999999,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.009518146514892578
+        },
+        {
+            "frameIntervalMs": 75.90919999999812,
+            "cpuMs": 75.3341,
+            "advanceCpuMs": 74.8238,
+            "poolCpuMs": 29.5555,
+            "handoffCpuMs": 44.6609,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.009242534637451172
+        },
+        {
+            "frameIntervalMs": 75.70509999999331,
+            "cpuMs": 73.9102,
+            "advanceCpuMs": 73.3203,
+            "poolCpuMs": 28.8288,
+            "handoffCpuMs": 43.9163,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.009038448333740235
+        },
+        {
+            "frameIntervalMs": 74.27180000000533,
+            "cpuMs": 74.9614,
+            "advanceCpuMs": 74.494,
+            "poolCpuMs": 28.910600000000004,
+            "handoffCpuMs": 44.998900000000009,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007605075836181641
+        },
+        {
+            "frameIntervalMs": 75.26970000000688,
+            "cpuMs": 74.2802,
+            "advanceCpuMs": 73.7935,
+            "poolCpuMs": 29.1233,
+            "handoffCpuMs": 44.0847,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008603096008300782
+        },
+        {
+            "frameIntervalMs": 74.64939999999842,
+            "cpuMs": 74.5912,
+            "advanceCpuMs": 74.1047,
+            "poolCpuMs": 29.0257,
+            "handoffCpuMs": 44.466,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.007982730865478516
+        },
+        {
+            "frameIntervalMs": 74.91050000000144,
+            "cpuMs": 75.0115,
+            "advanceCpuMs": 74.4977,
+            "poolCpuMs": 29.744699999999999,
+            "handoffCpuMs": 44.1551,
+            "ticks": 4,
+            "active": 32768,
+            "droppedSeconds": 0.008243799209594727
+        }
+    ]
+}

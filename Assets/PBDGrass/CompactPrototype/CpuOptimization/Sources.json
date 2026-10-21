@@ -1,0 +1,12 @@
+{
+  "sceneSha256": "348675344b1aa575b94d6841f838e608d11d4417072d462c917c8060fc2112b3",
+  "unchangedAssets": 91,
+  "gpuShadersAndBakeFormatChanged": false,
+  "changedRuntime": {
+    "Runtime\\GrassGridQuery.cs": "795048c93c1408308727312fb3fc3b94b31a06b8af276bcfbb9741dcf0d58555",
+    "Runtime\\GrassSimulationPool.cs": "dfdbd45a7728512dcfbf6673ab507d12348688b2cbb133ebb73bb0559df8f0f9",
+    "Runtime\\GrassTieredHandoff.cs": "a73108ad1f9944603c432bd22bc759628cbe74b3dee3642964dc46b0bd303492",
+    "Runtime\\GrassLodHandoff.cs": "f6f3b405efccbb9a9f56f0441b63282e273df20b12519d1aa958decdcbcd28a2",
+    "Runtime\\PBDGrassPatchRenderer.cs": "e4276700e5396041cf631b3a95eae07b67699bc40c3f5ed22ed888b9c768f81b"
+  }
+}

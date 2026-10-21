@@ -1,0 +1,24 @@
+#pragma kernel Probe
+#include "GrassCompactPacking.cginc"
+StructuredBuffer<float3> VertexBuffer,NormalBuffer;
+StructuredBuffer<float> CompactHalfWidths;
+struct GrassBlade {float3 root;float length;uint id;float width,height,seed;};
+struct GrassLodGridState {int poolOffset,changed;float started,padding;};
+StructuredBuffer<GrassBlade> BladesBuffer;
+StructuredBuffer<GrassLodGridState> _GrassLodGridStates;
+float3 SafeNormal(float3 v) {return v*rsqrt(max(dot(v,v),1e-8));}
+#include "GrassCompactVertex.cginc"
+StructuredBuffer<uint> ProbeBlades;
+RWStructuredBuffer<float4> ProbeOutput;
+int ProbeCount,UseCompact;
+[numthreads(64,1,1)]
+void Probe(uint3 id:SV_DispatchThreadID)
+{
+    if(id.x>=(uint)ProbeCount*15)return;
+    uint sample=id.x/15,local=id.x%15,index=ProbeBlades[sample]*15+local;
+    float3 p,n,w;
+    if(UseCompact!=0)CompactVertex(index,p,n,w);
+    else {p=VertexBuffer[index];n=NormalBuffer[index];}
+    ProbeOutput[sample*30+local]=float4(p,1);
+    ProbeOutput[sample*30+15+local]=float4(n,1);
+}

@@ -123,8 +123,8 @@ namespace GrassFinal.PBDGrass.Editor
         }
         private static void Press(PBDGrassPatchRenderer r, Transform collider, int blade, int ticks = 120)
         {
-            Vector3 root = r.Data.Blades[blade].Root;
-            Vector3 direction = r.Data.Rods[blade * 7].Rotation * Vector3.up;
+            Vector3 root = r.Data.GetBlade(blade).Root;
+            Vector3 direction = r.Data.GetRod(blade * 7).Rotation * Vector3.up;
             for (int t = 0; t < ticks; t++)
             {
                 float u = Mathf.Clamp01(t / (ticks * .5f));
@@ -226,7 +226,7 @@ namespace GrassFinal.PBDGrass.Editor
                 using (var r = Renderer(1, settings, go.transform))
                 {
                     r.SetWind(Vector3.zero, 0, Vector4.zero);
-                    Vector3 root = r.Data.Blades[0].Root, direction = r.Data.Rods[0].Rotation * Vector3.up;
+                    Vector3 root = r.Data.GetBlade(0).Root, direction = r.Data.GetRod(0).Rotation * Vector3.up;
                     for (int frame = 1; frame <= fps * 2; frame++)
                     {
                         go.transform.position = root + Vector3.up * .65f + direction * Mathf.Lerp(1.2f, -.15f, Mathf.Clamp01(frame / (float)fps));
@@ -284,8 +284,8 @@ namespace GrassFinal.PBDGrass.Editor
                 var settings = Settings(plastic); settings.ColliderRadius = .38f; go.transform.position = Vector3.up * 10;
                 using (var r = new PBDGrassPatchRenderer(patch, solver, material, camera, wind, settings, new[] { go.transform }))
                 {
-                    Vector3 root = r.Data.Blades[0].Root;
-                    Vector3 view = r.Data.Rods[0].Rotation * new Vector3(.55f, 1, 0).normalized;
+                    Vector3 root = r.Data.GetBlade(0).Root;
+                    Vector3 view = r.Data.GetRod(0).Rotation * new Vector3(.55f, 1, 0).normalized;
                     camera.transform.position = root + Vector3.up * .7f + view * 2.8f;
                     camera.transform.LookAt(root + Vector3.up * .7f); camera.fieldOfView = 35;
                     foreach (var light in Object.FindObjectsOfType<Light>())

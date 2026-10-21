@@ -41,7 +41,7 @@ namespace GrassFinal.PBDGrass
         {
             get
             {
-                Vector3 p=Demo.StreamWorld?Demo.Cam.transform.position:origin;
+                Vector3 p=Demo.StreamWorld?Demo.Cam.transform.position:Demo.transform.position;
                 // The 8m resident guard band hides page turnover. Visual LOD follows
                 // the continuous camera position, not the snapped residency anchor.
                 return RadialMiddle?new Vector4(p.x,p.z,MiddleOuterDistance,MiddleOuterDistance-MiddleFullDistance)
@@ -106,6 +106,9 @@ namespace GrassFinal.PBDGrass
             }
             compute.SetBuffer(kernel,"CoreStates",Demo.Renderer.Handoff.ClassificationStates);
             compute.SetInt("CoreSize",Demo.PatchSize);
+            compute.SetFloat("GrassLifecycleTime",Demo.Renderer.SimulationTime);
+            compute.SetFloat("GrassLifecycleEntrySeconds",Mathf.Max(.05f,Demo.Handoff.TransitionSeconds));
+            compute.SetFloat("GrassLifecycleExitSeconds",Mathf.Max(.05f,Demo.Physics.ContactFadeSeconds));
             var frustum=GeometryUtility.CalculateFrustumPlanes(Demo.Cam);
             for(int i=0;i<6;i++)planes[i]=new Vector4(frustum[i].normal.x,frustum[i].normal.y,frustum[i].normal.z,frustum[i].distance);
             compute.SetVectorArray("FrustumPlanes",planes); compute.SetVector("FieldOrigin",origin);

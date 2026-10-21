@@ -15,6 +15,12 @@ namespace GrassFinal.PBDGrass
         public bool StablePoolSelection;
         [Tooltip("Prioritize listed interaction colliders inside the compatible middle range, within the same fixed pool budget.")]
         public bool PromoteInteractions;
+        [Tooltip("Allow collision regions throughout the resident compatible field to compete for the same XPBD pool. Uses the current middle/outer coverage boundary instead of Interaction Distance.")]
+        public bool InteractionsAcrossMiddle;
+        [Tooltip("Compact tiered mode: only collision regions and their settling/fade tails use XPBD. Max Active Blades is a ceiling, not a target.")]
+        public bool ContactDrivenSimulation;
+        [Min(0)] public float ContactSettleSeconds=2;
+        [Min(.05f)] public float ContactFadeSeconds=1;
         [Min(1)] public float InteractionDistance = 28;
         [Header("Small Steps")]
         [Range(30, 120)] public int SimulationRate = 60;

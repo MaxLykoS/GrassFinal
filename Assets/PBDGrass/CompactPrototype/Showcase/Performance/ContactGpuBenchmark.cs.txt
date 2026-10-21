@@ -1,0 +1,172 @@
+// Copied into an isolated validation project's Editor folder by prepare_profile.py.
+// No timing plugin or instrumentation is installed in the user's project.
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.Rendering;
+using GrassFinal.PBDGrass;
+using Object=UnityEngine.Object;
+using Debug=UnityEngine.Debug;
+public static class ContactGpuBenchmark
+{
+    [Serializable] public sealed class Row
+    {
+        public int frame,active,ticks,loadedCells,selectCalls,gcCollections;
+        public string phase;
+        public int contact,settling,fading;
+        public long cpuAllocatedBytes;
+        public bool shifted;
+        public double streamGpu,selectionGpu,solveGpu,windGpu,displayGpu,coreCullGpu,outerGpu,renderGpu,opaqueGpu,totalGpu;
+        public double streamCpu,poolCpu,handoffCpu,selectionCpu,advanceCpu,coreCullCpu,outerCpu,renderCpu,totalCpu;
+    }
+    [Serializable] public sealed class Report
+    {
+        public bool passed,colors,contacts,moving,eventDriven;
+        public string error,caseName,gpu,cpu,api,unity;
+        public int patchSize,blades,colliders,substeps,iterations,width=1600,height=900,msaa,warmup,sampleTarget,dropped,failed;
+        public long gpuBufferBytes;
+        public float middleFull,middleOuter;
+        public List<Row> rows=new List<Row>();
+    }
+    static Report report;static GrassHandoffDemo demo;static GrassShowcaseController lab;
+    static Camera camera;static RenderTexture rt;static CommandBuffer beforeOpaque,afterOpaque;
+    static int frame,received,flush;static string output;static double started;
+    static readonly Dictionary<int,Row> cpu=new Dictionary<int,Row>();
+    public static void Run()
+    {
+        frame=received=flush=0;cpu.Clear();
+        output=Environment.GetEnvironmentVariable("GRASS_PROFILE_OUTPUT");
+        Directory.CreateDirectory(output);
+        string name=Environment.GetEnvironmentVariable("GRASS_PROFILE_CASE")??"wide_elevated";
+        report=new Report {caseName=name,gpu=SystemInfo.graphicsDeviceName,cpu=SystemInfo.processorType,
+            api=SystemInfo.graphicsDeviceType.ToString(),unity=Application.unityVersion,colors=!name.Contains("natural"),
+            contacts=!name.Contains("no_contact"),moving=name.Contains("moving"),warmup=120,sampleTarget=name.Contains("lifecycle")?600:name.Contains("moving")?1440:300};
+        started=EditorApplication.timeSinceStartup;
+        try
+        {
+            QualitySettings.vSyncCount=0;Application.targetFrameRate=-1;
+            EditorSceneManager.OpenScene(GrassFinal.PBDGrass.Editor.GrassShowcaseSceneBuilder.ScenePath);
+            demo=Object.FindObjectOfType<GrassHandoffDemo>();lab=Object.FindObjectOfType<GrassShowcaseController>();
+            // Stop automatic callbacks: one manual simulation tick and one camera render per sample.
+            demo.enabled=false;demo.OuterCoverage.enabled=false;lab.enabled=false;demo.Cam.enabled=false;
+            // OpenScene may have initialized an ExecuteAlways component; release before changing capacity.
+            typeof(GrassHandoffDemo).GetMethod("Release",System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance).Invoke(demo,null);
+            demo.PatchSize=name.StartsWith("small")?96:144;
+            demo.OuterCoverage.MiddleFullDistance=demo.PatchSize==96?28:52;
+            demo.OuterCoverage.MiddleOuterDistance=demo.PatchSize==96?36:64;
+            demo.Handoff.DebugLodBaseColors=report.colors;
+            if(name.Contains("fixed"))demo.Physics.ContactDrivenSimulation=false;
+            report.eventDriven=demo.Physics.ContactDrivenSimulation;
+            demo.AutoTour=false;demo.ContactEnabled=report.contacts;
+            lab.SetView(name.Contains("overview")?4:1);
+            // Same framing for both overview capacities, so radius alone changes.
+            if(name.Contains("overview"))demo.Cam.orthographicSize=72;
+            lab.ApplyActors(0,report.contacts);
+            demo.Initialize();demo.OuterCoverage.Initialize();camera=demo.Cam;camera.aspect=1600f/900;
+            report.patchSize=demo.PatchSize;report.blades=demo.Renderer.BladeCount;report.colliders=lab.Actors.Length;
+            report.middleFull=demo.OuterCoverage.MiddleFullDistance;report.middleOuter=demo.OuterCoverage.MiddleOuterDistance;
+            report.substeps=demo.Physics.NearSubsteps;report.iterations=demo.Physics.ConstraintIterations;
+            report.gpuBufferBytes=demo.Renderer.AllocatedGpuBytes+demo.OuterCoverage.AllocatedGpuBytes;
+            report.msaa=camera.allowMSAA?Mathf.Max(1,QualitySettings.antiAliasing):1;
+            rt=new RenderTexture(1600,900,24,camera.allowHDR?RenderTextureFormat.DefaultHDR:RenderTextureFormat.Default);
+            rt.antiAliasing=report.msaa;rt.Create();camera.targetTexture=rt;
+            ContactGpuHooks.Function=ContactGpuHooks.GetRenderEventFunc();ContactGpuHooks.Active=true;
+            beforeOpaque=new CommandBuffer {name="Contact profile: opaque begin"};
+            afterOpaque=new CommandBuffer {name="Contact profile: opaque end"};
+            beforeOpaque.IssuePluginEvent(ContactGpuHooks.Function,11);afterOpaque.IssuePluginEvent(ContactGpuHooks.Function,12);
+            camera.AddCommandBuffer(CameraEvent.BeforeForwardOpaque,beforeOpaque);camera.AddCommandBuffer(CameraEvent.AfterForwardOpaque,afterOpaque);
+            EditorApplication.update+=Update;
+            Debug.Log("CONTACT_PROFILE_START "+JsonUtility.ToJson(report));
+        }
+        catch(Exception e) {Finish(e);}
+    }
+    static void Update()
+    {
+        try
+        {
+            if(EditorApplication.timeSinceStartup-started>600)throw new TimeoutException("Contact profile timed out.");
+            while(ContactGpuHooks.TryPop(out var v)!=0)
+            {
+                received=Math.Max(received,v.frame);
+                if(!cpu.TryGetValue(v.frame,out var row))throw new Exception("Unexpected timestamp frame "+v.frame);
+                cpu.Remove(v.frame);
+                if(v.frame<=report.warmup)continue;
+                foreach(int marker in new[]{0,1,2,3,4,5,6,7,8,9,10,11,12})
+                    if(v.ms[marker]<0)throw new Exception("Missing GPU timestamp "+marker);
+                row.streamGpu=v.ms[1];row.selectionGpu=v.ms[2]-v.ms[1];row.solveGpu=v.ms[4]-v.ms[3];
+                row.windGpu=v.ms[5]-v.ms[4];row.displayGpu=v.ms[6]-v.ms[5];row.coreCullGpu=v.ms[7]-v.ms[6];
+                row.outerGpu=v.ms[8]-v.ms[7];row.renderGpu=v.ms[10]-v.ms[8];row.opaqueGpu=v.ms[12]-v.ms[11];row.totalGpu=v.ms[9];
+                report.rows.Add(row);
+            }
+            if(frame>=report.warmup+report.sampleTarget)
+            {
+                if(report.rows.Count==report.sampleTarget) {Finish(null);return;}
+                ContactGpuHooks.Event(31);camera.Render();if(++flush>600)throw new Exception("Timestamp drain incomplete.");return;
+            }
+            // Nonblocking timestamp collection; keep well below the native 128-slot ring.
+            if(frame-received>=16) {ContactGpuHooks.Event(31);camera.Render();return;}
+            float t=frame/60f;
+            if(report.moving)
+            {
+                float tour=Mathf.Max(0,(frame-report.warmup)/60f),x;
+                if(tour<8)x=Mathf.SmoothStep(0,36,tour/8);else if(tour<12)x=36;
+                else if(tour<20)x=Mathf.SmoothStep(36,0,(tour-12)/8);else x=0;
+                camera.transform.position=new Vector3(x,16,-14);camera.transform.LookAt(new Vector3(0,.6f,1));
+            }
+            bool contact=report.contacts && (!report.caseName.Contains("lifecycle") || frame<report.warmup+120);
+            lab.ApplyActors(t,contact);
+            foreach(var label in lab.Labels)if(label!=null)label.rotation=camera.transform.rotation;
+            Vector3 focus=camera.transform.position;focus.y=0;
+            ContactGpuHooks.ResetCpu();
+            var rowNow=new Row {frame=++frame};
+            long allocation=GC.GetAllocatedBytesForCurrentThread();int collections=GC.CollectionCount(0);
+            long totalStart=ContactGpuHooks.Stamp();ContactGpuHooks.Event(frame<<6);
+            long start=ContactGpuHooks.Stamp();rowNow.shifted=demo.Renderer.StreamTo(focus);
+            rowNow.streamCpu=ContactGpuHooks.Ms(start);rowNow.loadedCells=rowNow.shifted?demo.WorldLayout.LastLoadedCells:0;ContactGpuHooks.Event(1);
+            demo.Renderer.SetWind(GrassResponseDemo.WindAt(t,true)*(demo.Wind.magnitude/6),.1f,new Vector4(.01f,.01f,0,1));
+            int ticks=demo.Renderer.SimulationTicks;start=ContactGpuHooks.Stamp();demo.Renderer.Advance(1f/60);
+            rowNow.advanceCpu=ContactGpuHooks.Ms(start);rowNow.ticks=demo.Renderer.SimulationTicks-ticks;
+            rowNow.active=demo.Renderer.ActiveBladeCount;
+            if((report.eventDriven?rowNow.active>32768:rowNow.active!=32768) || rowNow.ticks!=1)throw new Exception("Incomplete near workload.");
+            var pool=demo.Renderer.Pool;rowNow.contact=pool.InteractionBlades;rowNow.settling=pool.SettlingBlades;rowNow.fading=pool.FadingBlades;
+            rowNow.phase=!report.eventDriven?"fixed":rowNow.contact>0?"contact":rowNow.settling>0?"settling":rowNow.fading>0?"fade":"idle";
+            start=ContactGpuHooks.Stamp();demo.Renderer.Draw(camera);rowNow.coreCullCpu=ContactGpuHooks.Ms(start);ContactGpuHooks.Event(7);
+            start=ContactGpuHooks.Stamp();demo.OuterCoverage.PrepareVisible();demo.OuterCoverage.RenderPrepared(camera);
+            rowNow.outerCpu=ContactGpuHooks.Ms(start);ContactGpuHooks.Event(8);
+            start=ContactGpuHooks.Stamp();camera.Render();rowNow.renderCpu=ContactGpuHooks.Ms(start);
+            ContactGpuHooks.Event(10);ContactGpuHooks.Event(9);
+            rowNow.totalCpu=ContactGpuHooks.Ms(totalStart);
+            rowNow.poolCpu=ContactGpuHooks.PoolCpu;rowNow.handoffCpu=ContactGpuHooks.HandoffCpu;
+            rowNow.selectionCpu=ContactGpuHooks.SelectionCpu;rowNow.selectCalls=ContactGpuHooks.SelectCalls;
+            rowNow.cpuAllocatedBytes=GC.GetAllocatedBytesForCurrentThread()-allocation;rowNow.gcCollections=GC.CollectionCount(0)-collections;
+            cpu[frame]=rowNow;
+        }
+        catch(Exception e) {Finish(e);}
+    }
+    static void Finish(Exception error)
+    {
+        EditorApplication.update-=Update;ContactGpuHooks.Active=false;
+        if(error!=null)report.error=error.ToString();
+        report.dropped=ContactGpuHooks.GetDropped();report.failed=ContactGpuHooks.GetFailed();
+        report.passed=error==null && report.rows.Count==report.sampleTarget && report.dropped==0 && report.failed==0;
+        File.WriteAllText(Path.Combine(output,report.caseName+".json"),JsonUtility.ToJson(report,true));
+        Debug.Log("CONTACT_PROFILE_DONE "+report.caseName+" "+report.passed+" "+report.error);
+        if(camera!=null)
+        {
+            camera.RemoveAllCommandBuffers();camera.targetTexture=null;
+            beforeOpaque?.Dispose();afterOpaque?.Dispose();
+        }
+        if(rt!=null) {rt.Release();Object.DestroyImmediate(rt);}
+        if(report.passed && report.caseName.Contains("lifecycle") && Environment.GetEnvironmentVariable("GRASS_PROFILE_SUITE")=="1")
+        {
+            Environment.SetEnvironmentVariable("GRASS_PROFILE_CASE","wide_fixed");
+            EditorApplication.delayCall+=Run;return;
+        }
+        // Let Unity own shutdown of the scene and native plugin after all queries have drained.
+        EditorApplication.Exit(report.passed?0:1);
+    }
+}

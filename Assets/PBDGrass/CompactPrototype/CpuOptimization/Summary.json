@@ -1,0 +1,1372 @@
+{
+  "fixed": {
+    "wide_elevated_after": {
+      "passed": true,
+      "colors": true,
+      "contacts": true,
+      "moving": false,
+      "error": "",
+      "caseName": "wide_elevated_after",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "cpu": "AMD Ryzen 7 5800X 8-Core Processor ",
+      "api": "Direct3D11",
+      "unity": "2022.3.62f2c1",
+      "patchSize": 144,
+      "blades": 663552,
+      "colliders": 12,
+      "substeps": 8,
+      "iterations": 3,
+      "width": 1600,
+      "height": 900,
+      "msaa": 4,
+      "warmup": 120,
+      "sampleTarget": 300,
+      "dropped": 0,
+      "failed": 0,
+      "gpuBufferBytes": 224852832,
+      "middleFull": 52.0,
+      "middleOuter": 64.0,
+      "samples": 300,
+      "metrics": {
+        "poolCpu": {
+          "mean": 0.6152756666666667,
+          "p95": 0.744,
+          "max": 0.89
+        },
+        "handoffCpu": {
+          "mean": 1.2254336666666668,
+          "p95": 1.3608,
+          "max": 1.7791
+        },
+        "advanceCpu": {
+          "mean": 1.990834,
+          "p95": 2.2523,
+          "max": 2.5546
+        },
+        "streamCpu": {
+          "mean": 0.0007903333333333333,
+          "p95": 0.0013,
+          "max": 0.0023
+        },
+        "totalCpu": {
+          "mean": 2.3110026666666665,
+          "p95": 2.6137,
+          "max": 2.9425
+        },
+        "solveGpu": {
+          "mean": 2.9552834133333334,
+          "p95": 3.29216,
+          "max": 3.704832
+        },
+        "windGpu": {
+          "mean": 0.009758720000000007,
+          "p95": 0.009215999999999891,
+          "max": 0.274432
+        },
+        "displayGpu": {
+          "mean": 0.64362496,
+          "p95": 0.8980480000000002,
+          "max": 1.18784
+        },
+        "coreCullGpu": {
+          "mean": 0.008308053333333329,
+          "p95": 0.009215999999999891,
+          "max": 0.011264000000000163
+        },
+        "outerGpu": {
+          "mean": 0.03766133333333334,
+          "p95": 0.035840000000000316,
+          "max": 0.3020800000000001
+        },
+        "renderGpu": {
+          "mean": 0.8554475733333333,
+          "p95": 1.08032,
+          "max": 1.447936
+        }
+      }
+    },
+    "wide_elevated_repeat_after": {
+      "passed": true,
+      "colors": true,
+      "contacts": true,
+      "moving": false,
+      "error": "",
+      "caseName": "wide_elevated_repeat_after",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "cpu": "AMD Ryzen 7 5800X 8-Core Processor ",
+      "api": "Direct3D11",
+      "unity": "2022.3.62f2c1",
+      "patchSize": 144,
+      "blades": 663552,
+      "colliders": 12,
+      "substeps": 8,
+      "iterations": 3,
+      "width": 1600,
+      "height": 900,
+      "msaa": 4,
+      "warmup": 120,
+      "sampleTarget": 300,
+      "dropped": 0,
+      "failed": 0,
+      "gpuBufferBytes": 224852832,
+      "middleFull": 52.0,
+      "middleOuter": 64.0,
+      "samples": 300,
+      "metrics": {
+        "poolCpu": {
+          "mean": 0.6093863333333334,
+          "p95": 0.7384,
+          "max": 1.0014
+        },
+        "handoffCpu": {
+          "mean": 1.2359326666666666,
+          "p95": 1.4348,
+          "max": 2.2393
+        },
+        "advanceCpu": {
+          "mean": 2.0056356666666666,
+          "p95": 2.2949,
+          "max": 3.2175
+        },
+        "streamCpu": {
+          "mean": 0.0008316666666666666,
+          "p95": 0.0011,
+          "max": 0.0309
+        },
+        "totalCpu": {
+          "mean": 2.3344276666666666,
+          "p95": 2.7094,
+          "max": 3.8296
+        },
+        "solveGpu": {
+          "mean": 3.0067802666666665,
+          "p95": 3.458048,
+          "max": 4.134912
+        },
+        "windGpu": {
+          "mean": 0.008075946666666651,
+          "p95": 0.009215999999999891,
+          "max": 0.011264000000000163
+        },
+        "displayGpu": {
+          "mean": 0.66210816,
+          "p95": 0.9820160000000002,
+          "max": 1.2277759999999995
+        },
+        "coreCullGpu": {
+          "mean": 0.008256853333333359,
+          "p95": 0.009215999999999891,
+          "max": 0.011263999999999719
+        },
+        "outerGpu": {
+          "mean": 0.03740351999999999,
+          "p95": 0.035840000000000316,
+          "max": 0.43008000000000024
+        },
+        "renderGpu": {
+          "mean": 0.86448448,
+          "p95": 1.1386880000000001,
+          "max": 2.1094399999999998
+        }
+      }
+    },
+    "small_elevated_after": {
+      "passed": true,
+      "colors": true,
+      "contacts": true,
+      "moving": false,
+      "error": "",
+      "caseName": "small_elevated_after",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "cpu": "AMD Ryzen 7 5800X 8-Core Processor ",
+      "api": "Direct3D11",
+      "unity": "2022.3.62f2c1",
+      "patchSize": 96,
+      "blades": 294912,
+      "colliders": 12,
+      "substeps": 8,
+      "iterations": 3,
+      "width": 1600,
+      "height": 900,
+      "msaa": 4,
+      "warmup": 120,
+      "sampleTarget": 300,
+      "dropped": 0,
+      "failed": 0,
+      "gpuBufferBytes": 159575904,
+      "middleFull": 28.0,
+      "middleOuter": 36.0,
+      "samples": 300,
+      "metrics": {
+        "poolCpu": {
+          "mean": 0.5952113333333333,
+          "p95": 0.7057,
+          "max": 0.8919
+        },
+        "handoffCpu": {
+          "mean": 1.1894076666666666,
+          "p95": 1.2945,
+          "max": 1.9044
+        },
+        "advanceCpu": {
+          "mean": 1.9292796666666667,
+          "p95": 2.1427,
+          "max": 2.9955
+        },
+        "streamCpu": {
+          "mean": 0.0007143333333333333,
+          "p95": 0.001,
+          "max": 0.0018
+        },
+        "totalCpu": {
+          "mean": 2.217764,
+          "p95": 2.4756,
+          "max": 3.3713
+        },
+        "solveGpu": {
+          "mean": 2.9975373866666666,
+          "p95": 3.506176,
+          "max": 3.949568
+        },
+        "windGpu": {
+          "mean": 0.008925866666666674,
+          "p95": 0.009215999999999891,
+          "max": 0.3461120000000002
+        },
+        "displayGpu": {
+          "mean": 0.41753941333333333,
+          "p95": 0.6871040000000002,
+          "max": 0.852992
+        },
+        "coreCullGpu": {
+          "mean": 0.008284159999999999,
+          "p95": 0.009215999999999891,
+          "max": 0.012288000000000299
+        },
+        "outerGpu": {
+          "mean": 0.043288320000000005,
+          "p95": 0.035967999999999556,
+          "max": 0.6686720000000004
+        },
+        "renderGpu": {
+          "mean": 0.7789085866666667,
+          "p95": 1.0567680000000004,
+          "max": 1.3496320000000006
+        }
+      }
+    },
+    "wide_moving_after": {
+      "passed": true,
+      "colors": true,
+      "contacts": true,
+      "moving": true,
+      "error": "",
+      "caseName": "wide_moving_after",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "cpu": "AMD Ryzen 7 5800X 8-Core Processor ",
+      "api": "Direct3D11",
+      "unity": "2022.3.62f2c1",
+      "patchSize": 144,
+      "blades": 663552,
+      "colliders": 12,
+      "substeps": 8,
+      "iterations": 3,
+      "width": 1600,
+      "height": 900,
+      "msaa": 4,
+      "warmup": 120,
+      "sampleTarget": 1440,
+      "dropped": 0,
+      "failed": 0,
+      "gpuBufferBytes": 224852832,
+      "middleFull": 52.0,
+      "middleOuter": 64.0,
+      "samples": 1440,
+      "metrics": {
+        "poolCpu": {
+          "mean": 0.617806875,
+          "p95": 0.8946,
+          "max": 2.1842
+        },
+        "handoffCpu": {
+          "mean": 1.2406516666666667,
+          "p95": 1.7769,
+          "max": 4.5616
+        },
+        "advanceCpu": {
+          "mean": 2.168672013888889,
+          "p95": 2.8412,
+          "max": 37.5582
+        },
+        "streamCpu": {
+          "mean": 0.028315416666666666,
+          "p95": 0.0025,
+          "max": 9.4371
+        },
+        "totalCpu": {
+          "mean": 2.6213999305555555,
+          "p95": 3.5101,
+          "max": 45.4682
+        },
+        "solveGpu": {
+          "mean": 3.191314577777778,
+          "p95": 3.817472,
+          "max": 5.475328
+        },
+        "windGpu": {
+          "mean": 0.009818311111111104,
+          "p95": 0.010240000000000027,
+          "max": 0.6205439999999998
+        },
+        "displayGpu": {
+          "mean": 0.7538453333333334,
+          "p95": 1.1878399999999996,
+          "max": 1.8923520000000003
+        },
+        "coreCullGpu": {
+          "mean": 0.009343288888888891,
+          "p95": 0.009216000000000335,
+          "max": 0.5191680000000001
+        },
+        "outerGpu": {
+          "mean": 0.043982644444444434,
+          "p95": 0.03891200000000028,
+          "max": 0.6799359999999997
+        },
+        "renderGpu": {
+          "mean": 1.2306299777777778,
+          "p95": 1.9630079999999999,
+          "max": 3.809280000000001
+        }
+      },
+      "pages": {
+        "count": 8,
+        "streamCpu": {
+          "mean": 4.8846875,
+          "p95": 9.4371,
+          "max": 9.4371
+        },
+        "totalCpu": {
+          "mean": 32.0232625,
+          "p95": 45.4682,
+          "max": 45.4682
+        },
+        "rows": [
+          {
+            "frame": 268,
+            "loadedCells": 1152,
+            "streamCpu": 9.4371,
+            "totalCpu": 40.3617
+          },
+          {
+            "frame": 344,
+            "loadedCells": 1152,
+            "streamCpu": 4.2824,
+            "totalCpu": 32.4157
+          },
+          {
+            "frame": 416,
+            "loadedCells": 1152,
+            "streamCpu": 4.281,
+            "totalCpu": 27.8503
+          },
+          {
+            "frame": 502,
+            "loadedCells": 1152,
+            "streamCpu": 3.4943,
+            "totalCpu": 28.5557
+          },
+          {
+            "frame": 941,
+            "loadedCells": 1152,
+            "streamCpu": 3.28,
+            "totalCpu": 25.0633
+          },
+          {
+            "frame": 1027,
+            "loadedCells": 1152,
+            "streamCpu": 3.8852,
+            "totalCpu": 26.1527
+          },
+          {
+            "frame": 1099,
+            "loadedCells": 1152,
+            "streamCpu": 4.3769,
+            "totalCpu": 30.3185
+          },
+          {
+            "frame": 1175,
+            "loadedCells": 1152,
+            "streamCpu": 6.0406,
+            "totalCpu": 45.4682
+          }
+        ]
+      }
+    },
+    "wide_overview_after": {
+      "passed": true,
+      "colors": true,
+      "contacts": true,
+      "moving": false,
+      "error": "",
+      "caseName": "wide_overview_after",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "cpu": "AMD Ryzen 7 5800X 8-Core Processor ",
+      "api": "Direct3D11",
+      "unity": "2022.3.62f2c1",
+      "patchSize": 144,
+      "blades": 663552,
+      "colliders": 12,
+      "substeps": 8,
+      "iterations": 3,
+      "width": 1600,
+      "height": 900,
+      "msaa": 4,
+      "warmup": 120,
+      "sampleTarget": 300,
+      "dropped": 0,
+      "failed": 0,
+      "gpuBufferBytes": 224852832,
+      "middleFull": 52.0,
+      "middleOuter": 64.0,
+      "samples": 300,
+      "metrics": {
+        "poolCpu": {
+          "mean": 0.6517253333333334,
+          "p95": 0.7509,
+          "max": 1.0689
+        },
+        "handoffCpu": {
+          "mean": 1.1320826666666666,
+          "p95": 1.2848,
+          "max": 1.7799
+        },
+        "advanceCpu": {
+          "mean": 1.9521003333333333,
+          "p95": 2.1788,
+          "max": 3.1315
+        },
+        "streamCpu": {
+          "mean": 0.0010353333333333334,
+          "p95": 0.0015,
+          "max": 0.0022
+        },
+        "totalCpu": {
+          "mean": 2.257165,
+          "p95": 2.5147,
+          "max": 3.6126
+        },
+        "solveGpu": {
+          "mean": 2.99019552,
+          "p95": 3.50208,
+          "max": 4.179968
+        },
+        "windGpu": {
+          "mean": 0.008171520000000005,
+          "p95": 0.009215999999999891,
+          "max": 0.011263999999999719
+        },
+        "displayGpu": {
+          "mean": 0.5606263466666667,
+          "p95": 0.8222719999999999,
+          "max": 1.1233279999999999
+        },
+        "coreCullGpu": {
+          "mean": 0.009492480000000006,
+          "p95": 0.009216000000000335,
+          "max": 0.2723840000000002
+        },
+        "outerGpu": {
+          "mean": 0.04101045333333335,
+          "p95": 0.04096000000000011,
+          "max": 0.3020800000000001
+        },
+        "renderGpu": {
+          "mean": 3.6078292266666665,
+          "p95": 4.114432000000001,
+          "max": 4.481024
+        }
+      }
+    },
+    "wide_no_contact_after": {
+      "passed": true,
+      "colors": true,
+      "contacts": false,
+      "moving": false,
+      "error": "",
+      "caseName": "wide_no_contact_after",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "cpu": "AMD Ryzen 7 5800X 8-Core Processor ",
+      "api": "Direct3D11",
+      "unity": "2022.3.62f2c1",
+      "patchSize": 144,
+      "blades": 663552,
+      "colliders": 12,
+      "substeps": 8,
+      "iterations": 3,
+      "width": 1600,
+      "height": 900,
+      "msaa": 4,
+      "warmup": 120,
+      "sampleTarget": 300,
+      "dropped": 0,
+      "failed": 0,
+      "gpuBufferBytes": 224852832,
+      "middleFull": 52.0,
+      "middleOuter": 64.0,
+      "samples": 300,
+      "metrics": {
+        "poolCpu": {
+          "mean": 0.5621803333333333,
+          "p95": 0.695,
+          "max": 0.8462
+        },
+        "handoffCpu": {
+          "mean": 0.8243883333333333,
+          "p95": 0.9423,
+          "max": 1.261
+        },
+        "advanceCpu": {
+          "mean": 1.5121136666666666,
+          "p95": 1.7415,
+          "max": 2.2859
+        },
+        "streamCpu": {
+          "mean": 0.0007086666666666667,
+          "p95": 0.0009,
+          "max": 0.0022
+        },
+        "totalCpu": {
+          "mean": 1.7702766666666667,
+          "p95": 2.0254,
+          "max": 2.8615
+        },
+        "solveGpu": {
+          "mean": 2.3735556266666666,
+          "p95": 2.802688,
+          "max": 3.291136
+        },
+        "windGpu": {
+          "mean": 0.008021333333333335,
+          "p95": 0.009215999999999891,
+          "max": 0.010240000000000027
+        },
+        "displayGpu": {
+          "mean": 0.55144448,
+          "p95": 0.8181759999999998,
+          "max": 1.488896
+        },
+        "coreCullGpu": {
+          "mean": 0.009079466666666647,
+          "p95": 0.009215999999999891,
+          "max": 0.24063999999999997
+        },
+        "outerGpu": {
+          "mean": 0.036012266666666674,
+          "p95": 0.035840000000000316,
+          "max": 0.3020799999999997
+        },
+        "renderGpu": {
+          "mean": 0.8515294933333333,
+          "p95": 1.1663359999999998,
+          "max": 1.5605759999999997
+        }
+      }
+    },
+    "wide_elevated_before": {
+      "passed": true,
+      "colors": true,
+      "contacts": true,
+      "moving": false,
+      "error": "",
+      "caseName": "wide_elevated_before",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "cpu": "AMD Ryzen 7 5800X 8-Core Processor ",
+      "api": "Direct3D11",
+      "unity": "2022.3.62f2c1",
+      "patchSize": 144,
+      "blades": 663552,
+      "colliders": 12,
+      "substeps": 8,
+      "iterations": 3,
+      "width": 1600,
+      "height": 900,
+      "msaa": 4,
+      "warmup": 120,
+      "sampleTarget": 300,
+      "dropped": 0,
+      "failed": 0,
+      "gpuBufferBytes": 224852832,
+      "middleFull": 52.0,
+      "middleOuter": 64.0,
+      "samples": 300,
+      "metrics": {
+        "poolCpu": {
+          "mean": 7.744329666666666,
+          "p95": 10.0319,
+          "max": 17.2518
+        },
+        "handoffCpu": {
+          "mean": 11.839821,
+          "p95": 13.5255,
+          "max": 73.9613
+        },
+        "advanceCpu": {
+          "mean": 19.800593666666668,
+          "p95": 22.81,
+          "max": 90.4809
+        },
+        "streamCpu": {
+          "mean": 0.0011836666666666666,
+          "p95": 0.0016,
+          "max": 0.0037
+        },
+        "totalCpu": {
+          "mean": 20.339536666666667,
+          "p95": 23.3324,
+          "max": 91.0957
+        },
+        "solveGpu": {
+          "mean": 3.6781531733333335,
+          "p95": 4.697088,
+          "max": 5.840896
+        },
+        "windGpu": {
+          "mean": 0.011267413333333339,
+          "p95": 0.012287999999999855,
+          "max": 0.5949439999999999
+        },
+        "displayGpu": {
+          "mean": 0.8109533866666666,
+          "p95": 1.37216,
+          "max": 2.0561919999999994
+        },
+        "coreCullGpu": {
+          "mean": 0.012974080000000067,
+          "p95": 0.011264000000000607,
+          "max": 0.7434240000000001
+        },
+        "outerGpu": {
+          "mean": 0.04978143999999994,
+          "p95": 0.04915200000000031,
+          "max": 0.9697279999999999
+        },
+        "renderGpu": {
+          "mean": 1.10892576,
+          "p95": 1.7756159999999994,
+          "max": 2.2906880000000003
+        }
+      }
+    },
+    "wide_moving_before": {
+      "passed": true,
+      "colors": true,
+      "contacts": true,
+      "moving": true,
+      "error": "",
+      "caseName": "wide_moving_before",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "cpu": "AMD Ryzen 7 5800X 8-Core Processor ",
+      "api": "Direct3D11",
+      "unity": "2022.3.62f2c1",
+      "patchSize": 144,
+      "blades": 663552,
+      "colliders": 12,
+      "substeps": 8,
+      "iterations": 3,
+      "width": 1600,
+      "height": 900,
+      "msaa": 4,
+      "warmup": 120,
+      "sampleTarget": 1440,
+      "dropped": 0,
+      "failed": 0,
+      "gpuBufferBytes": 224852832,
+      "middleFull": 52.0,
+      "middleOuter": 64.0,
+      "samples": 1440,
+      "metrics": {
+        "poolCpu": {
+          "mean": 5.409736597222222,
+          "p95": 7.7352,
+          "max": 16.4803
+        },
+        "handoffCpu": {
+          "mean": 9.081747083333333,
+          "p95": 11.8134,
+          "max": 66.9863
+        },
+        "advanceCpu": {
+          "mean": 14.699991527777778,
+          "p95": 19.7118,
+          "max": 83.6533
+        },
+        "streamCpu": {
+          "mean": 0.08686618055555556,
+          "p95": 0.0016,
+          "max": 22.6405
+        },
+        "totalCpu": {
+          "mean": 15.24230548611111,
+          "p95": 20.2767,
+          "max": 84.2091
+        },
+        "solveGpu": {
+          "mean": 3.3386298,
+          "p95": 4.378623999999999,
+          "max": 5.9054079999999995
+        },
+        "windGpu": {
+          "mean": 0.009265066666666663,
+          "p95": 0.011264000000000607,
+          "max": 0.2785280000000001
+        },
+        "displayGpu": {
+          "mean": 0.7849592888888889,
+          "p95": 1.345536,
+          "max": 2.3388159999999996
+        },
+        "coreCullGpu": {
+          "mean": 0.009491911111111105,
+          "p95": 0.010240000000000471,
+          "max": 0.595968
+        },
+        "outerGpu": {
+          "mean": 0.04421035555555555,
+          "p95": 0.04608000000000079,
+          "max": 0.7086080000000003
+        },
+        "renderGpu": {
+          "mean": 1.3701839555555555,
+          "p95": 1.974272,
+          "max": 2.663424
+        }
+      },
+      "pages": {
+        "count": 8,
+        "streamCpu": {
+          "mean": 15.4358875,
+          "p95": 22.6405,
+          "max": 22.6405
+        },
+        "totalCpu": {
+          "mean": 49.582025,
+          "p95": 61.3673,
+          "max": 61.3673
+        },
+        "rows": [
+          {
+            "frame": 268,
+            "loadedCells": 1152,
+            "streamCpu": 22.6405,
+            "totalCpu": 61.3673
+          },
+          {
+            "frame": 344,
+            "loadedCells": 1152,
+            "streamCpu": 16.4934,
+            "totalCpu": 53.6668
+          },
+          {
+            "frame": 416,
+            "loadedCells": 1152,
+            "streamCpu": 13.4822,
+            "totalCpu": 46.4313
+          },
+          {
+            "frame": 502,
+            "loadedCells": 1152,
+            "streamCpu": 10.7587,
+            "totalCpu": 40.2907
+          },
+          {
+            "frame": 941,
+            "loadedCells": 1152,
+            "streamCpu": 10.5828,
+            "totalCpu": 40.3581
+          },
+          {
+            "frame": 1027,
+            "loadedCells": 1152,
+            "streamCpu": 15.292,
+            "totalCpu": 47.7748
+          },
+          {
+            "frame": 1099,
+            "loadedCells": 1152,
+            "streamCpu": 15.3397,
+            "totalCpu": 50.1866
+          },
+          {
+            "frame": 1175,
+            "loadedCells": 1152,
+            "streamCpu": 18.8978,
+            "totalCpu": 56.5806
+          }
+        ]
+      }
+    },
+    "wide_elevated_final": {
+      "passed": true,
+      "colors": true,
+      "contacts": true,
+      "moving": false,
+      "error": "",
+      "caseName": "wide_elevated_final",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "cpu": "AMD Ryzen 7 5800X 8-Core Processor ",
+      "api": "Direct3D11",
+      "unity": "2022.3.62f2c1",
+      "patchSize": 144,
+      "blades": 663552,
+      "colliders": 12,
+      "substeps": 8,
+      "iterations": 3,
+      "width": 1600,
+      "height": 900,
+      "msaa": 4,
+      "warmup": 120,
+      "sampleTarget": 300,
+      "dropped": 0,
+      "failed": 0,
+      "gpuBufferBytes": 224852832,
+      "middleFull": 52.0,
+      "middleOuter": 64.0,
+      "samples": 300,
+      "metrics": {
+        "poolCpu": {
+          "mean": 0.6927996666666667,
+          "p95": 1.0941,
+          "max": 2.2205
+        },
+        "handoffCpu": {
+          "mean": 1.3950373333333332,
+          "p95": 2.0254,
+          "max": 3.9343
+        },
+        "advanceCpu": {
+          "mean": 2.310019,
+          "p95": 3.3651,
+          "max": 5.5377
+        },
+        "streamCpu": {
+          "mean": 0.0013506666666666667,
+          "p95": 0.0023,
+          "max": 0.008
+        },
+        "totalCpu": {
+          "mean": 2.793499333333333,
+          "p95": 4.1892,
+          "max": 6.3584
+        },
+        "solveGpu": {
+          "mean": 3.2510421333333333,
+          "p95": 3.868672,
+          "max": 4.26496
+        },
+        "windGpu": {
+          "mean": 0.010663253333333317,
+          "p95": 0.010240000000000027,
+          "max": 0.7086079999999999
+        },
+        "displayGpu": {
+          "mean": 0.71549952,
+          "p95": 1.3004800000000003,
+          "max": 1.7049599999999998
+        },
+        "coreCullGpu": {
+          "mean": 0.009809919999999993,
+          "p95": 0.008192000000000199,
+          "max": 0.6840319999999998
+        },
+        "outerGpu": {
+          "mean": 0.04381013333333334,
+          "p95": 0.03583999999999943,
+          "max": 1.0383360000000001
+        },
+        "renderGpu": {
+          "mean": 0.9312938666666667,
+          "p95": 1.5001600000000002,
+          "max": 1.9384319999999997
+        }
+      }
+    },
+    "wide_moving_final": {
+      "passed": true,
+      "colors": true,
+      "contacts": true,
+      "moving": true,
+      "error": "",
+      "caseName": "wide_moving_final",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "cpu": "AMD Ryzen 7 5800X 8-Core Processor ",
+      "api": "Direct3D11",
+      "unity": "2022.3.62f2c1",
+      "patchSize": 144,
+      "blades": 663552,
+      "colliders": 12,
+      "substeps": 8,
+      "iterations": 3,
+      "width": 1600,
+      "height": 900,
+      "msaa": 4,
+      "warmup": 120,
+      "sampleTarget": 1440,
+      "dropped": 0,
+      "failed": 0,
+      "gpuBufferBytes": 224852832,
+      "middleFull": 52.0,
+      "middleOuter": 64.0,
+      "samples": 1440,
+      "metrics": {
+        "poolCpu": {
+          "mean": 0.592204375,
+          "p95": 0.7326,
+          "max": 1.3846
+        },
+        "handoffCpu": {
+          "mean": 1.1544477083333333,
+          "p95": 1.4852,
+          "max": 2.9954
+        },
+        "advanceCpu": {
+          "mean": 1.8879447916666667,
+          "p95": 2.3406,
+          "max": 3.3151
+        },
+        "streamCpu": {
+          "mean": 0.023549791666666667,
+          "p95": 0.0011,
+          "max": 6.5209
+        },
+        "totalCpu": {
+          "mean": 2.221670347222222,
+          "p95": 2.6937,
+          "max": 9.1762
+        },
+        "solveGpu": {
+          "mean": 3.097542577777778,
+          "p95": 3.64544,
+          "max": 4.38784
+        },
+        "windGpu": {
+          "mean": 0.008716088888888892,
+          "p95": 0.010240000000000027,
+          "max": 0.2764800000000003
+        },
+        "displayGpu": {
+          "mean": 0.7174933333333333,
+          "p95": 1.0751999999999997,
+          "max": 1.716224
+        },
+        "coreCullGpu": {
+          "mean": 0.009742933333333327,
+          "p95": 0.009216000000000335,
+          "max": 0.5181439999999999
+        },
+        "outerGpu": {
+          "mean": 0.04100122222222223,
+          "p95": 0.03891200000000028,
+          "max": 0.7188479999999995
+        },
+        "renderGpu": {
+          "mean": 1.1873216222222223,
+          "p95": 1.6752640000000003,
+          "max": 2.336704
+        }
+      },
+      "pages": {
+        "count": 8,
+        "streamCpu": {
+          "mean": 4.1023,
+          "p95": 6.5209,
+          "max": 6.5209
+        },
+        "totalCpu": {
+          "mean": 6.2348125,
+          "p95": 9.1762,
+          "max": 9.1762
+        },
+        "rows": [
+          {
+            "frame": 268,
+            "loadedCells": 1152,
+            "streamCpu": 6.5209,
+            "totalCpu": 9.1762
+          },
+          {
+            "frame": 344,
+            "loadedCells": 1152,
+            "streamCpu": 3.685,
+            "totalCpu": 5.7585
+          },
+          {
+            "frame": 416,
+            "loadedCells": 1152,
+            "streamCpu": 3.6122,
+            "totalCpu": 5.6152
+          },
+          {
+            "frame": 502,
+            "loadedCells": 1152,
+            "streamCpu": 3.4559,
+            "totalCpu": 5.1919
+          },
+          {
+            "frame": 941,
+            "loadedCells": 1152,
+            "streamCpu": 3.6287,
+            "totalCpu": 5.2886
+          },
+          {
+            "frame": 1027,
+            "loadedCells": 1152,
+            "streamCpu": 3.6267,
+            "totalCpu": 5.8326
+          },
+          {
+            "frame": 1099,
+            "loadedCells": 1152,
+            "streamCpu": 3.9304,
+            "totalCpu": 6.099
+          },
+          {
+            "frame": 1175,
+            "loadedCells": 1152,
+            "streamCpu": 4.3586,
+            "totalCpu": 6.9165
+          }
+        ]
+      }
+    },
+    "small_elevated_final": {
+      "passed": true,
+      "colors": true,
+      "contacts": true,
+      "moving": false,
+      "error": "",
+      "caseName": "small_elevated_final",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "cpu": "AMD Ryzen 7 5800X 8-Core Processor ",
+      "api": "Direct3D11",
+      "unity": "2022.3.62f2c1",
+      "patchSize": 96,
+      "blades": 294912,
+      "colliders": 12,
+      "substeps": 8,
+      "iterations": 3,
+      "width": 1600,
+      "height": 900,
+      "msaa": 4,
+      "warmup": 120,
+      "sampleTarget": 300,
+      "dropped": 0,
+      "failed": 0,
+      "gpuBufferBytes": 159575904,
+      "middleFull": 28.0,
+      "middleOuter": 36.0,
+      "samples": 300,
+      "metrics": {
+        "poolCpu": {
+          "mean": 0.593823,
+          "p95": 0.7002,
+          "max": 0.8883
+        },
+        "handoffCpu": {
+          "mean": 1.1833813333333334,
+          "p95": 1.2776,
+          "max": 1.3796
+        },
+        "advanceCpu": {
+          "mean": 1.9194273333333334,
+          "p95": 2.1173,
+          "max": 2.2817
+        },
+        "streamCpu": {
+          "mean": 0.0007176666666666667,
+          "p95": 0.001,
+          "max": 0.0015
+        },
+        "totalCpu": {
+          "mean": 2.2056893333333334,
+          "p95": 2.4211,
+          "max": 2.702
+        },
+        "solveGpu": {
+          "mean": 3.0175735466666667,
+          "p95": 3.525632,
+          "max": 3.789824
+        },
+        "windGpu": {
+          "mean": 0.007543466666666672,
+          "p95": 0.009215999999999891,
+          "max": 0.009216000000000335
+        },
+        "displayGpu": {
+          "mean": 0.42559488,
+          "p95": 0.6942720000000002,
+          "max": 0.93696
+        },
+        "coreCullGpu": {
+          "mean": 0.007949653333333343,
+          "p95": 0.008192000000000199,
+          "max": 0.011263999999999719
+        },
+        "outerGpu": {
+          "mean": 0.03857738666666665,
+          "p95": 0.03583999999999987,
+          "max": 0.37375999999999987
+        },
+        "renderGpu": {
+          "mean": 0.76026208,
+          "p95": 0.9922559999999998,
+          "max": 1.419264
+        }
+      }
+    }
+  },
+  "realtime": {
+    "wide_editor_after": {
+      "frames": 15542,
+      "ticks": 1200,
+      "seconds": 19.997635700000004,
+      "ticksPerSecond": 60.0070937385863,
+      "droppedSeconds": 0.0,
+      "maxTicksPerFrame": 2,
+      "tickHistogram": {
+        "0": 14346,
+        "1": 1192,
+        "2": 4,
+        "3": 0,
+        "4": 0
+      },
+      "advanceCpuPerTick": 2.2735433333333335,
+      "poolCpuPerTick": 0.6846394166666667,
+      "handoffCpuPerTick": 1.376547,
+      "cpuPerFrame": {
+        "mean": 0.45492675331360183,
+        "p95": 2.2723,
+        "max": 27.3391
+      }
+    },
+    "wide_player_after": {
+      "frames": 6842,
+      "ticks": 1200,
+      "seconds": 19.99736369999999,
+      "ticksPerSecond": 60.00790994264912,
+      "droppedSeconds": 0.0,
+      "maxTicksPerFrame": 2,
+      "tickHistogram": {
+        "0": 5643,
+        "1": 1198,
+        "2": 1,
+        "3": 0,
+        "4": 0
+      },
+      "advanceCpuPerTick": 1.1121793333333334,
+      "poolCpuPerTick": 0.335955,
+      "handoffCpuPerTick": 0.6503281666666667,
+      "cpuPerFrame": {
+        "mean": 0.4320534785150541,
+        "p95": 1.4343,
+        "max": 2.7031
+      }
+    }
+  },
+  "ParityAccepted": {
+    "passed": true,
+    "error": "",
+    "poolCases": 600,
+    "comparedSteps": 2400,
+    "minActive": 32768,
+    "maxActive": 32768,
+    "pageShifts": 12,
+    "patchSize": 144,
+    "middleFull": 52.0,
+    "middleOuter": 64.0,
+    "checkpoints": [
+      {
+        "phase": "stream_birth",
+        "identicalGpuBytes": 110868480
+      },
+      {
+        "phase": "stream_1",
+        "identicalGpuBytes": 110868480
+      },
+      {
+        "phase": "stream_300",
+        "identicalGpuBytes": 110868480
+      },
+      {
+        "phase": "stream_600",
+        "identicalGpuBytes": 110868480
+      },
+      {
+        "phase": "stream_900",
+        "identicalGpuBytes": 110868480
+      },
+      {
+        "phase": "stream_1320",
+        "identicalGpuBytes": 110868480
+      },
+      {
+        "phase": "stream_1500",
+        "identicalGpuBytes": 110868480
+      },
+      {
+        "phase": "stream_1502",
+        "identicalGpuBytes": 110868480
+      },
+      {
+        "phase": "stream_1620",
+        "identicalGpuBytes": 110868480
+      },
+      {
+        "phase": "stream_1800",
+        "identicalGpuBytes": 110868480
+      },
+      {
+        "phase": "combined_birth",
+        "identicalGpuBytes": 81920000
+      },
+      {
+        "phase": "combined_1",
+        "identicalGpuBytes": 81920000
+      },
+      {
+        "phase": "combined_300",
+        "identicalGpuBytes": 81920000
+      },
+      {
+        "phase": "combined_600",
+        "identicalGpuBytes": 81920000
+      }
+    ]
+  },
+  "Showcase": {
+    "passed": true,
+    "elevatedView": true,
+    "allActorsMoved": true,
+    "stampsReleased": true,
+    "trailEnteredMiddle": true,
+    "trailReturned": true,
+    "lowView": true,
+    "topView": true,
+    "tierOverview": true,
+    "debugColors": true,
+    "finiteNearState": true,
+    "error": "",
+    "colliders": 12,
+    "minActive": 32768,
+    "maxActive": 32768,
+    "ticks": 2701,
+    "pageShifts": 9,
+    "patchSize": 144,
+    "plasticBeforeTour": 1.0878872871398926,
+    "plasticAfterTour": 1.0879095792770386,
+    "maxNearReach": 1.5844863653182983,
+    "middleFullDistance": 52.0,
+    "middleOuterDistance": 64.0,
+    "gpuBufferBytes": 224852832
+  },
+  "Combined": {
+    "passed": true,
+    "gpu": "NVIDIA GeForce RTX 3080 Ti",
+    "unity": "2022.3.62f2c1",
+    "error": "",
+    "totalBlades": 131072,
+    "minActiveBlades": 32768,
+    "maxActiveBlades": 32768,
+    "bezierBlades": 98304,
+    "exitedGrids": 1972,
+    "reenteredGrids": 1082,
+    "evictions": 1972,
+    "simulationTicks": 1440,
+    "visibleGrids": 1963,
+    "seedChecks": 4,
+    "maxSeedPositionError": 0.0,
+    "maxSeedVelocityError": 0.0,
+    "maxSeedRotationError": 0.0,
+    "maxSeedAngularError": 0.0,
+    "retainedPlasticError": 0.0,
+    "peakPlastic": 1.0878874063491821,
+    "lodgedGridEvicted": true,
+    "lodgedGridReturned": true,
+    "sceneViewPreserved": true,
+    "acceptedBankUnchanged": true,
+    "rebakes": [
+      {
+        "type": "Short / Narrow / Firm",
+        "maxNodeDifference": 0.0,
+        "maxControlDifference": 0.0,
+        "maxFrameDifferenceDegrees": 0.0,
+        "frequencyDifference": 0.0,
+        "dampingDifference": 0.0,
+        "maxTerminalSpeed": 0.0018486418994143605
+      },
+      {
+        "type": "Short / Narrow / Soft",
+        "maxNodeDifference": 0.0,
+        "maxControlDifference": 0.0,
+        "maxFrameDifferenceDegrees": 0.0,
+        "frequencyDifference": 0.0,
+        "dampingDifference": 0.0,
+        "maxTerminalSpeed": 0.001867022830992937
+      },
+      {
+        "type": "Short / Wide / Firm",
+        "maxNodeDifference": 0.0,
+        "maxControlDifference": 0.0,
+        "maxFrameDifferenceDegrees": 0.0,
+        "frequencyDifference": 0.0,
+        "dampingDifference": 0.0,
+        "maxTerminalSpeed": 0.0015199141344055533
+      },
+      {
+        "type": "Short / Wide / Soft",
+        "maxNodeDifference": 0.0,
+        "maxControlDifference": 0.0,
+        "maxFrameDifferenceDegrees": 0.0,
+        "frequencyDifference": 0.0,
+        "dampingDifference": 0.0,
+        "maxTerminalSpeed": 0.0018284262623637915
+      },
+      {
+        "type": "Tall / Narrow / Firm",
+        "maxNodeDifference": 0.0,
+        "maxControlDifference": 0.0,
+        "maxFrameDifferenceDegrees": 0.0,
+        "frequencyDifference": 0.0,
+        "dampingDifference": 0.0,
+        "maxTerminalSpeed": 0.0019158173818141222
+      },
+      {
+        "type": "Tall / Narrow / Soft",
+        "maxNodeDifference": 0.0,
+        "maxControlDifference": 0.0,
+        "maxFrameDifferenceDegrees": 0.0,
+        "frequencyDifference": 0.0,
+        "dampingDifference": 0.0,
+        "maxTerminalSpeed": 0.0017794204177334905
+      },
+      {
+        "type": "Tall / Wide / Firm",
+        "maxNodeDifference": 0.0,
+        "maxControlDifference": 0.0,
+        "maxFrameDifferenceDegrees": 0.0,
+        "frequencyDifference": 0.0,
+        "dampingDifference": 0.0,
+        "maxTerminalSpeed": 0.0019886165391653776
+      },
+      {
+        "type": "Tall / Wide / Soft",
+        "maxNodeDifference": 0.0,
+        "maxControlDifference": 0.0,
+        "maxFrameDifferenceDegrees": 0.0,
+        "frequencyDifference": 0.0,
+        "dampingDifference": 0.0,
+        "maxTerminalSpeed": 0.001942087197676301
+      }
+    ]
+  }
+}

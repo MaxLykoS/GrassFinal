@@ -25,7 +25,11 @@ namespace GrassFinal.PBDGrass
         private readonly DepthTexMaker depthSource;
         private readonly int solveKernel, initializeKernel, cullKernel;
         private readonly ComputeBuffer bones, frames, plasticBends, contacts, activeBuffer, initializeBuffer, drawArgs;
-        private readonly ComputeBuffer positions, normals;
+        private readonly ComputeBuffer positions, normals, bladeMetadata;
+        public GrassCompactStorage Compact { get; }
+        public long GeometryGpuBytes { get; private set; }
+        public long StaticGpuBytes { get; private set; }
+        public long PlasticGpuBytes { get; private set; }
         private readonly ColliderMotion[] shapes, targets;
         private readonly Vector3[] motionStartA, motionStartB;
         private readonly GrassSimulationPool.ActiveGrid[] active;
@@ -33,6 +37,8 @@ namespace GrassFinal.PBDGrass
         private readonly uint[] emptyDraw = { BladesPerGrid * GrassBladeData.Indices, 0, 0, 0 };
         private readonly Vector4[] frustum = new Vector4[6];
         private readonly List<Vector4> interactionRegions=new List<Vector4>();
+        private Vector4 compatibleCoverage;
+        private bool radialCompatibleCoverage;
         private readonly GrassBladeData data;
         private readonly GrassWorldLayout world;
         private readonly ComputeShader worldShader;
@@ -51,20 +57,25 @@ namespace GrassFinal.PBDGrass
         public GrassBladeData Data => data;
         public GrassLodHandoff Handoff { get; }
         public long AllocatedGpuBytes
-        { get { long bytes=Handoff!=null?Handoff.AllocatedGpuBytes:0;
+            { get { long bytes=(Handoff!=null?Handoff.AllocatedGpuBytes:0)+(Compact!=null?Compact.AllocatedGpuBytes:0);
                 foreach(var buffer in buffers)bytes+=(long)buffer.count*buffer.stride; return bytes; } }
         public PBDGrassPatchRenderer(PBDGrassPatch patch, ComputeShader sourceShader, Material sourceMaterial,
             Camera camera, Texture2D windNoise, XPBDGrassSettings settings, IList<Transform> colliders,
             GrassHandoffSettings handoffSettings = null, ComputeShader handoffShader = null,
-            GrassWorldLayout worldLayout=null,ComputeShader worldShaderAsset=null)
+            GrassWorldLayout worldLayout=null,ComputeShader worldShaderAsset=null,GrassBladeData preparedData=null)
         {
             this.camera = camera; this.settings = settings; this.sourceMaterial = sourceMaterial;
             this.colliders = colliders ?? new List<Transform>();
+            if(settings.ContactDrivenSimulation && (handoffSettings==null || !handoffSettings.UseTieredState || !handoffSettings.UseCompactMiddle))
+                throw new ArgumentException("Contact-driven simulation requires the compact tiered handoff path.");
             world=worldLayout;
-            data = new GrassBladeData(patch, Mathf.Clamp(settings.TipThicknessRatio,.1f,1),world?.Yaws);
-            world?.Attach(data);
-            SimulationCenter = patch.Root;
-            Pool = new GrassSimulationPool(data.Grids, settings.MaxActiveBlades);
+            if(preparedData!=null && (world==null || !preparedData.UsesCompactTemplate || handoffSettings==null || !handoffSettings.UseCompactMiddle))
+                throw new ArgumentException("Template data requires the compact streamed path.");
+            data = preparedData??new GrassBladeData(patch, Mathf.Clamp(settings.TipThicknessRatio,.1f,1),world?.Yaws);
+            if(preparedData==null)world?.Attach(data);
+            SimulationCenter = world!=null?world.Center:patch.Root;
+            var gridQuery=new GrassGridQuery(data.Grids,world);
+            Pool = new GrassSimulationPool(data.Grids, settings.MaxActiveBlades,gridQuery);
             active = new GrassSimulationPool.ActiveGrid[Pool.Capacity]; initialization = new Initialization[Pool.Capacity];
             depthSource = camera.GetComponent<DepthTexMaker>();
             shader = UnityEngine.Object.Instantiate(sourceShader); material = UnityEngine.Object.Instantiate(sourceMaterial);
@@ -74,11 +85,35 @@ namespace GrassFinal.PBDGrass
                 cullKernel = shader.FindKernel("GridCulling");
                 bones = NewBuffer(Pool.Capacity * 32 * NodesPerBlade, 48);
                 frames = NewBuffer(Pool.Capacity * 32 * GrassBladeData.Segments, 32);
-                plasticBends = Buffer(new Vector4[data.Blades.Length * GrassBladeData.Segments], 16);
-                ComputeBuffer rest = Buffer(data.RestNodes, 48), rods = Buffer(data.Rods, 64), blades = Buffer(data.Blades, 32);
-                ComputeBuffer masses = Buffer(data.InverseMass,4);
-                positions = Buffer(data.VerticesData,12); normals = Buffer(data.Normals,12);
-                ComputeBuffer triangles = Buffer(data.Triangles,4), uvs = Buffer(data.UV,8);
+                bool compact=handoffSettings!=null && handoffSettings.UseCompactMiddle;
+                if(compact && (world==null || !handoffSettings.UseTieredState || handoffSettings.BakedResponse==null ||
+                    !sourceShader.name.StartsWith("Compact") || !handoffShader.name.StartsWith("Compact") ||
+                    worldShaderAsset==null || !worldShaderAsset.name.StartsWith("Compact") ||
+                    sourceMaterial.shader.name!="PBDGrass/CompactPrototype/Grass"))
+                    throw new ArgumentException("Compact storage requires its paired shaders and a homogeneous streamed baked field.");
+                if(compact)Compact=new GrassCompactStorage(data.BladeCount,world.Yaws,world.TemplateRods[0].Rotation);
+                plasticBends = Buffer(new Vector4[(compact?Pool.Capacity*32:data.BladeCount) * GrassBladeData.Segments], 16);
+                ComputeBuffer rest = Buffer(compact?world.TemplateNodes:data.RestNodes,48);
+                ComputeBuffer rods = Buffer(compact?world.TemplateRods:data.Rods,64), blades = UploadBladeMetadata();
+                bladeMetadata=blades;
+                var massValues=compact?new float[8]:data.InverseMass;
+                if(compact)Array.Copy(world.TemplateMass,massValues,8);
+                ComputeBuffer masses = Buffer(massValues,4);
+                positions = compact?NewBuffer(Pool.Capacity*32*15,12):Buffer(data.VerticesData,12);
+                normals = compact?NewBuffer(Pool.Capacity*32*15,12):Buffer(data.Normals,12);
+                var triangleValues=compact?new int[39]:data.Triangles;var uvValues=compact?new Vector2[15]:data.UV;
+                if(compact) {Array.Copy(world.TemplateTriangles,triangleValues,39);Array.Copy(world.TemplateUV,uvValues,15);}
+                ComputeBuffer triangles = Buffer(triangleValues,4), uvs = Buffer(uvValues,8);
+                GeometryGpuBytes=(long)(positions.count+normals.count)*12+(long)triangles.count*4+(long)uvs.count*8+
+                    (compact?(long)data.BladeCount*GrassCompactStorage.PoseBytesPerBlade:0);
+                StaticGpuBytes=(long)rest.count*48+(long)rods.count*64+(long)blades.count*32+(long)masses.count*4;
+                PlasticGpuBytes=(long)plasticBends.count*16+(compact?(long)data.BladeCount*GrassCompactStorage.PlasticBytesPerBlade:0);
+                if(compact)
+                {
+                    var widths=new float[7];for(int s=0;s<7;s++)widths[s]=world.TemplateRods[s].HalfWidth;
+                    material.SetBuffer("CompactPose",Compact.Pose);material.SetBuffer("CompactHalfWidths",Buffer(widths,4));
+                    StaticGpuBytes+=7*4+(long)(Compact.Yaw.count+Compact.Anchors.count)*16;
+                }
                 activeBuffer = NewBuffer(Pool.Capacity,32); initializeBuffer = NewBuffer(Pool.Capacity,8);
                 ComputeBuffer visible = NewBuffer(handoffSettings == null ? Pool.Capacity : data.Grids.Length,16);
                 drawArgs = Buffer(emptyDraw,4,ComputeBufferType.IndirectArguments);
@@ -97,6 +132,7 @@ namespace GrassFinal.PBDGrass
                     shader.SetBuffer(kernel,"RestNodesBuffer",rest); shader.SetBuffer(kernel,"RodsBuffer",rods);
                     shader.SetBuffer(kernel,"BladesBuffer",blades);
                     shader.SetBuffer(kernel,"ResultPosBuffer",positions); shader.SetBuffer(kernel,"NormalBuffer",normals);
+                    Compact?.Bind(shader,kernel);
                 }
                 shader.SetBuffer(initializeKernel,"InitializationBuffer",initializeBuffer);
                 shader.SetBuffer(solveKernel,"InverseMassBuffer",masses);
@@ -117,7 +153,7 @@ namespace GrassFinal.PBDGrass
                 {
                     if (handoffShader == null) throw new ArgumentNullException(nameof(handoffShader));
                     Handoff = new GrassLodHandoff(data, settings, handoffSettings, handoffShader,
-                        material, bones, frames, plasticBends, rest, rods, blades, masses,windNoise,positions,normals);
+                        material, bones, frames, plasticBends, rest, rods, blades, masses,windNoise,positions,normals,Compact,gridQuery,Pool);
                     shader.SetBuffer(cullKernel,"ActiveGridsBuffer",Handoff.CullingGrids);
                 }
                 if(world!=null)
@@ -130,7 +166,8 @@ namespace GrassFinal.PBDGrass
                     worldShader.SetBuffer(worldKernel,"WorldTemplateRods",Buffer(world.TemplateRods,64));
                     worldShader.SetBuffer(worldKernel,"WorldTemplateBlade",Buffer(new[] {world.TemplateBlade},32));
                     worldShader.SetBuffer(worldKernel,"WorldRest",rest);worldShader.SetBuffer(worldKernel,"WorldRods",rods);
-                    worldShader.SetBuffer(worldKernel,"WorldBlades",blades);worldShader.SetBuffer(worldKernel,"WorldPlastic",plasticBends);
+                    worldShader.SetBuffer(worldKernel,"WorldBlades",blades);worldShader.SetBuffer(worldKernel,"WorldPlastic",Compact!=null?Compact.Plastic:plasticBends);
+                    if(compact)worldShader.SetBuffer(worldKernel,"WorldAnchors",Compact.Anchors);
                     worldShader.SetFloat("WorldGround",world.Ground);
                 }
                 SelectPool();
@@ -141,20 +178,40 @@ namespace GrassFinal.PBDGrass
         { var b = new ComputeBuffer(count,stride,type); buffers.Add(b); return b; }
         private ComputeBuffer Buffer(Array values,int stride,ComputeBufferType type=ComputeBufferType.Default)
         { var b=NewBuffer(values.Length,stride,type); b.SetData(values); return b; }
+        private ComputeBuffer UploadBladeMetadata()
+        {
+            if(!data.UsesCompactTemplate)return Buffer(data.Blades,32);
+            var buffer=NewBuffer(data.BladeCount,32);
+            var batch=new GrassBladeData.Blade[Mathf.Min(4096,data.BladeCount)];
+            for(int start=0;start<data.BladeCount;start+=batch.Length)
+            {
+                int count=Mathf.Min(batch.Length,data.BladeCount-start);
+                for(int i=0;i<count;i++)batch[i]=data.GetBlade(start+i);
+                buffer.SetData(batch,0,start,count);
+            }
+            return buffer;
+        }
         private void SelectPool()
         {
             int count=0;
             interactionRegions.Clear();
-            if(settings.PromoteInteractions && Handoff!=null)
+            if((settings.PromoteInteractions || settings.ContactDrivenSimulation) && Handoff!=null)
                 for(int i=0;i<colliders.Count;i++)
                 {
                     ReadShape(i,out var a,out var b,out float radius,out _);if(radius<=0)continue;
+                    // Do not keep the pool awake for a lifted press or an airborne actor.
+                    if(settings.ContactDrivenSimulation && (Mathf.Min(a.y,b.y)-radius>data.Grids[0].Pos.y+data.MaximumBladeLength+settings.CollisionMargin ||
+                        Mathf.Max(a.y,b.y)+radius<data.Grids[0].Pos.y-settings.CollisionMargin))continue;
                     Vector3 p=(a+b)*.5f,d=p-SimulationCenter;d.y=0;
                     float reach=radius+data.MaximumBladeLength+Vector3.Distance(a,b)*.5f+.71f;
-                    if(d.magnitude+reach<=settings.InteractionDistance)interactionRegions.Add(new Vector4(p.x,p.z,reach,0));
+                    bool eligible=settings.InteractionsAcrossMiddle
+                        ?GrassSimulationPool.OverlapsCoverage(p,reach,compatibleCoverage,radialCompatibleCoverage)
+                        :d.magnitude+reach<=settings.InteractionDistance;
+                    if(eligible)interactionRegions.Add(new Vector4(p.x,p.z,reach,0));
                 }
             Pool.Select(SimulationCenter,Mathf.Max(1,settings.NearDistance),Mathf.Max(0,settings.PoolHysteresis),SimulationTicks,
-                (slot,grid)=> { initialization[count++] = new Initialization { Slot=slot, Grid=data.Grids[grid].IdOffset }; },settings.StablePoolSelection,interactionRegions);
+                (slot,grid)=> { initialization[count++] = new Initialization { Slot=slot, Grid=data.Grids[grid].IdOffset }; },settings.StablePoolSelection,interactionRegions,
+                settings.InteractionsAcrossMiddle?compatibleCoverage:Vector4.zero,radialCompatibleCoverage,settings,SimulationTime);
             for (int i=0; i<Pool.Selected.Count; i++) active[i]=Pool.Selected[i];
             if (Pool.Selected.Count>0) activeBuffer.SetData(active,0,0,Pool.Selected.Count);
             shader.SetInt("ActiveGridCount",Handoff == null ? Pool.Selected.Count : data.Grids.Length);
@@ -192,6 +249,13 @@ namespace GrassFinal.PBDGrass
             {
                 motionStartA[i]=shapes[i].A; motionStartB[i]=shapes[i].B;
                 ReadShape(i,out targets[i].A,out targets[i].B,out targets[i].Radius,out targets[i].Friction);
+                if(settings.ContactDrivenSimulation && shapes[i].Radius<=0 && targets[i].Radius>0)
+                {
+                    // Enabling an actor starts at its current position, not at the zero
+                    // endpoints used while disabled. Preserve motion only across active samples.
+                    shapes[i].A=motionStartA[i]=ContactPosition(targets[i].A);
+                    shapes[i].B=motionStartB[i]=ContactPosition(targets[i].B);
+                }
             }
             for(int step=0;step<steps;step++) { Tick((float)tick,(step+1f)/steps); accumulator-=tick; }
         }
@@ -247,6 +311,7 @@ namespace GrassFinal.PBDGrass
             SimulationCenter=focus;
             if(world==null || !world.Move(focus,data))return false;
             Pool.ForgetGrids(world.Changed);
+            if(Compact!=null)Compact.Yaw.SetData(world.Yaws);
             worldAssignments.SetData(world.Replacements);
             worldShader.Dispatch(worldKernel,world.Changed.Count,1,1);
             Handoff.RecycleWorldGrids(world.Changed,SimulationTime);
@@ -262,6 +327,7 @@ namespace GrassFinal.PBDGrass
         public void SetOuterCoverage(Vector4 transition,bool radial=false)
         {
             if(disposed)return;
+            compatibleCoverage=transition;radialCompatibleCoverage=radial;
             material.SetVector("_GrassCoverageTransition",transition);
             material.SetInt("_GrassRadialCoverage",radial?1:0);
             if(radial)material.EnableKeyword("GRASS_RADIAL_MIDDLE");else material.DisableKeyword("GRASS_RADIAL_MIDDLE");
@@ -300,21 +366,22 @@ namespace GrassFinal.PBDGrass
         public BoneInfo[] ReadNodes()
         {
             var packed=new BoneInfo[Pool.Capacity*32*NodesPerBlade]; bones.GetData(packed);
-            var result=(BoneInfo[])data.RestNodes.Clone();
+            var result=new BoneInfo[BladeCount*NodesPerBlade];
+            for(int i=0;i<result.Length;i++)result[i]=data.GetRestNode(i);
             for(int g=0;g<data.Grids.Length;g++)
             {
                 int slot=Pool.SlotForGrid(g); if(slot<0) continue;
                 Array.Copy(packed,slot*32*NodesPerBlade,result,data.Grids[g].IdOffset*NodesPerBlade,32*NodesPerBlade);
             }
             for(int b=0;b<BladeCount;b++) for(int n=0;n<NodesPerBlade;n++)
-            { result[b*NodesPerBlade+n].Position+=data.Blades[b].Root; result[b*NodesPerBlade+n].Predicted+=data.Blades[b].Root; }
+            { result[b*NodesPerBlade+n].Position+=data.GetBlade(b).Root; result[b*NodesPerBlade+n].Predicted+=data.GetBlade(b).Root; }
             return result;
         }
         public GrassBladeData.Frame[] ReadFrames()
         {
             var packed=new GrassBladeData.Frame[Pool.Capacity*32*GrassBladeData.Segments]; frames.GetData(packed);
             var result=new GrassBladeData.Frame[BladeCount*GrassBladeData.Segments];
-            for(int i=0;i<result.Length;i++) result[i].Rotation=data.Rods[i].Rotation;
+            for(int i=0;i<result.Length;i++) result[i].Rotation=data.GetRod(i).Rotation;
             for(int g=0;g<data.Grids.Length;g++)
             {
                 int slot=Pool.SlotForGrid(g); if(slot>=0) Array.Copy(packed,slot*32*GrassBladeData.Segments,result,
@@ -325,6 +392,12 @@ namespace GrassFinal.PBDGrass
         // Diagnostic read only; normal simulation and residency never read plastic state back.
         public Vector4[] ReadPlasticBends()
         {
+            if(Compact!=null)
+            {
+                var compactResult=Compact.ReadPlastic();var live=new Vector4[plasticBends.count];plasticBends.GetData(live);
+                foreach(var grid in Pool.Selected)Array.Copy(live,grid.PoolOffset*7,compactResult,grid.BladeOffset*7,32*7);
+                return compactResult;
+            }
             var result=new Vector4[BladeCount*GrassBladeData.Segments]; plasticBends.GetData(result); return result;
         }
         // Upload a baked initial pose for a homogeneous patch. Material rest curvature stays unchanged.
@@ -344,7 +417,7 @@ namespace GrassFinal.PBDGrass
                 {
                     for(int n=0;n<8;n++)
                     {
-                        var node=data.RestNodes[b*8+n]; node.Position=node.Predicted=localNodes[n]; node.Velocities=Vector3.zero;
+                        var node=data.GetRestNode(b*8+n); node.Position=node.Predicted=localNodes[n]; node.Velocities=Vector3.zero;
                         nodeValues[pool*8+n]=node;
                     }
                     for(int s=0;s<7;s++)frameValues[pool*7+s]=new GrassBladeData.Frame { Rotation=rotations[s] };
@@ -353,19 +426,19 @@ namespace GrassFinal.PBDGrass
                 {
                     Vector3 tangent=(localNodes[s+1]-localNodes[s]).normalized;
                     Vector3 across=Vector3.ProjectOnPlane(rotations[s]*Vector3.right,tangent).normalized;
-                    Vector3 width=across*data.Rods[b*7+s].HalfWidth;
-                    vertexValues[b*15+s*2]=data.Blades[b].Root+localNodes[s]+width;
-                    vertexValues[b*15+s*2+1]=data.Blades[b].Root+localNodes[s]-width;
+                    Vector3 width=across*data.GetRod(b*7+s).HalfWidth;
+                    vertexValues[b*15+s*2]=data.GetBlade(b).Root+localNodes[s]+width;
+                    vertexValues[b*15+s*2+1]=data.GetBlade(b).Root+localNodes[s]-width;
                     normalValues[b*15+s*2]=normalValues[b*15+s*2+1]=Vector3.Cross(across,tangent).normalized;
                 }
-                vertexValues[b*15+14]=data.Blades[b].Root+localNodes[7]; normalValues[b*15+14]=normalValues[b*15+13];
+                vertexValues[b*15+14]=data.GetBlade(b).Root+localNodes[7]; normalValues[b*15+14]=normalValues[b*15+13];
             }
             bones.SetData(nodeValues); frames.SetData(frameValues); positions.SetData(vertexValues); normals.SetData(normalValues);
         }
         public void ResetDeformation()
         {
             if(disposed)return;
-            plasticBends.SetData(new Vector4[BladeCount*GrassBladeData.Segments]);
+            plasticBends.SetData(new Vector4[plasticBends.count]);Compact?.ClearPlastic();
             if(Handoff != null) { Handoff.Reset(Pool.Selected,SimulationTime); return; }
             shader.SetInt("EnablePlasticity",settings.EnablePlasticity?1:0);
             int count=0;
@@ -394,6 +467,7 @@ namespace GrassFinal.PBDGrass
         {
             if(disposed)return; disposed=true;
             Handoff?.Dispose();
+            Compact?.Dispose();
             if(worldShader!=null) { if(Application.isPlaying)UnityEngine.Object.Destroy(worldShader);else UnityEngine.Object.DestroyImmediate(worldShader); }
             foreach(var b in buffers)b.Release(); buffers.Clear(); DestroyOwned(shader); DestroyOwned(material);
         }

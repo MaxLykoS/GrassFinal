@@ -2,6 +2,42 @@
 
 此目录是当前生成、模拟和渲染的开发入口；目录外的原有代码和资源继续作为 Archive。
 
+**当前运行策略：碰撞驱动 XPBD。** Contact Lab 的 32768 已改为容量上限，空闲时不再填满。碰撞影响结束后继续完整物理模拟 2 秒，再用 1 秒过渡回保留塑性的贝塞尔；过渡期间仍运行 XPBD，完成后才回收槽位。重复碰撞保留原物理状态并取消退出。HUD 显示接触、收尾、过渡的实际数量；`C` 移除碰撞体后可观察约 3 秒内回收至 0。实现、表现和分阶段性能见 [碰撞生命周期报告](CompactPrototype/EventDriven/Results.md)。旧联合 baseline 仍保留 32768 固定活动量，用于独立验证满池成本与烘焙兼容性。
+
+**近、中景共享碰撞优先池：**Contact Lab 已开启 `Physics.InteractionsAcrossMiddle`，注册碰撞体在整个兼容中景（含 52～64 米过渡带）都能申请同一组 32768 XPBD 名额；碰撞候选优先，普通近景可以退为保留塑性的贝塞尔。范围跟随实际中景覆盖参数和相机，跨边界的碰撞体按局部重叠筛选，不再要求整个影响区域都在旧 28 米范围内。调度粒度仍为每块 32 根，相交边界块会整块激活；完全位于外围的草块不主动申请。09 号叶尖扫动与 12 号立柱已移至中景，按 `4` 查看分散的绿色区域。塑性在 GPU 按草叶身份保存；退出时序已由上方的碰撞生命周期替代，仍不增加峰值控制或 GPU 缓冲容量。历史基准场景维持原策略。验证入口：`Tools/PBD Grass/Validate Full Middle Interactions`，记录见 [碰撞覆盖验证](CompactPrototype/InteractionCoverage/Results.md)。
+
+**草叶表现测试场景：**打开 [Scenes/PBDGrassContactLab.unity](Scenes/PBDGrassContactLab.unity) 并 Play。默认相机位于 16 米高处斜俯视；平地上放置 12 个球形/胶囊碰撞体，包含横扫、绕圈、往返行走、横向压辊、三种尺寸的周期按压抬起、静态压迫、叶尖轻扫和交叉扫动。保留 32768 个 XPBD 槽位容量，实际活动数量由碰撞和收尾决定；兼容中景完整覆盖至水平距离 52 米，52～64 米过渡到无状态外围，外围窗口仍为 256 米；为容纳扩展中景及 8 米流式保护带，驻留窗口从 96×96 扩为 144×144 米。默认用绿色标记活动 XPBD、蓝色标记兼容中景、橙色标记外围，仅替换 baseColor，保留现有光照。扩大后逻辑 GPU Buffer 合计 214.44 MiB（224852832 B，含外围），下面的 152.18 MiB 表格仍指原 96 米压缩对照场景；这不是总显存或 GPU 耗时。碰撞体形状在 `Contact stations` 下编辑，运动中心、幅度、周期在 `GrassShowcaseController.Actors` 调整；运行中的物体位置由运动脚本控制，`Origin` 是其运动中心。
+
+`1 / 2 / 3 / 4` 切换高位斜视、低位近看、局部顶视、三层范围俯视；`WASD / Q / E / Shift / 右键` 移动、升降、加速、转向；`P` 暂停碰撞体运动（草仍模拟），`C` 移除/恢复全部碰撞体，`R` 重置草与运动时间，`Space / G` 开关风/阵风，`B` 切换分层颜色/正常草色，`H` 隐藏标签。`T` 启停 24 秒的 LOD 往返循环：相机横移 36 米、停留、返回，期间暂停碰撞和碰撞体动画，以观察原有倒伏穿过中景后的保留；`V` 可查看整个驻留/外围区域。场景验证及截图在 `CompactPrototype/Showcase/Validation/`，菜单 `Tools/PBD Grass/Validate Contact Lab` 可重跑。
+
+**优化前扩容性能记录：**[Contact Lab 性能报告](CompactPrototype/Showcase/Performance/Performance.md)。3080 Ti / 5800X、1600×900 HDR 4× MSAA 下，96→144 米使编辑器单完整 tick 的 CPU 总提交区间由 9.78 增至 19.28 ms；扩大版 Editor Play 持续每帧补跑 4 tick，复现约 13 FPS。Player 的扩大版 CPU 模拟约 12.11 ms/实际 tick，仍维持 60 Hz。报告保留优化前的 CPU、GPU 时间戳、实时补帧和换页尖峰。
+
+**CPU 局部与增量管理：**[优化结果与验证](CompactPrototype/CpuOptimization/Performance.md)。保持当前 32768 XPBD、144 米窗口、中景 52～64 米、12 个碰撞体；最终同机重跑中，Editor 完整 tick 的 CPU 准备/提交从 19.80 ms 降至 2.31 ms，Player 约 1.11 ms/tick。移动换页帧总提交中位数从 48.98 降至 5.80 ms，最大值从 61.37 降至 9.18 ms。通过局部空间查询、活动/过渡集合和脏区上传，消除全场 CPU 分类；同时移除显示计数访问触发的 CPU 镜像重建。新旧实现 2400 tick / 14 个 GPU 检查点逐位一致，联合 LOD、塑性和八种烘焙对照通过。GPU 求解器和烘焙格式不变，1 ms GPU 目标尚未达成。
+
+**Compact CPU 内存优化：**[结果与回归记录](CompactPrototype/MemoryOptimization/Results.md)。当前 Compact 流式场景不再构造整场 Body/Mesh 或常驻 CPU 物理、网格展开数组；使用 32 根小样本提取模板、身份分批上传和按索引诊断。Contact Lab 常驻 CPU 数组从 973.19 MiB 降至 3.72 MiB，隔离 Editor 托管已用约 994.45→8.94 MiB；GPU Buffer 仍为 214.44 MiB。保持 32768 活动 XPBD 与现有中景范围，2400 tick 新旧 GPU 状态逐位对照、完整 Play 表现、联合 baseline 与八种重烘焙均通过。非 Compact 的历史场景保留原生成路径。
+
+**压缩中景实验：**打开 [Scenes/PBDGrassCompactMiddle.unity](Scenes/PBDGrassCompactMiddle.unity)。以压缩前提交 `d3e696d` 的径向中景场景为对照，仍为 96×96 米驻留窗口、294912 根容量、32768 活动 XPBD，以及 256 米外围窗口；操作与中景场景相同。独立实现位于 `CompactPrototype/`，由 `Handoff.UseCompactMiddle` 显式启用，使用成套的 solver / handoff / streaming / draw 资源。当前支持流式场景的单一同质烘焙类型，本场景仍使用第六种材料；混合材料及尺寸变化还需要扩展模板索引。
+
+中景每叶存 80 B：7 个非根节点的根相对半精度坐标、7 个压缩宽度方向，以及预留字段。绘制时展开边缘和法线，共享 UV、索引与宽度模板；活动近景的最终位置和法线继续为 float32。静态节点、杆段和质量参数改为共享局部模板加每格朝向，另保留每格 16 B 的原版根部锚定方向。塑性按世界身份存 32 B，关节的两个弯曲分量以有符号 16 位量化；活动物理池仍保留 float32 塑性，每子步不回读压缩值。末子步只更新持久缓存，重新进入近景时解码。正常帧循环没有 GPU 回读。出生/重置时近景通过独立 kernel 从全精度几何播种，实际中景进入则从显示形态和有限历史恢复。
+
+| 逻辑 GPU Buffer 分配（含外围） | 压缩前 | 压缩实验 |
+| --- | ---: | ---: |
+| 全系统 | 559.03 MiB | 152.18 MiB |
+| 完整几何 / 形态缓存及共享 UV、索引 | 178.88 MiB | 33.75 MiB |
+| 塑性 | 31.5 MiB | 12.5 MiB |
+| 逐叶静态参数 / 共享模板及身份、朝向、锚定方向 | 252 MiB | 9.28 MiB |
+| 有界完整历史预留 | 51 MiB | 51 MiB |
+
+压缩几何项包括近景 11.25 MiB 和全驻留形态缓存 22.5 MiB；后者中 20 MiB 对应非活动的 262144 根，另有 2.5 MiB 为活动槽对应的备用记录。按非活动容量计，形态、塑性、身份三项分别为 20 / 8 / 8 MiB，即约 36 MiB，另计共享表、每格状态和交接历史。这里统计 count×stride，不包含 CPU 生成数组、纹理、Unity/驱动开销，不等于总显存。CPU 端生成及诊断镜像尚未压缩。
+
+此前 1.77 m 的近景碰撞差异已修复。原因有两处：将 CPU 计算好的根部锚定方向改成 GPU 模板乘法后，舍入结果改变；把出生方向重建与压缩解码合并后，原本相同的全精度几何也生成了略有不同的四元数。修复保留原版锚定方向，并单独编译出生初始化 kernel；流式新页的锚定方向仍按原版 GPU 生成路径更新。新增锚定缓冲仅 144 KiB，不改变约束、碰撞公式或烘焙资产。
+
+验证见 [CompactPrototype/Validation/Results.json](CompactPrototype/Validation/Results.json)。两版各自正常初始化并独立执行 60 tick 风、180 tick 碰撞、45 tick 释放；9 个检查点比较全部 32768 根近景的节点、速度、方向、角速度和塑性，差异均为零，`IndependentLodgedNear` 的近景几何差异也为零。测试已删除复制原版物理状态覆盖压缩版的步骤，并将独立近景等价设为强制门槛。此结论针对持续活动的近景；经历中景解码的冷进入仍属于有损近似，不保证历史轨迹完全一致。
+
+对 32768 根实际模拟姿态编码/解码，最大边缘误差约 1.145 mm、法线误差 0.328°；塑性向量量化误差约 4.04e-5 rad。独立碰撞后的中景交接最大位置误差 1.67 mm，返回近景后近景样本最大 0.473 mm；重叠页保持、完全卸载清零、缓冲复用均通过。各阶段包含冷进入后的误差，不与持续近景的零误差混用。
+
+`CompactPrototype/Editor/generate_compact_shaders.py` 从已接受的 shader 生成独立存储变体；修改源方程后需重新生成和验证。Unity 菜单 `Tools/PBD Grass/Validate Compact Middle` 运行编码、形态、倒伏交接和流式生命周期检查；`Editor/run_regressions.ps1` 在独立验证项目中运行 Play、联合 baseline、八类型响应、塑性和原中景回归。接受的八份烘焙资产保持原字节，本轮没有测量 GPU 毫秒耗时，不能据此声称达到 1 ms 目标。
+
 **中景范围与交互调整：**打开 `Scenes/PBDGrassMidrange.unity`。兼容中景按径向完整显示到 28 米，28～36 米向无状态外围收敛并替换；驻留窗口扩到 96×96 米，XPBD 仍固定 32768 根。约 24 米外另有压草体，附近局部草临时进入同一 XPBD 池，`I` 开关这项交互。WASD / Shift / 右键、`T` / `V` / `B` 沿用流式场景操作。此场景开启满池滞回和随运动扩展的预热，说明与检查见 [ResponsePrototype/TieredState.md](ResponsePrototype/TieredState.md)，报告在 `ResponsePrototype/MidrangeValidation/`。
 
 **相机流式实验：**打开 `Scenes/PBDGrassStreaming.unity`。WASD 移动、Shift 加速、右键观察，`T` 自动前进、`V` 俯视/地面、`B` 分层颜色。主相机带动 64×64 米中心驻留区和 256×256 米外围窗口，每跨 8 米替换边缘格；中心持续保持 32768 XPBD + 98304 兼容贝塞尔，外围无状态。重叠区域保留模拟与倒伏，完全卸载后的倒伏丢弃，再加载时根位置/形态身份相同。当前为平地程序生成，不含地形资产的磁盘加载。机制、分项开销与验证见 [ResponsePrototype/TieredState.md](ResponsePrototype/TieredState.md)，报告和截图在 `ResponsePrototype/StreamingValidation/`。下面的原固定场景继续保留。

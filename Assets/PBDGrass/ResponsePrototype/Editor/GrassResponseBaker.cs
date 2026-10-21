@@ -93,7 +93,7 @@ namespace GrassFinal.PBDGrass.Editor
                         for(int t=0;t<response.Length;t++)
                         {
                             renderer.Advance(1f/60); var nodes=renderer.ReadNodes(); float value=0;
-                            for(int n=1;n<8;n++)value+=Vector3.Dot(nodes[n].Position-renderer.Data.Blades[0].Root-equilibrium.Nodes[n],target.Nodes[n]-equilibrium.Nodes[n]);
+                            for(int n=1;n<8;n++)value+=Vector3.Dot(nodes[n].Position-renderer.Data.GetBlade(0).Root-equilibrium.Nodes[n],target.Nodes[n]-equilibrium.Nodes[n]);
                             response[t]=value/Mathf.Max(denominator,1e-10f);
                         }
                         FitResponse(response,out float frequency,out float damping,out float error);
@@ -117,18 +117,18 @@ namespace GrassFinal.PBDGrass.Editor
                 quiet=speed<.002f?quiet+1:0; if(quiet>=2)break;
             }
             if(values==null)values=renderer.ReadNodes();
-            var pose=new GrassResponseType.Pose { Speed=speed }; Vector3 root=renderer.Data.Blades[0].Root;
+            var pose=new GrassResponseType.Pose { Speed=speed }; Vector3 root=renderer.Data.GetBlade(0).Root;
             for(int n=0;n<8;n++)pose.Nodes[n]=values[n].Position-root;
             var frames=renderer.ReadFrames(); for(int s=0;s<7;s++)pose.Frames[s]=frames[s].Rotation;
             FitCurve(pose,renderer.Data); return pose;
         }
         private static void FitCurve(GrassResponseType.Pose pose,GrassBladeData data)
         {
-            float aa=0,ab=0,bb=0,arc=0,total=data.Blades[0].Length;
+            float aa=0,ab=0,bb=0,arc=0,total=data.GetBlade(0).Length;
             Vector3 rhs1=Vector3.zero,rhs2=Vector3.zero; pose.Tip=pose.Nodes[7];
             for(int n=1;n<7;n++)
             {
-                arc+=data.Rods[n-1].Length; float t=arc/total,u=1-t,a=3*u*u*t,b=3*u*t*t;
+                arc+=data.GetRod(n-1).Length; float t=arc/total,u=1-t,a=3*u*u*t,b=3*u*t*t;
                 Vector3 residual=pose.Nodes[n]-t*t*t*pose.Tip;
                 aa+=a*a; ab+=a*b; bb+=b*b; rhs1+=a*residual; rhs2+=b*residual;
             }
@@ -137,9 +137,9 @@ namespace GrassFinal.PBDGrass.Editor
             arc=0; Vector3 previous=Vector3.zero;
             for(int n=1;n<8;n++)
             {
-                arc+=data.Rods[n-1].Length; float t=arc/total,u=1-t;
+                arc+=data.GetRod(n-1).Length; float t=arc/total,u=1-t;
                 Vector3 point=3*u*u*t*pose.C1+3*u*t*t*pose.C2+t*t*t*pose.Tip;
-                point=previous+(point-previous).normalized*data.Rods[n-1].Length;
+                point=previous+(point-previous).normalized*data.GetRod(n-1).Length;
                 pose.FitError=Mathf.Max(pose.FitError,Vector3.Distance(point,pose.Nodes[n])); previous=point;
             }
         }
