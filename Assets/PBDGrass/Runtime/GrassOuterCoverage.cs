@@ -32,6 +32,7 @@ namespace GrassFinal.PBDGrass
         private ComputeShader compute;
         private Material material;
         private ComputeBuffer tiles,instances,arguments,controls;
+        private GrassResponseType bakedResponse;
         private readonly Vector4[] planes=new Vector4[6];
         private Bounds bounds;
         private int kernel;
@@ -79,6 +80,7 @@ namespace GrassFinal.PBDGrass
             for(int s=0;s<25;s++)
             { response[s*3]=bank.Samples[s].C1; response[s*3+1]=bank.Samples[s].C2; response[s*3+2]=bank.Samples[s].Tip; }
             controls=new ComputeBuffer(75,16); controls.SetData(response);
+            bakedResponse=bank;
             compute=Instantiate(CullShader); kernel=compute.FindKernel("BuildVisible");
             compute.SetBuffer(kernel,"Tiles",tiles); compute.SetBuffer(kernel,"Visible",instances);
             material=new Material(LeafShader); material.CopyPropertiesFromMaterial(Demo.GrassMaterial);
@@ -86,6 +88,18 @@ namespace GrassFinal.PBDGrass
             material.SetTexture("OuterWindNoise",Demo.WindNoise); material.SetFloat("OuterMaxWind",bank.MaxWind);
             material.SetFloat("OuterHalfWidth",bank.Shape.HalfWidth);
             bounds=new Bounds(origin+Vector3.up*2,new Vector3(side*8+8,12,side*8+8));
+        }
+        public void SetBakedResponse(GrassResponseType response)
+        {
+            if(controls==null)return;
+            if(response==bakedResponse)return;
+            GrassLodHandoff.ValidateResponseReplacement(bakedResponse,response);
+            var values=new Vector4[75];
+            for(int sample=0;sample<25;sample++)
+            {values[sample*3]=response.Samples[sample].C1;values[sample*3+1]=response.Samples[sample].C2;values[sample*3+2]=response.Samples[sample].Tip;}
+            controls.SetData(values);
+            material.SetFloat("OuterMaxWind",response.MaxWind);material.SetFloat("OuterHalfWidth",response.Shape.HalfWidth);
+            bakedResponse=response;
         }
         private void Update()
         {
@@ -95,6 +109,7 @@ namespace GrassFinal.PBDGrass
         public void PrepareVisible()
         {
             Initialize(); if(instances==null || Demo.Cam==null)return;
+            if(bakedResponse!=Demo.Handoff.BakedResponse)SetBakedResponse(Demo.Handoff.BakedResponse);
             Demo.Initialize(); Demo.Renderer.SetOuterCoverage(CoverageTransition,RadialMiddle);
             compute.SetInt("RadialMiddle",RadialMiddle?1:0);
             compute.SetInt("StreamWorld",Demo.StreamWorld?1:0);
@@ -146,6 +161,7 @@ namespace GrassFinal.PBDGrass
             Demo?.Renderer?.SetOuterCoverage(Vector4.zero);
             foreach(var buffer in new[] {tiles,instances,arguments,controls})buffer?.Dispose();
             tiles=instances=arguments=controls=null;
+            bakedResponse=null;
             if(Application.isPlaying) { if(compute!=null)Destroy(compute); if(material!=null)Destroy(material); }
             else { if(compute!=null)DestroyImmediate(compute); if(material!=null)DestroyImmediate(material); }
             compute=null; material=null;

@@ -1,0 +1,486 @@
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Rendering;
+namespace GrassFinal.PBDGrass
+{
+    public sealed class PBDGrassPatchRenderer : IDisposable
+    {
+        public const int BladesPerGrid = 32, NodesPerBlade = GrassBladeData.Nodes;
+        public struct ColliderMotion
+        {
+            public Vector3 A; public float Radius;
+            public Vector3 B; public float Friction;
+            public Vector3 PreviousA; public float Padding0;
+            public Vector3 PreviousB; public float Padding1;
+        }
+        private struct Initialization { public int Slot, Grid; }
+        private readonly List<ComputeBuffer> buffers = new List<ComputeBuffer>();
+        private readonly ComputeShader shader;
+        private readonly Material material;
+        private readonly Material sourceMaterial;
+        private readonly Camera camera;
+        private readonly XPBDGrassSettings settings;
+        private readonly IList<Transform> colliders;
+        private readonly DepthTexMaker depthSource;
+        private readonly int solveKernel, initializeKernel, cullKernel;
+        private readonly ComputeBuffer bones, frames, plasticBends, contacts, activeBuffer, initializeBuffer, drawArgs;
+        private readonly ComputeBuffer positions, normals, bladeMetadata;
+        public GrassCompactStorage Compact { get; }
+        public long GeometryGpuBytes { get; private set; }
+        public long StaticGpuBytes { get; private set; }
+        public long PlasticGpuBytes { get; private set; }
+        private readonly ColliderMotion[] shapes, targets, liveShapes;
+        private readonly Vector3[] motionStartA, motionStartB;
+        private readonly GrassSimulationPool.ActiveGrid[] active;
+        private readonly Initialization[] initialization;
+        private readonly Action<int,int> initializeSlot;
+        private int pendingInitializations;
+        private readonly uint[] emptyDraw = { BladesPerGrid * GrassBladeData.Indices, 0, 0, 0 };
+        private readonly Vector4[] frustum = new Vector4[6];
+        private readonly List<Vector4> interactionRegions=new List<Vector4>();
+        private Vector4 compatibleCoverage;
+        private bool radialCompatibleCoverage;
+        private readonly GrassBladeData data;
+        private readonly GrassWorldLayout world;
+        private readonly ComputeShader worldShader;
+        private readonly ComputeBuffer worldAssignments;
+        private readonly int worldKernel;
+        public GrassWorldLayout World => world;
+        private double accumulator;
+        private bool disposed;
+        public Vector3 SimulationCenter { get; set; }
+        public float SimulationTime { get; private set; }
+        public int SimulationTicks { get; private set; }
+        public float DroppedTime { get; private set; }
+        public int BladeCount => data.BladeCount;
+        public int ActiveBladeCount => Pool.ActiveBlades;
+        public GrassSimulationPool Pool { get; }
+        public GrassBladeData Data => data;
+        public GrassLodHandoff Handoff { get; }
+        public long AllocatedGpuBytes
+            { get { long bytes=(Handoff!=null?Handoff.AllocatedGpuBytes:0)+(Compact!=null?Compact.AllocatedGpuBytes:0);
+                foreach(var buffer in buffers)bytes+=(long)buffer.count*buffer.stride; return bytes; } }
+        public PBDGrassPatchRenderer(PBDGrassPatch patch, ComputeShader sourceShader, Material sourceMaterial,
+            Camera camera, Texture2D windNoise, XPBDGrassSettings settings, IList<Transform> colliders,
+            GrassHandoffSettings handoffSettings = null, ComputeShader handoffShader = null,
+            GrassWorldLayout worldLayout=null,ComputeShader worldShaderAsset=null,GrassBladeData preparedData=null)
+        {
+            this.camera = camera; this.settings = settings; this.sourceMaterial = sourceMaterial;
+            this.colliders = colliders ?? new List<Transform>();
+            if(settings.ContactDrivenSimulation && (handoffSettings==null || !handoffSettings.UseTieredState || !handoffSettings.UseCompactMiddle))
+                throw new ArgumentException("Contact-driven simulation requires the compact tiered handoff path.");
+            world=worldLayout;
+            if(preparedData!=null && (world==null || !preparedData.UsesCompactTemplate || handoffSettings==null || !handoffSettings.UseCompactMiddle))
+                throw new ArgumentException("Template data requires the compact streamed path.");
+            data = preparedData??new GrassBladeData(patch, Mathf.Clamp(settings.TipThicknessRatio,.1f,1),world?.Yaws);
+            if(preparedData==null)world?.Attach(data);
+            SimulationCenter = world!=null?world.Center:patch.Root;
+            var gridQuery=new GrassGridQuery(data.Grids,world);
+            Pool = new GrassSimulationPool(data.Grids, settings.MaxActiveBlades,gridQuery);
+            active = new GrassSimulationPool.ActiveGrid[Pool.Capacity]; initialization = new Initialization[Pool.Capacity];
+            initializeSlot=(slot,grid)=>initialization[pendingInitializations++]=new Initialization {Slot=slot,Grid=data.Grids[grid].IdOffset};
+            depthSource = camera.GetComponent<DepthTexMaker>();
+            shader = UnityEngine.Object.Instantiate(sourceShader); material = UnityEngine.Object.Instantiate(sourceMaterial);
+            try
+            {
+                solveKernel = shader.FindKernel("XPBDSolverLOD0"); initializeKernel = shader.FindKernel("InitializePool");
+                cullKernel = shader.FindKernel("GridCulling");
+                bones = NewBuffer(Pool.Capacity * 32 * NodesPerBlade, 48);
+                frames = NewBuffer(Pool.Capacity * 32 * GrassBladeData.Segments, 32);
+                bool compact=handoffSettings!=null && handoffSettings.UseCompactMiddle;
+                if(compact && (world==null || !handoffSettings.UseTieredState || handoffSettings.BakedResponse==null ||
+                    !sourceShader.name.StartsWith("Compact") || !handoffShader.name.StartsWith("Compact") ||
+                    worldShaderAsset==null || !worldShaderAsset.name.StartsWith("Compact") ||
+                    sourceMaterial.shader.name!="PBDGrass/CompactPrototype/Grass"))
+                    throw new ArgumentException("Compact storage requires its paired shaders and a homogeneous streamed baked field.");
+                if(compact)Compact=new GrassCompactStorage(data.BladeCount,world.Yaws,world.TemplateRods[0].Rotation);
+                plasticBends = Buffer(new Vector4[(compact?Pool.Capacity*32:data.BladeCount) * GrassBladeData.Segments], 16);
+                ComputeBuffer rest = Buffer(compact?world.TemplateNodes:data.RestNodes,48);
+                ComputeBuffer rods = Buffer(compact?world.TemplateRods:data.Rods,64), blades = UploadBladeMetadata();
+                bladeMetadata=blades;
+                var massValues=compact?new float[8]:data.InverseMass;
+                if(compact)Array.Copy(world.TemplateMass,massValues,8);
+                ComputeBuffer masses = Buffer(massValues,4);
+                positions = compact?NewBuffer(Pool.Capacity*32*15,12):Buffer(data.VerticesData,12);
+                normals = compact?NewBuffer(Pool.Capacity*32*15,12):Buffer(data.Normals,12);
+                var triangleValues=compact?new int[39]:data.Triangles;var uvValues=compact?new Vector2[15]:data.UV;
+                if(compact) {Array.Copy(world.TemplateTriangles,triangleValues,39);Array.Copy(world.TemplateUV,uvValues,15);}
+                ComputeBuffer triangles = Buffer(triangleValues,4), uvs = Buffer(uvValues,8);
+                GeometryGpuBytes=(long)(positions.count+normals.count)*12+(long)triangles.count*4+(long)uvs.count*8+
+                    (compact?(long)data.BladeCount*GrassCompactStorage.PoseBytesPerBlade:0);
+                StaticGpuBytes=(long)rest.count*48+(long)rods.count*64+(long)blades.count*32+(long)masses.count*4;
+                PlasticGpuBytes=(long)plasticBends.count*16+(compact?(long)data.BladeCount*GrassCompactStorage.PlasticBytesPerBlade:0);
+                if(compact)
+                {
+                    var widths=new float[7];for(int s=0;s<7;s++)widths[s]=world.TemplateRods[s].HalfWidth;
+                    material.SetBuffer("CompactPose",Compact.Pose);material.SetBuffer("CompactHalfWidths",Buffer(widths,4));
+                    StaticGpuBytes+=7*4+(long)(Compact.Yaw.count+Compact.Anchors.count)*16;
+                }
+                activeBuffer = NewBuffer(Pool.Capacity,32); initializeBuffer = NewBuffer(Pool.Capacity,8);
+                ComputeBuffer visible = NewBuffer(handoffSettings == null ? Pool.Capacity : data.Grids.Length,16);
+                drawArgs = Buffer(emptyDraw,4,ComputeBufferType.IndirectArguments);
+                shapes = new ColliderMotion[this.colliders.Count]; targets = new ColliderMotion[shapes.Length];
+                liveShapes = new ColliderMotion[shapes.Length];
+                motionStartA = new Vector3[shapes.Length]; motionStartB = new Vector3[shapes.Length];
+                contacts = NewBuffer(Mathf.Max(1,shapes.Length),64);
+                for (int i=0; i<shapes.Length; i++)
+                {
+                    ReadShape(i, out shapes[i].A, out shapes[i].B, out shapes[i].Radius, out shapes[i].Friction);
+                    shapes[i].PreviousA = shapes[i].A; shapes[i].PreviousB = shapes[i].B;
+                }
+                foreach (int kernel in new[] { solveKernel, initializeKernel })
+                {
+                    shader.SetBuffer(kernel,"BonesBuffer",bones); shader.SetBuffer(kernel,"FramesBuffer",frames);
+                    shader.SetBuffer(kernel,"PlasticBendsBuffer",plasticBends);
+                    shader.SetBuffer(kernel,"RestNodesBuffer",rest); shader.SetBuffer(kernel,"RodsBuffer",rods);
+                    shader.SetBuffer(kernel,"BladesBuffer",blades);
+                    shader.SetBuffer(kernel,"ResultPosBuffer",positions); shader.SetBuffer(kernel,"NormalBuffer",normals);
+                    Compact?.Bind(shader,kernel);
+                }
+                shader.SetBuffer(initializeKernel,"InitializationBuffer",initializeBuffer);
+                shader.SetBuffer(solveKernel,"InverseMassBuffer",masses);
+                shader.SetBuffer(solveKernel,"ActiveGridsBuffer",activeBuffer);
+                shader.SetBuffer(solveKernel,"ColliderBuffer",contacts);
+                shader.SetTexture(solveKernel,"WindForceMap",windNoise);
+                shader.SetInt("ColliderCount",shapes.Length);
+                shader.SetBuffer(cullKernel,"ActiveGridsBuffer",activeBuffer);
+                shader.SetBuffer(cullKernel,"GridsVisibleBuffer",visible);
+                shader.SetBuffer(cullKernel,"bufferWithArgsDrawIndirect",drawArgs);
+                material.SetBuffer("VertexBuffer",positions); material.SetBuffer("TriangleBuffer",triangles);
+                material.SetBuffer("NormalBuffer",normals); material.SetBuffer("UvBuffer",uvs);
+                material.SetBuffer("GridsVisibleBuffer",visible);
+                material.SetBuffer("BladesBuffer",blades);
+                shader.SetInt("EnablePlasticity",settings.EnablePlasticity?1:0);
+                shader.SetFloat("GrassReach",data.MaximumBladeLength*1.1f+.1f);
+                if (handoffSettings != null)
+                {
+                    if (handoffShader == null) throw new ArgumentNullException(nameof(handoffShader));
+                    Handoff = new GrassLodHandoff(data, settings, handoffSettings, handoffShader,
+                        material, bones, frames, plasticBends, rest, rods, blades, masses,windNoise,positions,normals,Compact,gridQuery,Pool);
+                    shader.SetBuffer(cullKernel,"ActiveGridsBuffer",Handoff.CullingGrids);
+                }
+                if(world!=null)
+                {
+                    if(worldShaderAsset==null || handoffSettings==null || !handoffSettings.UseTieredState)throw new ArgumentException("Streaming requires the tiered handoff and streaming shader.");
+                    worldShader=UnityEngine.Object.Instantiate(worldShaderAsset);worldKernel=worldShader.FindKernel("RebindWorldCells");
+                    worldAssignments=NewBuffer(data.Grids.Length,16);
+                    worldShader.SetBuffer(worldKernel,"WorldAssignments",worldAssignments);
+                    worldShader.SetBuffer(worldKernel,"WorldTemplateNodes",Buffer(world.TemplateNodes,48));
+                    worldShader.SetBuffer(worldKernel,"WorldTemplateRods",Buffer(world.TemplateRods,64));
+                    worldShader.SetBuffer(worldKernel,"WorldTemplateBlade",Buffer(new[] {world.TemplateBlade},32));
+                    worldShader.SetBuffer(worldKernel,"WorldRest",rest);worldShader.SetBuffer(worldKernel,"WorldRods",rods);
+                    worldShader.SetBuffer(worldKernel,"WorldBlades",blades);worldShader.SetBuffer(worldKernel,"WorldPlastic",Compact!=null?Compact.Plastic:plasticBends);
+                    if(compact)worldShader.SetBuffer(worldKernel,"WorldAnchors",Compact.Anchors);
+                    worldShader.SetFloat("WorldGround",world.Ground);
+                }
+                SelectPool();
+            }
+            catch { Dispose(); throw; }
+        }
+        private ComputeBuffer NewBuffer(int count,int stride,ComputeBufferType type=ComputeBufferType.Default)
+        { var b = new ComputeBuffer(count,stride,type); buffers.Add(b); return b; }
+        private ComputeBuffer Buffer(Array values,int stride,ComputeBufferType type=ComputeBufferType.Default)
+        { var b=NewBuffer(values.Length,stride,type); b.SetData(values); return b; }
+        private ComputeBuffer UploadBladeMetadata()
+        {
+            if(!data.UsesCompactTemplate)return Buffer(data.Blades,32);
+            var buffer=NewBuffer(data.BladeCount,32);
+            var batch=new GrassBladeData.Blade[Mathf.Min(4096,data.BladeCount)];
+            for(int start=0;start<data.BladeCount;start+=batch.Length)
+            {
+                int count=Mathf.Min(batch.Length,data.BladeCount-start);
+                for(int i=0;i<count;i++)batch[i]=data.GetBlade(start+i);
+                buffer.SetData(batch,0,start,count);
+            }
+            return buffer;
+        }
+        private void SelectPool()
+        {
+            pendingInitializations=0;
+            interactionRegions.Clear();
+            if((settings.PromoteInteractions || settings.ContactDrivenSimulation) && Handoff!=null)
+                for(int i=0;i<colliders.Count;i++)
+                {
+                    ReadShape(i,out var a,out var b,out float radius,out _);if(radius<=0)continue;
+                    // Do not keep the pool awake for a lifted press or an airborne actor.
+                    if(settings.ContactDrivenSimulation && (Mathf.Min(a.y,b.y)-radius>data.Grids[0].Pos.y+data.MaximumBladeLength+settings.CollisionMargin ||
+                        Mathf.Max(a.y,b.y)+radius<data.Grids[0].Pos.y-settings.CollisionMargin))continue;
+                    Vector3 p=(a+b)*.5f,d=p-SimulationCenter;d.y=0;
+                    float reach=radius+data.MaximumBladeLength+Vector3.Distance(a,b)*.5f+.71f;
+                    bool eligible=settings.InteractionsAcrossMiddle
+                        ?GrassSimulationPool.OverlapsCoverage(p,reach,compatibleCoverage,radialCompatibleCoverage)
+                        :d.magnitude+reach<=settings.InteractionDistance;
+                    if(eligible)interactionRegions.Add(new Vector4(p.x,p.z,reach,0));
+                }
+            Pool.Select(SimulationCenter,Mathf.Max(1,settings.NearDistance),Mathf.Max(0,settings.PoolHysteresis),SimulationTicks,
+                initializeSlot,settings.StablePoolSelection,interactionRegions,
+                settings.InteractionsAcrossMiddle?compatibleCoverage:Vector4.zero,radialCompatibleCoverage,settings,SimulationTime);
+            for (int i=0; i<Pool.Selected.Count; i++) active[i]=Pool.Selected[i];
+            if (Pool.Selected.Count>0) activeBuffer.SetData(active,0,0,Pool.Selected.Count);
+            shader.SetInt("ActiveGridCount",Handoff == null ? Pool.Selected.Count : data.Grids.Length);
+            if (Handoff != null) Handoff.Select(Pool.Selected,SimulationTime,SimulationCenter,interactionRegions);
+            else if (pendingInitializations>0)
+            {
+                initializeBuffer.SetData(initialization,0,0,pendingInitializations); shader.SetInt("InitializationCount",pendingInitializations);
+                shader.Dispatch(initializeKernel,(pendingInitializations*32+63)/64,1,1);
+            }
+        }
+        private void ReadShape(int i,out Vector3 a,out Vector3 b,out float radius,out float friction)
+        {
+            Transform tr=i<colliders.Count?colliders[i]:null; a=b=Vector3.zero; radius=0; friction=settings.Friction;
+            if (tr==null || !tr.gameObject.activeInHierarchy) return;
+            var shape=tr.GetComponent<GrassInteractionCollider>();
+            if (shape!=null)
+            { if(!shape.isActiveAndEnabled)return; shape.Endpoints(out a,out b); radius=shape.WorldRadius; friction=shape.Friction; }
+            else { a=b=tr.position; radius=settings.ColliderRadius; }
+        }
+        public void SetWind(Vector3 acceleration,float frequency,Vector4 tileAndOffset)
+        {
+            shader.SetVector("WindForce",acceleration); shader.SetFloat("_WindFrequency",frequency); shader.SetVector("_WindForceMap_ST",tileAndOffset);
+            Handoff?.SetWind(acceleration,frequency,tileAndOffset);
+        }
+        public void Advance(float elapsedSeconds)
+        {
+            if (disposed || elapsedSeconds<=0 || float.IsNaN(elapsedSeconds) || float.IsInfinity(elapsedSeconds)) return;
+            double tick=1.0/Mathf.Clamp(settings.SimulationRate,30,120);
+            double maximum=tick*Mathf.Clamp(settings.MaxCatchUpSteps,1,8);
+            accumulator+=elapsedSeconds;
+            if (accumulator>maximum) { DroppedTime+=(float)(accumulator-maximum); accumulator=maximum; }
+            int steps=(int)Math.Floor((accumulator+1e-8)/tick);
+            if(steps<=0)return;
+            for(int i=0;i<shapes.Length;i++)
+            {
+                motionStartA[i]=shapes[i].A; motionStartB[i]=shapes[i].B;
+                ReadShape(i,out targets[i].A,out targets[i].B,out targets[i].Radius,out targets[i].Friction);
+                if(settings.ContactDrivenSimulation && shapes[i].Radius<=0 && targets[i].Radius>0)
+                {
+                    // Enabling an actor starts at its current position, not at the zero
+                    // endpoints used while disabled. Preserve motion only across active samples.
+                    shapes[i].A=motionStartA[i]=ContactPosition(targets[i].A);
+                    shapes[i].B=motionStartB[i]=ContactPosition(targets[i].B);
+                }
+            }
+            for(int step=0;step<steps;step++) { Tick((float)tick,(step+1f)/steps); accumulator-=tick; }
+        }
+        // Contact projection is nonlinear near grazing events. Quantize resampled inputs to 10 micrometers
+        // so float roundoff in 30/60/120 FPS interpolation cannot choose different contact branches.
+        private static Vector3 ContactPosition(Vector3 p) => new Vector3(
+            Mathf.Round(p.x*100000)*.00001f,Mathf.Round(p.y*100000)*.00001f,Mathf.Round(p.z*100000)*.00001f);
+        private void Tick(float tick,float motionFraction)
+        {
+            shader.SetInt("EnablePlasticity",settings.EnablePlasticity?1:0);
+            SelectPool();
+            int liveColliderCount=0;
+            for (int i=0;i<shapes.Length;i++)
+            {
+                shapes[i].PreviousA=shapes[i].A; shapes[i].PreviousB=shapes[i].B;
+                shapes[i].A=ContactPosition(Vector3.Lerp(motionStartA[i],targets[i].A,motionFraction));
+                shapes[i].B=ContactPosition(Vector3.Lerp(motionStartB[i],targets[i].B,motionFraction));
+                shapes[i].Radius=targets[i].Radius; shapes[i].Friction=targets[i].Friction;
+                // Keep per-actor motion history and ordering; omit disabled shapes only
+                // from the GPU contact loop, including during the three-second tail.
+                if(shapes[i].Radius>0)liveShapes[liveColliderCount++]=shapes[i];
+            }
+            if(liveColliderCount>0)contacts.SetData(liveShapes,0,0,liveColliderCount);
+            shader.SetInt("ColliderCount",liveColliderCount);
+            shader.SetFloat("TickDt",tick); shader.SetFloat("SimulationTime",SimulationTime);
+            shader.SetVector("Gravity",settings.Gravity);
+            shader.SetFloat("StretchCompliance",Mathf.Max(0,settings.StretchCompliance));
+            shader.SetFloat("AlignmentCompliance",Mathf.Max(0,settings.AlignmentCompliance));
+            shader.SetFloat("SoftBendCompliance",Mathf.Max(0,settings.SoftBendCompliance));
+            shader.SetFloat("HardBendCompliance",Mathf.Max(0,settings.HardBendCompliance));
+            shader.SetFloat("TwistCompliance",Mathf.Max(0,settings.TwistCompliance));
+            shader.SetFloat("BaseBendCompliance",Mathf.Max(0,settings.BaseBendCompliance));
+            shader.SetFloat("InverseBladeMass",1/Mathf.Max(.0001f,settings.BladeMass));
+            shader.SetFloat("VelocityDamping",Mathf.Max(0,settings.VelocityDamping));
+            shader.SetFloat("AngularDamping",Mathf.Max(0,settings.AngularDamping));
+            shader.SetFloat("CollisionMargin",Mathf.Max(0,settings.CollisionMargin));
+            shader.SetFloat("GroundFriction",Mathf.Max(0,settings.Friction));
+            shader.SetFloat("PlasticYieldCurvature",Mathf.Max(.01f,settings.PlasticYieldCurvature));
+            shader.SetFloat("PlasticFlowRate",Mathf.Max(0,settings.PlasticFlowRate));
+            shader.SetFloat("PlasticMaxCurvature",Mathf.Max(0,settings.PlasticMaxCurvature));
+            shader.SetFloat("BaseYieldAngle",Mathf.Clamp(settings.BaseYieldDegrees,1,89)*Mathf.Deg2Rad);
+            shader.SetFloat("BaseMaxPlasticAngle",Mathf.Clamp(settings.BaseMaxPlasticDegrees,0,85)*Mathf.Deg2Rad);
+            shader.SetInt("GroundCollision",settings.GroundCollision?1:0);
+            shader.SetInt("NearSubsteps",Mathf.Clamp(settings.NearSubsteps,1,16));
+            shader.SetInt("ConstraintIterations",Mathf.Clamp(settings.ConstraintIterations,1,6));
+            if (Pool.Selected.Count>0) for(int substep=0;substep<Mathf.Clamp(settings.NearSubsteps,1,16);substep++)
+            { shader.SetInt("SubstepIndex",substep); shader.Dispatch(solveKernel,Pool.Selected.Count,1,1); }
+            SimulationTime+=tick; SimulationTicks++;
+            Handoff?.UpdateDisplay(SimulationTime,tick);
+        }
+        // Editor preview updates residency without advancing the fixed simulation clock.
+        public void RefreshSimulationSelection()
+        {
+            if (!disposed) SelectPool();
+        }
+        public bool StreamTo(Vector3 focus)
+        {
+            SimulationCenter=focus;
+            if(world==null || !world.Move(focus,data))return false;
+            Pool.ForgetGrids(world.Changed);
+            if(Compact!=null)Compact.Yaw.SetData(world.Yaws);
+            worldAssignments.SetData(world.Replacements);
+            worldShader.Dispatch(worldKernel,world.Changed.Count,1,1);
+            Handoff.RecycleWorldGrids(world.Changed,SimulationTime);
+            if(world.Changed.Count==data.Grids.Length)
+                for(int i=0;i<shapes.Length;i++)
+                {
+                    ReadShape(i,out shapes[i].A,out shapes[i].B,out shapes[i].Radius,out shapes[i].Friction);
+                    shapes[i].PreviousA=shapes[i].A;shapes[i].PreviousB=shapes[i].B;
+                }
+            // Reclassify before any draw: old simulation slots may now refer to unloaded cells.
+            SelectPool(); return true;
+        }
+        public void SetOuterCoverage(Vector4 transition,bool radial=false)
+        {
+            if(disposed)return;
+            compatibleCoverage=transition;radialCompatibleCoverage=radial;
+            material.SetVector("_GrassCoverageTransition",transition);
+            material.SetInt("_GrassRadialCoverage",radial?1:0);
+            if(radial)material.EnableKeyword("GRASS_RADIAL_MIDDLE");else material.DisableKeyword("GRASS_RADIAL_MIDDLE");
+            if(transition.w>0)material.EnableKeyword("GRASS_OUTER_COVERAGE"); else material.DisableKeyword("GRASS_OUTER_COVERAGE");
+        }
+        public void SetOuterShape(ComputeBuffer controls,Texture noise,Vector3 wind,float time,float maxWind,float halfWidth)
+        {
+            material.SetBuffer("OuterControls",controls);material.SetTexture("OuterWindNoise",noise);
+            material.SetVector("OuterWind",wind);material.SetFloat("OuterTime",time);
+            material.SetFloat("OuterMaxWind",maxWind);material.SetFloat("OuterHalfWidth",halfWidth);
+        }
+        public void Draw(Camera renderCamera = null)
+        {
+            if (disposed) return;
+            Handoff?.ConfigureDebugColors(material);
+            // Debug selection stays live without recreating the simulation or its GPU buffers.
+            if (sourceMaterial != null && sourceMaterial.HasProperty("_DebugView"))
+                material.SetFloat("_DebugView",sourceMaterial.GetFloat("_DebugView"));
+            Plane[] planes=GeometryUtility.CalculateFrustumPlanes(camera);
+            for(int i=0;i<6;i++) frustum[i]=new Vector4(planes[i].normal.x,planes[i].normal.y,planes[i].normal.z,planes[i].distance);
+            shader.SetVectorArray("FrustumPlanes",frustum); shader.SetVector("camPos",camera.transform.position);
+            shader.SetVector("camDir",camera.transform.forward); shader.SetFloat("MaxDistance",Mathf.Max(1,settings.MaxDistance));
+            shader.SetMatrix("_Matrix_VP",GL.GetGPUProjectionMatrix(camera.projectionMatrix,true)*camera.worldToCameraMatrix);
+            bool occlusion=settings.UseOcclusionCulling && depthSource!=null && depthSource.CanCull(camera);
+            shader.SetInt("EnableOcclusionCulling",occlusion?1:0); shader.SetInt("ReversedZ",SystemInfo.usesReversedZBuffer?1:0);
+            shader.SetTexture(cullKernel,"_DepthTex",occlusion?(Texture)depthSource.DepthTexture:Texture2D.blackTexture);
+            drawArgs.SetData(emptyDraw);
+            int renderGrids=Handoff == null ? Pool.Selected.Count : data.Grids.Length;
+            if(renderGrids>0) shader.Dispatch(cullKernel,(renderGrids+31)/32,1,1);
+            // Only the render target changes. Frustum, distance, projection and Hi-Z above
+            // always come from the designated main camera, including Scene view renders.
+            Graphics.DrawProceduralIndirect(material,data.Bounds,MeshTopology.Triangles,drawArgs,0,
+                renderCamera != null ? renderCamera : camera,null,ShadowCastingMode.TwoSided,true);
+        }
+        // Synchronous reads are diagnostics only, never used by the normal frame loop or pool.
+        public BoneInfo[] ReadNodes()
+        {
+            var packed=new BoneInfo[Pool.Capacity*32*NodesPerBlade]; bones.GetData(packed);
+            var result=new BoneInfo[BladeCount*NodesPerBlade];
+            for(int i=0;i<result.Length;i++)result[i]=data.GetRestNode(i);
+            for(int g=0;g<data.Grids.Length;g++)
+            {
+                int slot=Pool.SlotForGrid(g); if(slot<0) continue;
+                Array.Copy(packed,slot*32*NodesPerBlade,result,data.Grids[g].IdOffset*NodesPerBlade,32*NodesPerBlade);
+            }
+            for(int b=0;b<BladeCount;b++) for(int n=0;n<NodesPerBlade;n++)
+            { result[b*NodesPerBlade+n].Position+=data.GetBlade(b).Root; result[b*NodesPerBlade+n].Predicted+=data.GetBlade(b).Root; }
+            return result;
+        }
+        public GrassBladeData.Frame[] ReadFrames()
+        {
+            var packed=new GrassBladeData.Frame[Pool.Capacity*32*GrassBladeData.Segments]; frames.GetData(packed);
+            var result=new GrassBladeData.Frame[BladeCount*GrassBladeData.Segments];
+            for(int i=0;i<result.Length;i++) result[i].Rotation=data.GetRod(i).Rotation;
+            for(int g=0;g<data.Grids.Length;g++)
+            {
+                int slot=Pool.SlotForGrid(g); if(slot>=0) Array.Copy(packed,slot*32*GrassBladeData.Segments,result,
+                    data.Grids[g].IdOffset*GrassBladeData.Segments,32*GrassBladeData.Segments);
+            }
+            return result;
+        }
+        // Diagnostic read only; normal simulation and residency never read plastic state back.
+        public Vector4[] ReadPlasticBends()
+        {
+            if(Compact!=null)
+            {
+                var compactResult=Compact.ReadPlastic();var live=new Vector4[plasticBends.count];plasticBends.GetData(live);
+                foreach(var grid in Pool.Selected)Array.Copy(live,grid.PoolOffset*7,compactResult,grid.BladeOffset*7,32*7);
+                return compactResult;
+            }
+            var result=new Vector4[BladeCount*GrassBladeData.Segments]; plasticBends.GetData(result); return result;
+        }
+        // Upload a baked initial pose for a homogeneous patch. Material rest curvature stays unchanged.
+        // No GPU readback; this is initialization, not a constraint or an update-time pose override.
+        public void InitializeFromPose(Vector3[] localNodes,Quaternion[] rotations)
+        {
+            if(disposed)throw new ObjectDisposedException(nameof(PBDGrassPatchRenderer));
+            if(Handoff!=null)throw new InvalidOperationException("Use the handoff initialization path for a handoff renderer.");
+            if(localNodes==null || localNodes.Length!=8 || rotations==null || rotations.Length!=7)
+                throw new ArgumentException("A baked pose needs eight root-relative nodes and seven material frames.");
+            var nodeValues=new BoneInfo[Pool.Capacity*32*8]; var frameValues=new GrassBladeData.Frame[Pool.Capacity*32*7];
+            var vertexValues=new Vector3[BladeCount*15]; var normalValues=new Vector3[vertexValues.Length];
+            for(int b=0;b<BladeCount;b++)
+            {
+                int slot=Pool.SlotForGrid(b/32),pool=slot*32+b%32;
+                if(slot>=0)
+                {
+                    for(int n=0;n<8;n++)
+                    {
+                        var node=data.GetRestNode(b*8+n); node.Position=node.Predicted=localNodes[n]; node.Velocities=Vector3.zero;
+                        nodeValues[pool*8+n]=node;
+                    }
+                    for(int s=0;s<7;s++)frameValues[pool*7+s]=new GrassBladeData.Frame { Rotation=rotations[s] };
+                }
+                for(int s=0;s<7;s++)
+                {
+                    Vector3 tangent=(localNodes[s+1]-localNodes[s]).normalized;
+                    Vector3 across=Vector3.ProjectOnPlane(rotations[s]*Vector3.right,tangent).normalized;
+                    Vector3 width=across*data.GetRod(b*7+s).HalfWidth;
+                    vertexValues[b*15+s*2]=data.GetBlade(b).Root+localNodes[s]+width;
+                    vertexValues[b*15+s*2+1]=data.GetBlade(b).Root+localNodes[s]-width;
+                    normalValues[b*15+s*2]=normalValues[b*15+s*2+1]=Vector3.Cross(across,tangent).normalized;
+                }
+                vertexValues[b*15+14]=data.GetBlade(b).Root+localNodes[7]; normalValues[b*15+14]=normalValues[b*15+13];
+            }
+            bones.SetData(nodeValues); frames.SetData(frameValues); positions.SetData(vertexValues); normals.SetData(normalValues);
+        }
+        public void ResetDeformation()
+        {
+            if(disposed)return;
+            plasticBends.SetData(new Vector4[plasticBends.count]);Compact?.ClearPlastic();
+            if(Handoff != null) { Handoff.Reset(Pool.Selected,SimulationTime); return; }
+            shader.SetInt("EnablePlasticity",settings.EnablePlasticity?1:0);
+            int count=0;
+            for(int g=0;g<data.Grids.Length;g++)
+            {
+                int slot=Pool.SlotForGrid(g);
+                if(slot>=0)initialization[count++]=new Initialization { Slot=slot,Grid=data.Grids[g].IdOffset };
+            }
+            if(count==0)return;
+            initializeBuffer.SetData(initialization,0,0,count); shader.SetInt("InitializationCount",count);
+            shader.Dispatch(initializeKernel,(count*32+63)/64,1,1);
+        }
+        public void ImpulseBlade(int blade,Vector3 velocity,Vector3 angularVelocity)
+        {
+            if(blade<0 || blade>=BladeCount) throw new ArgumentOutOfRangeException(nameof(blade));
+            int slot=Pool.SlotForGrid(blade/32); if(slot<0) throw new InvalidOperationException("Blade is not resident.");
+            var n=new BoneInfo[NodesPerBlade]; int offset=(slot*32+blade%32)*NodesPerBlade;
+            bones.GetData(n,0,offset,n.Length);
+            for(int i=1;i<n.Length;i++) n[i].Velocities+=velocity; bones.SetData(n,0,offset,n.Length);
+            var f=new GrassBladeData.Frame[GrassBladeData.Segments]; offset=(slot*32+blade%32)*GrassBladeData.Segments;
+            frames.GetData(f,0,offset,f.Length);
+            for(int i=0;i<f.Length;i++) f[i].AngularVelocity+=angularVelocity; frames.SetData(f,0,offset,f.Length);
+        }
+        public uint VisibleGridCount() { var a=new uint[4]; drawArgs.GetData(a); return a[1]; }
+        public void Dispose()
+        {
+            if(disposed)return; disposed=true;
+            Handoff?.Dispose();
+            Compact?.Dispose();
+            if(worldShader!=null) { if(Application.isPlaying)UnityEngine.Object.Destroy(worldShader);else UnityEngine.Object.DestroyImmediate(worldShader); }
+            foreach(var b in buffers)b.Release(); buffers.Clear(); DestroyOwned(shader); DestroyOwned(material);
+        }
+        private static void DestroyOwned(UnityEngine.Object value)
+        { if(value==null)return; if(Application.isPlaying)UnityEngine.Object.Destroy(value); else UnityEngine.Object.DestroyImmediate(value); }
+    }
+}

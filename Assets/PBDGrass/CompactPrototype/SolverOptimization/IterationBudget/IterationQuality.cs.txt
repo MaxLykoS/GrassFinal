@@ -1,0 +1,154 @@
+// Offline quality diagnostics only. GPU readbacks are outside performance timing.
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using GrassFinal.PBDGrass;
+using GrassFinal.PBDGrass.Editor;
+using Object=UnityEngine.Object;
+public static class IterationQuality
+{
+    [Serializable] public sealed class Row
+    {
+        public string phase;public int tick,sampledBlades,nearContactBlades,penetratingSegments,segments;
+        public float lengthErrorMean,lengthErrorP95,lengthErrorMax,groundPenetrationMax,capsulePenetrationMax;
+        public float capsulePenetrationP95,tipDifferenceRms,tipDifferenceP95,tipDifferenceMax;
+        public float nearContactTipDifferenceRms,plasticMean,plasticMax,speedMean,speedP95;
+    }
+    [Serializable] public sealed class Case
+    {public string name;public int substeps,iterations;public List<Row> rows=new List<Row>();}
+    [Serializable] public sealed class Report
+    {public bool passed;public string error,gpu;public int active=32768,sampleStride=8;public List<Case> cases=new List<Case>();}
+    static readonly int[] checkpoints={180,240,360,480,540,600,660,720};
+    static readonly Dictionary<int,Vector3[]> reference=new Dictionary<int,Vector3[]>();
+    static readonly List<string> errors=new List<string>();
+    static string output;static GrassHandoffDemo demo;static GrassShowcaseController lab;
+    static T Field<T>(object obj,string name)=>(T)obj.GetType().GetField(name,BindingFlags.NonPublic|BindingFlags.Instance).GetValue(obj);
+    static void Require(bool value,string message){if(!value)throw new InvalidOperationException(message);}
+    static void Log(string message,string stack,LogType type){if(type==LogType.Error||type==LogType.Exception||type==LogType.Assert)errors.Add(message);}
+    static bool Finite(float value)=>!float.IsNaN(value)&&!float.IsInfinity(value);
+    public static void Run()
+    {
+        output=Environment.GetEnvironmentVariable("GRASS_ITERATION_OUTPUT");Directory.CreateDirectory(output);
+        var report=new Report{gpu=SystemInfo.graphicsDeviceName};reference.Clear();errors.Clear();Application.logMessageReceived+=Log;
+        try
+        {
+            foreach(var budget in new[]{new[]{8,3},new[]{8,2},new[]{8,1},new[]{6,1},new[]{4,2},new[]{4,1},new[]{3,1},new[]{2,1}})
+            {
+                var c=new Case{name=budget[0]+"x"+budget[1],substeps=budget[0],iterations=budget[1]};
+                RunCase(c,report);report.cases.Add(c);File.WriteAllText(Path.Combine(output,c.name+".json"),JsonUtility.ToJson(c,true));
+            }
+            Require(errors.Count==0,string.Join("\n",errors));report.passed=true;
+        }
+        catch(Exception e){report.error=e.ToString();}
+        finally
+        {Application.logMessageReceived-=Log;reference.Clear();File.WriteAllText(Path.Combine(output,"Results.json"),JsonUtility.ToJson(report,true));}
+        EditorApplication.Exit(report.passed?0:1);
+    }
+    static void Release()
+    {if(demo!=null)typeof(GrassHandoffDemo).GetMethod("Release",BindingFlags.NonPublic|BindingFlags.Instance).Invoke(demo,null);}
+    static void RunCase(Case c,Report report)
+    {
+        ContactGpuHooks.Active=false;ContactGpuHooks.ReferenceContacts=false;
+        EditorSceneManager.OpenScene(GrassShowcaseSceneBuilder.ScenePath);
+        demo=Object.FindObjectOfType<GrassHandoffDemo>();lab=Object.FindObjectOfType<GrassShowcaseController>();
+        demo.enabled=false;demo.OuterCoverage.enabled=false;lab.enabled=false;demo.Cam.enabled=false;Release();
+        demo.Physics.ContactDrivenSimulation=false;demo.Physics.NearSubsteps=c.substeps;demo.Physics.ConstraintIterations=c.iterations;
+        demo.AutoTour=false;demo.ContactEnabled=true;lab.SetView(1);lab.ApplyActors(0,false);
+        demo.Initialize();demo.OuterCoverage.Initialize();
+        var everNear=new HashSet<int>();
+        try
+        {
+            for(int tick=1;tick<=720;tick++)
+            {
+                bool contacts=tick>180&&tick<=480;
+                lab.ApplyActors(Mathf.Max(0,(tick-181)/60f),contacts);
+                demo.Renderer.SetWind(GrassResponseDemo.WindAt((tick-1)/60f,true)*(demo.Wind.magnitude/6),.1f,new Vector4(.01f,.01f,0,1));
+                demo.Renderer.Advance(1f/60);
+                Require(demo.Renderer.ActiveBladeCount==report.active,"Fixed pool count changed.");
+                if(Array.IndexOf(checkpoints,tick)>=0)c.rows.Add(Sample(c,tick,everNear));
+                if(tick==480||tick==720)Capture(c.name+"_"+tick);
+            }
+        }
+        finally{Release();}
+    }
+    static float Percentile(List<float> values,float p)
+    {if(values.Count==0)return 0;values.Sort();return values[Math.Min(values.Count-1,(int)(values.Count*p))];}
+    static Row Sample(Case c,int tick,HashSet<int> everNear)
+    {
+        var r=demo.Renderer;var nodes=new BoneInfo[32768*8];Field<ComputeBuffer>(r,"bones").GetData(nodes);
+        var plastic=new Vector4[32768*7];Field<ComputeBuffer>(r,"plasticBends").GetData(plastic);
+        var frames=new GrassBladeData.Frame[32768*7];Field<ComputeBuffer>(r,"frames").GetData(frames);
+        var lengths=new List<float>();var speeds=new List<float>();var differences=new List<float>();var penetrations=new List<float>();
+        var row=new Row{tick=tick,phase=tick<=180?"wind":tick<=480?"contact":"released"};
+        var tips=new Vector3[4096];double squared=0,nearSquared=0;int sample=0;double lengthSum=0,speedSum=0,plasticSum=0;
+        foreach(var grid in r.Pool.Selected)for(int b=0;b<32;b+=8)
+        {
+            int blade=grid.BladeOffset+b,pool=grid.PoolOffset+b;var identity=r.Data.GetBlade(blade);Vector3 root=identity.Root;
+            int n=pool*8;var tip=nodes[n+7].Position;tips[sample]=tip;
+            if(c.name!="8x3")
+            {float d=Vector3.Distance(tip,reference[tick][sample]);differences.Add(d);squared+=d*d;row.tipDifferenceMax=Mathf.Max(row.tipDifferenceMax,d);}
+            foreach(var actor in lab.Actors)
+            {
+                var collider=actor.Collider;if(!collider.enabled)continue;
+                collider.Endpoints(out var a,out var z);float radius=collider.WorldRadius+demo.Physics.CollisionMargin;
+                float reach=identity.Length+radius+(z-a).magnitude*.5f;
+                if((root-(a+z)*.5f).sqrMagnitude>reach*reach)continue;
+                everNear.Add(blade);
+                // Exclude the anchored basal segment: roots inside solid shapes cannot move.
+                for(int s=1;s<7;s++)
+                {
+                    float d=Distance(nodes[n+s].Position+root,nodes[n+s+1].Position+root,a,z);
+                    float penetration=Mathf.Max(0,radius-d);
+                    if(penetration>1e-5f){penetrations.Add(penetration);row.penetratingSegments++;row.capsulePenetrationMax=Mathf.Max(row.capsulePenetrationMax,penetration);}
+                }
+            }
+            if(everNear.Contains(blade))
+            {row.nearContactBlades++;if(c.name!="8x3")nearSquared+=(tip-reference[tick][sample]).sqrMagnitude;}
+            for(int s=0;s<7;s++)
+            {
+                var p=nodes[n+s+1].Position;var v=nodes[n+s+1].Velocities;var q=frames[pool*7+s].Rotation;
+                Require(Finite(p.sqrMagnitude)&&Finite(v.sqrMagnitude)&&Finite(q.x+q.y+q.z+q.w),"Nonfinite physical state.");
+                float length=r.Data.GetRod(blade*7+s).Length;
+                float error=Mathf.Abs((p-nodes[n+s].Position).magnitude-length)/length;
+                lengths.Add(error);lengthSum+=error;row.lengthErrorMax=Mathf.Max(row.lengthErrorMax,error);
+                row.groundPenetrationMax=Mathf.Max(row.groundPenetrationMax,demo.Physics.CollisionMargin-p.y);
+                speeds.Add(v.magnitude);speedSum+=v.magnitude;
+                var bend=plastic[pool*7+s];Require(Finite(bend.sqrMagnitude),"Nonfinite plasticity.");
+                float amount=new Vector2(bend.x,bend.y).magnitude;plasticSum+=amount;row.plasticMax=Mathf.Max(row.plasticMax,amount);
+                row.segments++;
+            }
+            sample++;
+        }
+        row.sampledBlades=sample;row.lengthErrorMean=(float)(lengthSum/lengths.Count);row.lengthErrorP95=Percentile(lengths,.95f);
+        row.speedMean=(float)(speedSum/speeds.Count);row.speedP95=Percentile(speeds,.95f);row.plasticMean=(float)(plasticSum/row.segments);
+        row.tipDifferenceRms=(float)Math.Sqrt(squared/sample);row.tipDifferenceP95=Percentile(differences,.95f);
+        row.nearContactTipDifferenceRms=(float)Math.Sqrt(nearSquared/Math.Max(1,row.nearContactBlades));row.capsulePenetrationP95=Percentile(penetrations,.95f);
+        if(c.name=="8x3")reference[tick]=tips;
+        return row;
+    }
+    static float Distance(Vector3 p,Vector3 q,Vector3 a,Vector3 b)
+    {
+        Vector3 d=q-p,e=b-a,r=p-a;float dd=Vector3.Dot(d,d),ee=Vector3.Dot(e,e),de=Vector3.Dot(d,e),dr=Vector3.Dot(d,r),er=Vector3.Dot(e,r),t,u;
+        if(dd<1e-8f){t=0;u=ee>1e-8f?Mathf.Clamp01(er/ee):0;}
+        else if(ee<1e-8f){u=0;t=Mathf.Clamp01(-dr/dd);}
+        else{float denom=dd*ee-de*de;t=denom>1e-8f?Mathf.Clamp01((de*er-dr*ee)/denom):0;u=(de*t+er)/ee;
+            if(u<0){u=0;t=Mathf.Clamp01(-dr/dd);}else if(u>1){u=1;t=Mathf.Clamp01((de-dr)/dd);}}
+        return Vector3.Distance(p+t*d,a+u*e);
+    }
+    static void Capture(string name)
+    {
+        var camera=demo.Cam;var position=camera.transform.position;var rotation=camera.transform.rotation;
+        var target=new RenderTexture(1280,720,24);target.Create();var previous=RenderTexture.active;var pixels=new Texture2D(1280,720,TextureFormat.RGB24,false);
+        try
+        {
+            camera.aspect=1280f/720;camera.transform.position=new Vector3(0,5,-12);camera.transform.LookAt(new Vector3(0,.4f,1));
+            camera.targetTexture=target;demo.OuterCoverage.PrepareVisible();demo.Renderer.Draw(camera);demo.OuterCoverage.RenderPrepared(camera);camera.Render();
+            RenderTexture.active=target;pixels.ReadPixels(new Rect(0,0,1280,720),0,0);pixels.Apply();File.WriteAllBytes(Path.Combine(output,name+".png"),pixels.EncodeToPNG());
+        }
+        finally{camera.transform.SetPositionAndRotation(position,rotation);camera.targetTexture=null;RenderTexture.active=previous;Object.DestroyImmediate(pixels);target.Release();Object.DestroyImmediate(target);}
+    }
+}

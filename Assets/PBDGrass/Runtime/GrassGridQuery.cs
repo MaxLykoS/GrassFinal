@@ -30,6 +30,7 @@ namespace GrassFinal.PBDGrass
         private readonly GrassWorldLayout world;
         private readonly Dictionary<Vector2Int,List<int>> buckets;
         private readonly int minX,minZ,maxX,maxZ;
+        public int Revision => world!=null?world.Version:0;
         public GrassGridQuery(GrassGridStruct[] grids,GrassWorldLayout world=null)
         {
             this.world=world;

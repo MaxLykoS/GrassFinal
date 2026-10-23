@@ -1,0 +1,38 @@
+[
+  {
+    "name": "reference",
+    "dxbcBytes": 220392,
+    "dxbcTemps": 109,
+    "instructionSlots": 7162
+  },
+  {
+    "name": "frames",
+    "dxbcBytes": 220672,
+    "dxbcTemps": 103,
+    "instructionSlots": 7168
+  },
+  {
+    "name": "shared",
+    "dxbcBytes": 221324,
+    "dxbcTemps": 98,
+    "instructionSlots": 7187
+  },
+  {
+    "name": "lambda",
+    "dxbcBytes": 221220,
+    "dxbcTemps": 109,
+    "instructionSlots": 7164
+  },
+  {
+    "name": "combo",
+    "dxbcBytes": 222404,
+    "dxbcTemps": 92,
+    "instructionSlots": 7194
+  },
+  {
+    "name": "constant",
+    "dxbcBytes": 220608,
+    "dxbcTemps": 95,
+    "instructionSlots": 7161
+  }
+]

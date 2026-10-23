@@ -21,6 +21,7 @@ namespace GrassFinal.PBDGrass
         private readonly Material sourceMaterial;
         private readonly Camera camera;
         private readonly XPBDGrassSettings settings;
+        private readonly GrassHandoffSettings handoffSettings;
         private readonly IList<Transform> colliders;
         private readonly DepthTexMaker depthSource;
         private readonly int solveKernel, initializeKernel, cullKernel;
@@ -30,10 +31,15 @@ namespace GrassFinal.PBDGrass
         public long GeometryGpuBytes { get; private set; }
         public long StaticGpuBytes { get; private set; }
         public long PlasticGpuBytes { get; private set; }
-        private readonly ColliderMotion[] shapes, targets;
+        private readonly ColliderMotion[] shapes, targets, liveShapes;
+        private readonly Transform[] colliderTransforms;
+        private readonly GrassInteractionCollider[] interactionShapes;
         private readonly Vector3[] motionStartA, motionStartB;
         private readonly GrassSimulationPool.ActiveGrid[] active;
         private readonly Initialization[] initialization;
+        private readonly Action<int,int> initializeSlot;
+        private int pendingInitializations;
+        private int uploadedSelectionVersion=-1,lastActiveGridCount=-1;
         private readonly uint[] emptyDraw = { BladesPerGrid * GrassBladeData.Indices, 0, 0, 0 };
         private readonly Vector4[] frustum = new Vector4[6];
         private readonly List<Vector4> interactionRegions=new List<Vector4>();
@@ -65,6 +71,7 @@ namespace GrassFinal.PBDGrass
             GrassWorldLayout worldLayout=null,ComputeShader worldShaderAsset=null,GrassBladeData preparedData=null)
         {
             this.camera = camera; this.settings = settings; this.sourceMaterial = sourceMaterial;
+            this.handoffSettings=handoffSettings;
             this.colliders = colliders ?? new List<Transform>();
             if(settings.ContactDrivenSimulation && (handoffSettings==null || !handoffSettings.UseTieredState || !handoffSettings.UseCompactMiddle))
                 throw new ArgumentException("Contact-driven simulation requires the compact tiered handoff path.");
@@ -77,6 +84,7 @@ namespace GrassFinal.PBDGrass
             var gridQuery=new GrassGridQuery(data.Grids,world);
             Pool = new GrassSimulationPool(data.Grids, settings.MaxActiveBlades,gridQuery);
             active = new GrassSimulationPool.ActiveGrid[Pool.Capacity]; initialization = new Initialization[Pool.Capacity];
+            initializeSlot=(slot,grid)=>initialization[pendingInitializations++]=new Initialization {Slot=slot,Grid=data.Grids[grid].IdOffset};
             depthSource = camera.GetComponent<DepthTexMaker>();
             shader = UnityEngine.Object.Instantiate(sourceShader); material = UnityEngine.Object.Instantiate(sourceMaterial);
             try
@@ -118,6 +126,8 @@ namespace GrassFinal.PBDGrass
                 ComputeBuffer visible = NewBuffer(handoffSettings == null ? Pool.Capacity : data.Grids.Length,16);
                 drawArgs = Buffer(emptyDraw,4,ComputeBufferType.IndirectArguments);
                 shapes = new ColliderMotion[this.colliders.Count]; targets = new ColliderMotion[shapes.Length];
+                liveShapes = new ColliderMotion[shapes.Length];
+                colliderTransforms=new Transform[shapes.Length];interactionShapes=new GrassInteractionCollider[shapes.Length];
                 motionStartA = new Vector3[shapes.Length]; motionStartB = new Vector3[shapes.Length];
                 contacts = NewBuffer(Mathf.Max(1,shapes.Length),64);
                 for (int i=0; i<shapes.Length; i++)
@@ -193,7 +203,8 @@ namespace GrassFinal.PBDGrass
         }
         private void SelectPool()
         {
-            int count=0;
+            pendingInitializations=0;
+            Pool.HistoryBandWidth=handoffSettings!=null && handoffSettings.UseTieredState?Mathf.Max(.1f,handoffSettings.HistoryBandWidth):0;
             interactionRegions.Clear();
             if((settings.PromoteInteractions || settings.ContactDrivenSimulation) && Handoff!=null)
                 for(int i=0;i<colliders.Count;i++)
@@ -210,23 +221,29 @@ namespace GrassFinal.PBDGrass
                     if(eligible)interactionRegions.Add(new Vector4(p.x,p.z,reach,0));
                 }
             Pool.Select(SimulationCenter,Mathf.Max(1,settings.NearDistance),Mathf.Max(0,settings.PoolHysteresis),SimulationTicks,
-                (slot,grid)=> { initialization[count++] = new Initialization { Slot=slot, Grid=data.Grids[grid].IdOffset }; },settings.StablePoolSelection,interactionRegions,
+                initializeSlot,settings.StablePoolSelection,interactionRegions,
                 settings.InteractionsAcrossMiddle?compatibleCoverage:Vector4.zero,radialCompatibleCoverage,settings,SimulationTime);
-            for (int i=0; i<Pool.Selected.Count; i++) active[i]=Pool.Selected[i];
-            if (Pool.Selected.Count>0) activeBuffer.SetData(active,0,0,Pool.Selected.Count);
-            shader.SetInt("ActiveGridCount",Handoff == null ? Pool.Selected.Count : data.Grids.Length);
-            if (Handoff != null) Handoff.Select(Pool.Selected,SimulationTime,SimulationCenter,interactionRegions);
-            else if (count>0)
+            if(uploadedSelectionVersion!=Pool.SelectionVersion)
             {
-                initializeBuffer.SetData(initialization,0,0,count); shader.SetInt("InitializationCount",count);
-                shader.Dispatch(initializeKernel,(count*32+63)/64,1,1);
+                for (int i=0; i<Pool.Selected.Count; i++) active[i]=Pool.Selected[i];
+                if (Pool.Selected.Count>0) activeBuffer.SetData(active,0,0,Pool.Selected.Count);
+                uploadedSelectionVersion=Pool.SelectionVersion;
+            }
+            int activeGridCount=Handoff == null ? Pool.Selected.Count : data.Grids.Length;
+            if(lastActiveGridCount!=activeGridCount) {shader.SetInt("ActiveGridCount",activeGridCount);lastActiveGridCount=activeGridCount;}
+            if (Handoff != null) Handoff.Select(Pool.Selected,SimulationTime,SimulationCenter,interactionRegions);
+            else if (pendingInitializations>0)
+            {
+                initializeBuffer.SetData(initialization,0,0,pendingInitializations); shader.SetInt("InitializationCount",pendingInitializations);
+                shader.Dispatch(initializeKernel,(pendingInitializations*32+63)/64,1,1);
             }
         }
         private void ReadShape(int i,out Vector3 a,out Vector3 b,out float radius,out float friction)
         {
             Transform tr=i<colliders.Count?colliders[i]:null; a=b=Vector3.zero; radius=0; friction=settings.Friction;
             if (tr==null || !tr.gameObject.activeInHierarchy) return;
-            var shape=tr.GetComponent<GrassInteractionCollider>();
+            var shape=colliderTransforms[i]==tr?interactionShapes[i]:null;
+            if(shape==null) {shape=tr.GetComponent<GrassInteractionCollider>();colliderTransforms[i]=tr;interactionShapes[i]=shape;}
             if (shape!=null)
             { if(!shape.isActiveAndEnabled)return; shape.Endpoints(out a,out b); radius=shape.WorldRadius; friction=shape.Friction; }
             else { a=b=tr.position; radius=settings.ColliderRadius; }
@@ -267,14 +284,19 @@ namespace GrassFinal.PBDGrass
         {
             shader.SetInt("EnablePlasticity",settings.EnablePlasticity?1:0);
             SelectPool();
+            int liveColliderCount=0;
             for (int i=0;i<shapes.Length;i++)
             {
                 shapes[i].PreviousA=shapes[i].A; shapes[i].PreviousB=shapes[i].B;
                 shapes[i].A=ContactPosition(Vector3.Lerp(motionStartA[i],targets[i].A,motionFraction));
                 shapes[i].B=ContactPosition(Vector3.Lerp(motionStartB[i],targets[i].B,motionFraction));
                 shapes[i].Radius=targets[i].Radius; shapes[i].Friction=targets[i].Friction;
+                // Keep per-actor motion history and ordering; omit disabled shapes only
+                // from the GPU contact loop, including during the three-second tail.
+                if(shapes[i].Radius>0)liveShapes[liveColliderCount++]=shapes[i];
             }
-            if (shapes.Length>0) contacts.SetData(shapes);
+            if(liveColliderCount>0)contacts.SetData(liveShapes,0,0,liveColliderCount);
+            shader.SetInt("ColliderCount",liveColliderCount);
             shader.SetFloat("TickDt",tick); shader.SetFloat("SimulationTime",SimulationTime);
             shader.SetVector("Gravity",settings.Gravity);
             shader.SetFloat("StretchCompliance",Mathf.Max(0,settings.StretchCompliance));

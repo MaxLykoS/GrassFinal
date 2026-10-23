@@ -22,6 +22,8 @@ namespace GrassFinal.PBDGrass
         private readonly int resetKernel, captureKernel, seedKernel, displayKernel;
         private readonly int windKernel;
         private readonly ComputeBuffer windState;
+        private readonly ComputeBuffer bakedControlsBuffer,bakedFramesBuffer;
+        private GrassResponseType bakedResponse;
         public ComputeBuffer CullingGrids { get; }
         private int entryInitializations,simulatedBlades;
         public int EntryInitializations => tiered!=null?tiered.EntryInitializations:entryInitializations;
@@ -73,6 +75,7 @@ namespace GrassFinal.PBDGrass
                 windState=NewBuffer(grids.Length,16);
                 var controls=new Vector4[75]; var bakedFrames=new Vector4[175]; var yaw=new Quaternion[grids.Length];
                 var response=settings.BakedResponse;
+                bakedResponse=response;
                 if(response!=null)
                 {
                     if(!response.IsBaked || response.GridSize!=5)throw new ArgumentException("Bake the response type first.");
@@ -87,8 +90,8 @@ namespace GrassFinal.PBDGrass
                     for(int g=0;g<yaw.Length;g++)yaw[g]=GrassResponseType.HandoffYaw(g);
                 }
                 else for(int g=0;g<yaw.Length;g++)yaw[g]=Quaternion.identity;
-                var controlsBuffer=NewBuffer(75,16); controlsBuffer.SetData(controls);
-                var bakedFramesBuffer=NewBuffer(175,16); bakedFramesBuffer.SetData(bakedFrames);
+                var controlsBuffer=NewBuffer(75,16); controlsBuffer.SetData(controls); bakedControlsBuffer=controlsBuffer;
+                var framesBuffer=NewBuffer(175,16); framesBuffer.SetData(bakedFrames); bakedFramesBuffer=framesBuffer;
                 var yawBuffer=NewBuffer(yaw.Length,16); yawBuffer.SetData(yaw);
                 shader.SetInt("EnableBakedResponse",response!=null?1:0); shader.SetInt("GridCount",grids.Length);
                 foreach(int k in new[] { resetKernel,captureKernel,seedKernel,displayKernel })
@@ -119,6 +122,37 @@ namespace GrassFinal.PBDGrass
         }
         private ComputeBuffer NewBuffer(int count,int stride)
         { var b=new ComputeBuffer(count,stride); buffers.Add(b); return b; }
+        // Bank changes update only small immutable material tables. The live motion,
+        // permanent bends, pool ownership and transition histories remain on the GPU.
+        public void SetBakedResponse(GrassResponseType response)
+        {
+            if(tiered!=null) {tiered.SetBakedResponse(response);return;}
+            if(response==bakedResponse)return;
+            ValidateResponseReplacement(bakedResponse,response);
+            var controls=new Vector4[75]; var frames=new Vector4[175];
+            for(int sample=0;sample<25;sample++)
+            {
+                controls[sample*3]=response.Samples[sample].C1;
+                controls[sample*3+1]=response.Samples[sample].C2;
+                controls[sample*3+2]=response.Samples[sample].Tip;
+                for(int segment=0;segment<7;segment++)
+                {var q=response.Samples[sample].Frames[segment];frames[sample*7+segment]=new Vector4(q.x,q.y,q.z,q.w);}
+            }
+            bakedControlsBuffer.SetData(controls); bakedFramesBuffer.SetData(frames);
+            shader.SetVector("BakedDynamics",new Vector4(response.AngularFrequency.x,response.AngularFrequency.y,response.DampingRatio.x,response.DampingRatio.y));
+            shader.SetFloat("BakedMaxWind",response.MaxWind);
+            shader.SetVectorArray("BakedMomentCompliance",response.MomentCompliance(data));
+            bakedResponse=response; settings.BakedResponse=response;
+        }
+        internal static void ValidateResponseReplacement(GrassResponseType previous,GrassResponseType response)
+        {
+            if(previous==null || response==null || !response.IsBaked || response.GridSize!=5)
+                throw new ArgumentException("Response switching requires two baked 5x5 banks.");
+            if(JsonUtility.ToJson(previous.Shape)!=JsonUtility.ToJson(response.Shape) ||
+                previous.Physics.BladeMass!=response.Physics.BladeMass ||
+                previous.Physics.TipThicknessRatio!=response.Physics.TipThicknessRatio || previous.MaxWind!=response.MaxWind)
+                throw new ArgumentException("Response switching requires identical blade geometry, mass, thickness and wind range.");
+        }
         // Read-only current representation mask, shared with optional outer coverage.
         public ComputeBuffer ClassificationStates => tiered!=null?tiered.ClassificationStates:states;
         public void RecycleWorldGrids(IReadOnlyList<int> grids,float time)

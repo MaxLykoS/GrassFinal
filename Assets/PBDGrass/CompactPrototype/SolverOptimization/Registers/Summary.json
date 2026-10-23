@@ -1,0 +1,5574 @@
+{
+  "date": "2026-10-22",
+  "reference": "6197058 shader, plus current disabled-collider filtering",
+  "performance": [
+    {
+      "caseName": "frames_fixedA",
+      "passed": true,
+      "error": "",
+      "api": "Direct3D11",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "substeps": 8,
+      "iterations": 3,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "Performance1",
+      "scope": "Includes all solve, rebuild and optional stage/unstage GPU work",
+      "frames": 300,
+      "activeMin": 32768,
+      "activeMax": 32768,
+      "tickMin": 1,
+      "tickMax": 1,
+      "metrics": {
+        "solveGpu": {
+          "mean": 3.67412128,
+          "median": 3.4897920000000004,
+          "p95": 4.62848
+        },
+        "displayGpu": {
+          "mean": 0.8669627733333334,
+          "median": 0.6737920000000004,
+          "p95": 1.6312319999999998
+        },
+        "coreCullGpu": {
+          "mean": 0.009076053333333289,
+          "median": 0.008192000000000199,
+          "p95": 0.009216000000000335
+        },
+        "outerGpu": {
+          "mean": 0.04799850666666672,
+          "median": 0.035840000000000316,
+          "p95": 0.03686400000000045
+        },
+        "renderGpu": {
+          "mean": 1.0086500266666667,
+          "median": 0.836608,
+          "p95": 1.6547839999999994
+        },
+        "totalGpu": {
+          "mean": 5.663526506666667,
+          "median": 5.8112,
+          "p95": 6.499328
+        },
+        "advanceCpu": {
+          "mean": 2.150007,
+          "median": 2.0881999999999996,
+          "p95": 2.4011
+        },
+        "poolCpu": {
+          "mean": 0.6861426666666667,
+          "median": 0.64745,
+          "p95": 0.8038
+        },
+        "handoffCpu": {
+          "mean": 1.289105,
+          "median": 1.2551,
+          "p95": 1.4425
+        },
+        "totalCpu": {
+          "mean": 2.485595,
+          "median": 2.4249,
+          "p95": 2.8456
+        }
+      }
+    },
+    {
+      "caseName": "frames_fixedB",
+      "passed": true,
+      "error": "",
+      "api": "Direct3D11",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "substeps": 8,
+      "iterations": 3,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "Performance1",
+      "scope": "Includes all solve, rebuild and optional stage/unstage GPU work",
+      "frames": 300,
+      "activeMin": 32768,
+      "activeMax": 32768,
+      "tickMin": 1,
+      "tickMax": 1,
+      "metrics": {
+        "solveGpu": {
+          "mean": 3.59043648,
+          "median": 3.4775039999999997,
+          "p95": 4.571136
+        },
+        "displayGpu": {
+          "mean": 0.9079739733333333,
+          "median": 0.709632,
+          "p95": 1.5134720000000002
+        },
+        "coreCullGpu": {
+          "mean": 0.008485546666666679,
+          "median": 0.008192000000000199,
+          "p95": 0.009216000000000335
+        },
+        "outerGpu": {
+          "mean": 0.04113151999999998,
+          "median": 0.035840000000000316,
+          "p95": 0.03686400000000045
+        },
+        "renderGpu": {
+          "mean": 1.0612352,
+          "median": 0.8493919999999999,
+          "p95": 1.73056
+        },
+        "totalGpu": {
+          "mean": 5.664897706666666,
+          "median": 5.621728,
+          "p95": 6.929408
+        },
+        "advanceCpu": {
+          "mean": 2.595999,
+          "median": 2.41845,
+          "p95": 3.6844
+        },
+        "poolCpu": {
+          "mean": 0.7973776666666667,
+          "median": 0.7119500000000001,
+          "p95": 1.191
+        },
+        "handoffCpu": {
+          "mean": 1.536217,
+          "median": 1.40795,
+          "p95": 2.2146
+        },
+        "totalCpu": {
+          "mean": 3.171313,
+          "median": 3.01455,
+          "p95": 4.3215
+        }
+      }
+    },
+    {
+      "caseName": "lambda_fixedA",
+      "passed": true,
+      "error": "",
+      "api": "Direct3D11",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "substeps": 8,
+      "iterations": 3,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "Performance1",
+      "scope": "Includes all solve, rebuild and optional stage/unstage GPU work",
+      "frames": 300,
+      "activeMin": 32768,
+      "activeMax": 32768,
+      "tickMin": 1,
+      "tickMax": 1,
+      "metrics": {
+        "solveGpu": {
+          "mean": 3.58137056,
+          "median": 3.446784,
+          "p95": 4.6878720000000005
+        },
+        "displayGpu": {
+          "mean": 0.88641536,
+          "median": 0.6794240000000002,
+          "p95": 1.6660479999999995
+        },
+        "coreCullGpu": {
+          "mean": 0.010424319999999977,
+          "median": 0.008192000000000199,
+          "p95": 0.009216000000000335
+        },
+        "outerGpu": {
+          "mean": 0.03897589333333336,
+          "median": 0.035840000000000316,
+          "p95": 0.03686400000000045
+        },
+        "renderGpu": {
+          "mean": 1.0534068266666667,
+          "median": 0.9451519999999998,
+          "p95": 1.7213440000000002
+        },
+        "totalGpu": {
+          "mean": 5.62152992,
+          "median": 5.627904,
+          "p95": 6.63552
+        },
+        "advanceCpu": {
+          "mean": 2.4084373333333335,
+          "median": 2.2079,
+          "p95": 3.6074
+        },
+        "poolCpu": {
+          "mean": 0.7418106666666666,
+          "median": 0.6669499999999999,
+          "p95": 1.1719
+        },
+        "handoffCpu": {
+          "mean": 1.4479003333333333,
+          "median": 1.31045,
+          "p95": 2.1508
+        },
+        "totalCpu": {
+          "mean": 2.848159,
+          "median": 2.6337,
+          "p95": 4.1311
+        }
+      }
+    },
+    {
+      "caseName": "lambda_fixedB",
+      "passed": true,
+      "error": "",
+      "api": "Direct3D11",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "substeps": 8,
+      "iterations": 3,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "Performance1",
+      "scope": "Includes all solve, rebuild and optional stage/unstage GPU work",
+      "frames": 300,
+      "activeMin": 32768,
+      "activeMax": 32768,
+      "tickMin": 1,
+      "tickMax": 1,
+      "metrics": {
+        "solveGpu": {
+          "mean": 3.61353184,
+          "median": 3.459584,
+          "p95": 4.62848
+        },
+        "displayGpu": {
+          "mean": 0.8982015999999999,
+          "median": 0.6912000000000003,
+          "p95": 1.4940159999999998
+        },
+        "coreCullGpu": {
+          "mean": 0.010021546666666697,
+          "median": 0.008192000000000199,
+          "p95": 0.009216000000000335
+        },
+        "outerGpu": {
+          "mean": 0.0484107733333333,
+          "median": 0.035840000000000316,
+          "p95": 0.03699199999999969
+        },
+        "renderGpu": {
+          "mean": 1.0625780266666667,
+          "median": 1.053696,
+          "p95": 1.719296
+        },
+        "totalGpu": {
+          "mean": 5.690183893333334,
+          "median": 5.745151999999999,
+          "p95": 6.882304
+        },
+        "advanceCpu": {
+          "mean": 2.452818,
+          "median": 2.2302999999999997,
+          "p95": 3.6996
+        },
+        "poolCpu": {
+          "mean": 0.7608103333333334,
+          "median": 0.66775,
+          "p95": 1.1797
+        },
+        "handoffCpu": {
+          "mean": 1.4558376666666666,
+          "median": 1.3228,
+          "p95": 2.1962
+        },
+        "totalCpu": {
+          "mean": 2.9415363333333335,
+          "median": 2.6991,
+          "p95": 4.3895
+        }
+      }
+    },
+    {
+      "caseName": "reference_fixedA",
+      "passed": true,
+      "error": "",
+      "api": "Direct3D11",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "substeps": 8,
+      "iterations": 3,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "Performance1",
+      "scope": "Includes all solve, rebuild and optional stage/unstage GPU work",
+      "frames": 300,
+      "activeMin": 32768,
+      "activeMax": 32768,
+      "tickMin": 1,
+      "tickMax": 1,
+      "metrics": {
+        "solveGpu": {
+          "mean": 3.55606432,
+          "median": 3.401216,
+          "p95": 4.458496
+        },
+        "displayGpu": {
+          "mean": 0.8754824533333333,
+          "median": 0.6748160000000001,
+          "p95": 1.629184
+        },
+        "coreCullGpu": {
+          "mean": 0.008386560000000029,
+          "median": 0.008192000000000199,
+          "p95": 0.009216000000000335
+        },
+        "outerGpu": {
+          "mean": 0.04320234666666665,
+          "median": 0.035840000000000094,
+          "p95": 0.03686400000000001
+        },
+        "renderGpu": {
+          "mean": 1.0351857066666668,
+          "median": 0.8360320000000003,
+          "p95": 1.7254080000000007
+        },
+        "totalGpu": {
+          "mean": 5.571007466666667,
+          "median": 5.687296,
+          "p95": 6.457344
+        },
+        "advanceCpu": {
+          "mean": 2.112664,
+          "median": 2.0904,
+          "p95": 2.2796
+        },
+        "poolCpu": {
+          "mean": 0.662553,
+          "median": 0.6335999999999999,
+          "p95": 0.7818
+        },
+        "handoffCpu": {
+          "mean": 1.2637976666666666,
+          "median": 1.24695,
+          "p95": 1.3643
+        },
+        "totalCpu": {
+          "mean": 2.447985,
+          "median": 2.4240500000000003,
+          "p95": 2.6563
+        }
+      }
+    },
+    {
+      "caseName": "reference_fixedB",
+      "passed": true,
+      "error": "",
+      "api": "Direct3D11",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "substeps": 8,
+      "iterations": 3,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "Performance1",
+      "scope": "Includes all solve, rebuild and optional stage/unstage GPU work",
+      "frames": 300,
+      "activeMin": 32768,
+      "activeMax": 32768,
+      "tickMin": 1,
+      "tickMax": 1,
+      "metrics": {
+        "solveGpu": {
+          "mean": 4.52975904,
+          "median": 4.544512,
+          "p95": 5.748736
+        },
+        "displayGpu": {
+          "mean": 1.13339392,
+          "median": 1.0803199999999997,
+          "p95": 1.8360319999999994
+        },
+        "coreCullGpu": {
+          "mean": 0.008816640000000035,
+          "median": 0.009215999999999447,
+          "p95": 0.009216000000000335
+        },
+        "outerGpu": {
+          "mean": 0.03604074666666663,
+          "median": 0.035840000000000316,
+          "p95": 0.03686400000000045
+        },
+        "renderGpu": {
+          "mean": 1.3826532266666667,
+          "median": 1.3204479999999998,
+          "p95": 2.028479999999999
+        },
+        "totalGpu": {
+          "mean": 7.18391584,
+          "median": 7.241728,
+          "p95": 8.741888
+        },
+        "advanceCpu": {
+          "mean": 3.842395333333333,
+          "median": 3.8396,
+          "p95": 4.4221
+        },
+        "poolCpu": {
+          "mean": 1.186917,
+          "median": 1.1853,
+          "p95": 1.4845
+        },
+        "handoffCpu": {
+          "mean": 2.1793103333333335,
+          "median": 2.19205,
+          "p95": 2.5109
+        },
+        "totalCpu": {
+          "mean": 4.882851,
+          "median": 4.841950000000001,
+          "p95": 5.7812
+        }
+      }
+    },
+    {
+      "caseName": "shared_fixedA",
+      "passed": true,
+      "error": "",
+      "api": "Direct3D11",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "substeps": 8,
+      "iterations": 3,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "Performance1",
+      "scope": "Includes all solve, rebuild and optional stage/unstage GPU work",
+      "frames": 300,
+      "activeMin": 32768,
+      "activeMax": 32768,
+      "tickMin": 1,
+      "tickMax": 1,
+      "metrics": {
+        "solveGpu": {
+          "mean": 3.54091968,
+          "median": 3.362304,
+          "p95": 4.527104
+        },
+        "displayGpu": {
+          "mean": 0.8821077333333334,
+          "median": 0.6814720000000001,
+          "p95": 1.6087040000000004
+        },
+        "coreCullGpu": {
+          "mean": 0.01005226666666666,
+          "median": 0.008192000000000199,
+          "p95": 0.009216000000000335
+        },
+        "outerGpu": {
+          "mean": 0.041994879999999984,
+          "median": 0.035840000000000316,
+          "p95": 0.03686400000000045
+        },
+        "renderGpu": {
+          "mean": 1.02756288,
+          "median": 0.8386560000000003,
+          "p95": 1.7121279999999994
+        },
+        "totalGpu": {
+          "mean": 5.5524798933333335,
+          "median": 5.6345600000000005,
+          "p95": 6.567936
+        },
+        "advanceCpu": {
+          "mean": 2.226995666666667,
+          "median": 2.11005,
+          "p95": 3.1971
+        },
+        "poolCpu": {
+          "mean": 0.7006643333333333,
+          "median": 0.64515,
+          "p95": 1.0552
+        },
+        "handoffCpu": {
+          "mean": 1.3361376666666667,
+          "median": 1.2612,
+          "p95": 1.9357
+        },
+        "totalCpu": {
+          "mean": 2.5963686666666668,
+          "median": 2.4657999999999998,
+          "p95": 3.7595
+        }
+      }
+    },
+    {
+      "caseName": "shared_fixedB",
+      "passed": true,
+      "error": "",
+      "api": "Direct3D11",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "substeps": 8,
+      "iterations": 3,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "Performance1",
+      "scope": "Includes all solve, rebuild and optional stage/unstage GPU work",
+      "frames": 300,
+      "activeMin": 32768,
+      "activeMax": 32768,
+      "tickMin": 1,
+      "tickMax": 1,
+      "metrics": {
+        "solveGpu": {
+          "mean": 3.61066464,
+          "median": 3.4170879999999997,
+          "p95": 4.636672
+        },
+        "displayGpu": {
+          "mean": 0.8929553066666667,
+          "median": 0.6860800000000002,
+          "p95": 1.5943679999999998
+        },
+        "coreCullGpu": {
+          "mean": 0.014062933333333331,
+          "median": 0.008192000000000199,
+          "p95": 0.010239999999999583
+        },
+        "outerGpu": {
+          "mean": 0.04120885333333334,
+          "median": 0.035840000000000316,
+          "p95": 0.0378879999999997
+        },
+        "renderGpu": {
+          "mean": 1.093704,
+          "median": 1.0562559999999999,
+          "p95": 1.7489919999999994
+        },
+        "totalGpu": {
+          "mean": 5.70973856,
+          "median": 5.6192,
+          "p95": 7.093248
+        },
+        "advanceCpu": {
+          "mean": 2.435432666666667,
+          "median": 2.2205,
+          "p95": 3.5198
+        },
+        "poolCpu": {
+          "mean": 0.753093,
+          "median": 0.6720999999999999,
+          "p95": 1.1521
+        },
+        "handoffCpu": {
+          "mean": 1.454042,
+          "median": 1.3155,
+          "p95": 2.1198
+        },
+        "totalCpu": {
+          "mean": 2.8994233333333335,
+          "median": 2.6498,
+          "p95": 4.1255
+        }
+      }
+    },
+    {
+      "caseName": "combo_fixedA",
+      "passed": true,
+      "error": "",
+      "api": "Direct3D11",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "substeps": 8,
+      "iterations": 3,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "Performance2",
+      "scope": "Includes all solve, rebuild and optional stage/unstage GPU work",
+      "frames": 300,
+      "activeMin": 32768,
+      "activeMax": 32768,
+      "tickMin": 1,
+      "tickMax": 1,
+      "metrics": {
+        "solveGpu": {
+          "mean": 3.63824736,
+          "median": 3.489792,
+          "p95": 4.652032
+        },
+        "displayGpu": {
+          "mean": 0.89224192,
+          "median": 0.6824960000000002,
+          "p95": 1.6384000000000003
+        },
+        "coreCullGpu": {
+          "mean": 0.010052266666666655,
+          "median": 0.008192000000000199,
+          "p95": 0.009216000000000335
+        },
+        "outerGpu": {
+          "mean": 0.04024970666666668,
+          "median": 0.035840000000000316,
+          "p95": 0.03686400000000045
+        },
+        "renderGpu": {
+          "mean": 1.0285912533333332,
+          "median": 0.8314879999999998,
+          "p95": 1.722368
+        },
+        "totalGpu": {
+          "mean": 5.663295786666667,
+          "median": 5.686272,
+          "p95": 6.798336
+        },
+        "advanceCpu": {
+          "mean": 2.335647,
+          "median": 2.2289000000000003,
+          "p95": 3.2745
+        },
+        "poolCpu": {
+          "mean": 0.7208853333333334,
+          "median": 0.6569499999999999,
+          "p95": 1.0829
+        },
+        "handoffCpu": {
+          "mean": 1.400936,
+          "median": 1.3381500000000002,
+          "p95": 1.9751
+        },
+        "totalCpu": {
+          "mean": 2.7753236666666665,
+          "median": 2.6643499999999998,
+          "p95": 3.7613
+        }
+      }
+    },
+    {
+      "caseName": "combo_fixedB",
+      "passed": true,
+      "error": "",
+      "api": "Direct3D11",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "substeps": 8,
+      "iterations": 3,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "Performance2",
+      "scope": "Includes all solve, rebuild and optional stage/unstage GPU work",
+      "frames": 300,
+      "activeMin": 32768,
+      "activeMax": 32768,
+      "tickMin": 1,
+      "tickMax": 1,
+      "metrics": {
+        "solveGpu": {
+          "mean": 3.6863550933333333,
+          "median": 3.515376,
+          "p95": 4.668416
+        },
+        "displayGpu": {
+          "mean": 0.8457454933333334,
+          "median": 0.6860800000000005,
+          "p95": 1.5247359999999999
+        },
+        "coreCullGpu": {
+          "mean": 0.009420799999999995,
+          "median": 0.008192000000000199,
+          "p95": 0.009216000000000335
+        },
+        "outerGpu": {
+          "mean": 0.03973514666666666,
+          "median": 0.035840000000000316,
+          "p95": 0.03686400000000045
+        },
+        "renderGpu": {
+          "mean": 1.08057888,
+          "median": 1.0526720000000003,
+          "p95": 1.7213440000000002
+        },
+        "totalGpu": {
+          "mean": 5.71911392,
+          "median": 5.749616,
+          "p95": 6.89152
+        },
+        "advanceCpu": {
+          "mean": 2.379337,
+          "median": 2.2584,
+          "p95": 3.2761
+        },
+        "poolCpu": {
+          "mean": 0.725798,
+          "median": 0.66515,
+          "p95": 1.0456
+        },
+        "handoffCpu": {
+          "mean": 1.4212353333333334,
+          "median": 1.36455,
+          "p95": 1.9092
+        },
+        "totalCpu": {
+          "mean": 2.8511066666666665,
+          "median": 2.7173,
+          "p95": 3.8084
+        }
+      }
+    },
+    {
+      "caseName": "constant_fixedA",
+      "passed": true,
+      "error": "",
+      "api": "Direct3D11",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "substeps": 8,
+      "iterations": 3,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "Performance2",
+      "scope": "Includes all solve, rebuild and optional stage/unstage GPU work",
+      "frames": 300,
+      "activeMin": 32768,
+      "activeMax": 32768,
+      "tickMin": 1,
+      "tickMax": 1,
+      "metrics": {
+        "solveGpu": {
+          "mean": 3.76675936,
+          "median": 3.656192,
+          "p95": 4.932608
+        },
+        "displayGpu": {
+          "mean": 0.94600192,
+          "median": 0.684544,
+          "p95": 1.8012160000000002
+        },
+        "coreCullGpu": {
+          "mean": 0.011165013333333326,
+          "median": 0.008192000000000199,
+          "p95": 0.010239999999999583
+        },
+        "outerGpu": {
+          "mean": 0.03882549333333336,
+          "median": 0.035840000000000316,
+          "p95": 0.03686400000000045
+        },
+        "renderGpu": {
+          "mean": 1.0845741866666667,
+          "median": 0.8468480000000005,
+          "p95": 1.8350080000000002
+        },
+        "totalGpu": {
+          "mean": 5.911267946666666,
+          "median": 5.957504,
+          "p95": 7.052288
+        },
+        "advanceCpu": {
+          "mean": 2.506317666666667,
+          "median": 2.3253500000000003,
+          "p95": 3.5936
+        },
+        "poolCpu": {
+          "mean": 0.7610876666666667,
+          "median": 0.6857500000000001,
+          "p95": 1.1605
+        },
+        "handoffCpu": {
+          "mean": 1.4871353333333333,
+          "median": 1.39035,
+          "p95": 2.1628
+        },
+        "totalCpu": {
+          "mean": 3.048684,
+          "median": 2.8438499999999998,
+          "p95": 4.2247
+        }
+      }
+    },
+    {
+      "caseName": "constant_fixedB",
+      "passed": true,
+      "error": "",
+      "api": "Direct3D11",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "substeps": 8,
+      "iterations": 3,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "Performance2",
+      "scope": "Includes all solve, rebuild and optional stage/unstage GPU work",
+      "frames": 300,
+      "activeMin": 32768,
+      "activeMax": 32768,
+      "tickMin": 1,
+      "tickMax": 1,
+      "metrics": {
+        "solveGpu": {
+          "mean": 3.4927645866666666,
+          "median": 3.374592,
+          "p95": 4.502528000000001
+        },
+        "displayGpu": {
+          "mean": 0.8683246933333333,
+          "median": 0.689152,
+          "p95": 1.6035839999999997
+        },
+        "coreCullGpu": {
+          "mean": 0.008482133333333346,
+          "median": 0.008192000000000199,
+          "p95": 0.009216000000000335
+        },
+        "outerGpu": {
+          "mean": 0.036901866666666644,
+          "median": 0.035840000000000316,
+          "p95": 0.03686400000000001
+        },
+        "renderGpu": {
+          "mean": 1.0022635733333334,
+          "median": 0.8345599999999997,
+          "p95": 1.6547839999999998
+        },
+        "totalGpu": {
+          "mean": 5.464085973333334,
+          "median": 5.57824,
+          "p95": 6.44096
+        },
+        "advanceCpu": {
+          "mean": 2.4140556666666666,
+          "median": 2.2961,
+          "p95": 3.2995
+        },
+        "poolCpu": {
+          "mean": 0.7252383333333333,
+          "median": 0.6703,
+          "p95": 1.0471
+        },
+        "handoffCpu": {
+          "mean": 1.4513796666666667,
+          "median": 1.3756499999999998,
+          "p95": 1.9914
+        },
+        "totalCpu": {
+          "mean": 2.915989,
+          "median": 2.7888,
+          "p95": 3.924
+        }
+      }
+    },
+    {
+      "caseName": "reference_fixedA",
+      "passed": true,
+      "error": "",
+      "api": "Direct3D11",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "substeps": 8,
+      "iterations": 3,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "Performance2",
+      "scope": "Includes all solve, rebuild and optional stage/unstage GPU work",
+      "frames": 300,
+      "activeMin": 32768,
+      "activeMax": 32768,
+      "tickMin": 1,
+      "tickMax": 1,
+      "metrics": {
+        "solveGpu": {
+          "mean": 3.5339083733333334,
+          "median": 3.3218560000000004,
+          "p95": 4.535296
+        },
+        "displayGpu": {
+          "mean": 0.8537361066666667,
+          "median": 0.672256,
+          "p95": 1.6209920000000002
+        },
+        "coreCullGpu": {
+          "mean": 0.008577706666666683,
+          "median": 0.007168000000000063,
+          "p95": 0.009215999999999447
+        },
+        "outerGpu": {
+          "mean": 0.04547584000000002,
+          "median": 0.03481600000000018,
+          "p95": 0.03686400000000001
+        },
+        "renderGpu": {
+          "mean": 0.9666013866666666,
+          "median": 0.823296,
+          "p95": 1.6158720000000004
+        },
+        "totalGpu": {
+          "mean": 5.451345706666666,
+          "median": 5.5500799999999995,
+          "p95": 6.358944
+        },
+        "advanceCpu": {
+          "mean": 2.3440736666666666,
+          "median": 2.26755,
+          "p95": 3.0856
+        },
+        "poolCpu": {
+          "mean": 0.7090973333333334,
+          "median": 0.67315,
+          "p95": 0.8788
+        },
+        "handoffCpu": {
+          "mean": 1.4029666666666667,
+          "median": 1.34875,
+          "p95": 1.9887
+        },
+        "totalCpu": {
+          "mean": 2.8019423333333333,
+          "median": 2.72725,
+          "p95": 3.5686
+        }
+      }
+    },
+    {
+      "caseName": "reference_fixedB",
+      "passed": true,
+      "error": "",
+      "api": "Direct3D11",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "substeps": 8,
+      "iterations": 3,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "Performance2",
+      "scope": "Includes all solve, rebuild and optional stage/unstage GPU work",
+      "frames": 300,
+      "activeMin": 32768,
+      "activeMax": 32768,
+      "tickMin": 1,
+      "tickMax": 1,
+      "metrics": {
+        "solveGpu": {
+          "mean": 3.80244576,
+          "median": 3.6423680000000003,
+          "p95": 4.842496
+        },
+        "displayGpu": {
+          "mean": 0.90898432,
+          "median": 0.6850559999999997,
+          "p95": 1.6476160000000006
+        },
+        "coreCullGpu": {
+          "mean": 0.009386666666666625,
+          "median": 0.008192000000000199,
+          "p95": 0.009216000000000335
+        },
+        "outerGpu": {
+          "mean": 0.0396196266666667,
+          "median": 0.035840000000000316,
+          "p95": 0.03686400000000045
+        },
+        "renderGpu": {
+          "mean": 1.0292418133333334,
+          "median": 0.8340480000000001,
+          "p95": 1.7346560000000002
+        },
+        "totalGpu": {
+          "mean": 5.84931904,
+          "median": 5.937136,
+          "p95": 7.042048
+        },
+        "advanceCpu": {
+          "mean": 2.470002666666667,
+          "median": 2.33365,
+          "p95": 3.3876
+        },
+        "poolCpu": {
+          "mean": 0.749004,
+          "median": 0.6778,
+          "p95": 1.1588
+        },
+        "handoffCpu": {
+          "mean": 1.4730286666666668,
+          "median": 1.3965,
+          "p95": 2.0193
+        },
+        "totalCpu": {
+          "mean": 2.9977556666666665,
+          "median": 2.8857999999999997,
+          "p95": 3.9296
+        }
+      }
+    },
+    {
+      "caseName": "reference_fixedC",
+      "passed": true,
+      "error": "",
+      "api": "Direct3D11",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "substeps": 8,
+      "iterations": 3,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "Performance2",
+      "scope": "Includes all solve, rebuild and optional stage/unstage GPU work",
+      "frames": 300,
+      "activeMin": 32768,
+      "activeMax": 32768,
+      "tickMin": 1,
+      "tickMax": 1,
+      "metrics": {
+        "solveGpu": {
+          "mean": 3.5324516266666666,
+          "median": 3.353088,
+          "p95": 4.590592
+        },
+        "displayGpu": {
+          "mean": 0.86234112,
+          "median": 0.6922239999999995,
+          "p95": 1.381376
+        },
+        "coreCullGpu": {
+          "mean": 0.0084718933333334,
+          "median": 0.008192000000000199,
+          "p95": 0.009216000000000335
+        },
+        "outerGpu": {
+          "mean": 0.04266175999999994,
+          "median": 0.035840000000000316,
+          "p95": 0.03686400000000045
+        },
+        "renderGpu": {
+          "mean": 1.0199498666666666,
+          "median": 0.84016,
+          "p95": 1.739776
+        },
+        "totalGpu": {
+          "mean": 5.529586026666666,
+          "median": 5.572352,
+          "p95": 6.675456
+        },
+        "advanceCpu": {
+          "mean": 2.3927383333333334,
+          "median": 2.2864,
+          "p95": 3.2443
+        },
+        "poolCpu": {
+          "mean": 0.7229546666666666,
+          "median": 0.6717500000000001,
+          "p95": 1.0215
+        },
+        "handoffCpu": {
+          "mean": 1.4338466666666667,
+          "median": 1.3654,
+          "p95": 1.9577
+        },
+        "totalCpu": {
+          "mean": 2.895271,
+          "median": 2.7937,
+          "p95": 3.7863
+        }
+      }
+    },
+    {
+      "caseName": "reference_fixedA",
+      "passed": true,
+      "error": "",
+      "api": "Direct3D11",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "substeps": 8,
+      "iterations": 3,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "PerformanceSoa",
+      "scope": "PRELIMINARY: solveGpu excludes UnstageSolver; do not use as total solver cost",
+      "frames": 300,
+      "activeMin": 32768,
+      "activeMax": 32768,
+      "tickMin": 1,
+      "tickMax": 1,
+      "metrics": {
+        "solveGpu": {
+          "mean": 3.2036964266666668,
+          "median": 3.099648,
+          "p95": 4.054016
+        },
+        "displayGpu": {
+          "mean": 0.77321216,
+          "median": 0.6937599999999999,
+          "p95": 1.2277760000000004
+        },
+        "coreCullGpu": {
+          "mean": 0.00815445333333336,
+          "median": 0.008192000000000199,
+          "p95": 0.009216000000000335
+        },
+        "outerGpu": {
+          "mean": 0.03727402666666665,
+          "median": 0.034943999999999864,
+          "p95": 0.035840000000000316
+        },
+        "renderGpu": {
+          "mean": 0.8948561066666667,
+          "median": 0.8222719999999999,
+          "p95": 1.3690879999999996
+        },
+        "totalGpu": {
+          "mean": 4.95915456,
+          "median": 4.791744,
+          "p95": 5.880832
+        },
+        "advanceCpu": {
+          "mean": 2.1720193333333335,
+          "median": 2.1428000000000003,
+          "p95": 2.5251
+        },
+        "poolCpu": {
+          "mean": 0.678959,
+          "median": 0.6376999999999999,
+          "p95": 0.8418
+        },
+        "handoffCpu": {
+          "mean": 1.3027126666666666,
+          "median": 1.2752,
+          "p95": 1.4667
+        },
+        "totalCpu": {
+          "mean": 2.523191333333333,
+          "median": 2.479,
+          "p95": 2.9682
+        }
+      }
+    },
+    {
+      "caseName": "reference_fixedB",
+      "passed": true,
+      "error": "",
+      "api": "Direct3D11",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "substeps": 8,
+      "iterations": 3,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "PerformanceSoa",
+      "scope": "PRELIMINARY: solveGpu excludes UnstageSolver; do not use as total solver cost",
+      "frames": 300,
+      "activeMin": 32768,
+      "activeMax": 32768,
+      "tickMin": 1,
+      "tickMax": 1,
+      "metrics": {
+        "solveGpu": {
+          "mean": 3.1865924266666665,
+          "median": 3.0991359999999997,
+          "p95": 4.143104
+        },
+        "displayGpu": {
+          "mean": 0.8127829333333333,
+          "median": 0.7127039999999996,
+          "p95": 1.3393920000000001
+        },
+        "coreCullGpu": {
+          "mean": 0.010028373333333366,
+          "median": 0.008192000000000199,
+          "p95": 0.008192000000000643
+        },
+        "outerGpu": {
+          "mean": 0.03734186666666666,
+          "median": 0.03583999999999987,
+          "p95": 0.03593599999999997
+        },
+        "renderGpu": {
+          "mean": 0.90707968,
+          "median": 0.8288960000000001,
+          "p95": 1.3824
+        },
+        "totalGpu": {
+          "mean": 4.99686528,
+          "median": 4.7677119999999995,
+          "p95": 6.158336
+        },
+        "advanceCpu": {
+          "mean": 2.109972,
+          "median": 2.09485,
+          "p95": 2.3502
+        },
+        "poolCpu": {
+          "mean": 0.6799463333333333,
+          "median": 0.66635,
+          "p95": 0.8116
+        },
+        "handoffCpu": {
+          "mean": 1.2638816666666666,
+          "median": 1.2497,
+          "p95": 1.4018
+        },
+        "totalCpu": {
+          "mean": 2.406318333333333,
+          "median": 2.3902,
+          "p95": 2.6819
+        }
+      }
+    },
+    {
+      "caseName": "soa_fixedA",
+      "passed": true,
+      "error": "",
+      "api": "Direct3D11",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "substeps": 8,
+      "iterations": 3,
+      "gpuBufferBytes": 241236832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "PerformanceSoa",
+      "scope": "PRELIMINARY: solveGpu excludes UnstageSolver; do not use as total solver cost",
+      "frames": 300,
+      "activeMin": 32768,
+      "activeMax": 32768,
+      "tickMin": 1,
+      "tickMax": 1,
+      "metrics": {
+        "solveGpu": {
+          "mean": 2.78718464,
+          "median": 2.562048,
+          "p95": 3.751936
+        },
+        "displayGpu": {
+          "mean": 0.7894459733333333,
+          "median": 0.7045120000000002,
+          "p95": 1.2636159999999999
+        },
+        "coreCullGpu": {
+          "mean": 0.008973653333333347,
+          "median": 0.008192000000000199,
+          "p95": 0.009216000000000335
+        },
+        "outerGpu": {
+          "mean": 0.04245749333333332,
+          "median": 0.03583999999999943,
+          "p95": 0.035840000000000316
+        },
+        "renderGpu": {
+          "mean": 0.8927002666666667,
+          "median": 0.8202239999999996,
+          "p95": 1.3731840000000002
+        },
+        "totalGpu": {
+          "mean": 4.725225386666667,
+          "median": 4.521984,
+          "p95": 5.710624
+        },
+        "advanceCpu": {
+          "mean": 2.115592,
+          "median": 2.1003,
+          "p95": 2.3156
+        },
+        "poolCpu": {
+          "mean": 0.669044,
+          "median": 0.6383,
+          "p95": 0.7674
+        },
+        "handoffCpu": {
+          "mean": 1.2707326666666667,
+          "median": 1.2537500000000001,
+          "p95": 1.4049
+        },
+        "totalCpu": {
+          "mean": 2.4223003333333333,
+          "median": 2.4078,
+          "p95": 2.6941
+        }
+      }
+    },
+    {
+      "caseName": "soa_fixedB",
+      "passed": true,
+      "error": "",
+      "api": "Direct3D11",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "substeps": 8,
+      "iterations": 3,
+      "gpuBufferBytes": 241236832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "PerformanceSoa",
+      "scope": "PRELIMINARY: solveGpu excludes UnstageSolver; do not use as total solver cost",
+      "frames": 300,
+      "activeMin": 32768,
+      "activeMax": 32768,
+      "tickMin": 1,
+      "tickMax": 1,
+      "metrics": {
+        "solveGpu": {
+          "mean": 2.8352341333333335,
+          "median": 2.772992,
+          "p95": 3.745792
+        },
+        "displayGpu": {
+          "mean": 0.7778099199999999,
+          "median": 0.7034880000000001,
+          "p95": 1.1059200000000002
+        },
+        "coreCullGpu": {
+          "mean": 0.008130560000000021,
+          "median": 0.008192000000000199,
+          "p95": 0.009215999999999447
+        },
+        "outerGpu": {
+          "mean": 0.04077728,
+          "median": 0.03583999999999987,
+          "p95": 0.03686400000000001
+        },
+        "renderGpu": {
+          "mean": 0.8985106133333334,
+          "median": 0.8248320000000002,
+          "p95": 1.3772799999999994
+        },
+        "totalGpu": {
+          "mean": 4.739549226666667,
+          "median": 4.54984,
+          "p95": 5.843968
+        },
+        "advanceCpu": {
+          "mean": 2.135023,
+          "median": 2.1094,
+          "p95": 2.3784
+        },
+        "poolCpu": {
+          "mean": 0.6832443333333333,
+          "median": 0.6601,
+          "p95": 0.8164
+        },
+        "handoffCpu": {
+          "mean": 1.2774716666666666,
+          "median": 1.25725,
+          "p95": 1.4198
+        },
+        "totalCpu": {
+          "mean": 2.4396993333333334,
+          "median": 2.4093999999999998,
+          "p95": 2.7412
+        }
+      }
+    },
+    {
+      "caseName": "reference_fixedA",
+      "passed": true,
+      "error": "",
+      "api": "Direct3D11",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "substeps": 8,
+      "iterations": 3,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "PerformanceSpecial",
+      "scope": "Includes all solve, rebuild and optional stage/unstage GPU work",
+      "frames": 300,
+      "activeMin": 32768,
+      "activeMax": 32768,
+      "tickMin": 1,
+      "tickMax": 1,
+      "metrics": {
+        "solveGpu": {
+          "mean": 3.20495616,
+          "median": 3.105792,
+          "p95": 4.140032000000001
+        },
+        "displayGpu": {
+          "mean": 0.7829469866666666,
+          "median": 0.6983679999999999,
+          "p95": 1.2738559999999999
+        },
+        "coreCullGpu": {
+          "mean": 0.010113706666666668,
+          "median": 0.008192000000000199,
+          "p95": 0.008192000000000199
+        },
+        "outerGpu": {
+          "mean": 0.03673215999999999,
+          "median": 0.035840000000000316,
+          "p95": 0.03686400000000045
+        },
+        "renderGpu": {
+          "mean": 0.8933226666666667,
+          "median": 0.823296,
+          "p95": 1.3250560000000005
+        },
+        "totalGpu": {
+          "mean": 4.97433184,
+          "median": 4.767232,
+          "p95": 6.20544
+        },
+        "advanceCpu": {
+          "mean": 2.3105043333333333,
+          "median": 2.1959999999999997,
+          "p95": 3.1969
+        },
+        "poolCpu": {
+          "mean": 0.7126796666666667,
+          "median": 0.6546000000000001,
+          "p95": 1.0936
+        },
+        "handoffCpu": {
+          "mean": 1.3828073333333333,
+          "median": 1.3121,
+          "p95": 1.9513
+        },
+        "totalCpu": {
+          "mean": 2.740139666666667,
+          "median": 2.6031500000000003,
+          "p95": 3.8332
+        }
+      }
+    },
+    {
+      "caseName": "reference_fixedB",
+      "passed": true,
+      "error": "",
+      "api": "Direct3D11",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "substeps": 8,
+      "iterations": 3,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "PerformanceSpecial",
+      "scope": "Includes all solve, rebuild and optional stage/unstage GPU work",
+      "frames": 300,
+      "activeMin": 32768,
+      "activeMax": 32768,
+      "tickMin": 1,
+      "tickMax": 1,
+      "metrics": {
+        "solveGpu": {
+          "mean": 3.1707136,
+          "median": 2.9250559999999997,
+          "p95": 4.11648
+        },
+        "displayGpu": {
+          "mean": 0.793088,
+          "median": 0.7086080000000003,
+          "p95": 1.3056
+        },
+        "coreCullGpu": {
+          "mean": 0.010482346666666661,
+          "median": 0.008192000000000199,
+          "p95": 0.009215999999999891
+        },
+        "outerGpu": {
+          "mean": 0.04052234666666664,
+          "median": 0.03583999999999987,
+          "p95": 0.03686400000000001
+        },
+        "renderGpu": {
+          "mean": 0.8904267733333333,
+          "median": 0.8278720000000002,
+          "p95": 1.2994559999999997
+        },
+        "totalGpu": {
+          "mean": 4.94820864,
+          "median": 4.766128,
+          "p95": 6.022144
+        },
+        "advanceCpu": {
+          "mean": 2.200212,
+          "median": 2.16695,
+          "p95": 2.4421
+        },
+        "poolCpu": {
+          "mean": 0.6978136666666667,
+          "median": 0.6784,
+          "p95": 0.8384
+        },
+        "handoffCpu": {
+          "mean": 1.3257346666666667,
+          "median": 1.29995,
+          "p95": 1.4618
+        },
+        "totalCpu": {
+          "mean": 2.541860333333333,
+          "median": 2.49965,
+          "p95": 2.8804
+        }
+      }
+    },
+    {
+      "caseName": "special_fixedA",
+      "passed": true,
+      "error": "",
+      "api": "Direct3D11",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "substeps": 8,
+      "iterations": 3,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "PerformanceSpecial",
+      "scope": "Includes all solve, rebuild and optional stage/unstage GPU work",
+      "frames": 300,
+      "activeMin": 32768,
+      "activeMax": 32768,
+      "tickMin": 1,
+      "tickMax": 1,
+      "metrics": {
+        "solveGpu": {
+          "mean": 3.31780416,
+          "median": 3.252224,
+          "p95": 4.3458559999999995
+        },
+        "displayGpu": {
+          "mean": 0.8475374933333333,
+          "median": 0.7086079999999999,
+          "p95": 1.388544
+        },
+        "coreCullGpu": {
+          "mean": 0.008297813333333353,
+          "median": 0.008192000000000199,
+          "p95": 0.009216000000000335
+        },
+        "outerGpu": {
+          "mean": 0.038297919999999985,
+          "median": 0.035840000000000316,
+          "p95": 0.03686400000000001
+        },
+        "renderGpu": {
+          "mean": 0.9241869866666667,
+          "median": 0.820208,
+          "p95": 1.3496320000000006
+        },
+        "totalGpu": {
+          "mean": 5.17946656,
+          "median": 4.997104,
+          "p95": 6.252128
+        },
+        "advanceCpu": {
+          "mean": 2.5956023333333333,
+          "median": 2.3767500000000004,
+          "p95": 3.6903
+        },
+        "poolCpu": {
+          "mean": 0.7939476666666667,
+          "median": 0.7017,
+          "p95": 1.1777
+        },
+        "handoffCpu": {
+          "mean": 1.5497076666666667,
+          "median": 1.3996,
+          "p95": 2.1506
+        },
+        "totalCpu": {
+          "mean": 3.1387483333333335,
+          "median": 2.91395,
+          "p95": 4.518
+        }
+      }
+    },
+    {
+      "caseName": "special_fixedB",
+      "passed": true,
+      "error": "",
+      "api": "Direct3D11",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "substeps": 8,
+      "iterations": 3,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "PerformanceSpecial",
+      "scope": "Includes all solve, rebuild and optional stage/unstage GPU work",
+      "frames": 300,
+      "activeMin": 32768,
+      "activeMax": 32768,
+      "tickMin": 1,
+      "tickMax": 1,
+      "metrics": {
+        "solveGpu": {
+          "mean": 3.2367134933333332,
+          "median": 3.104256,
+          "p95": 4.348928
+        },
+        "displayGpu": {
+          "mean": 0.77565952,
+          "median": 0.7086079999999999,
+          "p95": 1.1427840000000002
+        },
+        "coreCullGpu": {
+          "mean": 0.00813738666666668,
+          "median": 0.008192000000000199,
+          "p95": 0.009215999999999447
+        },
+        "outerGpu": {
+          "mean": 0.03728575999999998,
+          "median": 0.035840000000000316,
+          "p95": 0.03686400000000001
+        },
+        "renderGpu": {
+          "mean": 0.9008279466666667,
+          "median": 0.8273920000000001,
+          "p95": 1.412096
+        },
+        "totalGpu": {
+          "mean": 5.0051620266666665,
+          "median": 4.750304,
+          "p95": 6.36496
+        },
+        "advanceCpu": {
+          "mean": 2.293295,
+          "median": 2.21345,
+          "p95": 2.7864
+        },
+        "poolCpu": {
+          "mean": 0.7170443333333333,
+          "median": 0.6677,
+          "p95": 1.08
+        },
+        "handoffCpu": {
+          "mean": 1.3759113333333333,
+          "median": 1.3248,
+          "p95": 1.7066
+        },
+        "totalCpu": {
+          "mean": 2.7021603333333335,
+          "median": 2.62045,
+          "p95": 3.3692
+        }
+      }
+    },
+    {
+      "caseName": "reference_fixedA",
+      "passed": true,
+      "error": "",
+      "api": "Direct3D11",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "substeps": 8,
+      "iterations": 3,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "PerformanceSplit",
+      "scope": "Includes all solve, rebuild and optional stage/unstage GPU work",
+      "frames": 300,
+      "activeMin": 32768,
+      "activeMax": 32768,
+      "tickMin": 1,
+      "tickMax": 1,
+      "metrics": {
+        "solveGpu": {
+          "mean": 3.0452497066666666,
+          "median": 2.8794880000000003,
+          "p95": 3.87584
+        },
+        "displayGpu": {
+          "mean": 0.7570158933333333,
+          "median": 0.702464,
+          "p95": 1.00352
+        },
+        "coreCullGpu": {
+          "mean": 0.008270506666666679,
+          "median": 0.008192000000000199,
+          "p95": 0.009216000000000335
+        },
+        "outerGpu": {
+          "mean": 0.03874869333333332,
+          "median": 0.03583999999999987,
+          "p95": 0.03686400000000001
+        },
+        "renderGpu": {
+          "mean": 0.87229728,
+          "median": 0.8212480000000002,
+          "p95": 1.1008
+        },
+        "totalGpu": {
+          "mean": 4.7624976,
+          "median": 4.661728,
+          "p95": 5.869568
+        },
+        "advanceCpu": {
+          "mean": 2.642097,
+          "median": 2.41595,
+          "p95": 3.7033
+        },
+        "poolCpu": {
+          "mean": 0.8182493333333334,
+          "median": 0.7075,
+          "p95": 1.1804
+        },
+        "handoffCpu": {
+          "mean": 1.5664503333333333,
+          "median": 1.40415,
+          "p95": 2.1759
+        },
+        "totalCpu": {
+          "mean": 3.2127806666666667,
+          "median": 3.02345,
+          "p95": 4.4559
+        }
+      }
+    },
+    {
+      "caseName": "reference_fixedB",
+      "passed": true,
+      "error": "",
+      "api": "Direct3D11",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "substeps": 8,
+      "iterations": 3,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "PerformanceSplit",
+      "scope": "Includes all solve, rebuild and optional stage/unstage GPU work",
+      "frames": 300,
+      "activeMin": 32768,
+      "activeMax": 32768,
+      "tickMin": 1,
+      "tickMax": 1,
+      "metrics": {
+        "solveGpu": {
+          "mean": 3.17198336,
+          "median": 2.908672,
+          "p95": 4.358144
+        },
+        "displayGpu": {
+          "mean": 0.7857732266666666,
+          "median": 0.7147519999999998,
+          "p95": 1.083392
+        },
+        "coreCullGpu": {
+          "mean": 0.008297813333333345,
+          "median": 0.008192000000000199,
+          "p95": 0.009216000000000335
+        },
+        "outerGpu": {
+          "mean": 0.03980490666666664,
+          "median": 0.035840000000000316,
+          "p95": 0.03686400000000001
+        },
+        "renderGpu": {
+          "mean": 0.9052344533333333,
+          "median": 0.8335359999999998,
+          "p95": 1.4110719999999999
+        },
+        "totalGpu": {
+          "mean": 4.95102528,
+          "median": 4.7486239999999995,
+          "p95": 6.265856
+        },
+        "advanceCpu": {
+          "mean": 2.2208046666666665,
+          "median": 2.19,
+          "p95": 2.4404
+        },
+        "poolCpu": {
+          "mean": 0.689398,
+          "median": 0.65575,
+          "p95": 0.8044
+        },
+        "handoffCpu": {
+          "mean": 1.3402176666666668,
+          "median": 1.31705,
+          "p95": 1.5014
+        },
+        "totalCpu": {
+          "mean": 2.609834,
+          "median": 2.5900999999999996,
+          "p95": 2.9109
+        }
+      }
+    },
+    {
+      "caseName": "split_fixedA",
+      "passed": true,
+      "error": "",
+      "api": "Direct3D11",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "substeps": 8,
+      "iterations": 3,
+      "gpuBufferBytes": 234945376,
+      "dropped": 0,
+      "failed": 0,
+      "run": "PerformanceSplit",
+      "scope": "Includes all solve, rebuild and optional stage/unstage GPU work",
+      "frames": 300,
+      "activeMin": 32768,
+      "activeMax": 32768,
+      "tickMin": 1,
+      "tickMax": 1,
+      "metrics": {
+        "solveGpu": {
+          "mean": 8.8169984,
+          "median": 8.61952,
+          "p95": 9.99424
+        },
+        "displayGpu": {
+          "mean": 0.7644910933333333,
+          "median": 0.7096319999999992,
+          "p95": 0.9994240000000012
+        },
+        "coreCullGpu": {
+          "mean": 0.008301226666666685,
+          "median": 0.008191999999999311,
+          "p95": 0.009216000000000335
+        },
+        "outerGpu": {
+          "mean": 0.03835861333333333,
+          "median": 0.035840000000000316,
+          "p95": 0.03686400000000134
+        },
+        "renderGpu": {
+          "mean": 0.8815722666666667,
+          "median": 0.8232960000000009,
+          "p95": 1.1950079999999996
+        },
+        "totalGpu": {
+          "mean": 10.552379946666667,
+          "median": 10.306048,
+          "p95": 11.75552
+        },
+        "advanceCpu": {
+          "mean": 2.913439,
+          "median": 2.61815,
+          "p95": 4.2
+        },
+        "poolCpu": {
+          "mean": 0.844599,
+          "median": 0.7461500000000001,
+          "p95": 1.2422
+        },
+        "handoffCpu": {
+          "mean": 1.610962,
+          "median": 1.4235,
+          "p95": 2.281
+        },
+        "totalCpu": {
+          "mean": 3.509224666666667,
+          "median": 3.1991500000000004,
+          "p95": 4.971
+        }
+      }
+    },
+    {
+      "caseName": "split_fixedB",
+      "passed": true,
+      "error": "",
+      "api": "Direct3D11",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "substeps": 8,
+      "iterations": 3,
+      "gpuBufferBytes": 234945376,
+      "dropped": 0,
+      "failed": 0,
+      "run": "PerformanceSplit",
+      "scope": "Includes all solve, rebuild and optional stage/unstage GPU work",
+      "frames": 300,
+      "activeMin": 32768,
+      "activeMax": 32768,
+      "tickMin": 1,
+      "tickMax": 1,
+      "metrics": {
+        "solveGpu": {
+          "mean": 9.13620992,
+          "median": 8.923648,
+          "p95": 10.827776
+        },
+        "displayGpu": {
+          "mean": 0.8079837866666667,
+          "median": 0.7045120000000011,
+          "p95": 1.425408000000001
+        },
+        "coreCullGpu": {
+          "mean": 0.009369600000000033,
+          "median": 0.008191999999999311,
+          "p95": 0.009216000000000335
+        },
+        "outerGpu": {
+          "mean": 0.03864469333333327,
+          "median": 0.035840000000000316,
+          "p95": 0.036863999999999564
+        },
+        "renderGpu": {
+          "mean": 0.89906624,
+          "median": 0.8273440000000001,
+          "p95": 1.2759040000000006
+        },
+        "totalGpu": {
+          "mean": 10.936794453333333,
+          "median": 10.715648,
+          "p95": 12.688384
+        },
+        "advanceCpu": {
+          "mean": 2.616358,
+          "median": 2.512,
+          "p95": 3.2827
+        },
+        "poolCpu": {
+          "mean": 0.7648133333333333,
+          "median": 0.7357499999999999,
+          "p95": 1.0081
+        },
+        "handoffCpu": {
+          "mean": 1.453642,
+          "median": 1.3651,
+          "p95": 1.9065
+        },
+        "totalCpu": {
+          "mean": 3.117193,
+          "median": 3.0033,
+          "p95": 3.8379
+        }
+      }
+    },
+    {
+      "caseName": "reference_fixedA",
+      "passed": true,
+      "error": "",
+      "api": "Direct3D11",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "substeps": 8,
+      "iterations": 3,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "PerformanceTransposeFull",
+      "scope": "Includes all solve, rebuild and optional stage/unstage GPU work",
+      "frames": 300,
+      "activeMin": 32768,
+      "activeMax": 32768,
+      "tickMin": 1,
+      "tickMax": 1,
+      "metrics": {
+        "solveGpu": {
+          "mean": 4.8169910400000004,
+          "median": 5.361152000000001,
+          "p95": 6.671360000000001
+        },
+        "displayGpu": {
+          "mean": 1.2522496,
+          "median": 0.7045120000000002,
+          "p95": 3.49696
+        },
+        "coreCullGpu": {
+          "mean": 0.01303893333333334,
+          "median": 0.008192000000000199,
+          "p95": 0.010239999999999583
+        },
+        "outerGpu": {
+          "mean": 0.045135359999999985,
+          "median": 0.035840000000000316,
+          "p95": 0.03686400000000045
+        },
+        "renderGpu": {
+          "mean": 1.3024520533333335,
+          "median": 1.01376,
+          "p95": 3.119104
+        },
+        "totalGpu": {
+          "mean": 7.51063616,
+          "median": 7.5110399999999995,
+          "p95": 9.120768
+        },
+        "advanceCpu": {
+          "mean": 2.49887,
+          "median": 2.3694499999999996,
+          "p95": 3.3263
+        },
+        "poolCpu": {
+          "mean": 0.744967,
+          "median": 0.66335,
+          "p95": 1.1102
+        },
+        "handoffCpu": {
+          "mean": 1.476363,
+          "median": 1.3881000000000001,
+          "p95": 1.9842
+        },
+        "totalCpu": {
+          "mean": 3.040783333333333,
+          "median": 2.91355,
+          "p95": 3.9281
+        }
+      }
+    },
+    {
+      "caseName": "reference_fixedB",
+      "passed": true,
+      "error": "",
+      "api": "Direct3D11",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "substeps": 8,
+      "iterations": 3,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "PerformanceTransposeFull",
+      "scope": "Includes all solve, rebuild and optional stage/unstage GPU work",
+      "frames": 300,
+      "activeMin": 32768,
+      "activeMax": 32768,
+      "tickMin": 1,
+      "tickMax": 1,
+      "metrics": {
+        "solveGpu": {
+          "mean": 3.28080384,
+          "median": 3.2368639999999997,
+          "p95": 4.265984
+        },
+        "displayGpu": {
+          "mean": 0.79321088,
+          "median": 0.7055360000000004,
+          "p95": 1.2083200000000005
+        },
+        "coreCullGpu": {
+          "mean": 0.008082773333333331,
+          "median": 0.008192000000000199,
+          "p95": 0.008192000000000199
+        },
+        "outerGpu": {
+          "mean": 0.04570688,
+          "median": 0.035840000000000316,
+          "p95": 0.03686400000000045
+        },
+        "renderGpu": {
+          "mean": 0.9327968,
+          "median": 0.836608,
+          "p95": 1.3331520000000006
+        },
+        "totalGpu": {
+          "mean": 5.107189653333333,
+          "median": 4.907008,
+          "p95": 6.22592
+        },
+        "advanceCpu": {
+          "mean": 2.1201833333333333,
+          "median": 2.09155,
+          "p95": 2.3568
+        },
+        "poolCpu": {
+          "mean": 0.6886680000000001,
+          "median": 0.66665,
+          "p95": 0.7884
+        },
+        "handoffCpu": {
+          "mean": 1.262721,
+          "median": 1.2464499999999998,
+          "p95": 1.3869
+        },
+        "totalCpu": {
+          "mean": 2.4119336666666666,
+          "median": 2.3988,
+          "p95": 2.7102
+        }
+      }
+    },
+    {
+      "caseName": "soa32_fixedA",
+      "passed": true,
+      "error": "",
+      "api": "Direct3D11",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "substeps": 8,
+      "iterations": 3,
+      "gpuBufferBytes": 241236832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "PerformanceTransposeFull",
+      "scope": "Includes all solve, rebuild and optional stage/unstage GPU work",
+      "frames": 300,
+      "activeMin": 32768,
+      "activeMax": 32768,
+      "tickMin": 1,
+      "tickMax": 1,
+      "metrics": {
+        "solveGpu": {
+          "mean": 4.434414933333334,
+          "median": 4.624896,
+          "p95": 6.44096
+        },
+        "displayGpu": {
+          "mean": 1.27097856,
+          "median": 0.704512,
+          "p95": 3.410944
+        },
+        "coreCullGpu": {
+          "mean": 0.014271146666666677,
+          "median": 0.008192000000000199,
+          "p95": 0.010240000000000471
+        },
+        "outerGpu": {
+          "mean": 0.05145343999999998,
+          "median": 0.03583999999999943,
+          "p95": 0.03587200000000035
+        },
+        "renderGpu": {
+          "mean": 1.4140714666666667,
+          "median": 0.8652159999999998,
+          "p95": 3.4979839999999998
+        },
+        "totalGpu": {
+          "mean": 7.261310933333333,
+          "median": 7.303168,
+          "p95": 8.904704
+        },
+        "advanceCpu": {
+          "mean": 2.4045973333333333,
+          "median": 2.31815,
+          "p95": 3.0388
+        },
+        "poolCpu": {
+          "mean": 0.7238613333333334,
+          "median": 0.6517999999999999,
+          "p95": 1.0199
+        },
+        "handoffCpu": {
+          "mean": 1.425614,
+          "median": 1.3575499999999998,
+          "p95": 1.8694
+        },
+        "totalCpu": {
+          "mean": 2.8845359999999998,
+          "median": 2.8001500000000004,
+          "p95": 3.6049
+        }
+      }
+    },
+    {
+      "caseName": "soa32_fixedB",
+      "passed": true,
+      "error": "",
+      "api": "Direct3D11",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "substeps": 8,
+      "iterations": 3,
+      "gpuBufferBytes": 241236832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "PerformanceTransposeFull",
+      "scope": "Includes all solve, rebuild and optional stage/unstage GPU work",
+      "frames": 300,
+      "activeMin": 32768,
+      "activeMax": 32768,
+      "tickMin": 1,
+      "tickMax": 1,
+      "metrics": {
+        "solveGpu": {
+          "mean": 4.569582933333334,
+          "median": 5.084671999999999,
+          "p95": 6.705152
+        },
+        "displayGpu": {
+          "mean": 1.29016832,
+          "median": 0.7014400000000001,
+          "p95": 3.5706879999999996
+        },
+        "coreCullGpu": {
+          "mean": 0.009547093333333326,
+          "median": 0.008192000000000199,
+          "p95": 0.010240000000000471
+        },
+        "outerGpu": {
+          "mean": 0.05196416000000002,
+          "median": 0.03583999999999943,
+          "p95": 0.035840000000000316
+        },
+        "renderGpu": {
+          "mean": 1.4190186666666667,
+          "median": 0.8550399999999998,
+          "p95": 3.6085759999999993
+        },
+        "totalGpu": {
+          "mean": 7.416782506666666,
+          "median": 7.442944000000001,
+          "p95": 8.887296
+        },
+        "advanceCpu": {
+          "mean": 2.3862336666666666,
+          "median": 2.29765,
+          "p95": 2.9563
+        },
+        "poolCpu": {
+          "mean": 0.7174740000000001,
+          "median": 0.65385,
+          "p95": 0.9748
+        },
+        "handoffCpu": {
+          "mean": 1.4098976666666667,
+          "median": 1.346,
+          "p95": 1.7886
+        },
+        "totalCpu": {
+          "mean": 2.8659076666666667,
+          "median": 2.76795,
+          "p95": 3.6047
+        }
+      }
+    },
+    {
+      "caseName": "soa_fixedA",
+      "passed": true,
+      "error": "",
+      "api": "Direct3D11",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "substeps": 8,
+      "iterations": 3,
+      "gpuBufferBytes": 241236832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "PerformanceTransposeFull",
+      "scope": "Includes all solve, rebuild and optional stage/unstage GPU work",
+      "frames": 300,
+      "activeMin": 32768,
+      "activeMax": 32768,
+      "tickMin": 1,
+      "tickMax": 1,
+      "metrics": {
+        "solveGpu": {
+          "mean": 4.6592034133333335,
+          "median": 4.997632,
+          "p95": 6.699008
+        },
+        "displayGpu": {
+          "mean": 1.33812224,
+          "median": 0.9620480000000002,
+          "p95": 3.4078720000000002
+        },
+        "coreCullGpu": {
+          "mean": 0.01594709333333331,
+          "median": 0.009215999999999447,
+          "p95": 0.011263999999999719
+        },
+        "outerGpu": {
+          "mean": 0.048214400000000025,
+          "median": 0.035840000000000316,
+          "p95": 0.03686400000000045
+        },
+        "renderGpu": {
+          "mean": 1.3984757333333333,
+          "median": 1.0864159999999994,
+          "p95": 3.278848
+        },
+        "totalGpu": {
+          "mean": 7.534498666666667,
+          "median": 7.539712,
+          "p95": 9.26208
+        },
+        "advanceCpu": {
+          "mean": 2.900525,
+          "median": 2.714,
+          "p95": 4.1462
+        },
+        "poolCpu": {
+          "mean": 0.8589113333333334,
+          "median": 0.7462,
+          "p95": 1.3412
+        },
+        "handoffCpu": {
+          "mean": 1.6992153333333333,
+          "median": 1.5577,
+          "p95": 2.4558
+        },
+        "totalCpu": {
+          "mean": 3.554219333333333,
+          "median": 3.36195,
+          "p95": 5.0321
+        }
+      }
+    },
+    {
+      "caseName": "soa_fixedB",
+      "passed": true,
+      "error": "",
+      "api": "Direct3D11",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "substeps": 8,
+      "iterations": 3,
+      "gpuBufferBytes": 241236832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "PerformanceTransposeFull",
+      "scope": "Includes all solve, rebuild and optional stage/unstage GPU work",
+      "frames": 300,
+      "activeMin": 32768,
+      "activeMax": 32768,
+      "tickMin": 1,
+      "tickMax": 1,
+      "metrics": {
+        "solveGpu": {
+          "mean": 4.868478293333333,
+          "median": 5.304831999999999,
+          "p95": 7.2437759999999995
+        },
+        "displayGpu": {
+          "mean": 1.3490244266666667,
+          "median": 0.9917440000000002,
+          "p95": 3.551232
+        },
+        "coreCullGpu": {
+          "mean": 0.009837226666666709,
+          "median": 0.009215999999999669,
+          "p95": 0.01126399999999883
+        },
+        "outerGpu": {
+          "mean": 0.05129429333333331,
+          "median": 0.035840000000000316,
+          "p95": 0.03686400000000045
+        },
+        "renderGpu": {
+          "mean": 1.48929664,
+          "median": 1.0741760000000002,
+          "p95": 3.641344
+        },
+        "totalGpu": {
+          "mean": 7.82828608,
+          "median": 7.691264,
+          "p95": 10.387456
+        },
+        "advanceCpu": {
+          "mean": 2.8410366666666667,
+          "median": 2.66535,
+          "p95": 3.983
+        },
+        "poolCpu": {
+          "mean": 0.8557543333333333,
+          "median": 0.7506999999999999,
+          "p95": 1.2727
+        },
+        "handoffCpu": {
+          "mean": 1.6570833333333332,
+          "median": 1.5297,
+          "p95": 2.2973
+        },
+        "totalCpu": {
+          "mean": 3.493825,
+          "median": 3.33785,
+          "p95": 4.7636
+        }
+      }
+    },
+    {
+      "caseName": "structure32_fixedA",
+      "passed": true,
+      "error": "",
+      "api": "Direct3D11",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "substeps": 8,
+      "iterations": 3,
+      "gpuBufferBytes": 248445792,
+      "dropped": 0,
+      "failed": 0,
+      "run": "PerformanceTransposeFull",
+      "scope": "Includes all solve, rebuild and optional stage/unstage GPU work",
+      "frames": 300,
+      "activeMin": 32768,
+      "activeMax": 32768,
+      "tickMin": 1,
+      "tickMax": 1,
+      "metrics": {
+        "solveGpu": {
+          "mean": 5.155979946666666,
+          "median": 5.618176,
+          "p95": 7.081983999999999
+        },
+        "displayGpu": {
+          "mean": 1.46970624,
+          "median": 0.9963519999999999,
+          "p95": 3.5952640000000002
+        },
+        "coreCullGpu": {
+          "mean": 0.026559146666666672,
+          "median": 0.009216000000000335,
+          "p95": 0.011264000000000607
+        },
+        "outerGpu": {
+          "mean": 0.05310602666666666,
+          "median": 0.035840000000000316,
+          "p95": 0.03686400000000045
+        },
+        "renderGpu": {
+          "mean": 1.3227130666666667,
+          "median": 1.068496000000001,
+          "p95": 3.4488320000000003
+        },
+        "totalGpu": {
+          "mean": 8.097250666666667,
+          "median": 8.033792,
+          "p95": 9.997312
+        },
+        "advanceCpu": {
+          "mean": 2.6873216666666666,
+          "median": 2.4959,
+          "p95": 3.7858
+        },
+        "poolCpu": {
+          "mean": 0.8000626666666667,
+          "median": 0.7034,
+          "p95": 1.2155
+        },
+        "handoffCpu": {
+          "mean": 1.577139,
+          "median": 1.4664000000000001,
+          "p95": 2.2859
+        },
+        "totalCpu": {
+          "mean": 3.3279103333333335,
+          "median": 3.11355,
+          "p95": 4.6747
+        }
+      }
+    },
+    {
+      "caseName": "structure32_fixedB",
+      "passed": true,
+      "error": "",
+      "api": "Direct3D11",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "substeps": 8,
+      "iterations": 3,
+      "gpuBufferBytes": 248445792,
+      "dropped": 0,
+      "failed": 0,
+      "run": "PerformanceTransposeFull",
+      "scope": "Includes all solve, rebuild and optional stage/unstage GPU work",
+      "frames": 300,
+      "activeMin": 32768,
+      "activeMax": 32768,
+      "tickMin": 1,
+      "tickMax": 1,
+      "metrics": {
+        "solveGpu": {
+          "mean": 4.9940070400000005,
+          "median": 5.621248,
+          "p95": 6.95808
+        },
+        "displayGpu": {
+          "mean": 1.4217693866666667,
+          "median": 0.7055360000000004,
+          "p95": 3.7314559999999997
+        },
+        "coreCullGpu": {
+          "mean": 0.01174528000000004,
+          "median": 0.008192000000000199,
+          "p95": 0.010240000000001359
+        },
+        "outerGpu": {
+          "mean": 0.041066133333333324,
+          "median": 0.035840000000000316,
+          "p95": 0.03686400000000045
+        },
+        "renderGpu": {
+          "mean": 1.26040032,
+          "median": 0.8422399999999999,
+          "p95": 3.475456
+        },
+        "totalGpu": {
+          "mean": 7.789826133333333,
+          "median": 7.807487999999999,
+          "p95": 9.366528
+        },
+        "advanceCpu": {
+          "mean": 2.4019843333333335,
+          "median": 2.2882,
+          "p95": 3.1452
+        },
+        "poolCpu": {
+          "mean": 0.7132303333333333,
+          "median": 0.6552,
+          "p95": 1.0412
+        },
+        "handoffCpu": {
+          "mean": 1.429245,
+          "median": 1.3503500000000002,
+          "p95": 1.9694
+        },
+        "totalCpu": {
+          "mean": 2.903588,
+          "median": 2.7838000000000003,
+          "p95": 3.6535
+        }
+      }
+    }
+  ],
+  "checks": {
+    "Compact_soa32/Results.json": {
+      "passed": false,
+      "independentNearPhysicsEquivalent": false,
+      "compactPlasticRetained": false,
+      "streamRetained": false,
+      "unloadedCleared": false,
+      "bufferReused": false,
+      "error": "System.InvalidOperationException: Independent near collision geometry changed.\r\n  at GrassFinal.PBDGrass.Editor.GrassCompactValidation.Require (System.Boolean ok, System.String text) [0x00009] in D:\\CodexTemp\\codex-grass-contact-profile\\Assets\\PBDGrass\\CompactPrototype\\Editor\\GrassCompactValidation.cs:32 \r\n  at GrassFinal.PBDGrass.Editor.GrassCompactValidation.Sample (GrassFinal.PBDGrass.PBDGrassPatchRenderer r, System.Collections.Generic.List`1[T] ids, System.String phase, System.Boolean compact) [0x0046b] in D:\\CodexTemp\\codex-grass-contact-profile\\Assets\\PBDGrass\\CompactPrototype\\Editor\\GrassCompactValidation.cs:190 \r\n  at GrassFinal.PBDGrass.Editor.GrassCompactValidation.RunScene (System.Boolean compact) [0x003f2] in D:\\CodexTemp\\codex-grass-contact-profile\\Assets\\PBDGrass\\CompactPrototype\\Editor\\GrassCompactValidation.cs:107 \r\n  at GrassFinal.PBDGrass.Editor.GrassCompactValidation.Run () [0x00083] in D:\\CodexTemp\\codex-grass-contact-profile\\Assets\\PBDGrass\\CompactPrototype\\Editor\\GrassCompactValidation.cs:43 ",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "residentBlades": 294912,
+      "minActive": 32768,
+      "maxActive": 32768,
+      "ticks": 750,
+      "baselineGpuBytes": 586180688,
+      "compactGpuBytes": 175959264,
+      "geometryGpuBytes": 35389716,
+      "plasticGpuBytes": 13107200,
+      "staticGpuBytes": 9732988,
+      "historyBytes": 53477376,
+      "retainedPlasticError": 0.0,
+      "peakPlastic": 1.0878872871398926,
+      "codecMaxNodeError": 0.0,
+      "codecMaxEdgeError": 0.0,
+      "codecMaxNormalDegrees": 0.0,
+      "comparisons": [
+        {
+          "phase": "Birth",
+          "positionRms": 0.0002766444522421807,
+          "maxPosition": 0.0008027480216696858,
+          "maxNearPosition": 0.0,
+          "maxMiddlePosition": 0.0008027480216696858,
+          "normalRmsDegrees": 0.057475555688142776,
+          "maxNormalDegrees": 0.16192549467086792
+        },
+        {
+          "phase": "Wind",
+          "positionRms": 0.0002999366552103311,
+          "maxPosition": 0.0010686696041375399,
+          "maxNearPosition": 0.0,
+          "maxMiddlePosition": 0.0010686696041375399,
+          "normalRmsDegrees": 0.05657193437218666,
+          "maxNormalDegrees": 0.31713545322418213
+        },
+        {
+          "phase": "IndependentLodgedNear",
+          "positionRms": 0.10860581696033478,
+          "maxPosition": 1.9419842958450317,
+          "maxNearPosition": 1.9419842958450317,
+          "maxMiddlePosition": 0.0008305452647618949,
+          "normalRmsDegrees": 12.045571327209473,
+          "maxNormalDegrees": 160.14337158203125
+        }
+      ],
+      "nearPhysics": [
+        {
+          "phase": "Birth",
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "contacts": 0.0,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "worstWorldBlade": 269792
+        },
+        {
+          "phase": "Wind1",
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "contacts": 0.0,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "worstWorldBlade": 269792
+        },
+        {
+          "phase": "Wind60",
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "contacts": 0.0,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "worstWorldBlade": 269792
+        },
+        {
+          "phase": "Contact1",
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "contacts": 0.0,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "worstWorldBlade": 269792
+        },
+        {
+          "phase": "Contact2",
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "contacts": 0.0,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "worstWorldBlade": 269792
+        },
+        {
+          "phase": "Contact5",
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "contacts": 0.0,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "worstWorldBlade": 269792
+        },
+        {
+          "phase": "Contact30",
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "contacts": 0.0,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "worstWorldBlade": 269792
+        },
+        {
+          "phase": "Contact180",
+          "position": 1.53720223903656,
+          "velocity": 55.21687698364258,
+          "rotation": 1.9999516010284424,
+          "angular": 537.5946044921875,
+          "plastic": 1.4668701887130737,
+          "contacts": 0.0,
+          "mappingMismatches": 0,
+          "nodeMismatches": 229375,
+          "frameMismatches": 229376,
+          "worstWorldBlade": 18048
+        }
+      ]
+    },
+    "Compact_structure32/Results.json": {
+      "passed": false,
+      "independentNearPhysicsEquivalent": false,
+      "compactPlasticRetained": false,
+      "streamRetained": false,
+      "unloadedCleared": false,
+      "bufferReused": false,
+      "error": "System.InvalidOperationException: Independent near collision geometry changed.\r\n  at GrassFinal.PBDGrass.Editor.GrassCompactValidation.Require (System.Boolean ok, System.String text) [0x00009] in D:\\CodexTemp\\codex-grass-contact-profile\\Assets\\PBDGrass\\CompactPrototype\\Editor\\GrassCompactValidation.cs:32 \r\n  at GrassFinal.PBDGrass.Editor.GrassCompactValidation.Sample (GrassFinal.PBDGrass.PBDGrassPatchRenderer r, System.Collections.Generic.List`1[T] ids, System.String phase, System.Boolean compact) [0x0046b] in D:\\CodexTemp\\codex-grass-contact-profile\\Assets\\PBDGrass\\CompactPrototype\\Editor\\GrassCompactValidation.cs:190 \r\n  at GrassFinal.PBDGrass.Editor.GrassCompactValidation.RunScene (System.Boolean compact) [0x003f2] in D:\\CodexTemp\\codex-grass-contact-profile\\Assets\\PBDGrass\\CompactPrototype\\Editor\\GrassCompactValidation.cs:107 \r\n  at GrassFinal.PBDGrass.Editor.GrassCompactValidation.Run () [0x00083] in D:\\CodexTemp\\codex-grass-contact-profile\\Assets\\PBDGrass\\CompactPrototype\\Editor\\GrassCompactValidation.cs:43 ",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "residentBlades": 294912,
+      "minActive": 32768,
+      "maxActive": 32768,
+      "ticks": 750,
+      "baselineGpuBytes": 586180688,
+      "compactGpuBytes": 183168224,
+      "geometryGpuBytes": 35389716,
+      "plasticGpuBytes": 13107200,
+      "staticGpuBytes": 9732988,
+      "historyBytes": 53477376,
+      "retainedPlasticError": 0.0,
+      "peakPlastic": 1.0878872871398926,
+      "codecMaxNodeError": 0.0,
+      "codecMaxEdgeError": 0.0,
+      "codecMaxNormalDegrees": 0.0,
+      "comparisons": [
+        {
+          "phase": "Birth",
+          "positionRms": 0.0002766444522421807,
+          "maxPosition": 0.0008027480216696858,
+          "maxNearPosition": 0.0,
+          "maxMiddlePosition": 0.0008027480216696858,
+          "normalRmsDegrees": 0.057475555688142776,
+          "maxNormalDegrees": 0.16192549467086792
+        },
+        {
+          "phase": "Wind",
+          "positionRms": 0.0002999366552103311,
+          "maxPosition": 0.0010686696041375399,
+          "maxNearPosition": 0.0,
+          "maxMiddlePosition": 0.0010686696041375399,
+          "normalRmsDegrees": 0.05657193437218666,
+          "maxNormalDegrees": 0.31713545322418213
+        },
+        {
+          "phase": "IndependentLodgedNear",
+          "positionRms": 0.13145004212856293,
+          "maxPosition": 1.8724082708358765,
+          "maxNearPosition": 1.8724082708358765,
+          "maxMiddlePosition": 0.0008305452647618949,
+          "normalRmsDegrees": 17.086929321289062,
+          "maxNormalDegrees": 176.83274841308594
+        }
+      ],
+      "nearPhysics": [
+        {
+          "phase": "Birth",
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "contacts": 0.0,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "worstWorldBlade": 269792
+        },
+        {
+          "phase": "Wind1",
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "contacts": 0.0,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "worstWorldBlade": 269792
+        },
+        {
+          "phase": "Wind60",
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "contacts": 0.0,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "worstWorldBlade": 269792
+        },
+        {
+          "phase": "Contact1",
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "contacts": 0.0,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "worstWorldBlade": 269792
+        },
+        {
+          "phase": "Contact2",
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "contacts": 0.0,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "worstWorldBlade": 269792
+        },
+        {
+          "phase": "Contact5",
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "contacts": 0.0,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "worstWorldBlade": 269792
+        },
+        {
+          "phase": "Contact30",
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "contacts": 0.0,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "worstWorldBlade": 269792
+        },
+        {
+          "phase": "Contact180",
+          "position": 1.2396336793899536,
+          "velocity": 58.409568786621094,
+          "rotation": 1.9997888803482056,
+          "angular": 371.82623291015625,
+          "plastic": 1.411576747894287,
+          "contacts": 0.0,
+          "mappingMismatches": 0,
+          "nodeMismatches": 229375,
+          "frameMismatches": 229376,
+          "worstWorldBlade": 18049
+        }
+      ]
+    },
+    "FinalChecks/Compact/Results.json": {
+      "passed": false,
+      "independentNearPhysicsEquivalent": false,
+      "compactPlasticRetained": false,
+      "streamRetained": false,
+      "unloadedCleared": false,
+      "bufferReused": false,
+      "error": "System.InvalidOperationException: Independent near collision geometry changed.\r\n  at GrassFinal.PBDGrass.Editor.GrassCompactValidation.Require (System.Boolean ok, System.String text) [0x00009] in D:\\CodexTemp\\codex-grass-contact-profile\\Assets\\PBDGrass\\CompactPrototype\\Editor\\GrassCompactValidation.cs:32 \r\n  at GrassFinal.PBDGrass.Editor.GrassCompactValidation.Sample (GrassFinal.PBDGrass.PBDGrassPatchRenderer r, System.Collections.Generic.List`1[T] ids, System.String phase, System.Boolean compact) [0x0046b] in D:\\CodexTemp\\codex-grass-contact-profile\\Assets\\PBDGrass\\CompactPrototype\\Editor\\GrassCompactValidation.cs:190 \r\n  at GrassFinal.PBDGrass.Editor.GrassCompactValidation.RunScene (System.Boolean compact) [0x003f2] in D:\\CodexTemp\\codex-grass-contact-profile\\Assets\\PBDGrass\\CompactPrototype\\Editor\\GrassCompactValidation.cs:107 \r\n  at GrassFinal.PBDGrass.Editor.GrassCompactValidation.Run () [0x00083] in D:\\CodexTemp\\codex-grass-contact-profile\\Assets\\PBDGrass\\CompactPrototype\\Editor\\GrassCompactValidation.cs:43 ",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "residentBlades": 294912,
+      "minActive": 32768,
+      "maxActive": 32768,
+      "ticks": 750,
+      "baselineGpuBytes": 586180688,
+      "compactGpuBytes": 175959264,
+      "geometryGpuBytes": 35389716,
+      "plasticGpuBytes": 13107200,
+      "staticGpuBytes": 9732988,
+      "historyBytes": 53477376,
+      "retainedPlasticError": 0.0,
+      "peakPlastic": 1.0878872871398926,
+      "codecMaxNodeError": 0.0,
+      "codecMaxEdgeError": 0.0,
+      "codecMaxNormalDegrees": 0.0,
+      "comparisons": [
+        {
+          "phase": "Birth",
+          "positionRms": 0.0002766444522421807,
+          "maxPosition": 0.0008027480216696858,
+          "maxNearPosition": 0.0,
+          "maxMiddlePosition": 0.0008027480216696858,
+          "normalRmsDegrees": 0.057475555688142776,
+          "maxNormalDegrees": 0.16192549467086792
+        },
+        {
+          "phase": "Wind",
+          "positionRms": 0.00030066558974795043,
+          "maxPosition": 0.0010686696041375399,
+          "maxNearPosition": 0.0002287039824295789,
+          "maxMiddlePosition": 0.0010686696041375399,
+          "normalRmsDegrees": 0.05658845603466034,
+          "maxNormalDegrees": 0.31713545322418213
+        },
+        {
+          "phase": "IndependentLodgedNear",
+          "positionRms": 0.1405341923236847,
+          "maxPosition": 1.8705710172653198,
+          "maxNearPosition": 1.8705710172653198,
+          "maxMiddlePosition": 0.0008305452647618949,
+          "normalRmsDegrees": 17.469030380249023,
+          "maxNormalDegrees": 176.8455047607422
+        }
+      ],
+      "nearPhysics": [
+        {
+          "phase": "Birth",
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "contacts": 0.0,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "worstWorldBlade": 269792
+        },
+        {
+          "phase": "Wind1",
+          "position": 2.9023460683674784e-06,
+          "velocity": 0.0006814670632593334,
+          "rotation": 1.3280443454277702e-05,
+          "angular": 0.01045000459998846,
+          "plastic": 0.0,
+          "contacts": 0.0,
+          "mappingMismatches": 0,
+          "nodeMismatches": 41574,
+          "frameMismatches": 168285,
+          "worstWorldBlade": 27405
+        },
+        {
+          "phase": "Wind60",
+          "position": 0.0003686129057314247,
+          "velocity": 0.004768475890159607,
+          "rotation": 0.0003588044783100486,
+          "angular": 0.0700891762971878,
+          "plastic": 0.0,
+          "contacts": 0.0,
+          "mappingMismatches": 0,
+          "nodeMismatches": 229376,
+          "frameMismatches": 229376,
+          "worstWorldBlade": 42431
+        },
+        {
+          "phase": "Contact1",
+          "position": 0.417673259973526,
+          "velocity": 100.82263946533203,
+          "rotation": 1.2653931379318237,
+          "angular": 1570.85009765625,
+          "plastic": 0.11902216076850891,
+          "contacts": 0.0,
+          "mappingMismatches": 0,
+          "nodeMismatches": 229376,
+          "frameMismatches": 229376,
+          "worstWorldBlade": 9038
+        },
+        {
+          "phase": "Contact2",
+          "position": 0.3766861855983734,
+          "velocity": 61.55897521972656,
+          "rotation": 1.512868046760559,
+          "angular": 1053.6978759765625,
+          "plastic": 0.39455580711364746,
+          "contacts": 0.0,
+          "mappingMismatches": 0,
+          "nodeMismatches": 229376,
+          "frameMismatches": 229376,
+          "worstWorldBlade": 15022
+        },
+        {
+          "phase": "Contact5",
+          "position": 0.4776180684566498,
+          "velocity": 34.482845306396484,
+          "rotation": 1.9832206964492798,
+          "angular": 858.9022827148438,
+          "plastic": 0.38225266337394714,
+          "contacts": 0.0,
+          "mappingMismatches": 0,
+          "nodeMismatches": 229376,
+          "frameMismatches": 229376,
+          "worstWorldBlade": 18061
+        },
+        {
+          "phase": "Contact30",
+          "position": 1.753425121307373,
+          "velocity": 54.914100646972656,
+          "rotation": 1.999979019165039,
+          "angular": 808.4465942382812,
+          "plastic": 1.3848546743392944,
+          "contacts": 0.0,
+          "mappingMismatches": 0,
+          "nodeMismatches": 229376,
+          "frameMismatches": 229376,
+          "worstWorldBlade": 18061
+        },
+        {
+          "phase": "Contact180",
+          "position": 1.7731165885925293,
+          "velocity": 59.335575103759766,
+          "rotation": 1.9999836683273315,
+          "angular": 481.6363525390625,
+          "plastic": 2.0360989570617676,
+          "contacts": 0.0,
+          "mappingMismatches": 0,
+          "nodeMismatches": 229376,
+          "frameMismatches": 229376,
+          "worstWorldBlade": 21133
+        }
+      ]
+    },
+    "FinalChecks/FinalParity/Results.json": {
+      "passed": true,
+      "error": "",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "ticksPerRun": 480,
+      "active": 32768,
+      "colliders": 12,
+      "reference": "6197058",
+      "comparisons": [
+        {
+          "tick": 1,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 2,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 5,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 30,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 120,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 240,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 300,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 360,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 480,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        }
+      ]
+    },
+    "Parity2_both/Results.json": {
+      "passed": false,
+      "error": "System.InvalidOperationException: Physics or display differs: {\"tick\":2,\"mappingMismatches\":0,\"nodeMismatches\":7,\"frameMismatches\":7,\"plasticMismatches\":3,\"geometryMismatches\":13,\"position\":2.563692760304548e-7,\"velocity\":0.0001481145591242239,\"rotation\":7.761488518553961e-7,\"angular\":0.0005630984669551253,\"plastic\":3.486949751163593e-8,\"geometry\":1.4901161193847657e-8,\"normal\":3.0719530030864919e-8}\r\n  at ContactSolverParity.Require (System.Boolean ok, System.String message) [0x00009] in D:\\CodexTemp\\codex-grass-contact-profile\\Assets\\PBDGrass\\ContactProfileTemporary\\Editor\\ContactSolverParity.cs:33 \r\n  at ContactSolverParity.Run () [0x0008e] in D:\\CodexTemp\\codex-grass-contact-profile\\Assets\\PBDGrass\\ContactProfileTemporary\\Editor\\ContactSolverParity.cs:45 ",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "ticksPerRun": 480,
+      "active": 32768,
+      "colliders": 12,
+      "reference": "6197058",
+      "comparisons": [
+        {
+          "tick": 1,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 2,
+          "mappingMismatches": 0,
+          "nodeMismatches": 7,
+          "frameMismatches": 7,
+          "plasticMismatches": 3,
+          "geometryMismatches": 13,
+          "position": 2.563692760304548e-07,
+          "velocity": 0.0001481145591242239,
+          "rotation": 7.761488518553961e-07,
+          "angular": 0.0005630984669551253,
+          "plastic": 3.486949751163593e-08,
+          "geometry": 1.4901161193847656e-08,
+          "normal": 3.0719530030864917e-08
+        },
+        {
+          "tick": 5,
+          "mappingMismatches": 0,
+          "nodeMismatches": 7,
+          "frameMismatches": 7,
+          "plasticMismatches": 4,
+          "geometryMismatches": 15,
+          "position": 2.128063670170377e-06,
+          "velocity": 0.00011916064249817282,
+          "rotation": 4.510549842962064e-06,
+          "angular": 0.0014545746380463243,
+          "plastic": 1.149159970736946e-06,
+          "geometry": 1.4361658031702973e-06,
+          "normal": 1.087257987819612e-05
+        },
+        {
+          "tick": 30,
+          "mappingMismatches": 0,
+          "nodeMismatches": 7,
+          "frameMismatches": 7,
+          "plasticMismatches": 6,
+          "geometryMismatches": 15,
+          "position": 0.00012733899347949773,
+          "velocity": 0.002912768628448248,
+          "rotation": 0.0002073436917271465,
+          "angular": 0.018483465537428856,
+          "plastic": 5.0976042984984815e-05,
+          "geometry": 0.0001279344578506425,
+          "normal": 0.0004150322056375444
+        },
+        {
+          "tick": 120,
+          "mappingMismatches": 0,
+          "nodeMismatches": 14,
+          "frameMismatches": 14,
+          "plasticMismatches": 6,
+          "geometryMismatches": 30,
+          "position": 5.604977923212573e-05,
+          "velocity": 0.0006352501804940403,
+          "rotation": 0.00015032256487756968,
+          "angular": 0.0029458480421453714,
+          "plastic": 8.630478259874508e-05,
+          "geometry": 5.5997748859226704e-05,
+          "normal": 0.00016495201271027327
+        },
+        {
+          "tick": 240,
+          "mappingMismatches": 0,
+          "nodeMismatches": 28,
+          "frameMismatches": 28,
+          "plasticMismatches": 14,
+          "geometryMismatches": 60,
+          "position": 0.20970036089420319,
+          "velocity": 3.877713918685913,
+          "rotation": 1.9989526271820068,
+          "angular": 15.108620643615723,
+          "plastic": 0.4919717013835907,
+          "geometry": 0.21040703356266022,
+          "normal": 0.41182518005371094
+        },
+        {
+          "tick": 300,
+          "mappingMismatches": 0,
+          "nodeMismatches": 21,
+          "frameMismatches": 21,
+          "plasticMismatches": 19,
+          "geometryMismatches": 45,
+          "position": 0.9897170066833496,
+          "velocity": 1.6369491815567017,
+          "rotation": 1.9986767768859863,
+          "angular": 2.464862108230591,
+          "plastic": 0.4919717013835907,
+          "geometry": 0.9897170662879944,
+          "normal": 1.1800307035446167
+        },
+        {
+          "tick": 360,
+          "mappingMismatches": 0,
+          "nodeMismatches": 28,
+          "frameMismatches": 28,
+          "plasticMismatches": 22,
+          "geometryMismatches": 60,
+          "position": 1.0539616346359253,
+          "velocity": 0.22926092147827148,
+          "rotation": 1.9986790418624878,
+          "angular": 0.24950647354125977,
+          "plastic": 0.4919717013835907,
+          "geometry": 1.0539615154266357,
+          "normal": 1.2643096446990967
+        },
+        {
+          "tick": 480,
+          "mappingMismatches": 0,
+          "nodeMismatches": 14,
+          "frameMismatches": 14,
+          "plasticMismatches": 13,
+          "geometryMismatches": 30,
+          "position": 0.8735353350639343,
+          "velocity": 0.11400603502988815,
+          "rotation": 1.9986674785614014,
+          "angular": 0.1401330977678299,
+          "plastic": 0.4919717013835907,
+          "geometry": 0.8735354542732239,
+          "normal": 1.082054615020752
+        }
+      ]
+    },
+    "Parity2_frames/Results.json": {
+      "passed": true,
+      "error": "",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "ticksPerRun": 480,
+      "active": 32768,
+      "colliders": 12,
+      "reference": "6197058",
+      "comparisons": [
+        {
+          "tick": 1,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 2,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 5,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 30,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 120,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 240,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 300,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 360,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 480,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        }
+      ]
+    },
+    "Parity2_material/Results.json": {
+      "passed": false,
+      "error": "System.InvalidOperationException: Physics or display differs: {\"tick\":2,\"mappingMismatches\":0,\"nodeMismatches\":7,\"frameMismatches\":7,\"plasticMismatches\":3,\"geometryMismatches\":13,\"position\":2.563692760304548e-7,\"velocity\":0.0001481145591242239,\"rotation\":7.761488518553961e-7,\"angular\":0.0005630984669551253,\"plastic\":3.486949751163593e-8,\"geometry\":1.4901161193847657e-8,\"normal\":3.0719530030864919e-8}\r\n  at ContactSolverParity.Require (System.Boolean ok, System.String message) [0x00009] in D:\\CodexTemp\\codex-grass-contact-profile\\Assets\\PBDGrass\\ContactProfileTemporary\\Editor\\ContactSolverParity.cs:33 \r\n  at ContactSolverParity.Run () [0x0008e] in D:\\CodexTemp\\codex-grass-contact-profile\\Assets\\PBDGrass\\ContactProfileTemporary\\Editor\\ContactSolverParity.cs:45 ",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "ticksPerRun": 480,
+      "active": 32768,
+      "colliders": 12,
+      "reference": "6197058",
+      "comparisons": [
+        {
+          "tick": 1,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 2,
+          "mappingMismatches": 0,
+          "nodeMismatches": 7,
+          "frameMismatches": 7,
+          "plasticMismatches": 3,
+          "geometryMismatches": 13,
+          "position": 2.563692760304548e-07,
+          "velocity": 0.0001481145591242239,
+          "rotation": 7.761488518553961e-07,
+          "angular": 0.0005630984669551253,
+          "plastic": 3.486949751163593e-08,
+          "geometry": 1.4901161193847656e-08,
+          "normal": 3.0719530030864917e-08
+        },
+        {
+          "tick": 5,
+          "mappingMismatches": 0,
+          "nodeMismatches": 7,
+          "frameMismatches": 7,
+          "plasticMismatches": 4,
+          "geometryMismatches": 15,
+          "position": 2.128063670170377e-06,
+          "velocity": 0.00011916064249817282,
+          "rotation": 4.510549842962064e-06,
+          "angular": 0.0014545746380463243,
+          "plastic": 1.149159970736946e-06,
+          "geometry": 1.4361658031702973e-06,
+          "normal": 1.087257987819612e-05
+        },
+        {
+          "tick": 30,
+          "mappingMismatches": 0,
+          "nodeMismatches": 7,
+          "frameMismatches": 7,
+          "plasticMismatches": 6,
+          "geometryMismatches": 15,
+          "position": 0.00012733899347949773,
+          "velocity": 0.002912768628448248,
+          "rotation": 0.0002073436917271465,
+          "angular": 0.018483465537428856,
+          "plastic": 5.0976042984984815e-05,
+          "geometry": 0.0001279344578506425,
+          "normal": 0.0004150322056375444
+        },
+        {
+          "tick": 120,
+          "mappingMismatches": 0,
+          "nodeMismatches": 14,
+          "frameMismatches": 14,
+          "plasticMismatches": 6,
+          "geometryMismatches": 30,
+          "position": 5.604977923212573e-05,
+          "velocity": 0.0006352501804940403,
+          "rotation": 0.00015032256487756968,
+          "angular": 0.0029458480421453714,
+          "plastic": 8.630478259874508e-05,
+          "geometry": 5.5997748859226704e-05,
+          "normal": 0.00016495201271027327
+        },
+        {
+          "tick": 240,
+          "mappingMismatches": 0,
+          "nodeMismatches": 28,
+          "frameMismatches": 28,
+          "plasticMismatches": 14,
+          "geometryMismatches": 60,
+          "position": 0.20970036089420319,
+          "velocity": 3.877713918685913,
+          "rotation": 1.9989526271820068,
+          "angular": 15.108620643615723,
+          "plastic": 0.4919717013835907,
+          "geometry": 0.21040703356266022,
+          "normal": 0.41182518005371094
+        },
+        {
+          "tick": 300,
+          "mappingMismatches": 0,
+          "nodeMismatches": 21,
+          "frameMismatches": 21,
+          "plasticMismatches": 19,
+          "geometryMismatches": 45,
+          "position": 0.9897170066833496,
+          "velocity": 1.6369491815567017,
+          "rotation": 1.9986767768859863,
+          "angular": 2.464862108230591,
+          "plastic": 0.4919717013835907,
+          "geometry": 0.9897170662879944,
+          "normal": 1.1800307035446167
+        },
+        {
+          "tick": 360,
+          "mappingMismatches": 0,
+          "nodeMismatches": 28,
+          "frameMismatches": 28,
+          "plasticMismatches": 22,
+          "geometryMismatches": 60,
+          "position": 1.0539616346359253,
+          "velocity": 0.22926092147827148,
+          "rotation": 1.9986790418624878,
+          "angular": 0.24950647354125977,
+          "plastic": 0.4919717013835907,
+          "geometry": 1.0539615154266357,
+          "normal": 1.2643096446990967
+        },
+        {
+          "tick": 480,
+          "mappingMismatches": 0,
+          "nodeMismatches": 14,
+          "frameMismatches": 14,
+          "plasticMismatches": 13,
+          "geometryMismatches": 30,
+          "position": 0.8735353350639343,
+          "velocity": 0.11400603502988815,
+          "rotation": 1.9986674785614014,
+          "angular": 0.1401330977678299,
+          "plastic": 0.4919717013835907,
+          "geometry": 0.8735354542732239,
+          "normal": 1.082054615020752
+        }
+      ]
+    },
+    "Parity2_shared/Results.json": {
+      "passed": true,
+      "error": "",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "ticksPerRun": 480,
+      "active": 32768,
+      "colliders": 12,
+      "reference": "6197058",
+      "comparisons": [
+        {
+          "tick": 1,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 2,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 5,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 30,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 120,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 240,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 300,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 360,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 480,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        }
+      ]
+    },
+    "Parity_both/Results.json": {
+      "passed": false,
+      "error": "System.ArgumentException: Compact storage requires its paired shaders and a homogeneous streamed baked field.\r\n  at GrassFinal.PBDGrass.PBDGrassPatchRenderer..ctor (GrassFinal.PBDGrass.PBDGrassPatch patch, UnityEngine.ComputeShader sourceShader, UnityEngine.Material sourceMaterial, UnityEngine.Camera camera, UnityEngine.Texture2D windNoise, GrassFinal.PBDGrass.XPBDGrassSettings settings, System.Collections.Generic.IList`1[T] colliders, GrassFinal.PBDGrass.GrassHandoffSettings handoffSettings, UnityEngine.ComputeShader handoffShader, GrassFinal.PBDGrass.GrassWorldLayout worldLayout, UnityEngine.ComputeShader worldShaderAsset, GrassFinal.PBDGrass.GrassBladeData preparedData) [0x00d91] in D:\\CodexTemp\\codex-grass-contact-profile\\Assets\\PBDGrass\\Runtime\\PBDGrassPatchRenderer.cs:176 \r\n  at GrassFinal.PBDGrass.GrassHandoffDemo.Initialize () [0x0017f] in D:\\CodexTemp\\codex-grass-contact-profile\\Assets\\PBDGrass\\Demo\\GrassHandoffDemo.cs:59 \r\n  at ContactSolverParity.RunScene (System.Boolean baseline, ContactSolverParity+Report report) [0x000dc] in D:\\CodexTemp\\codex-grass-contact-profile\\Assets\\PBDGrass\\ContactProfileTemporary\\Editor\\ContactSolverParity.cs:69 \r\n  at ContactSolverParity.Run () [0x00055] in D:\\CodexTemp\\codex-grass-contact-profile\\Assets\\PBDGrass\\ContactProfileTemporary\\Editor\\ContactSolverParity.cs:42 ",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "ticksPerRun": 480,
+      "active": 32768,
+      "colliders": 12,
+      "reference": "6197058",
+      "comparisons": []
+    },
+    "Parity_combo/Results.json": {
+      "passed": true,
+      "error": "",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "ticksPerRun": 480,
+      "active": 32768,
+      "colliders": 12,
+      "reference": "6197058",
+      "comparisons": [
+        {
+          "tick": 1,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 2,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 5,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 30,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 120,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 240,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 300,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 360,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 480,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        }
+      ]
+    },
+    "Parity_constant/Results.json": {
+      "passed": true,
+      "error": "",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "ticksPerRun": 480,
+      "active": 32768,
+      "colliders": 12,
+      "reference": "6197058",
+      "comparisons": [
+        {
+          "tick": 1,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 2,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 5,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 30,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 120,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 240,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 300,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 360,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 480,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        }
+      ]
+    },
+    "Parity_frames/Results.json": {
+      "passed": false,
+      "error": "System.ArgumentException: Compact storage requires its paired shaders and a homogeneous streamed baked field.\r\n  at GrassFinal.PBDGrass.PBDGrassPatchRenderer..ctor (GrassFinal.PBDGrass.PBDGrassPatch patch, UnityEngine.ComputeShader sourceShader, UnityEngine.Material sourceMaterial, UnityEngine.Camera camera, UnityEngine.Texture2D windNoise, GrassFinal.PBDGrass.XPBDGrassSettings settings, System.Collections.Generic.IList`1[T] colliders, GrassFinal.PBDGrass.GrassHandoffSettings handoffSettings, UnityEngine.ComputeShader handoffShader, GrassFinal.PBDGrass.GrassWorldLayout worldLayout, UnityEngine.ComputeShader worldShaderAsset, GrassFinal.PBDGrass.GrassBladeData preparedData) [0x00d91] in D:\\CodexTemp\\codex-grass-contact-profile\\Assets\\PBDGrass\\Runtime\\PBDGrassPatchRenderer.cs:176 \r\n  at GrassFinal.PBDGrass.GrassHandoffDemo.Initialize () [0x0017f] in D:\\CodexTemp\\codex-grass-contact-profile\\Assets\\PBDGrass\\Demo\\GrassHandoffDemo.cs:59 \r\n  at ContactSolverParity.RunScene (System.Boolean baseline, ContactSolverParity+Report report) [0x000dc] in D:\\CodexTemp\\codex-grass-contact-profile\\Assets\\PBDGrass\\ContactProfileTemporary\\Editor\\ContactSolverParity.cs:69 \r\n  at ContactSolverParity.Run () [0x00055] in D:\\CodexTemp\\codex-grass-contact-profile\\Assets\\PBDGrass\\ContactProfileTemporary\\Editor\\ContactSolverParity.cs:42 ",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "ticksPerRun": 480,
+      "active": 32768,
+      "colliders": 12,
+      "reference": "6197058",
+      "comparisons": []
+    },
+    "Parity_lambda/Results.json": {
+      "passed": true,
+      "error": "",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "ticksPerRun": 480,
+      "active": 32768,
+      "colliders": 12,
+      "reference": "6197058",
+      "comparisons": [
+        {
+          "tick": 1,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 2,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 5,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 30,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 120,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 240,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 300,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 360,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 480,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        }
+      ]
+    },
+    "Parity_loop/Results.json": {
+      "passed": false,
+      "error": "System.IndexOutOfRangeException: Invalid kernelIndex (0) passed, must be non-negative less than 3.\r\n  at (wrapper managed-to-native) UnityEngine.ComputeShader.GetKernelThreadGroupSizes(UnityEngine.ComputeShader,int,uint&,uint&,uint&)\r\n  at GrassFinal.PBDGrass.PBDGrassPatchRenderer..ctor (GrassFinal.PBDGrass.PBDGrassPatch patch, UnityEngine.ComputeShader sourceShader, UnityEngine.Material sourceMaterial, UnityEngine.Camera camera, UnityEngine.Texture2D windNoise, GrassFinal.PBDGrass.XPBDGrassSettings settings, System.Collections.Generic.IList`1[T] colliders, GrassFinal.PBDGrass.GrassHandoffSettings handoffSettings, UnityEngine.ComputeShader handoffShader, GrassFinal.PBDGrass.GrassWorldLayout worldLayout, UnityEngine.ComputeShader worldShaderAsset, GrassFinal.PBDGrass.GrassBladeData preparedData) [0x0100b] in D:\\CodexTemp\\codex-grass-contact-profile\\Assets\\PBDGrass\\Runtime\\PBDGrassPatchRenderer.cs:196 \r\n  at GrassFinal.PBDGrass.GrassHandoffDemo.Initialize () [0x0017f] in D:\\CodexTemp\\codex-grass-contact-profile\\Assets\\PBDGrass\\Demo\\GrassHandoffDemo.cs:59 \r\n  at ContactSolverParity.RunScene (System.Boolean baseline, ContactSolverParity+Report report) [0x000dc] in D:\\CodexTemp\\codex-grass-contact-profile\\Assets\\PBDGrass\\ContactProfileTemporary\\Editor\\ContactSolverParity.cs:69 \r\n  at ContactSolverParity.Run () [0x00055] in D:\\CodexTemp\\codex-grass-contact-profile\\Assets\\PBDGrass\\ContactProfileTemporary\\Editor\\ContactSolverParity.cs:42 ",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "ticksPerRun": 480,
+      "active": 32768,
+      "colliders": 12,
+      "reference": "6197058",
+      "comparisons": []
+    },
+    "Parity_loop2/Results.json": {
+      "passed": false,
+      "error": "System.InvalidOperationException: Physics or display differs: {\"tick\":1,\"mappingMismatches\":0,\"nodeMismatches\":24736,\"frameMismatches\":23880,\"plasticMismatches\":2487,\"geometryMismatches\":19088,\"position\":0.10145947337150574,\"velocity\":17.00115966796875,\"rotation\":1.335302710533142,\"angular\":2395.559814453125,\"plastic\":0.022844552993774415,\"geometry\":0.03193219378590584,\"normal\":0.028630029410123826}\r\n  at ContactSolverParity.Require (System.Boolean ok, System.String message) [0x00009] in D:\\CodexTemp\\codex-grass-contact-profile\\Assets\\PBDGrass\\ContactProfileTemporary\\Editor\\ContactSolverParity.cs:33 \r\n  at ContactSolverParity.Run () [0x0008e] in D:\\CodexTemp\\codex-grass-contact-profile\\Assets\\PBDGrass\\ContactProfileTemporary\\Editor\\ContactSolverParity.cs:45 ",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "ticksPerRun": 480,
+      "active": 32768,
+      "colliders": 12,
+      "reference": "6197058",
+      "comparisons": [
+        {
+          "tick": 1,
+          "mappingMismatches": 0,
+          "nodeMismatches": 24736,
+          "frameMismatches": 23880,
+          "plasticMismatches": 2487,
+          "geometryMismatches": 19088,
+          "position": 0.10145947337150574,
+          "velocity": 17.00115966796875,
+          "rotation": 1.335302710533142,
+          "angular": 2395.559814453125,
+          "plastic": 0.022844552993774414,
+          "geometry": 0.03193219378590584,
+          "normal": 0.028630029410123825
+        },
+        {
+          "tick": 2,
+          "mappingMismatches": 0,
+          "nodeMismatches": 41080,
+          "frameMismatches": 40349,
+          "plasticMismatches": 3199,
+          "geometryMismatches": 73913,
+          "position": 0.12745213508605957,
+          "velocity": 70.09368133544922,
+          "rotation": 1.9993739128112793,
+          "angular": 2790.11474609375,
+          "plastic": 0.030150186270475388,
+          "geometry": 0.04408000037074089,
+          "normal": 0.04206238314509392
+        },
+        {
+          "tick": 5,
+          "mappingMismatches": 0,
+          "nodeMismatches": 72779,
+          "frameMismatches": 72299,
+          "plasticMismatches": 4179,
+          "geometryMismatches": 153955,
+          "position": 0.7714377045631409,
+          "velocity": 362.0927734375,
+          "rotation": 1.999748706817627,
+          "angular": 1206.2789306640625,
+          "plastic": 0.5845522880554199,
+          "geometry": 0.30714938044548035,
+          "normal": 1.5441539287567139
+        },
+        {
+          "tick": 30,
+          "mappingMismatches": 0,
+          "nodeMismatches": 188593,
+          "frameMismatches": 188518,
+          "plasticMismatches": 5312,
+          "geometryMismatches": 404187,
+          "position": 1.848987102508545,
+          "velocity": 338.6362609863281,
+          "rotation": 1.9999998807907104,
+          "angular": 1148.6583251953125,
+          "plastic": 1.8194409608840942,
+          "geometry": 1.848987102508545,
+          "normal": 1.9989771842956543
+        },
+        {
+          "tick": 120,
+          "mappingMismatches": 0,
+          "nodeMismatches": 228121,
+          "frameMismatches": 228119,
+          "plasticMismatches": 7959,
+          "geometryMismatches": 488821,
+          "position": 2.3685600757598877,
+          "velocity": 91.41133880615234,
+          "rotation": 1.999999761581421,
+          "angular": 333.9851379394531,
+          "plastic": 2.171557903289795,
+          "geometry": 2.3685600757598877,
+          "normal": 1.9997599124908447
+        },
+        {
+          "tick": 240,
+          "mappingMismatches": 0,
+          "nodeMismatches": 228068,
+          "frameMismatches": 228064,
+          "plasticMismatches": 9336,
+          "geometryMismatches": 488656,
+          "position": 2.410771608352661,
+          "velocity": 235.7374725341797,
+          "rotation": 1.9999998807907104,
+          "angular": 722.1827392578125,
+          "plastic": 2.1709604263305664,
+          "geometry": 2.410771608352661,
+          "normal": 1.9997857809066772
+        },
+        {
+          "tick": 300,
+          "mappingMismatches": 0,
+          "nodeMismatches": 227594,
+          "frameMismatches": 227571,
+          "plasticMismatches": 6297,
+          "geometryMismatches": 487688,
+          "position": 2.4478044509887695,
+          "velocity": 10.090533256530762,
+          "rotation": 1.9999983310699463,
+          "angular": 30.721677780151367,
+          "plastic": 2.1701200008392334,
+          "geometry": 2.4478044509887695,
+          "normal": 1.9998271465301514
+        },
+        {
+          "tick": 360,
+          "mappingMismatches": 0,
+          "nodeMismatches": 222725,
+          "frameMismatches": 222719,
+          "plasticMismatches": 16692,
+          "geometryMismatches": 477298,
+          "position": 2.393847942352295,
+          "velocity": 87.2412338256836,
+          "rotation": 1.999999761581421,
+          "angular": 1151.247314453125,
+          "plastic": 2.1669397354125977,
+          "geometry": 2.3938474655151367,
+          "normal": 1.9996740818023682
+        },
+        {
+          "tick": 480,
+          "mappingMismatches": 0,
+          "nodeMismatches": 215769,
+          "frameMismatches": 215729,
+          "plasticMismatches": 2694,
+          "geometryMismatches": 462387,
+          "position": 2.397364377975464,
+          "velocity": 6.945918083190918,
+          "rotation": 1.9999961853027344,
+          "angular": 18.250244140625,
+          "plastic": 2.1669397354125977,
+          "geometry": 2.397364377975464,
+          "normal": 1.9963455200195312
+        }
+      ]
+    },
+    "Parity_material/Results.json": {
+      "passed": false,
+      "error": "System.ArgumentException: Compact storage requires its paired shaders and a homogeneous streamed baked field.\r\n  at GrassFinal.PBDGrass.PBDGrassPatchRenderer..ctor (GrassFinal.PBDGrass.PBDGrassPatch patch, UnityEngine.ComputeShader sourceShader, UnityEngine.Material sourceMaterial, UnityEngine.Camera camera, UnityEngine.Texture2D windNoise, GrassFinal.PBDGrass.XPBDGrassSettings settings, System.Collections.Generic.IList`1[T] colliders, GrassFinal.PBDGrass.GrassHandoffSettings handoffSettings, UnityEngine.ComputeShader handoffShader, GrassFinal.PBDGrass.GrassWorldLayout worldLayout, UnityEngine.ComputeShader worldShaderAsset, GrassFinal.PBDGrass.GrassBladeData preparedData) [0x00d91] in D:\\CodexTemp\\codex-grass-contact-profile\\Assets\\PBDGrass\\Runtime\\PBDGrassPatchRenderer.cs:176 \r\n  at GrassFinal.PBDGrass.GrassHandoffDemo.Initialize () [0x0017f] in D:\\CodexTemp\\codex-grass-contact-profile\\Assets\\PBDGrass\\Demo\\GrassHandoffDemo.cs:59 \r\n  at ContactSolverParity.RunScene (System.Boolean baseline, ContactSolverParity+Report report) [0x000dc] in D:\\CodexTemp\\codex-grass-contact-profile\\Assets\\PBDGrass\\ContactProfileTemporary\\Editor\\ContactSolverParity.cs:69 \r\n  at ContactSolverParity.Run () [0x00055] in D:\\CodexTemp\\codex-grass-contact-profile\\Assets\\PBDGrass\\ContactProfileTemporary\\Editor\\ContactSolverParity.cs:42 ",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "ticksPerRun": 480,
+      "active": 32768,
+      "colliders": 12,
+      "reference": "6197058",
+      "comparisons": []
+    },
+    "Parity_soa/Results.json": {
+      "passed": true,
+      "error": "",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "ticksPerRun": 480,
+      "active": 32768,
+      "colliders": 12,
+      "reference": "6197058",
+      "comparisons": [
+        {
+          "tick": 1,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 2,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 5,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 30,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 120,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 240,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 300,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 360,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 480,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        }
+      ]
+    },
+    "Parity_special/Results.json": {
+      "passed": true,
+      "error": "",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "ticksPerRun": 480,
+      "active": 32768,
+      "colliders": 12,
+      "reference": "6197058",
+      "comparisons": [
+        {
+          "tick": 1,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 2,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 5,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 30,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 120,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 240,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 300,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 360,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 480,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        }
+      ]
+    },
+    "Parity_split/Results.json": {
+      "passed": true,
+      "error": "",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "ticksPerRun": 480,
+      "active": 32768,
+      "colliders": 12,
+      "reference": "6197058",
+      "comparisons": [
+        {
+          "tick": 1,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 2,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 5,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 30,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 120,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 240,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 300,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 360,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 480,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        }
+      ]
+    },
+    "RestoredChecks/Combined/Results.json": {
+      "passed": true,
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "unity": "2022.3.62f2c1",
+      "error": "",
+      "totalBlades": 131072,
+      "minActiveBlades": 32768,
+      "maxActiveBlades": 32768,
+      "bezierBlades": 98304,
+      "exitedGrids": 1972,
+      "reenteredGrids": 1082,
+      "evictions": 1972,
+      "simulationTicks": 1440,
+      "visibleGrids": 1963,
+      "seedChecks": 4,
+      "maxSeedPositionError": 0.0,
+      "maxSeedVelocityError": 0.0,
+      "maxSeedRotationError": 0.0,
+      "maxSeedAngularError": 0.0,
+      "retainedPlasticError": 0.0,
+      "peakPlastic": 1.0878874063491821,
+      "lodgedGridEvicted": true,
+      "lodgedGridReturned": true,
+      "sceneViewPreserved": true,
+      "acceptedBankUnchanged": true,
+      "rebakes": [
+        {
+          "type": "Short / Narrow / Firm",
+          "maxNodeDifference": 0.0,
+          "maxControlDifference": 0.0,
+          "maxFrameDifferenceDegrees": 0.0,
+          "frequencyDifference": 0.0,
+          "dampingDifference": 0.0,
+          "maxTerminalSpeed": 0.0018486418994143605
+        },
+        {
+          "type": "Short / Narrow / Soft",
+          "maxNodeDifference": 0.0,
+          "maxControlDifference": 0.0,
+          "maxFrameDifferenceDegrees": 0.0,
+          "frequencyDifference": 0.0,
+          "dampingDifference": 0.0,
+          "maxTerminalSpeed": 0.001867022830992937
+        },
+        {
+          "type": "Short / Wide / Firm",
+          "maxNodeDifference": 0.0,
+          "maxControlDifference": 0.0,
+          "maxFrameDifferenceDegrees": 0.0,
+          "frequencyDifference": 0.0,
+          "dampingDifference": 0.0,
+          "maxTerminalSpeed": 0.0015199141344055533
+        },
+        {
+          "type": "Short / Wide / Soft",
+          "maxNodeDifference": 0.0,
+          "maxControlDifference": 0.0,
+          "maxFrameDifferenceDegrees": 0.0,
+          "frequencyDifference": 0.0,
+          "dampingDifference": 0.0,
+          "maxTerminalSpeed": 0.0018284262623637915
+        },
+        {
+          "type": "Tall / Narrow / Firm",
+          "maxNodeDifference": 0.0,
+          "maxControlDifference": 0.0,
+          "maxFrameDifferenceDegrees": 0.0,
+          "frequencyDifference": 0.0,
+          "dampingDifference": 0.0,
+          "maxTerminalSpeed": 0.0019158173818141222
+        },
+        {
+          "type": "Tall / Narrow / Soft",
+          "maxNodeDifference": 0.0,
+          "maxControlDifference": 0.0,
+          "maxFrameDifferenceDegrees": 0.0,
+          "frequencyDifference": 0.0,
+          "dampingDifference": 0.0,
+          "maxTerminalSpeed": 0.0017794204177334905
+        },
+        {
+          "type": "Tall / Wide / Firm",
+          "maxNodeDifference": 0.0,
+          "maxControlDifference": 0.0,
+          "maxFrameDifferenceDegrees": 0.0,
+          "frequencyDifference": 0.0,
+          "dampingDifference": 0.0,
+          "maxTerminalSpeed": 0.0019886165391653776
+        },
+        {
+          "type": "Tall / Wide / Soft",
+          "maxNodeDifference": 0.0,
+          "maxControlDifference": 0.0,
+          "maxFrameDifferenceDegrees": 0.0,
+          "frequencyDifference": 0.0,
+          "dampingDifference": 0.0,
+          "maxTerminalSpeed": 0.001942087197676301
+        }
+      ]
+    },
+    "RestoredChecks/Compact/Results.json": {
+      "passed": true,
+      "independentNearPhysicsEquivalent": true,
+      "compactPlasticRetained": true,
+      "streamRetained": true,
+      "unloadedCleared": true,
+      "bufferReused": true,
+      "error": "",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "residentBlades": 294912,
+      "minActive": 32768,
+      "maxActive": 32768,
+      "ticks": 930,
+      "baselineGpuBytes": 586180688,
+      "compactGpuBytes": 159575264,
+      "geometryGpuBytes": 35389716,
+      "plasticGpuBytes": 13107200,
+      "staticGpuBytes": 9732988,
+      "historyBytes": 53477376,
+      "retainedPlasticError": 4.0315630030818284e-05,
+      "peakPlastic": 1.0878872871398926,
+      "codecMaxNodeError": 0.0011443388648331165,
+      "codecMaxEdgeError": 0.0011444218689575791,
+      "codecMaxNormalDegrees": 0.32779020071029663,
+      "comparisons": [
+        {
+          "phase": "Birth",
+          "positionRms": 0.0002766444522421807,
+          "maxPosition": 0.0008027480216696858,
+          "maxNearPosition": 0.0,
+          "maxMiddlePosition": 0.0008027480216696858,
+          "normalRmsDegrees": 0.057475555688142776,
+          "maxNormalDegrees": 0.16192549467086792
+        },
+        {
+          "phase": "Wind",
+          "positionRms": 0.0002999366552103311,
+          "maxPosition": 0.0010686696041375399,
+          "maxNearPosition": 0.0,
+          "maxMiddlePosition": 0.0010686696041375399,
+          "normalRmsDegrees": 0.05657193437218666,
+          "maxNormalDegrees": 0.31713545322418213
+        },
+        {
+          "phase": "IndependentLodgedNear",
+          "positionRms": 0.0002642596373334527,
+          "maxPosition": 0.0008305452647618949,
+          "maxNearPosition": 0.0,
+          "maxMiddlePosition": 0.0008305452647618949,
+          "normalRmsDegrees": 0.0394020676612854,
+          "maxNormalDegrees": 0.16192549467086792
+        },
+        {
+          "phase": "LodgedMiddle",
+          "positionRms": 0.0003203977248631418,
+          "maxPosition": 0.0016681456472724676,
+          "maxNearPosition": 0.00022420792083721608,
+          "maxMiddlePosition": 0.0016681456472724676,
+          "normalRmsDegrees": 0.05985638126730919,
+          "maxNormalDegrees": 0.595776379108429
+        },
+        {
+          "phase": "Reentered",
+          "positionRms": 0.00029381338390521705,
+          "maxPosition": 0.0010025816736742854,
+          "maxNearPosition": 0.00047248529153876007,
+          "maxMiddlePosition": 0.0010025816736742854,
+          "normalRmsDegrees": 0.0501771904528141,
+          "maxNormalDegrees": 0.30646705627441406
+        }
+      ],
+      "nearPhysics": [
+        {
+          "phase": "Birth",
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "contacts": 0.0,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "worstWorldBlade": 269792
+        },
+        {
+          "phase": "Wind1",
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "contacts": 0.0,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "worstWorldBlade": 269792
+        },
+        {
+          "phase": "Wind60",
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "contacts": 0.0,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "worstWorldBlade": 269792
+        },
+        {
+          "phase": "Contact1",
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "contacts": 0.0,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "worstWorldBlade": 269792
+        },
+        {
+          "phase": "Contact2",
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "contacts": 0.0,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "worstWorldBlade": 269792
+        },
+        {
+          "phase": "Contact5",
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "contacts": 0.0,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "worstWorldBlade": 269792
+        },
+        {
+          "phase": "Contact30",
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "contacts": 0.0,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "worstWorldBlade": 269792
+        },
+        {
+          "phase": "Contact180",
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "contacts": 0.0,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "worstWorldBlade": 269792
+        },
+        {
+          "phase": "Release45",
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "contacts": 0.0,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "worstWorldBlade": 269792
+        }
+      ]
+    },
+    "RestoredChecks/FinalParity/Results.json": {
+      "passed": true,
+      "error": "",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "ticksPerRun": 480,
+      "active": 32768,
+      "colliders": 12,
+      "reference": "6197058",
+      "comparisons": [
+        {
+          "tick": 1,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 2,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 5,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 30,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 120,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 240,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 300,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 360,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 480,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        }
+      ]
+    },
+    "RestoredChecks/Lifecycle/Results.json": {
+      "passed": true,
+      "idleZero": true,
+      "heldTwoSeconds": true,
+      "liveDuringFade": true,
+      "recontactPreservesSolver": true,
+      "releasedAfterThreeSeconds": true,
+      "plasticRetained": true,
+      "streamRetained": true,
+      "unloadClears": true,
+      "finiteState": true,
+      "capRespected": true,
+      "outerCoverageContinuous": true,
+      "error": "",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "ticks": 1805,
+      "maxActive": 32768,
+      "maxHistoryResident": 32768,
+      "historyCapacity": 65536,
+      "outerCoverageChecks": 6,
+      "firstFadeAt": 2.016693353652954,
+      "releasedAt": 3.0333099365234375,
+      "physicalMotionDuringFade": 0.41343817114830017,
+      "recontactNodeError": 0.0,
+      "maxTipStep": 2.214721918106079,
+      "releaseTipStep": 0.0011332069989293814,
+      "peakPlastic": 0.8726646900177002,
+      "maxTipStepAt": 0.016666889190673828,
+      "maxTipStepPhase": 0.0,
+      "maxPhysicalTipStep": 2.2147204875946045,
+      "maxFadeTipStep": 0.03226364776492119,
+      "gpuBufferBytes": 224852832
+    },
+    "RestoredChecks/Showcase/Results.json": {
+      "passed": true,
+      "elevatedView": true,
+      "allActorsMoved": true,
+      "stampsReleased": true,
+      "trailEnteredMiddle": true,
+      "trailReturned": false,
+      "lowView": true,
+      "topView": true,
+      "tierOverview": true,
+      "debugColors": true,
+      "finiteNearState": true,
+      "eventDriven": true,
+      "returnedWithoutSimulation": true,
+      "error": "",
+      "colliders": 12,
+      "minActive": 0,
+      "maxActive": 12768,
+      "ticks": 2701,
+      "pageShifts": 9,
+      "patchSize": 144,
+      "plasticBeforeTour": 1.0879095792770386,
+      "plasticAfterTour": 1.0879095792770386,
+      "maxNearReach": 1.6900584697723389,
+      "middleFullDistance": 52.0,
+      "middleOuterDistance": 64.0,
+      "gpuBufferBytes": 224852832
+    },
+    "StructureChecks/Compact/Results.json": {
+      "passed": false,
+      "independentNearPhysicsEquivalent": false,
+      "compactPlasticRetained": false,
+      "streamRetained": false,
+      "unloadedCleared": false,
+      "bufferReused": false,
+      "error": "System.InvalidOperationException: Independent near collision geometry changed.\r\n  at GrassFinal.PBDGrass.Editor.GrassCompactValidation.Require (System.Boolean ok, System.String text) [0x00009] in D:\\CodexTemp\\codex-grass-contact-profile\\Assets\\PBDGrass\\CompactPrototype\\Editor\\GrassCompactValidation.cs:32 \r\n  at GrassFinal.PBDGrass.Editor.GrassCompactValidation.Sample (GrassFinal.PBDGrass.PBDGrassPatchRenderer r, System.Collections.Generic.List`1[T] ids, System.String phase, System.Boolean compact) [0x0046b] in D:\\CodexTemp\\codex-grass-contact-profile\\Assets\\PBDGrass\\CompactPrototype\\Editor\\GrassCompactValidation.cs:190 \r\n  at GrassFinal.PBDGrass.Editor.GrassCompactValidation.RunScene (System.Boolean compact) [0x003f2] in D:\\CodexTemp\\codex-grass-contact-profile\\Assets\\PBDGrass\\CompactPrototype\\Editor\\GrassCompactValidation.cs:107 \r\n  at GrassFinal.PBDGrass.Editor.GrassCompactValidation.Run () [0x00083] in D:\\CodexTemp\\codex-grass-contact-profile\\Assets\\PBDGrass\\CompactPrototype\\Editor\\GrassCompactValidation.cs:43 ",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "residentBlades": 294912,
+      "minActive": 32768,
+      "maxActive": 32768,
+      "ticks": 750,
+      "baselineGpuBytes": 586180688,
+      "compactGpuBytes": 183168224,
+      "geometryGpuBytes": 35389716,
+      "plasticGpuBytes": 13107200,
+      "staticGpuBytes": 9732988,
+      "historyBytes": 53477376,
+      "retainedPlasticError": 0.0,
+      "peakPlastic": 1.0878872871398926,
+      "codecMaxNodeError": 0.0,
+      "codecMaxEdgeError": 0.0,
+      "codecMaxNormalDegrees": 0.0,
+      "comparisons": [
+        {
+          "phase": "Birth",
+          "positionRms": 0.0002766444522421807,
+          "maxPosition": 0.0008027480216696858,
+          "maxNearPosition": 0.0,
+          "maxMiddlePosition": 0.0008027480216696858,
+          "normalRmsDegrees": 0.057475555688142776,
+          "maxNormalDegrees": 0.16192549467086792
+        },
+        {
+          "phase": "Wind",
+          "positionRms": 0.0002999366552103311,
+          "maxPosition": 0.0010686696041375399,
+          "maxNearPosition": 0.0,
+          "maxMiddlePosition": 0.0010686696041375399,
+          "normalRmsDegrees": 0.05657193437218666,
+          "maxNormalDegrees": 0.31713545322418213
+        },
+        {
+          "phase": "IndependentLodgedNear",
+          "positionRms": 0.1482812613248825,
+          "maxPosition": 2.037228584289551,
+          "maxNearPosition": 2.037228584289551,
+          "maxMiddlePosition": 0.0008305452647618949,
+          "normalRmsDegrees": 17.78158950805664,
+          "maxNormalDegrees": 168.7447509765625
+        }
+      ],
+      "nearPhysics": [
+        {
+          "phase": "Birth",
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "contacts": 0.0,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "worstWorldBlade": 269792
+        },
+        {
+          "phase": "Wind1",
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "contacts": 0.0,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "worstWorldBlade": 269792
+        },
+        {
+          "phase": "Wind60",
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "contacts": 0.0,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "worstWorldBlade": 269792
+        },
+        {
+          "phase": "Contact1",
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "contacts": 0.0,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "worstWorldBlade": 269792
+        },
+        {
+          "phase": "Contact2",
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "contacts": 0.0,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "worstWorldBlade": 269792
+        },
+        {
+          "phase": "Contact5",
+          "position": 0.39366209506988525,
+          "velocity": 92.70477294921875,
+          "rotation": 0.7942070364952087,
+          "angular": 357.6044616699219,
+          "plastic": 0.15990586578845978,
+          "contacts": 0.0,
+          "mappingMismatches": 0,
+          "nodeMismatches": 136524,
+          "frameMismatches": 201408,
+          "worstWorldBlade": 18052
+        },
+        {
+          "phase": "Contact30",
+          "position": 1.7800970077514648,
+          "velocity": 50.58603286743164,
+          "rotation": 1.9960293769836426,
+          "angular": 650.87255859375,
+          "plastic": 1.633922815322876,
+          "contacts": 0.0,
+          "mappingMismatches": 0,
+          "nodeMismatches": 229367,
+          "frameMismatches": 229374,
+          "worstWorldBlade": 18052
+        },
+        {
+          "phase": "Contact180",
+          "position": 1.4430791139602661,
+          "velocity": 68.71292877197266,
+          "rotation": 1.9999278783798218,
+          "angular": 484.6844177246094,
+          "plastic": 1.9619343280792236,
+          "contacts": 0.0,
+          "mappingMismatches": 0,
+          "nodeMismatches": 229376,
+          "frameMismatches": 229376,
+          "worstWorldBlade": 18061
+        }
+      ]
+    },
+    "StructureChecks/FinalParity/Results.json": {
+      "passed": true,
+      "error": "",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "ticksPerRun": 480,
+      "active": 32768,
+      "colliders": 12,
+      "reference": "6197058",
+      "comparisons": [
+        {
+          "tick": 1,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 2,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 5,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 30,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 120,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 240,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 300,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 360,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        },
+        {
+          "tick": 480,
+          "mappingMismatches": 0,
+          "nodeMismatches": 0,
+          "frameMismatches": 0,
+          "plasticMismatches": 0,
+          "geometryMismatches": 0,
+          "position": 0.0,
+          "velocity": 0.0,
+          "rotation": 0.0,
+          "angular": 0.0,
+          "plastic": 0.0,
+          "geometry": 0.0,
+          "normal": 0.0
+        }
+      ]
+    }
+  },
+  "productionSha256": {
+    "Assets/PBDGrass/Runtime/PBDGrassPatchRenderer.cs": "31408c5f91c8dea249499c5463cd6066aab50b24af42dbfadb5e63568d72b389",
+    "Assets/PBDGrass/CompactPrototype/Shaders/CompactGrassSolver.compute": "7ca300542a1860aa485f20bb36a4c89e108ce9a5c564e91b39dbd6a4e85483b5",
+    "Assets/PBDGrass/CompactPrototype/Editor/generate_compact_shaders.py": "7c459f793d98025d075df5f9cfaa3a3f05975a4c521d172a17c385b202ede0bf"
+  }
+}

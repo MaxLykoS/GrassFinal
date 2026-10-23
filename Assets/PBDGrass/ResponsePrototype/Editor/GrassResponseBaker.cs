@@ -56,7 +56,8 @@ namespace GrassFinal.PBDGrass.Editor
         }
         // Same bake algorithm, but return an unsaved object so regression checks never replace
         // the accepted response bank with newly generated data.
-        internal static GrassResponseType ComputeType(int index,Camera bakeCamera,ComputeShader bakeSolver,Material bakeMaterial,Texture2D bakeWind)
+        internal static GrassResponseType ComputeType(int index,Camera bakeCamera,ComputeShader bakeSolver,Material bakeMaterial,Texture2D bakeWind,
+            int substeps=8,int iterations=3,float softComplianceScale=1)
         {
             var type=ScriptableObject.CreateInstance<GrassResponseType>();
             bool tall=(index&4)!=0,wide=(index&2)!=0,soft=(index&1)!=0;
@@ -67,6 +68,8 @@ namespace GrassFinal.PBDGrass.Editor
             type.Physics=new XPBDGrassSettings { EnablePlasticity=false,MaxActiveBlades=32,NearDistance=2,PoolHysteresis=0,
                 SoftBendCompliance=3*compliance,HardBendCompliance=.2f*compliance,TwistCompliance=compliance,
                 BaseBendCompliance=.08f*compliance,BladeMass=.01f*(type.Shape.Height/1.5f)*(type.Shape.HalfWidth/.02f) };
+            type.Physics.NearSubsteps=substeps;type.Physics.ConstraintIterations=iterations;
+            type.Physics.SoftBendCompliance*=softComplianceScale;
             type.GridSize=5; type.MaxWind=8; type.Samples=new GrassResponseType.Pose[25];
             var patch=GrassResponseType.CreatePatch(type,Vector3.zero);
             try
@@ -103,7 +106,10 @@ namespace GrassFinal.PBDGrass.Editor
                 }
             }
             finally { Object.DestroyImmediate(patch.PatchMesh); }
-            type.BakeVersion="XPBD 60Hz / 8 small steps / 3 iterations; uniform wind acceleration; plasticity frozen; 2026-10-15";
+            type.BakeVersion=substeps==8 && iterations==3 && softComplianceScale==1
+                ?"XPBD 60Hz / 8 small steps / 3 iterations; uniform wind acceleration; plasticity frozen; 2026-10-15"
+                :"XPBD 60Hz / "+substeps+" small steps / "+iterations+" iterations / soft compliance x"+softComplianceScale.ToString(System.Globalization.CultureInfo.InvariantCulture)
+                    +"; uniform wind acceleration; plasticity frozen; 2026-10-23";
             return type;
         }
         private static GrassResponseType.Pose Settle(PBDGrassPatchRenderer renderer)

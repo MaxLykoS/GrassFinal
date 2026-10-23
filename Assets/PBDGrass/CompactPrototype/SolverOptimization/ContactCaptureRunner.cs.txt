@@ -1,0 +1,127 @@
+// Installed in an isolated project only. No profiling plugin or GPU readback.
+using System;
+using System.IO;
+using UnityEngine;
+using GrassFinal.PBDGrass;
+
+public sealed class ContactCaptureRunner : MonoBehaviour
+{
+    [Serializable] sealed class SmokeReport
+    {
+        public bool passed;
+        public string api,gpu,error;
+        public int frames,active,minActive=int.MaxValue,maxActive,ticksPerFrame;
+    }
+    GrassHandoffDemo demo;
+    GrassShowcaseController lab;
+    RenderTexture smokeTarget;
+    SmokeReport report=new SmokeReport();
+    bool contacts=true,smoke,finished;
+    string output;
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+    static void Boot()
+    {
+        if(!Application.isEditor)new GameObject("Grass Nsight fixed workload").AddComponent<ContactCaptureRunner>();
+    }
+    void Start()
+    {
+        foreach(string arg in Environment.GetCommandLineArgs())
+        {
+            if(arg=="-grass-no-contact")contacts=false;
+            if(arg=="-grass-smoke")smoke=true;
+            if(arg.StartsWith("-grass-output="))output=arg.Substring("-grass-output=".Length);
+        }
+        Application.logMessageReceived+=OnLog;
+        try
+        {
+            QualitySettings.vSyncCount=0;Application.targetFrameRate=-1;Application.runInBackground=true;
+            demo=FindObjectOfType<GrassHandoffDemo>();lab=FindObjectOfType<GrassShowcaseController>();
+            demo.enabled=false;demo.OuterCoverage.enabled=false;lab.enabled=false;
+            demo.PatchSize=144;demo.OuterCoverage.MiddleFullDistance=52;demo.OuterCoverage.MiddleOuterDistance=64;
+            demo.Physics.ContactDrivenSimulation=false;
+            demo.Handoff.DebugLodBaseColors=true;demo.AutoTour=false;demo.ContactEnabled=contacts;
+            lab.SetView(1);lab.ApplyActors(0,contacts);
+            demo.Initialize();demo.OuterCoverage.Initialize();demo.Cam.enabled=true;
+            if(smoke)
+            {
+                // An occluded Windows swapchain may skip rendering. Smoke tests use
+                // the same offscreen camera path as our existing GPU benchmark.
+                smokeTarget=new RenderTexture(1600,900,24,RenderTextureFormat.DefaultHDR);
+                smokeTarget.antiAliasing=demo.Cam.allowMSAA?Mathf.Max(1,QualitySettings.antiAliasing):1;
+                smokeTarget.Create();demo.Cam.aspect=1600f/900;
+                demo.Cam.targetTexture=smokeTarget;demo.Cam.enabled=false;
+            }
+            report.api=SystemInfo.graphicsDeviceType.ToString();report.gpu=SystemInfo.graphicsDeviceName;
+            Debug.Log("GRASS_CAPTURE_READY "+report.api+" fixed XPBD=32768, C toggles contact, Esc quits.");
+        }
+        catch(Exception e){Fail(e.ToString());}
+    }
+    void Update()
+    {
+        if(finished || demo==null)return;
+        try
+        {
+            if(Input.GetKeyDown(KeyCode.Escape)){Application.Quit();return;}
+            if(Input.GetKeyDown(KeyCode.C))contacts=!contacts;
+            demo.ContactEnabled=contacts;
+            float t=demo.Renderer.SimulationTime;
+            lab.ApplyActors(t,contacts);
+            foreach(var label in lab.Labels)if(label!=null)label.rotation=demo.Cam.transform.rotation;
+            Vector3 focus=demo.Cam.transform.position;focus.y=0;demo.Renderer.StreamTo(focus);
+            demo.Renderer.SetWind(GrassResponseDemo.WindAt(t,true)*(demo.Wind.magnitude/6),.1f,new Vector4(.01f,.01f,0,1));
+            int ticks=demo.Renderer.SimulationTicks;
+            demo.Renderer.Advance(1f/60);
+            report.ticksPerFrame=demo.Renderer.SimulationTicks-ticks;
+            report.active=demo.Renderer.ActiveBladeCount;
+            report.minActive=Math.Min(report.minActive,report.active);report.maxActive=Math.Max(report.maxActive,report.active);
+            if(report.active!=32768 || report.ticksPerFrame!=1)throw new Exception("Incomplete fixed workload.");
+            demo.Renderer.Draw(demo.Cam);demo.OuterCoverage.PrepareVisible();demo.OuterCoverage.RenderPrepared(demo.Cam);
+            if(smoke)demo.Cam.Render();
+            report.frames++;
+            if(smoke && report.frames==600)StartCoroutine(FinishSmoke());
+        }
+        catch(Exception e){Fail(e.ToString());}
+    }
+    System.Collections.IEnumerator FinishSmoke()
+    {
+        finished=true;
+        yield return new WaitForEndOfFrame();
+        if(!string.IsNullOrEmpty(output))
+        {
+            Directory.CreateDirectory(output);
+            // One offline screenshot after measurement; no runtime simulation-state readback.
+            var previous=RenderTexture.active;RenderTexture.active=smokeTarget;
+            var picture=new Texture2D(smokeTarget.width,smokeTarget.height,TextureFormat.RGB24,false);
+            picture.ReadPixels(new Rect(0,0,picture.width,picture.height),0,0);picture.Apply();
+            RenderTexture.active=previous;
+            File.WriteAllBytes(Path.Combine(output,"Capture.png"),picture.EncodeToPNG());Destroy(picture);
+        }
+        report.passed=string.IsNullOrEmpty(report.error) && report.frames==600;
+        Save();Application.Quit(report.passed?0:1);
+    }
+    void OnLog(string message,string stack,LogType type)
+    {
+        if(type==LogType.Error || type==LogType.Exception || type==LogType.Assert)report.error=message;
+    }
+    void Fail(string error)
+    {
+        report.error=error;finished=true;Save();Debug.LogError(error);Application.Quit(1);
+    }
+    void Save()
+    {
+        if(!string.IsNullOrEmpty(output))
+        {Directory.CreateDirectory(output);File.WriteAllText(Path.Combine(output,"Results.json"),JsonUtility.ToJson(report,true));}
+    }
+    void OnGUI()
+    {
+        GUI.Box(new Rect(10,10,630,78),"Grass Nsight capture | "+report.api+" | XPBD "+report.active+
+            "\n1 simulation tick / rendered frame | 12 actors: "+(contacts?"ON":"OFF")+
+            "\nC: toggle contact (keeps 32768 XPBD) | Esc: quit");
+    }
+    void OnDestroy()
+    {
+        Application.logMessageReceived-=OnLog;
+        if(smokeTarget!=null){if(demo!=null)demo.Cam.targetTexture=null;smokeTarget.Release();Destroy(smokeTarget);}
+    }
+}

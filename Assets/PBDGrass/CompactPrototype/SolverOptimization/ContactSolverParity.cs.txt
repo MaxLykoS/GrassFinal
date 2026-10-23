@@ -1,0 +1,130 @@
+// Installed only in the isolated validation Editor assembly by prepare_solver.py.
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using GrassFinal.PBDGrass;
+using GrassFinal.PBDGrass.Editor;
+using Object=UnityEngine.Object;
+public static class ContactSolverParity
+{
+    [Serializable] public sealed class Row
+    {
+        public int tick,mappingMismatches,nodeMismatches,frameMismatches,plasticMismatches,geometryMismatches;
+        public float position,velocity,rotation,angular,plastic,geometry,normal;
+    }
+    [Serializable] public sealed class Report
+    {
+        public bool passed;public string error,gpu;public int ticksPerRun=480,active=32768,colliders=12;
+        public string reference="6197058";public List<Row> comparisons=new List<Row>();
+    }
+    sealed class Snapshot
+    {
+        public BoneInfo[] nodes;public GrassBladeData.Frame[] frames;public Vector4[] plastic;
+        public Vector3[] positions,normals;public int[] mapping;
+    }
+    static readonly Dictionary<int,Snapshot> reference=new Dictionary<int,Snapshot>();
+    static readonly HashSet<int> checkpoints=new HashSet<int> {1,2,5,30,120,240,300,360,480};
+    static readonly List<string> errors=new List<string>();
+    static T Field<T>(object obj,string name)=>(T)obj.GetType().GetField(name,BindingFlags.NonPublic|BindingFlags.Instance).GetValue(obj);
+    static void Require(bool ok,string message) {if(!ok)throw new InvalidOperationException(message);}
+    static void Log(string message,string stack,LogType type)
+    {if(type==LogType.Error || type==LogType.Exception || type==LogType.Assert)errors.Add(message);}
+    public static void Run()
+    {
+        var output=Environment.GetEnvironmentVariable("GRASS_SOLVER_PARITY_OUTPUT");Directory.CreateDirectory(output);
+        var report=new Report {gpu=SystemInfo.graphicsDeviceName};reference.Clear();errors.Clear();Application.logMessageReceived+=Log;
+        try
+        {
+            RunScene(true,report);RunScene(false,report);
+            Require(report.comparisons.Count==9,"Incomplete checkpoints.");
+            foreach(var r in report.comparisons)
+                Require(r.mappingMismatches+r.nodeMismatches+r.frameMismatches+r.plasticMismatches+r.geometryMismatches==0,
+                    "Physics or display differs: "+JsonUtility.ToJson(r));
+            Require(errors.Count==0,string.Join("\n",errors));report.passed=true;
+        }
+        catch(Exception e) {report.error=e.ToString();}
+        finally
+        {
+            ContactGpuHooks.ReferenceContacts=false;reference.Clear();Application.logMessageReceived-=Log;
+            File.WriteAllText(Path.Combine(output,"Results.json"),JsonUtility.ToJson(report,true));
+            Debug.Log("CONTACT_SOLVER_PARITY "+JsonUtility.ToJson(report));
+        }
+        EditorApplication.Exit(report.passed?0:1);
+    }
+    static void RunScene(bool baseline,Report report)
+    {
+        ContactGpuHooks.Active=false;ContactGpuHooks.ReferenceContacts=baseline;
+        EditorSceneManager.OpenScene(GrassShowcaseSceneBuilder.ScenePath);
+        var demo=Object.FindObjectOfType<GrassHandoffDemo>();var lab=Object.FindObjectOfType<GrassShowcaseController>();
+        demo.enabled=false;demo.OuterCoverage.enabled=false;demo.Cam.enabled=false;lab.enabled=false;
+        typeof(GrassHandoffDemo).GetMethod("Release",BindingFlags.NonPublic|BindingFlags.Instance).Invoke(demo,null);
+        if(baseline)demo.Solver=AssetDatabase.LoadAssetAtPath<ComputeShader>("Assets/PBDGrass/ContactProfileTemporary/CompactReferenceSolver.compute");
+        demo.Physics.ContactDrivenSimulation=false;demo.AutoTour=false;demo.ContactEnabled=true;
+        lab.SetView(1);lab.ApplyActors(0,true);demo.Initialize();
+        try
+        {
+            var r=demo.Renderer;Vector3 start=demo.Cam.transform.position;
+            for(int tick=1;tick<=report.ticksPerRun;tick++)
+            {
+                float t=(tick-1)/60f;bool contacts=tick<=240 || (tick>330 && tick<=420);
+                lab.ApplyActors(t,contacts);
+                float shift=tick>360?Mathf.SmoothStep(0,16,(tick-360)/120f):0;
+                demo.Cam.transform.position=start+Vector3.right*shift;
+                Vector3 focus=demo.Cam.transform.position;focus.y=0;
+                r.StreamTo(focus);r.SimulationCenter=focus;
+                r.SetWind(GrassResponseDemo.WindAt(t,true)*(demo.Wind.magnitude/6),.1f,new Vector4(.01f,.01f,0,1));
+                r.Advance(1f/60);
+                Require(r.ActiveBladeCount==report.active,"The fixed-budget workload changed.");
+                if(checkpoints.Contains(tick))
+                {
+                    var snapshot=Capture(r);
+                    if(baseline)reference.Add(tick,snapshot);
+                    else {report.comparisons.Add(Compare(tick,reference[tick],snapshot));reference.Remove(tick);}
+                }
+            }
+        }
+        finally {typeof(GrassHandoffDemo).GetMethod("Release",BindingFlags.NonPublic|BindingFlags.Instance).Invoke(demo,null);}
+    }
+    static T[] Read<T>(object r,string name) where T:struct
+    {var b=Field<ComputeBuffer>(r,name);var a=new T[b.count];b.GetData(a);return a;}
+    static Snapshot Capture(PBDGrassPatchRenderer r)
+    {
+        var s=new Snapshot {nodes=Read<BoneInfo>(r,"bones"),frames=Read<GrassBladeData.Frame>(r,"frames"),
+            plastic=Read<Vector4>(r,"plasticBends"),positions=Read<Vector3>(r,"positions"),normals=Read<Vector3>(r,"normals"),
+            mapping=new int[r.ActiveBladeCount/32]};
+        foreach(var g in r.Pool.Selected)s.mapping[g.PoolOffset/32]=g.GridId;
+        return s;
+    }
+    static Row Compare(int tick,Snapshot a,Snapshot b)
+    {
+        var r=new Row {tick=tick};
+        for(int i=0;i<a.mapping.Length;i++)if(a.mapping[i]!=b.mapping[i])r.mappingMismatches++;
+        for(int i=0;i<a.nodes.Length;i++)
+        {
+            var x=a.nodes[i];var y=b.nodes[i];
+            r.position=Mathf.Max(r.position,Vector3.Distance(x.Position,y.Position));
+            r.velocity=Mathf.Max(r.velocity,Vector3.Distance(x.Velocities,y.Velocities));
+            if(!x.Position.Equals(y.Position) || !x.Predicted.Equals(y.Predicted) || !x.Velocities.Equals(y.Velocities))r.nodeMismatches++;
+        }
+        for(int i=0;i<a.frames.Length;i++)
+        {
+            var x=a.frames[i];var y=b.frames[i];var q=x.Rotation;var v=y.Rotation;
+            r.rotation=Mathf.Max(r.rotation,Vector4.Distance(new Vector4(q.x,q.y,q.z,q.w),new Vector4(v.x,v.y,v.z,v.w)));
+            r.angular=Mathf.Max(r.angular,Vector3.Distance(x.AngularVelocity,y.AngularVelocity));
+            r.plastic=Mathf.Max(r.plastic,Vector4.Distance(a.plastic[i],b.plastic[i]));
+            if(!x.Rotation.Equals(y.Rotation) || !x.AngularVelocity.Equals(y.AngularVelocity))r.frameMismatches++;
+            if(!a.plastic[i].Equals(b.plastic[i]))r.plasticMismatches++;
+        }
+        for(int i=0;i<a.positions.Length;i++)
+        {
+            r.geometry=Mathf.Max(r.geometry,Vector3.Distance(a.positions[i],b.positions[i]));
+            r.normal=Mathf.Max(r.normal,Vector3.Distance(a.normals[i],b.normals[i]));
+            if(!a.positions[i].Equals(b.positions[i]) || !a.normals[i].Equals(b.normals[i]))r.geometryMismatches++;
+        }
+        return r;
+    }
+}

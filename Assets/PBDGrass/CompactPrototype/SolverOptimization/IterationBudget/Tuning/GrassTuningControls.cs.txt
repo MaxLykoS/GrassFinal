@@ -1,0 +1,42 @@
+using System;
+using System.IO;
+using System.Reflection;
+using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using GrassFinal.PBDGrass;
+using Object=UnityEngine.Object;
+public static class GrassTuningControls
+{
+    static void Require(bool b,string text){if(!b)throw new Exception(text);}
+    public static void Run()
+    {
+        string output=Environment.GetEnvironmentVariable("GRASS_ITERATION_OUTPUT");
+        try
+        {
+            EditorSceneManager.OpenScene("Assets/PBDGrass/Scenes/PBDGrassIterationBudget.unity");
+            var control=Object.FindObjectOfType<GrassIterationBudgetDemo>();var demo=control.Demo;
+            demo.enabled=false;demo.Cam.enabled=false;demo.OuterCoverage.enabled=false;demo.Initialize();
+            var renderer=demo.Renderer;float original=demo.Physics.SoftBendCompliance;
+            Require(Mathf.Abs(original-3.9f)<1e-5f,"Original material was overwritten in the saved scene.");
+            control.Quality=GrassIterationBudgetDemo.Budget.Minimum2x1;control.TuneMinimumBudget=true;control.Apply();
+            Require(demo.Physics.NearSubsteps==2 && demo.Physics.ConstraintIterations==1 && Mathf.Abs(demo.Physics.SoftBendCompliance-original*.5f)<1e-6f,"Tuning not applied.");
+            renderer.Advance(1f/60);
+            control.TuneMinimumBudget=false;control.Apply();Require(demo.Physics.SoftBendCompliance==original,"F10 did not restore material.");
+            control.TuneMinimumBudget=true;control.Apply();control.Apply();Require(demo.Physics.SoftBendCompliance==original*.5f,"Tuning compounded.");
+            control.Quality=GrassIterationBudgetDemo.Budget.Reference8x3;control.Apply();
+            Require(demo.Physics.SoftBendCompliance==original && demo.Physics.NearSubsteps==8 && demo.Physics.ConstraintIterations==3,"High quality material changed.");
+            control.Quality=GrassIterationBudgetDemo.Budget.Minimum2x1;control.Apply();
+            // This is an Editor batch test, not Play mode. Invoke the lifecycle
+            // callbacks explicitly because this component is not ExecuteAlways.
+            typeof(GrassIterationBudgetDemo).GetMethod("OnDisable",BindingFlags.Instance|BindingFlags.NonPublic).Invoke(control,null);
+            Require(demo.Physics.SoftBendCompliance==original,"Disabling selector left tuned material.");
+            typeof(GrassIterationBudgetDemo).GetMethod("OnEnable",BindingFlags.Instance|BindingFlags.NonPublic).Invoke(control,null);
+            Require(demo.Physics.SoftBendCompliance==original*.5f,"Re-enabling selector compounded tuning.");
+            Require(ReferenceEquals(renderer,demo.Renderer),"Switching replaced the live renderer.");
+            File.WriteAllText(Path.Combine(output,"Results.json"),"{\"passed\":true,\"originalSoft\":3.9,\"tunedSoft\":1.95,\"sameRenderer\":true}");
+            EditorApplication.Exit(0);
+        }
+        catch(Exception e){File.WriteAllText(Path.Combine(output,"Results.json"),"{\"passed\":false}");Debug.LogException(e);EditorApplication.Exit(1);}
+    }
+}

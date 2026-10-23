@@ -1,0 +1,80 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using GrassFinal.PBDGrass;
+using Object=UnityEngine.Object;
+public static class GrassCpuStateParity
+{
+    [Serializable] public sealed class Row {public string scenario,key,hash;public int tick;}
+    [Serializable] public sealed class Report {public bool passed;public string error;public List<Row> rows=new List<Row>();}
+    static object Field(object obj,string name)=>obj.GetType().GetField(name,BindingFlags.NonPublic|BindingFlags.Instance).GetValue(obj);
+    static string Hash(Array array)
+    {
+        byte[] bytes;
+        if(array is bool[] flags){bytes=new byte[flags.Length];for(int i=0;i<flags.Length;i++)bytes[i]=flags[i]?(byte)1:(byte)0;}
+        else
+        {
+            int stride=Marshal.SizeOf(array.GetType().GetElementType());bytes=new byte[array.Length*stride];var pinned=GCHandle.Alloc(array,GCHandleType.Pinned);
+            try{Marshal.Copy(pinned.AddrOfPinnedObject(),bytes,0,bytes.Length);}finally{pinned.Free();}
+        }
+        using(var sha=SHA256.Create())return BitConverter.ToString(sha.ComputeHash(bytes)).Replace("-","");
+    }
+    static void Add(Report report,string scenario,int tick,string key,Array data)=>report.rows.Add(new Row{scenario=scenario,tick=tick,key=key,hash=Hash(data)});
+    static void Gpu<T>(Report report,string scenario,int tick,PBDGrassPatchRenderer r,string field,int stride)where T:struct
+    {
+        var b=(ComputeBuffer)Field(r,field);var all=new T[b.count];b.GetData(all);var selected=new T[r.ActiveBladeCount*stride];int offset=0;
+        foreach(var grid in r.Pool.Selected){Array.Copy(all,grid.PoolOffset*stride,selected,offset,32*stride);offset+=32*stride;}
+        Add(report,scenario,tick,field,selected);
+    }
+    public static void Run()
+    {
+        string output=Environment.GetEnvironmentVariable("GRASS_LOW_BUDGET_OUTPUT");Directory.CreateDirectory(output);var report=new Report();
+        try
+        {
+            foreach(string scenario in new[]{"fixed","events"})
+            {
+                EditorSceneManager.OpenScene("Assets/PBDGrass/Scenes/PBDGrassIterationBudget.unity");
+                var demo=Object.FindObjectOfType<GrassHandoffDemo>();var lab=Object.FindObjectOfType<GrassShowcaseController>();
+                demo.enabled=false;lab.enabled=false;demo.OuterCoverage.enabled=false;demo.Cam.enabled=false;
+                typeof(GrassHandoffDemo).GetMethod("Release",BindingFlags.NonPublic|BindingFlags.Instance).Invoke(demo,null);
+                var budget=demo.GetComponent<GrassIterationBudgetDemo>();budget.Apply();
+                demo.Physics.ContactDrivenSimulation=scenario=="events";demo.AutoTour=false;lab.ApplyActors(0,true);demo.Initialize();
+                var r=demo.Renderer;Vector3 start=demo.Cam.transform.position;
+                for(int tick=1;tick<=720;tick++)
+                {
+                    float t=(tick-1)/60f;lab.ApplyActors(t,tick<=180||(tick>420&&tick<=510));
+                    float x=tick>420?Mathf.SmoothStep(0,24,(tick-420)/300f):0;
+                    var focus=start+Vector3.right*x;focus.y=0;demo.Cam.transform.position=start+Vector3.right*x;
+                    r.StreamTo(focus);r.SimulationCenter=focus;r.SetWind(GrassResponseDemo.WindAt(t,true)*(demo.Wind.magnitude/6),.1f,new Vector4(.01f,.01f,0,1));r.Advance(1f/60);
+                    if(tick!=1&&tick!=60&&tick!=180&&tick!=300&&tick!=420&&tick!=510&&tick!=720)continue;
+                    var selected=new GrassSimulationPool.ActiveGrid[r.Pool.Selected.Count];for(int i=0;i<selected.Length;i++)selected[i]=r.Pool.Selected[i];
+                    Add(report,scenario,tick,"selected",selected);
+                    foreach(string name in new[]{"gridSlot","slotGrid","lastUsed","active"})Add(report,scenario,tick,"pool."+name,(Array)Field(r.Pool,name));
+                    var tiered=Field(r.Handoff,"tiered");foreach(string name in new[]{"gridStates","historyMap","slotGrid","previousPool","active","wanted"})Add(report,scenario,tick,"history."+name,(Array)Field(tiered,name));
+                    Gpu<BoneInfo>(report,scenario,tick,r,"bones",8);Gpu<GrassBladeData.Frame>(report,scenario,tick,r,"frames",7);
+                    Gpu<Vector4>(report,scenario,tick,r,"plasticBends",7);Gpu<Vector3>(report,scenario,tick,r,"positions",15);Gpu<Vector3>(report,scenario,tick,r,"normals",15);
+                    foreach(var buffer in new[]{r.Compact.Pose,r.Compact.Plastic})
+                    {var raw=new uint[buffer.count];buffer.GetData(raw);Add(report,scenario,tick,buffer==r.Compact.Pose?"compact.pose":"compact.plastic",raw);}
+                    foreach(string name in new[]{"windState","previousWind"})
+                    {var buffer=(ComputeBuffer)Field(tiered,name);var raw=new Vector4[buffer.count];buffer.GetData(raw);Add(report,scenario,tick,"history."+name,raw);}
+                }
+                typeof(GrassHandoffDemo).GetMethod("Release",BindingFlags.NonPublic|BindingFlags.Instance).Invoke(demo,null);
+            }
+            string reference=Environment.GetEnvironmentVariable("GRASS_CPU_PARITY_REFERENCE");
+            if(!string.IsNullOrEmpty(reference))
+            {
+                var old=JsonUtility.FromJson<Report>(File.ReadAllText(reference));if(old.rows.Count!=report.rows.Count)throw new Exception("Incomplete reference.");
+                for(int i=0;i<old.rows.Count;i++){var a=old.rows[i];var b=report.rows[i];if(a.scenario!=b.scenario||a.tick!=b.tick||a.key!=b.key||a.hash!=b.hash)throw new Exception("State differs: "+b.scenario+" tick="+b.tick+" "+b.key);}
+            }
+            report.passed=true;
+        }
+        catch(Exception e){report.error=e.ToString();Debug.LogException(e);}
+        File.WriteAllText(Path.Combine(output,"Results.json"),JsonUtility.ToJson(report,true));EditorApplication.Exit(report.passed?0:1);
+    }
+}

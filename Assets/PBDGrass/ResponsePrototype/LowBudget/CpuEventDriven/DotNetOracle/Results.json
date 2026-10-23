@@ -1,0 +1,265 @@
+{
+  "date": "2026-10-23",
+  "passed": true,
+  "case_count": 24,
+  "ticks": 240000,
+  "execution": "Completed dotnet run; report archived from observed PASS console outputs, no rerun during archiving.",
+  "framework": ".NET SDK 7.0.101 / net7.0",
+  "unity_core_module": "C:/Program Files/Unity/Hub/Editor/2022.3.62f2c1/Editor/Data/Managed/UnityEngine/UnityEngine.CoreModule.dll",
+  "unity_core_module_copied": false,
+  "gpu_used": false,
+  "unity_editor_started": false,
+  "cases": [
+    {
+      "capacity_grids": 1,
+      "capacity_blades": 32,
+      "seed": 1,
+      "mode": "contact",
+      "ticks": 10000,
+      "passed": true,
+      "console": "PASS cap=1 seed=1 10000 ticks"
+    },
+    {
+      "capacity_grids": 1,
+      "capacity_blades": 32,
+      "seed": 2,
+      "mode": "fixed",
+      "ticks": 10000,
+      "passed": true,
+      "console": "PASS cap=1 seed=2 10000 ticks"
+    },
+    {
+      "capacity_grids": 1,
+      "capacity_blades": 32,
+      "seed": 7,
+      "mode": "contact",
+      "ticks": 10000,
+      "passed": true,
+      "console": "PASS cap=1 seed=7 10000 ticks"
+    },
+    {
+      "capacity_grids": 1,
+      "capacity_blades": 32,
+      "seed": 8,
+      "mode": "fixed",
+      "ticks": 10000,
+      "passed": true,
+      "console": "PASS cap=1 seed=8 10000 ticks"
+    },
+    {
+      "capacity_grids": 1,
+      "capacity_blades": 32,
+      "seed": 31,
+      "mode": "contact",
+      "ticks": 10000,
+      "passed": true,
+      "console": "PASS cap=1 seed=31 10000 ticks"
+    },
+    {
+      "capacity_grids": 1,
+      "capacity_blades": 32,
+      "seed": 32,
+      "mode": "fixed",
+      "ticks": 10000,
+      "passed": true,
+      "console": "PASS cap=1 seed=32 10000 ticks"
+    },
+    {
+      "capacity_grids": 16,
+      "capacity_blades": 512,
+      "seed": 1,
+      "mode": "contact",
+      "ticks": 10000,
+      "passed": true,
+      "console": "PASS cap=16 seed=1 10000 ticks"
+    },
+    {
+      "capacity_grids": 16,
+      "capacity_blades": 512,
+      "seed": 2,
+      "mode": "fixed",
+      "ticks": 10000,
+      "passed": true,
+      "console": "PASS cap=16 seed=2 10000 ticks"
+    },
+    {
+      "capacity_grids": 16,
+      "capacity_blades": 512,
+      "seed": 7,
+      "mode": "contact",
+      "ticks": 10000,
+      "passed": true,
+      "console": "PASS cap=16 seed=7 10000 ticks"
+    },
+    {
+      "capacity_grids": 16,
+      "capacity_blades": 512,
+      "seed": 8,
+      "mode": "fixed",
+      "ticks": 10000,
+      "passed": true,
+      "console": "PASS cap=16 seed=8 10000 ticks"
+    },
+    {
+      "capacity_grids": 16,
+      "capacity_blades": 512,
+      "seed": 31,
+      "mode": "contact",
+      "ticks": 10000,
+      "passed": true,
+      "console": "PASS cap=16 seed=31 10000 ticks"
+    },
+    {
+      "capacity_grids": 16,
+      "capacity_blades": 512,
+      "seed": 32,
+      "mode": "fixed",
+      "ticks": 10000,
+      "passed": true,
+      "console": "PASS cap=16 seed=32 10000 ticks"
+    },
+    {
+      "capacity_grids": 128,
+      "capacity_blades": 4096,
+      "seed": 1,
+      "mode": "contact",
+      "ticks": 10000,
+      "passed": true,
+      "console": "PASS cap=128 seed=1 10000 ticks"
+    },
+    {
+      "capacity_grids": 128,
+      "capacity_blades": 4096,
+      "seed": 2,
+      "mode": "fixed",
+      "ticks": 10000,
+      "passed": true,
+      "console": "PASS cap=128 seed=2 10000 ticks"
+    },
+    {
+      "capacity_grids": 128,
+      "capacity_blades": 4096,
+      "seed": 7,
+      "mode": "contact",
+      "ticks": 10000,
+      "passed": true,
+      "console": "PASS cap=128 seed=7 10000 ticks"
+    },
+    {
+      "capacity_grids": 128,
+      "capacity_blades": 4096,
+      "seed": 8,
+      "mode": "fixed",
+      "ticks": 10000,
+      "passed": true,
+      "console": "PASS cap=128 seed=8 10000 ticks"
+    },
+    {
+      "capacity_grids": 128,
+      "capacity_blades": 4096,
+      "seed": 31,
+      "mode": "contact",
+      "ticks": 10000,
+      "passed": true,
+      "console": "PASS cap=128 seed=31 10000 ticks"
+    },
+    {
+      "capacity_grids": 128,
+      "capacity_blades": 4096,
+      "seed": 32,
+      "mode": "fixed",
+      "ticks": 10000,
+      "passed": true,
+      "console": "PASS cap=128 seed=32 10000 ticks"
+    },
+    {
+      "capacity_grids": 1024,
+      "capacity_blades": 32768,
+      "seed": 1,
+      "mode": "contact",
+      "ticks": 10000,
+      "passed": true,
+      "console": "PASS cap=1024 seed=1 10000 ticks"
+    },
+    {
+      "capacity_grids": 1024,
+      "capacity_blades": 32768,
+      "seed": 2,
+      "mode": "fixed",
+      "ticks": 10000,
+      "passed": true,
+      "console": "PASS cap=1024 seed=2 10000 ticks"
+    },
+    {
+      "capacity_grids": 1024,
+      "capacity_blades": 32768,
+      "seed": 7,
+      "mode": "contact",
+      "ticks": 10000,
+      "passed": true,
+      "console": "PASS cap=1024 seed=7 10000 ticks"
+    },
+    {
+      "capacity_grids": 1024,
+      "capacity_blades": 32768,
+      "seed": 8,
+      "mode": "fixed",
+      "ticks": 10000,
+      "passed": true,
+      "console": "PASS cap=1024 seed=8 10000 ticks"
+    },
+    {
+      "capacity_grids": 1024,
+      "capacity_blades": 32768,
+      "seed": 31,
+      "mode": "contact",
+      "ticks": 10000,
+      "passed": true,
+      "console": "PASS cap=1024 seed=31 10000 ticks"
+    },
+    {
+      "capacity_grids": 1024,
+      "capacity_blades": 32768,
+      "seed": 32,
+      "mode": "fixed",
+      "ticks": 10000,
+      "passed": true,
+      "console": "PASS cap=1024 seed=32 10000 ticks"
+    }
+  ],
+  "checks": [
+    "Exact active grid identity set against the frozen pre-event pool, every tick and all capacities",
+    "Exact InteractionBlades, SettlingBlades, FadingBlades",
+    "Exact ExitStartedAt per live grid",
+    "Capacity cap, unique grid/slot, active and SlotForGrid consistency",
+    "Persistent slot for grids retained across Select",
+    "Static and moving focus, stable ranking switches, random ForgetGrids, changing settle/fade durations, budget overflow"
+  ],
+  "mode_switch_included_in_24_cases": false,
+  "mode_switch_note": "Separate exploratory mode-switch test found the frozen pool retains an old releaseStarted across repeated fixed/contact switches; the new pool starts a fresh release interval on entry. This known old bug difference is excluded from the 24 exact cases.",
+  "limits": [
+    "These 24 cases use 33x33 static bucket grids, not Unity GrassWorldLayout streaming.",
+    "The separate coverage oracle checks static plus 64x64 streamed ring coordinates with a small CPU-only world stub.",
+    "No shader execution, GPU state parity, visual quality or performance result is inferred.",
+    "Selected list order and internal pool slot choices may differ; persistent physical ownership is compared."
+  ],
+  "coverage_oracle": {
+    "passed": true,
+    "steps": 1024,
+    "console": [
+      "Coverage PASS False",
+      "Coverage PASS True"
+    ],
+    "implementation": "Real Coverage/Query/Pool and Unity managed vector/math operations; world stub copies ring coordinate replacement without yaw or GPU data."
+  },
+  "source_sha256": {
+    "EditorStubs.cs.txt": "0cfcadf9b99de8ffa79c9dc21c1eb1acbb70ac9ecbf8afa5b6ab48fc1952eb45",
+    "GrassEventCpuValidation.cs.txt": "ecccc00f6ab1cf71920bc45f6b1278500c9e57626db1b4db828ade8d283269ed",
+    "GrassGridQuery.cs.txt": "d646bcb44162b58952e166632b8daecdf205206dee7c3519fc9c934b5c2790ca",
+    "GrassInteractionCoverage.cs.txt": "a0d75a07bac09afda14420d7a87424c56bd1bdd05af6210a4a3cd6009c98e487",
+    "GrassReferenceSimulationPool.cs.txt": "a2d76228eb5250dce7d363d31983090fc310989dd360d03f03d7435967d3c148",
+    "GrassSimulationPool.cs.txt": "bed73aff2e30add54e678665a111e100515c0e7d76adee0af1cf25d223647fec",
+    "Program.cs.txt": "3a1b17b29c2a2563d22c6bcd4d7222cc0410c583b6305c70d03e600941541ba9",
+    "XPBDGrassSettings.cs.txt": "6292187c6adea4922020f21a01abe612242a0c505cb2256a79b60a5a244768a4"
+  }
+}

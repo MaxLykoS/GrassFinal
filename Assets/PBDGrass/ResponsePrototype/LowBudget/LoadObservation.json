@@ -1,0 +1,11 @@
+{
+  "date": "2026-10-23",
+  "scope": "nvidia-smi snapshot immediately before launching PairedPerformance; benchmark Unity process was not yet started",
+  "gpu": "NVIDIA GeForce RTX 3080 Ti",
+  "pstate": "P0",
+  "gpuUtilizationPercent": 99,
+  "memoryUtilizationPercent": 28,
+  "graphicsClockMHz": 1845,
+  "powerWatts": 347.91,
+  "interpretation": "Existing GPU workload prevents treating these wall-clock GPU timestamp intervals as an isolated 1 ms acceptance measurement. User applications were left running."
+}

@@ -1,0 +1,108 @@
+from pathlib import Path
+import hashlib
+import json
+import statistics
+import subprocess
+import uuid
+import zipfile
+here=Path(__file__).resolve().parent
+workspace=here.parents[5]
+results=Path('D:/CodexTemp/codex-grass-contact-profile/IterationResults')
+summary={'date':'2026-10-23','profile':{'budget':'2x1','softComplianceMultiplier':.5,
+    'rootDampingPlasticParameters':'unchanged'},'performance':[],'checks':{},'quality':{}}
+for name in ['TuningSweep1','TuningQuality','TuningLifecycle','TuningCombined','TuningControls1']:
+    r=json.loads((results/name/'Results.json').read_text(encoding='utf-8-sig'))
+    assert r['passed'],name
+    summary['checks'][name]=r
+for path in sorted((results/'TuningPerformance').glob('*.json')):
+    r=json.loads(path.read_text(encoding='utf-8-sig'))
+    assert r['passed'] and len(r['rows'])==300 and all(x['active']==32768 and x['ticks']==1 for x in r['rows'])
+    out={k:r[k] for k in ['caseName','gpu','api','substeps','iterations','gpuBufferBytes']};out['metrics']={}
+    for key in ['solveGpu','displayGpu','coreCullGpu','outerGpu','renderGpu','totalGpu','advanceCpu','poolCpu','handoffCpu','totalCpu']:
+        values=sorted(x[key] for x in r['rows']);out['metrics'][key]={'mean':statistics.mean(values),'p95':values[int(.95*len(values))]}
+    summary['performance'].append(out)
+summary['combinedMeaning']='Runtime handoff/plastic/state assertions passed. All 8 transient rebakes are reported without the old near-equality thresholds; bank equivalence failed and is NOT implied by passed.'
+manifest=json.loads((workspace/'Assets/PBDGrass/ResponsePrototype/CombinedBaselineValidation/AcceptedBakeBank.json').read_text(encoding='utf-8-sig'))
+for entry in manifest['files']:
+    assert hashlib.sha256((workspace/entry['path']).read_bytes()).hexdigest()==entry['sha256'],entry['path']
+summary['acceptedBankUnchanged']=True
+for relative in ['Assets/PBDGrass/CompactPrototype/Shaders/CompactGrassSolver.compute',
+                 'Assets/PBDGrass/Runtime/XPBDGrassSettings.cs','Assets/PBDGrass/Scenes/PBDGrassContactLab.unity',
+                 'Assets/PBDGrass/Scenes/PBDGrassCombinedBaseline.unity']:
+    assert (workspace/relative).read_bytes().replace(b'\r\n',b'\n')==subprocess.check_output(['git','show','HEAD:'+relative],cwd=workspace).replace(b'\r\n',b'\n'),relative
+(here/'Summary.json').write_text(json.dumps(summary,indent=2),encoding='utf-8')
+report='''# F9 2×1 支撑调校 — 2026-10-23
+
+后续已完成独立响应库匹配，当前场景默认 2×1＋F10，详见 [新库与 LOD 验证](../../../../ResponsePrototype/LowBudget/Results.md)。下文保留接库前的调校记录。
+
+仅在 `PBDGrassIterationBudget.unity` 的 F9 档位，增加可关闭的参数调校。F10 开关；默认开启。F5～F8 仍恢复原材质参数。场景启动档位仍为 3×1；切换不重建 renderer、不清除塑性，R 才重置。原 ContactLab、联合 baseline、求解器、全局物理默认值以及八个已接受烘焙资产均保持不变。
+
+## 具体设置
+
+| 参数 | 原值 | F9 调校值 |
+|---|---:|---:|
+| NearSubsteps / ConstraintIterations | 2 / 1 | 2 / 1 |
+| SoftBendCompliance | 3.9 | **1.95** |
+| BaseBendCompliance | 0.104 | 0.104 |
+| HardBendCompliance / TwistCompliance | 0.26 / 1.3 | 不变 |
+| VelocityDamping / AngularDamping | 2 / 3 | 不变 |
+| PlasticYieldCurvature / PlasticFlowRate | 2.5 / 6 | 不变 |
+| BaseYieldDegrees | 40 | 40 |
+
+只把易弯方向柔度乘以 0.5；没有增加迭代、降低重力或覆盖节点位置。组件的 Minimum Soft Compliance Scale 可继续调：0.5 对应 1.95；若太硬，先试 0.6（2.34），再试 0.75（2.925）。每次仅改这一项，按 R 重置后用相同风场和碰撞动作观察。暂不通过降低塑性阈值或改变阻尼掩盖其他变化。
+
+## 参数扫描证据
+
+32 根同类草、原求解方程、无风无塑性预热 600 ticks。当前场景类型为 Tall / Narrow / Soft（GrassResponse6）。只改根部柔度到一半/四分之一几乎没有帮助；改变叶身 SoftBendCompliance 的效果显著。
+
+| 配置 | 平均叶尖高度 | 相对高迭代静态节点 RMS |
+|---|---:|---:|
+| 8×3 参考 | 0.861 m | 0 |
+| 原始 2×1 | 0.370 m | 0.341 m |
+| 2×1，根部柔度 ×0.5 | 0.373 m | 0.339 m |
+| 2×1，叶身柔度 ×0.75 | 0.638 m | 0.179 m |
+| **2×1，叶身柔度 ×0.5** | **0.882 m** | **0.039 m** |
+
+无塑性压下再释放的探针中，逐帧平均叶尖二阶位移幅度：高迭代 0.00270 m，原始 2×1 为 0.000753 m，调校版 0.000938 m。调校后比原始 2×1 活跃一些，但该代理指标仍明显低于高迭代。此指标包含低频运动，并非纯高频噪声或能量测量；没有仅凭它宣称抖动问题完全解决。高迭代参考在该压下测试后也没有回到同一个静态平衡点，完整数据留存。
+
+## 实际草场验证
+
+固定 32768 根、12 碰撞体，采样 4096 根，运行 720 ticks。无碰撞随机风阶段，叶尖相对高迭代 RMS 从 0.491 m 降到 0.081 m；碰撞撤去 4 秒后，从 0.582 m 降到 0.315 m。最后时刻平均塑性弯角从 0.00797 降到 0.00555 rad，约减少 **30%**。因此挺拔度改善伴随更弱的永久倒伏，未宣称保持原有塑性幅度。
+
+同轮 3080 Ti / D3D11 GPU 时间戳（120 帧预热、每次 300 帧、每帧一个完整 tick，始终 32768 活跃）：
+
+| 配置 | A 均值 | B 均值 | A / B P95 |
+|---|---:|---:|---:|
+| 原始 2×1 | 0.660 ms | 0.676 ms | 0.876 / 0.902 ms |
+| 调校 2×1 | 0.662 ms | 0.719 ms | 0.880 / 1.378 ms |
+
+包含求解和近景几何重建；显示交接约 0.79–0.82 ms、绘制约 0.88–0.93 ms、CPU Advance 约 2.03 ms 单独记录，不混入求解指标。GPU buffer 224852832 bytes，与原版相同。调校 B 轮有尾部波动，尚不能称为稳定低于 1 ms；参数变化没有新增 dispatch 或缓冲。
+
+生命周期验证通过 2 秒继续求解、1 秒边求解边过渡、塑性保存、重接触、流式保留与卸载清除、32768 上限和外围覆盖连续。回收时最大叶尖步变 1.03 mm，过渡期间最大单帧步变 6.45 cm。
+
+联合场景 32768 XPBD + 98304 Bezier 的 1440 ticks 运行、塑性与出入 LOD 状态断言通过；八种类型均进行临时重烘焙，旧资产哈希不变。但原响应库的数值匹配**未通过**：当前 GrassResponse6 在全部 25 个风样本上的最大节点偏差约 0.261 m，八类中的最差值达 1.474 m（Tall / Wide / Soft）。当前的一半柔度比例只能作为当前草型实验，不能直接推广为全部材质的通用补偿。稳定后需按类型选择补偿并生成独立低预算响应库；本轮没有覆盖旧资产，也没有把流程通过等同于烘焙等价。
+
+## 使用与复现
+
+- 实验场景按 F9，再用 F10 切换原始/调校 2×1；每组比较前按 R 重置。调校只作用于 F9。
+- 修改 Minimum Soft Compliance Scale，不直接改运行中被选择器覆盖的 SoftBendCompliance。
+- `GrassTuningProbe.cs.txt`：独立参数扫描；GPU 回读只在离线探针中。
+- `prepare.py`：安装参数覆盖、完整草场比较和计时到隔离项目；生产 runtime 不含测试环境变量覆盖。
+- `GrassTuningControls.cs.txt`：序列化场景、重复 Apply 不累乘、F10 恢复、高档位恢复、同 renderer 和禁用/启用回调测试。Editor batch 中显式调用生命周期回调；未模拟原生键盘事件。
+- `Summary.json`、`Evidence.zip`：原始 JSON、当前草场截图和复现脚本。首次探针材质名称错误及第一次 Editor 生命周期事件触发假设错误是测试装配问题，分别在 TuningSweep1 / TuningControls1 修正；失败记录不当作求解器失败。
+- 本轮未提交或推送。所有更改位于 Assets/PBDGrass；未访问 Library。
+'''
+(here/'Results.md').write_text(report,encoding='utf-8')
+with zipfile.ZipFile(here/'Evidence.zip','w',zipfile.ZIP_DEFLATED) as z:
+    for folder in results.glob('Tuning*'):
+        for path in folder.iterdir():
+            if path.suffix=='.json' or (path.suffix=='.png' and folder.name=='TuningQuality'):
+                z.write(path,'results/'+str(path.relative_to(results)))
+    for path in here.iterdir():
+        if path.suffix in ['.py','.txt','.json','.md']:z.write(path,'reproduction/'+path.name)
+    z.write(here.parent/'GrassIterationBudgetDemo.cs','reproduction/GrassIterationBudgetDemo.cs')
+for path in [here,*here.iterdir()]:
+    if path.suffix=='.meta' or path.name=='__pycache__':continue
+    meta=Path(str(path)+'.meta')
+    if not meta.exists():meta.write_text('fileFormatVersion: 2\nguid: '+uuid.uuid4().hex+'\n'+('folderAsset: yes\n' if path.is_dir() else '')+'DefaultImporter:\n  externalObjects: {}\n',encoding='utf-8')
+print('Saved tuning report, summary and raw evidence; original solver and bake bank verified unchanged.')

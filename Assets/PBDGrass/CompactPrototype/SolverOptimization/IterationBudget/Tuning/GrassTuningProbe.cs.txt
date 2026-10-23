@@ -1,0 +1,92 @@
+// Offline parameter sweep: a homogeneous 32-blade patch, no readback in runtime code.
+using System;
+using System.Collections.Generic;
+using System.IO;
+using UnityEditor;
+using UnityEngine;
+using GrassFinal.PBDGrass;
+using Object=UnityEngine.Object;
+public static class GrassTuningProbe
+{
+    [Serializable] public sealed class Row
+    {
+        public string name;public int substeps,iterations;public float rootScale,softScale,angularDamping;
+        public Vector3 calmTip,windTip,releasedTip,plasticTip;
+        public float calmNodeRms,windNodeRms,calmSpeed,windSpeed,rootAngle,elasticRecoveryRms;
+        public float releaseMaxStep,releaseMeanStep,releaseMeanAcceleration,tailSpeed,plasticMean,plasticMax;
+    }
+    [Serializable] public sealed class Report {public bool passed;public string error;public List<Row> rows=new List<Row>();}
+    static BoneInfo[] calmReference,windReference;
+    static void Require(bool value,string message){if(!value)throw new Exception(message);}
+    static Vector3 Tip(BoneInfo[] nodes){Vector3 p=Vector3.zero;for(int b=0;b<32;b++)p+=nodes[b*8+7].Position;return p/32;}
+    static float Rms(BoneInfo[] a,BoneInfo[] b){double sum=0;for(int n=0;n<a.Length;n++)sum+=(a[n].Position-b[n].Position).sqrMagnitude;return (float)Math.Sqrt(sum/a.Length);}
+    static float Speed(BoneInfo[] nodes){float speed=0;foreach(var n in nodes){Require(!float.IsNaN(n.Position.sqrMagnitude)&&!float.IsInfinity(n.Position.sqrMagnitude),"Nonfinite nodes");speed+=n.Velocities.magnitude;}return speed/nodes.Length;}
+    static void Steps(PBDGrassPatchRenderer r,int count){for(int t=0;t<count;t++)r.Advance(1f/60);}
+    public static void Run()
+    {
+        var report=new Report();var output=Environment.GetEnvironmentVariable("GRASS_ITERATION_OUTPUT");Directory.CreateDirectory(output);
+        var camera=new GameObject("Offline tuning camera").AddComponent<Camera>();camera.enabled=false;camera.transform.position=new Vector3(0,2,-3);
+        var shape=new GameObject("Offline press").AddComponent<GrassInteractionCollider>();shape.Type=GrassInteractionCollider.Shape.Sphere;shape.Radius=.6f;shape.Friction=.45f;shape.enabled=false;
+        var wind=GrassResponseType.CreateUniformWindTexture();
+        var type=AssetDatabase.LoadAssetAtPath<GrassResponseType>("Assets/PBDGrass/ResponsePrototype/Baked/GrassResponse6.asset");
+        var solver=AssetDatabase.LoadAssetAtPath<ComputeShader>("Assets/PBDGrass/Shaders/PBDSolverCS.compute");
+        var material=new Material(Shader.Find("PBDGrass/Workspace/PBDGrassShaderDrawProcedual"));
+        try
+        {
+            foreach(var c in new[]{
+                new Row{name="reference",substeps=8,iterations=3,rootScale=1,softScale=1,angularDamping=3},
+                new Row{name="raw",substeps=2,iterations=1,rootScale=1,softScale=1,angularDamping=3},
+                new Row{name="root50",substeps=2,iterations=1,rootScale=.5f,softScale=1,angularDamping=3},
+                new Row{name="root25",substeps=2,iterations=1,rootScale=.25f,softScale=1,angularDamping=3},
+                new Row{name="soft75",substeps=2,iterations=1,rootScale=1,softScale=.75f,angularDamping=3},
+                new Row{name="soft50",substeps=2,iterations=1,rootScale=1,softScale=.5f,angularDamping=3},
+                new Row{name="root50soft75",substeps=2,iterations=1,rootScale=.5f,softScale=.75f,angularDamping=3},
+                new Row{name="root50soft50",substeps=2,iterations=1,rootScale=.5f,softScale=.5f,angularDamping=3}})
+            {
+                var settings=JsonUtility.FromJson<XPBDGrassSettings>(JsonUtility.ToJson(type.Physics));
+                settings.MaxActiveBlades=32;settings.NearDistance=8;settings.ContactDrivenSimulation=false;
+                settings.EnablePlasticity=false;settings.NearSubsteps=c.substeps;settings.ConstraintIterations=c.iterations;
+                settings.BaseBendCompliance*=c.rootScale;settings.SoftBendCompliance*=c.softScale;settings.AngularDamping=c.angularDamping;
+                var patch=GrassResponseType.CreatePatch(type,Vector3.zero);shape.enabled=false;shape.transform.position=new Vector3(0,3,.25f);
+                try
+                {
+                    using(var r=new PBDGrassPatchRenderer(patch,solver,material,camera,wind,settings,new[]{shape.transform}))
+                    {
+                        r.SetWind(Vector3.zero,0,Vector4.zero);Steps(r,600);var calm=r.ReadNodes();c.calmTip=Tip(calm);c.calmSpeed=Speed(calm);
+                        var frames=r.ReadFrames();c.rootAngle=Quaternion.Angle(r.Data.GetRod(0).Rotation,frames[0].Rotation);
+                        if(c.name=="reference")calmReference=calm;c.calmNodeRms=Rms(calm,calmReference);
+                        r.SetWind(new Vector3(4,0,2),0,Vector4.zero);Steps(r,360);var windy=r.ReadNodes();c.windTip=Tip(windy);c.windSpeed=Speed(windy);
+                        if(c.name=="reference")windReference=windy;c.windNodeRms=Rms(windy,windReference);
+                        r.SetWind(Vector3.zero,0,Vector4.zero);Steps(r,360);Press(r,shape);shape.enabled=false;
+                        var previous=Tip(r.ReadNodes());Vector3 previousDelta=Vector3.zero;float movement=0,acceleration=0;
+                        for(int tick=0;tick<360;tick++)
+                        {
+                            r.Advance(1f/60);var current=Tip(r.ReadNodes());var delta=current-previous;
+                            c.releaseMaxStep=Mathf.Max(c.releaseMaxStep,delta.magnitude);movement+=delta.magnitude;
+                            if(tick>0)acceleration+=(delta-previousDelta).magnitude;
+                            previous=current;previousDelta=delta;
+                        }
+                        var released=r.ReadNodes();c.releasedTip=Tip(released);c.elasticRecoveryRms=Rms(released,calm);c.tailSpeed=Speed(released);
+                        c.releaseMeanStep=movement/360;c.releaseMeanAcceleration=acceleration/359;
+                        settings.EnablePlasticity=true;r.ResetDeformation();Steps(r,360);Press(r,shape);shape.enabled=false;Steps(r,360);
+                        c.plasticTip=Tip(r.ReadNodes());var bends=r.ReadPlasticBends();
+                        foreach(var bend in bends){float a=new Vector2(bend.x,bend.y).magnitude;c.plasticMean+=a;c.plasticMax=Mathf.Max(c.plasticMax,a);}c.plasticMean/=bends.Length;
+                    }
+                }
+                finally{Object.DestroyImmediate(patch.PatchMesh);}
+                report.rows.Add(c);File.WriteAllText(Path.Combine(output,"Results.json"),JsonUtility.ToJson(report,true));
+            }
+            report.passed=true;
+        }
+        catch(Exception e){report.error=e.ToString();Debug.LogException(e);}
+        finally{Object.DestroyImmediate(material);Object.DestroyImmediate(wind);Object.DestroyImmediate(shape.gameObject);Object.DestroyImmediate(camera.gameObject);
+            File.WriteAllText(Path.Combine(output,"Results.json"),JsonUtility.ToJson(report,true));}
+        EditorApplication.Exit(report.passed?0:1);
+    }
+    static void Press(PBDGrassPatchRenderer r,GrassInteractionCollider shape)
+    {
+        shape.enabled=true;shape.transform.position=new Vector3(0,3,.25f);
+        for(int tick=0;tick<180;tick++)
+        {shape.transform.position=new Vector3(0,Mathf.Lerp(3,.65f,Mathf.SmoothStep(0,1,tick/60f)),.25f);r.Advance(1f/60);}
+    }
+}

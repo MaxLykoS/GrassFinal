@@ -1,0 +1,73 @@
+using System;
+using System.IO;
+using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using GrassFinal.PBDGrass;
+using GrassFinal.PBDGrass.Editor;
+using Object=UnityEngine.Object;
+public static class BuildIterationScene
+{
+    public static void Run()
+    {
+        const string path="Assets/PBDGrass/Scenes/PBDGrassIterationBudget.unity";
+        try
+        {
+            var scene=EditorSceneManager.OpenScene(GrassShowcaseSceneBuilder.ScenePath);
+            var demo=Object.FindObjectOfType<GrassHandoffDemo>();
+            var budget=demo.gameObject.AddComponent<GrassIterationBudgetDemo>();
+            budget.Demo=demo;budget.Quality=GrassIterationBudgetDemo.Budget.Minimum2x1;
+            budget.ReferenceResponse=AssetDatabase.LoadAssetAtPath<GrassResponseType>(GrassResponseBaker.TypePath(5));
+            budget.MinimumResponse=AssetDatabase.LoadAssetAtPath<GrassResponseType>(GrassLowBudgetBaker.TypePath(5));
+            budget.Apply();
+            // Persist the unscaled value; Apply multiplies it once at runtime.
+            demo.Physics.SoftBendCompliance=budget.ReferenceResponse.Physics.SoftBendCompliance;
+            ConfigureSpreadLayout(Object.FindObjectOfType<GrassShowcaseController>());
+            demo.gameObject.name="Grass iteration experiment - 32768 XPBD capacity";
+            if(!EditorSceneManager.SaveScene(scene,path))throw new Exception("Could not save iteration scene.");
+            AssetDatabase.SaveAssets();
+            EditorSceneManager.OpenScene(path);
+            budget=Object.FindObjectOfType<GrassIterationBudgetDemo>();demo=budget.Demo;
+            budget.Apply();
+            if(demo.Physics.NearSubsteps!=2 || demo.Physics.ConstraintIterations!=1 || demo.Physics.MaxActiveBlades!=32768)
+                throw new Exception("Wrong serialized iteration budget.");
+            demo.Initialize();
+            foreach(GrassIterationBudgetDemo.Budget choice in Enum.GetValues(typeof(GrassIterationBudgetDemo.Budget)))
+            {
+                budget.Quality=choice;budget.Apply();
+                demo.Renderer.Advance(1f/60);
+                if(demo.Renderer.ActiveBladeCount>32768)throw new Exception("Pool ceiling changed.");
+            }
+            File.WriteAllText(Path.Combine(Environment.GetEnvironmentVariable("GRASS_ITERATION_OUTPUT"),"Results.json"),"{\"passed\":true,\"scene\":\""+path+"\"}");
+            EditorApplication.Exit(0);
+        }
+        catch(Exception e){Debug.LogException(e);EditorApplication.Exit(1);}
+    }
+    // BEGIN spread_scene.py generated layout
+    private static void ConfigureSpreadLayout(GrassShowcaseController lab)
+    {
+        if(lab==null || lab.Actors.Length!=12)throw new Exception("Expected 12 contact stations.");
+        lab.Actors[0].Origin=new Vector3(-8f,0.5f,-22f);lab.Actors[0].Axis=new Vector3(1f,0f,0f);lab.Actors[0].Travel=30;lab.Actors[0].Period=36;
+        lab.Actors[1].Origin=new Vector3(-24f,0.6f,8f);lab.Actors[1].Axis=new Vector3(1f,0f,0f);lab.Actors[1].Travel=16;lab.Actors[1].Period=20;
+        lab.Actors[2].Origin=new Vector3(23f,1f,-3f);lab.Actors[2].Axis=new Vector3(0f,0f,1f);lab.Actors[2].Travel=30;lab.Actors[2].Period=36;
+        lab.Actors[3].Origin=new Vector3(2f,0.48f,12f);lab.Actors[3].Axis=new Vector3(1f,0f,1f);lab.Actors[3].Travel=30;lab.Actors[3].Period=36;
+        lab.Actors[4].Origin=new Vector3(-36f,0.3f,-28f);lab.Actors[4].Axis=new Vector3(0f,0f,0f);lab.Actors[4].Travel=0;lab.Actors[4].Period=9;
+        lab.Actors[5].Origin=new Vector3(-6f,0.45f,36f);lab.Actors[5].Axis=new Vector3(0f,0f,0f);lab.Actors[5].Travel=0;lab.Actors[5].Period=11;
+        lab.Actors[6].Origin=new Vector3(30f,0.6f,31f);lab.Actors[6].Axis=new Vector3(0f,0f,0f);lab.Actors[6].Travel=0;lab.Actors[6].Period=13;
+        lab.Actors[7].Origin=new Vector3(7f,0.75f,6f);lab.Actors[7].Axis=new Vector3(0f,0f,0f);lab.Actors[7].Travel=0;lab.Actors[7].Period=10;
+        lab.Actors[8].Origin=new Vector3(-36f,1.55f,14f);lab.Actors[8].Axis=new Vector3(0f,0f,1f);lab.Actors[8].Travel=18;lab.Actors[8].Period=24;
+        lab.Actors[9].Origin=new Vector3(0f,0.7f,-6f);lab.Actors[9].Axis=new Vector3(1f,0f,0f);lab.Actors[9].Travel=42;lab.Actors[9].Period=48;
+        lab.Actors[10].Origin=new Vector3(8f,0.7f,7f);lab.Actors[10].Axis=new Vector3(0f,0f,1f);lab.Actors[10].Travel=33;lab.Actors[10].Period=40;
+        lab.Actors[11].Origin=new Vector3(38f,0.9f,20f);lab.Actors[11].Axis=new Vector3(0f,0f,0f);lab.Actors[11].Travel=0;lab.Actors[11].Period=10;
+        var camera=lab.Demo.Cam;camera.fieldOfView=70;
+        camera.transform.position=new Vector3(0f,72f,-12f);camera.transform.LookAt(new Vector3(0f,0.6f,0f));
+        lab.ApplyActors(0,true);
+        for(int i=0;i<lab.Labels.Length;i++)
+        {
+            var origin=lab.Actors[i].Origin;
+            lab.Labels[i].position=new Vector3(origin.x,2.3f,origin.z+1.2f);
+            lab.Labels[i].rotation=camera.transform.rotation;
+        }
+    }
+    // END spread_scene.py generated layout
+}

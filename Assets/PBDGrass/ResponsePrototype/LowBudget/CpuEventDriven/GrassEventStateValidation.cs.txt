@@ -1,0 +1,374 @@
+// Offline diagnostics only. Install in the isolated validation project's Editor folder.
+// Reference/current data are ordered by world cell (x,z), never by pool/history slot.
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.IO.Compression;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using GrassFinal.PBDGrass;
+using Object=UnityEngine.Object;
+public static class GrassEventStateValidation
+{
+    const int Magic=0x47574556,Version=1,ChannelCount=14;
+    enum Kind { Identity=1,Float=2,Pose=3,Plastic=4 }
+    [Serializable] public sealed class Row
+    {
+        public string scenario,key,hash,referenceHash,file,firstDifference,comparison;
+        public int tick,bytes,differentComponents,firstIndex=-1;
+        public bool exact=true,comparable=true,withinTolerance=true;
+        public double maxAbs,rms,tolerance,posePositionMax,poseWidthDegreesMax;
+    }
+    [Serializable] public sealed class Scenario
+    {
+        public string name; public int ticks,maxActive,maxRejected,streamEvents,fullUnloads,checkpoints,actors;
+        public bool capRespected=true,unloadPlasticCleared,finalDrained;
+        public Vector3 initialCamera; public float initialFov;
+    }
+    [Serializable] public sealed class Report
+    {
+        public bool passed,exactPassed=true,compared,finite=true;
+        public string error,reference,scope="World identity aligned; all GPU readback is outside performance tests.",tolerances;
+        public List<Scenario> scenarios=new List<Scenario>();public List<Row> rows=new List<Row>();
+        public List<string> failures=new List<string>();
+    }
+    struct LiveGrid {public int id,offset,x,z;}
+    static readonly int[] checkpoints={1,180,320,360,720,900,1080,1141,1171,1440};
+    static readonly Dictionary<string,double> tolerances=new Dictionary<string,double>();
+    static Report report;static string output,referenceDirectory;static Report reference;
+    static readonly Dictionary<string,Row> referenceRows=new Dictionary<string,Row>();
+    static object Field(object obj,string name)
+    {
+        var field=obj.GetType().GetField(name,BindingFlags.NonPublic|BindingFlags.Public|BindingFlags.Instance);
+        if(field==null)throw new MissingFieldException(obj.GetType().Name,name);return field.GetValue(obj);
+    }
+    static void Require(bool condition,string message){if(!condition)throw new InvalidOperationException(message);}
+    static void Release(GrassHandoffDemo demo)
+    {typeof(GrassHandoffDemo).GetMethod("Release",BindingFlags.NonPublic|BindingFlags.Instance).Invoke(demo,null);}
+    static string RowKey(string scenario,int tick,string key)=>scenario+"/"+tick+"/"+key;
+    static T[] Read<T>(ComputeBuffer buffer)where T:struct{var a=new T[buffer.count];buffer.GetData(a);return a;}
+    static byte[] Bytes(Array array)
+    {
+        int stride=Marshal.SizeOf(array.GetType().GetElementType());var bytes=new byte[checked(array.Length*stride)];
+        if(bytes.Length==0)return bytes;var pin=GCHandle.Alloc(array,GCHandleType.Pinned);
+        try{Marshal.Copy(pin.AddrOfPinnedObject(),bytes,0,bytes.Length);}finally{pin.Free();}return bytes;
+    }
+    static string Hash(byte[] bytes){using(var sha=SHA256.Create())return BitConverter.ToString(sha.ComputeHash(bytes)).Replace("-","");}
+    static int[] Integers(byte[] bytes){var a=new int[bytes.Length/4];Buffer.BlockCopy(bytes,0,a,0,bytes.Length);return a;}
+    static uint[] Words(byte[] bytes){var a=new uint[bytes.Length/4];Buffer.BlockCopy(bytes,0,a,0,bytes.Length);return a;}
+    static float[] Floats(byte[] bytes){var a=new float[bytes.Length/4];Buffer.BlockCopy(bytes,0,a,0,bytes.Length);return a;}
+    static bool Finite(float value)=>!float.IsNaN(value)&&!float.IsInfinity(value);
+    static void Failure(string message){report.exactPassed=false;report.failures.Add(message);}
+    public static void Run()
+    {
+        output=Environment.GetEnvironmentVariable("GRASS_LOW_BUDGET_OUTPUT");Require(!string.IsNullOrEmpty(output),"GRASS_LOW_BUDGET_OUTPUT is required.");
+        Directory.CreateDirectory(output);report=new Report();referenceRows.Clear();tolerances.Clear();
+        try
+        {
+            report.reference=Environment.GetEnvironmentVariable("GRASS_CPU_EVENT_REFERENCE");
+            report.tolerances=Environment.GetEnvironmentVariable("GRASS_CPU_EVENT_TOLERANCES")??"";
+            // Exact is the default. Only individually named float channels may opt in to a tolerance.
+            // Identity, packed pose/plastic, and wind remain exact; no global epsilon is accepted.
+            if(!string.IsNullOrEmpty(report.tolerances))foreach(string item in report.tolerances.Split(';'))
+            {
+                string[] parts=item.Split('=');Require(parts.Length==2&&parts[0].StartsWith("live."),"Only named live float channels may have a tolerance: "+item);
+                double value=double.Parse(parts[1],CultureInfo.InvariantCulture);Require(value>=0&&!double.IsNaN(value)&&!double.IsInfinity(value),"Invalid tolerance.");
+                tolerances.Add(parts[0],value);
+            }
+            if(!string.IsNullOrEmpty(report.reference))
+            {
+                reference=JsonUtility.FromJson<Report>(File.ReadAllText(report.reference));Require(reference.passed,"Reference validation failed.");
+                referenceDirectory=Path.GetDirectoryName(Path.GetFullPath(report.reference));report.compared=true;
+                foreach(var row in reference.rows)referenceRows.Add(RowKey(row.scenario,row.tick,row.key),row);
+            }
+            foreach(string name in new[]{"fixed","events"})RunScenario(name);
+            if(report.compared)Require(reference.rows.Count==report.rows.Count,"Reference/current checkpoint channel counts differ.");
+            report.passed=report.failures.Count==0&&report.finite;
+        }
+        catch(Exception e){report.error=e.ToString();report.passed=false;Debug.LogException(e);}
+        File.WriteAllText(Path.Combine(output,"Results.json"),JsonUtility.ToJson(report,true));
+        Debug.Log("GRASS_EVENT_WORLD_STATE_RESULT "+JsonUtility.ToJson(report));EditorApplication.Exit(report.passed?0:1);
+    }
+    static void RunScenario(string name)
+    {
+        EditorSceneManager.OpenScene("Assets/PBDGrass/Scenes/PBDGrassIterationBudget.unity");
+        var demo=Object.FindObjectOfType<GrassHandoffDemo>();var lab=Object.FindObjectOfType<GrassShowcaseController>();Require(demo!=null&&lab!=null,"Missing test scene controllers.");
+        demo.enabled=false;lab.enabled=false;demo.OuterCoverage.enabled=false;demo.Cam.enabled=false;Release(demo);
+        try
+        {
+            var budget=demo.GetComponent<GrassIterationBudgetDemo>();budget.Quality=GrassIterationBudgetDemo.Budget.Minimum2x1;
+            budget.TuneMinimumBudget=true;budget.MinimumSoftComplianceScale=.5f;budget.Apply();
+            Require(demo.Handoff.BakedResponse==budget.MinimumResponse&&demo.Physics.NearSubsteps==2&&demo.Physics.ConstraintIterations==1,"Wrong material/budget.");
+            demo.Physics.ContactDrivenSimulation=name=="events";demo.Physics.SimulationRate=60;demo.AutoTour=false;demo.SimulationFocus=null;
+            Vector3 initial=demo.Cam.transform.position;Quaternion rotation=demo.Cam.transform.rotation;
+            lab.ApplyActors(0,true);demo.Initialize();var r=demo.Renderer;Require(r.World!=null&&r.Compact!=null,"Requires streamed compact grass.");
+            var scenario=new Scenario{name=name,actors=lab.Actors.Length,initialCamera=initial,initialFov=demo.Cam.fieldOfView};report.scenarios.Add(scenario);
+            r.SetOuterCoverage(demo.OuterCoverage.CoverageTransition,demo.OuterCoverage.RadialMiddle);
+            int nextCheckpoint=0;
+            for(int tick=1;tick<=1440;tick++)
+            {
+                float t=(tick-1)/60f;
+                bool contacts=tick<=180||(tick>320&&tick<=420)||(tick>720&&tick<=900)||(tick>1200&&tick<=1258);
+                lab.ApplyActors(t,contacts);
+                float x=tick>=1141&&tick<1171?256:tick>720&&tick<=1140?Mathf.SmoothStep(0,24,(tick-720)/180f):0;
+                demo.Cam.transform.SetPositionAndRotation(initial+Vector3.right*x,rotation);Vector3 focus=demo.Cam.transform.position;focus.y=r.World.Ground;
+                r.SetOuterCoverage(demo.OuterCoverage.CoverageTransition,demo.OuterCoverage.RadialMiddle);
+                if(r.StreamTo(focus)){scenario.streamEvents++;if(r.World.LastLoadedCells==r.World.Cells.Length)scenario.fullUnloads++;}
+                if(tick==1171)
+                {
+                    // Check immediately after replacement, before the new identities can
+                    // produce their own deformation during this tick's live physics.
+                    scenario.unloadPlasticCleared=true;foreach(uint word in Read<uint>(r.Compact.Plastic))scenario.unloadPlasticCleared&=word==0;
+                    Require(scenario.unloadPlasticCleared,"A fully unloaded world identity retained compact plastic.");
+                }
+                r.SimulationCenter=focus;r.SetWind(GrassResponseDemo.WindAt(t,true)*(demo.Wind.magnitude/6),.1f,new Vector4(.01f,.01f,0,1));r.Advance(1f/60);
+                Require(r.SimulationTicks==tick,"The workload did not execute exactly one 60 Hz tick.");scenario.ticks=tick;
+                scenario.maxActive=Math.Max(scenario.maxActive,r.ActiveBladeCount);scenario.maxRejected=Math.Max(scenario.maxRejected,r.Pool.BudgetRejectedGrids);
+                scenario.capRespected&=r.ActiveBladeCount<=32768;
+                if(nextCheckpoint<checkpoints.Length&&tick==checkpoints[nextCheckpoint])
+                {Capture(name,tick,r);nextCheckpoint++;scenario.checkpoints++;Debug.Log("GRASS_EVENT_CHECKPOINT "+name+" "+tick);}
+            }
+            scenario.finalDrained=r.ActiveBladeCount==0;
+            Require(scenario.capRespected&&scenario.fullUnloads>=2,"Missing capacity/whole-window unload coverage.");
+            if(name=="events")
+            {
+                // Oversubscription would mix priority-policy differences into physical-state parity.
+                Require(scenario.maxRejected==0,"The selected events fixture exceeded its budget; rerun a nonoversubscribed fixture before claiming exact physics parity.");
+                Require(scenario.finalDrained,"The final 2 + 1 second tail did not reclaim all event slots.");
+            }
+        }
+        finally{Release(demo);}
+    }
+    static T[] CanonicalWorld<T>(T[] values,int stride,int[] order)where T:struct
+    {var result=new T[order.Length*stride];for(int i=0;i<order.Length;i++)Array.Copy(values,order[i]*stride,result,i*stride,stride);return result;}
+    static T[] CanonicalLive<T>(T[] values,int perBlade,List<LiveGrid> order)where T:struct
+    {int stride=32*perBlade;var result=new T[order.Count*stride];for(int i=0;i<order.Count;i++)Array.Copy(values,order[i].offset*perBlade,result,i*stride,stride);return result;}
+    static void Capture(string name,int tick,PBDGrassPatchRenderer r)
+    {
+        var cells=r.World.Cells;var world=new int[cells.Length];for(int i=0;i<world.Length;i++)world[i]=i;
+        Array.Sort(world,(a,b)=>{int c=cells[a].x.CompareTo(cells[b].x);return c!=0?c:cells[a].y.CompareTo(cells[b].y);});
+        var live=new List<LiveGrid>();var membership=new HashSet<int>();
+        foreach(var grid in r.Pool.Selected)
+        {
+            Require(membership.Add(grid.GridId),"Duplicate selected world cell.");var cell=cells[grid.GridId];
+            Require(r.Pool.SlotForGrid(grid.GridId)*32==grid.PoolOffset&&r.Pool.IsActive(grid.GridId),"Selected identity/slot mapping is inconsistent.");
+            live.Add(new LiveGrid{id=grid.GridId,offset=grid.PoolOffset,x=cell.x,z=cell.y});
+        }
+        live.Sort((a,b)=>{int c=a.x.CompareTo(b.x);return c!=0?c:a.z.CompareTo(b.z);});
+        var residentIdentity=new int[world.Length*2];for(int i=0;i<world.Length;i++){residentIdentity[i*2]=cells[world[i]].x;residentIdentity[i*2+1]=cells[world[i]].y;}
+        var activeIdentity=new int[live.Count*2];for(int i=0;i<live.Count;i++){activeIdentity[i*2]=live[i].x;activeIdentity[i*2+1]=live[i].z;}
+        string file=name+"_"+tick.ToString("D4")+".bin.gz";BinaryReader old=null;FileStream oldFile=null;GZipStream oldZip=null;
+        try
+        {
+            if(report.compared)
+            {
+                Require(referenceRows.TryGetValue(RowKey(name,tick,"resident.identity"),out var anchor),"Missing reference checkpoint.");
+                oldFile=File.OpenRead(Path.Combine(referenceDirectory,anchor.file));oldZip=new GZipStream(oldFile,CompressionMode.Decompress);old=new BinaryReader(oldZip);
+                Require(old.ReadInt32()==Magic&&old.ReadInt32()==Version&&old.ReadInt32()==ChannelCount,"Incompatible checkpoint format.");
+            }
+            using(var fs=File.Create(Path.Combine(output,file)))using(var gzip=new GZipStream(fs,System.IO.Compression.CompressionLevel.Fastest))using(var writer=new BinaryWriter(gzip))
+            {
+                writer.Write(Magic);writer.Write(Version);writer.Write(ChannelCount);var capture=new CaptureWriter(name,tick,file,writer,old,residentIdentity,activeIdentity);
+                capture.Add("resident.identity",Kind.Identity,residentIdentity);capture.Add("active.identity",Kind.Identity,activeIdentity);
+                var nodes=CanonicalLive(Read<BoneInfo>((ComputeBuffer)Field(r,"bones")),8,live);
+                var position=new Vector3[nodes.Length];var predicted=new Vector3[nodes.Length];var velocity=new Vector3[nodes.Length];
+                for(int i=0;i<nodes.Length;i++){position[i]=nodes[i].Position;predicted[i]=nodes[i].Predicted;velocity[i]=nodes[i].Velocities;}
+                capture.Add("live.nodePosition",Kind.Float,position);capture.Add("live.nodePredicted",Kind.Float,predicted);capture.Add("live.nodeVelocity",Kind.Float,velocity);
+                var frames=CanonicalLive(Read<GrassBladeData.Frame>((ComputeBuffer)Field(r,"frames")),7,live);
+                var rotations=new Quaternion[frames.Length];var angular=new Vector3[frames.Length];
+                for(int i=0;i<frames.Length;i++){rotations[i]=frames[i].Rotation;angular[i]=frames[i].AngularVelocity;}
+                capture.Add("live.frameRotation",Kind.Float,rotations);capture.Add("live.frameAngular",Kind.Float,angular);
+                capture.Add("live.plastic",Kind.Float,CanonicalLive(Read<Vector4>((ComputeBuffer)Field(r,"plasticBends")),7,live));
+                capture.Add("live.geometry",Kind.Float,CanonicalLive(Read<Vector3>((ComputeBuffer)Field(r,"positions")),15,live));
+                capture.Add("live.normals",Kind.Float,CanonicalLive(Read<Vector3>((ComputeBuffer)Field(r,"normals")),15,live));
+                capture.Add("compact.pose",Kind.Pose,CanonicalWorld(Read<uint>(r.Compact.Pose),32*20,world));
+                capture.Add("compact.plastic",Kind.Plastic,CanonicalWorld(Read<uint>(r.Compact.Plastic),32*8,world));
+                var tiered=Field(r.Handoff,"tiered");
+                capture.Add("history.wind",Kind.Float,CanonicalWorld(Read<Vector4>((ComputeBuffer)Field(tiered,"windState")),1,world));
+                capture.Add("history.previousWind",Kind.Float,CanonicalWorld(Read<Vector4>((ComputeBuffer)Field(tiered,"previousWind")),1,world));
+                Require(capture.count==ChannelCount,"Wrong number of serialized channels.");
+            }
+            if(old!=null)Require(old.BaseStream.ReadByte()==-1,"Unexpected extra reference channel data.");
+        }
+        finally{if(old!=null)old.Dispose();else if(oldZip!=null)oldZip.Dispose();else if(oldFile!=null)oldFile.Dispose();}
+    }
+    sealed class CaptureWriter
+    {
+        readonly string scenario,file;readonly int tick;readonly BinaryWriter writer;readonly BinaryReader old;
+        readonly int[] resident,active;bool residentComparable=true,activeComparable=true;public int count;
+        public CaptureWriter(string scenario,int tick,string file,BinaryWriter writer,BinaryReader old,int[] resident,int[] active)
+        {this.scenario=scenario;this.tick=tick;this.file=file;this.writer=writer;this.old=old;this.resident=resident;this.active=active;}
+        public void Add(string key,Kind kind,Array values)
+        {
+            byte[] bytes=Bytes(values);var row=new Row{scenario=scenario,tick=tick,key=key,hash=Hash(bytes),file=file,bytes=bytes.Length,comparison=old==null?"reference":"exact"};count++;
+            // All serialized float channels are finite, even in reference-only runs.
+            if(kind==Kind.Float)foreach(float value in Floats(bytes))if(!Finite(value)){report.finite=false;Failure(scenario+" "+tick+" "+key+" contains a non-finite value.");break;}
+            if(old!=null)
+            {
+                Require(old.ReadString()==key&&(Kind)old.ReadInt32()==kind,"Reference channel order/type mismatch.");int length=old.ReadInt32();
+                Require(length>=0&&length<=256*1024*1024,"Corrupt reference payload length.");byte[] before=old.ReadBytes(length);Require(before.Length==length,"Truncated reference checkpoint.");
+                Require(referenceRows.TryGetValue(RowKey(scenario,tick,key),out var previous),"Missing reference manifest channel.");row.referenceHash=Hash(before);
+                Require(row.referenceHash==previous.hash,"Reference payload hash differs from manifest.");
+                row.exact=bytes.Length==before.Length&&row.hash==row.referenceHash;
+                if(key=="resident.identity")residentComparable=row.exact;
+                if(key=="active.identity")activeComparable=row.exact;
+                row.comparable=key.StartsWith("live.")?activeComparable:residentComparable;
+                if(!row.exact)
+                {
+                    report.exactPassed=false;
+                    if(row.comparable||kind==Kind.Identity)Compare(row,kind,before,bytes,active,resident);
+                    else{row.comparison="identity mismatch; value comparison suppressed";row.withinTolerance=false;}
+                    if(kind==Kind.Float&&row.comparable&&tolerances.TryGetValue(key,out double epsilon))
+                    {row.tolerance=epsilon;row.withinTolerance=row.maxAbs<=epsilon;row.comparison=row.withinTolerance?"explicit channel tolerance":"outside explicit channel tolerance";}
+                    else row.withinTolerance=false;
+                    if(!row.withinTolerance)report.failures.Add(scenario+" tick="+tick+" "+key+" differs: "+row.firstDifference+" "+row.comparison);
+                }
+            }
+            writer.Write(key);writer.Write((int)kind);writer.Write(bytes.Length);writer.Write(bytes);report.rows.Add(row);
+        }
+    }
+    static void Compare(Row row,Kind kind,byte[] before,byte[] after,int[] active,int[] resident)
+    {
+        if(before.Length!=after.Length){row.firstDifference="channel byte length "+before.Length+" -> "+after.Length;row.comparable=false;return;}
+        int first=-1;double sum=0,max=0;int differences=0;
+        if(kind==Kind.Float)
+        {
+            var a=Floats(before);var b=Floats(after);
+            for(int i=0;i<a.Length;i++)
+            {
+                if(BitConverter.ToInt32(before,i*4)==BitConverter.ToInt32(after,i*4))continue;
+                if(first<0)first=i;differences++;double error=Finite(a[i])&&Finite(b[i])?Math.Abs((double)a[i]-b[i]):double.MaxValue;
+                max=Math.Max(max,error);sum+=error*error;
+            }
+            row.maxAbs=max;row.rms=a.Length==0?0:Math.Sqrt(sum/a.Length);
+        }
+        else
+        {
+            var a=Words(before);var b=Words(after);for(int i=0;i<a.Length;i++)if(a[i]!=b[i]){if(first<0)first=i;differences++;}
+            if(kind==Kind.Pose)PoseErrors(row,a,b);
+            if(kind==Kind.Plastic)
+            {
+                for(int i=0;i<a.Length;i++)if(i%8<7)
+                {double x=Math.Abs((double)unchecked((short)a[i])-unchecked((short)b[i]))*(2.0/32767),y=Math.Abs((double)unchecked((short)(a[i]>>16))-unchecked((short)(b[i]>>16)))*(2.0/32767);max=Math.Max(max,Math.Max(x,y));}
+                row.maxAbs=max;
+            }
+        }
+        row.firstIndex=first;row.differentComponents=differences;row.firstDifference=Describe(row.key,first,active,resident);
+    }
+    static void PoseErrors(Row row,uint[] before,uint[] after)
+    {
+        float position=0,angle=0;
+        for(int blade=0;blade<before.Length/20;blade++)
+        {
+            for(int coordinate=0;coordinate<21;coordinate++)
+            {int i=blade*20+coordinate/2,shift=(coordinate&1)*16;float a=Mathf.HalfToFloat((ushort)(before[i]>>shift)),b=Mathf.HalfToFloat((ushort)(after[i]>>shift));position=Mathf.Max(position,Mathf.Abs(a-b));}
+            for(int s=0;s<7;s++){int i=blade*20+11+s;if(before[i]!=after[i])angle=Mathf.Max(angle,Vector3.Angle(UnpackDirection(before[i]),UnpackDirection(after[i])));}
+        }
+        row.posePositionMax=position;row.poseWidthDegreesMax=angle;
+    }
+    static Vector3 UnpackDirection(uint bits)
+    {
+        float x=(bits&65535)*(2f/65535)-1,y=(bits>>16)*(2f/65535)-1,z=1-Mathf.Abs(x)-Mathf.Abs(y);
+        if(z<0){float oldX=x;x=(1-Mathf.Abs(y))*(oldX>=0?1:-1);y=(1-Mathf.Abs(oldX))*(y>=0?1:-1);}return new Vector3(x,y,z).normalized;
+    }
+    static string Describe(string key,int index,int[] active,int[] resident)
+    {
+        if(index<0)return "bit mismatch";int[] identity=key.StartsWith("live.")?active:resident;int perBlade=0,component=0,element=0,cell;
+        if(key.EndsWith("identity"))cell=index/2;
+        else if(key.StartsWith("history.")){cell=index/4;component=index%4;}
+        else
+        {
+            int components=3,elements=8;
+            if(key=="live.frameRotation"){components=4;elements=7;}
+            else if(key=="live.frameAngular")elements=7;
+            else if(key=="live.plastic"){components=4;elements=7;}
+            else if(key=="live.geometry"||key=="live.normals")elements=15;
+            else if(key=="compact.pose"){components=1;elements=20;}
+            else if(key=="compact.plastic"){components=1;elements=8;}
+            perBlade=components*elements;cell=index/(32*perBlade);component=index%components;element=(index/components)%elements;
+        }
+        if(cell*2+1>=identity.Length)return "index="+index+" outside matched identities";
+        string where="world=("+identity[cell*2]+","+identity[cell*2+1]+")";
+        if(perBlade>0)where+=" leaf="+((index/perBlade)%32)+" element="+element;return where+" component="+component+" index="+index;
+    }
+    [Serializable] public sealed class ModeReport
+    {
+        public bool passed,slotPreserved,nodesPreserved,framesPreserved,plasticPreserved,displayPreserved,resumeCompleted,drained,noRequiredHistory,noDeadlines;
+        public string error;public int marker,initialSlot,finalSlot,initialSeeds,seedsAfterSwitch,ticks;
+        public float weightBefore,weightAfter,weightDelta,phaseBefore,phaseAfter;
+    }
+    struct ModeState {public int Pool,Changed;public float Started,Phase;}
+    static ModeState ModeGridState(PBDGrassPatchRenderer r,int grid)
+    {var states=new ModeState[1];r.Handoff.ClassificationStates.GetData(states,0,grid,1);return states[0];}
+    static float ModeWeight(ModeState state,float time,float fade,float entry)
+    {
+        if(state.Pool<0)return 0;
+        if(state.Phase==2)return 1-Mathf.SmoothStep(0,1,(time-state.Started)/fade);
+        if(state.Phase<0)return Mathf.Lerp(-state.Phase-1,1,Mathf.SmoothStep(0,1,(time-state.Started)/entry));return 1;
+    }
+    static T[] ModeSlice<T>(PBDGrassPatchRenderer r,string field,int offset,int count)where T:struct
+    {var values=new T[count];((ComputeBuffer)Field(r,field)).GetData(values,0,offset,count);return values;}
+    // Separate regression for runtime mode changes. Does not alter Run's reference fixture.
+    public static void ModeSwitch()
+    {
+        string folder=Environment.GetEnvironmentVariable("GRASS_LOW_BUDGET_OUTPUT");Directory.CreateDirectory(folder);
+        var result=new ModeReport();GrassHandoffDemo demo=null;
+        try
+        {
+            EditorSceneManager.OpenScene("Assets/PBDGrass/Scenes/PBDGrassIterationBudget.unity");demo=Object.FindObjectOfType<GrassHandoffDemo>();
+            var lab=Object.FindObjectOfType<GrassShowcaseController>();demo.enabled=false;lab.enabled=false;demo.OuterCoverage.enabled=false;demo.Cam.enabled=false;Release(demo);
+            var budget=demo.GetComponent<GrassIterationBudgetDemo>();budget.Quality=GrassIterationBudgetDemo.Budget.Minimum2x1;
+            budget.TuneMinimumBudget=true;budget.MinimumSoftComplianceScale=.5f;budget.Apply();
+            demo.Physics.ContactDrivenSimulation=true;demo.Physics.SimulationRate=60;demo.Physics.ContactSettleSeconds=2;demo.Physics.ContactFadeSeconds=1;
+            demo.AutoTour=false;demo.SimulationFocus=null;lab.ApplyActors(0,false);demo.Initialize();var r=demo.Renderer;
+            r.SetOuterCoverage(demo.OuterCoverage.CoverageTransition,demo.OuterCoverage.RadialMiddle);r.SetWind(new Vector3(4,0,2),.1f,new Vector4(.01f,.01f,0,1));
+            for(int i=0;i<30;i++)r.Advance(1f/60);Require(r.ActiveBladeCount==0,"Mode fixture should start idle.");
+            var actor=lab.Actors[0].Collider;actor.Type=GrassInteractionCollider.Shape.Sphere;actor.Radius=6;actor.HalfSegment=0;
+            actor.transform.position=new Vector3(6.5f,2.5f,.5f);actor.enabled=true;
+            result.marker=GrassWorldIdentity.Slot(new Vector2Int(6,0),demo.PatchSize);
+            for(int i=0;i<90;i++)r.Advance(1f/60);Require(r.Pool.IsActive(result.marker),"Probe cell did not enter XPBD.");
+            actor.enabled=false;r.RefreshSimulationSelection();float release=r.SimulationTime;
+            while(r.SimulationTime-release<2.4f)r.Advance(1f/60);
+            var before=ModeGridState(r,result.marker);result.phaseBefore=before.Phase;Require(before.Phase==2,"Mode switch did not occur during a live exit fade.");
+            result.initialSlot=r.Pool.SlotForGrid(result.marker);result.initialSeeds=r.Handoff.EntryInitializations;
+            var nodes=ModeSlice<BoneInfo>(r,"bones",result.initialSlot*32*8,32*8);
+            var frames=ModeSlice<GrassBladeData.Frame>(r,"frames",result.initialSlot*32*7,32*7);
+            var plastic=ModeSlice<Vector4>(r,"plasticBends",result.initialSlot*32*7,32*7);
+            var display=new uint[32*20];r.Compact.Pose.GetData(display,0,result.marker*32*20,display.Length);
+            result.weightBefore=ModeWeight(before,r.SimulationTime,demo.Physics.ContactFadeSeconds,demo.Handoff.TransitionSeconds);
+            demo.Physics.ContactDrivenSimulation=false;r.RefreshSimulationSelection();var after=ModeGridState(r,result.marker);
+            result.finalSlot=r.Pool.SlotForGrid(result.marker);result.seedsAfterSwitch=r.Handoff.EntryInitializations;result.phaseAfter=after.Phase;
+            result.slotPreserved=result.initialSlot==result.finalSlot&&r.Pool.IsActive(result.marker);
+            Require(result.slotPreserved,"Mode switch reassigned the retained live solver slot.");
+            result.nodesPreserved=Hash(Bytes(nodes))==Hash(Bytes(ModeSlice<BoneInfo>(r,"bones",result.finalSlot*32*8,32*8)));
+            result.framesPreserved=Hash(Bytes(frames))==Hash(Bytes(ModeSlice<GrassBladeData.Frame>(r,"frames",result.finalSlot*32*7,32*7)));
+            result.plasticPreserved=Hash(Bytes(plastic))==Hash(Bytes(ModeSlice<Vector4>(r,"plasticBends",result.finalSlot*32*7,32*7)));
+            var displayAfter=new uint[display.Length];r.Compact.Pose.GetData(displayAfter,0,result.marker*32*20,displayAfter.Length);
+            result.displayPreserved=Hash(Bytes(display))==Hash(Bytes(displayAfter));
+            result.weightAfter=ModeWeight(after,r.SimulationTime,demo.Physics.ContactFadeSeconds,demo.Handoff.TransitionSeconds);
+            result.weightDelta=Mathf.Abs(result.weightBefore-result.weightAfter);
+            Require(result.nodesPreserved&&result.framesPreserved&&result.plasticPreserved&&result.displayPreserved,"Mode switch changed physical or visible state before any simulation tick.");
+            Require(after.Phase<0&&result.weightDelta<2e-6f,"Mode switch did not preserve the displayed blend weight.");
+            // Other near cells can legitimately seed when fixed ownership fills its
+            // budget. The retained probe's state, rather than the global seed counter,
+            // proves that this cell was not reset or reseeded.
+            for(int i=0;i<Mathf.CeilToInt(demo.Handoff.TransitionSeconds*60)+4;i++)r.Advance(1f/60);
+            result.resumeCompleted=ModeGridState(r,result.marker).Phase==0;Require(result.resumeCompleted,"A fixed-mode grid retained a permanent exit phase/history requirement.");
+            demo.Physics.ContactDrivenSimulation=true;r.RefreshSimulationSelection();
+            for(int i=0;i<190;i++)r.Advance(1f/60);
+            result.drained=r.ActiveBladeCount==0;result.noRequiredHistory=r.Handoff.TransitionBlades==0&&r.Handoff.HistoryResidentBlades==0;
+            var tiered=Field(r.Handoff,"tiered");var deadlines=Field(tiered,"eventDeadlinesHeap");
+            result.noDeadlines=(int)deadlines.GetType().GetProperty("Count").GetValue(deadlines)==0;
+            Require(result.drained&&result.noRequiredHistory&&result.noDeadlines,"Returning to event ownership leaked live slots, required history, or transition deadlines.");
+            result.ticks=r.SimulationTicks;result.passed=true;
+        }
+        catch(Exception e){result.error=e.ToString();Debug.LogException(e);}
+        finally{if(demo!=null)Release(demo);}
+        File.WriteAllText(Path.Combine(folder,"Results.json"),JsonUtility.ToJson(result,true));EditorApplication.Exit(result.passed?0:1);
+    }
+}

@@ -1,0 +1,218 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using UnityEditor;
+using UnityEngine;
+using GrassFinal.PBDGrass;
+
+// Offline CPU-only test. The preparation script compiles the frozen pool beside the current
+// implementation; compare typed fields directly, without bool pinning or hash collisions.
+public static class GrassPoolCpuParity
+{
+    [Serializable] public sealed class CaseResult
+    {
+        public string name;
+        public int seed,capacity,steps,initializations,maxRejected;
+        public bool passed;
+    }
+    [Serializable] public sealed class Report
+    {
+        public bool passed;
+        public string error;
+        public int steps;
+        public List<CaseResult> cases=new List<CaseResult>();
+    }
+    static readonly string[] Fields={"gridSlot","slotGrid","lastUsed","active","reserved","scores","releaseStarted","interactionPriority"};
+    static readonly Dictionary<string,FieldInfo> CurrentFields=CacheFields(typeof(GrassSimulationPool));
+    static readonly Dictionary<string,FieldInfo> ReferenceFields=CacheFields(typeof(GrassReferenceSimulationPool));
+    static Dictionary<string,FieldInfo> CacheFields(Type type)
+    {
+        var result=new Dictionary<string,FieldInfo>();
+        foreach(string name in Fields)result.Add(name,type.GetField(name,BindingFlags.Instance|BindingFlags.NonPublic));
+        return result;
+    }
+    static void Require(bool condition,string message)
+    {
+        if(!condition)throw new Exception(message);
+    }
+    static bool SameFloat(float a,float b) => BitConverter.SingleToInt32Bits(a)==BitConverter.SingleToInt32Bits(b);
+    static void CompareArray(Array a,Array b,string key)
+    {
+        Require((a==null)==(b==null),key+" null state");
+        if(a==null)return;
+        Require(a.Length==b.Length,key+" length");
+        if(a is int[] ai)
+        {
+            var bi=(int[])b;for(int i=0;i<ai.Length;i++)if(ai[i]!=bi[i])throw new Exception(key+"["+i+"] "+ai[i]+" != "+bi[i]);
+        }
+        else if(a is bool[] ab)
+        {
+            var bb=(bool[])b;for(int i=0;i<ab.Length;i++)if(ab[i]!=bb[i])throw new Exception(key+"["+i+"] "+ab[i]+" != "+bb[i]);
+        }
+        else if(a is float[] af)
+        {
+            var bf=(float[])b;for(int i=0;i<af.Length;i++)if(!SameFloat(af[i],bf[i]))throw new Exception(key+"["+i+"] "+af[i]+" != "+bf[i]);
+        }
+        else throw new Exception("Unsupported typed comparison: "+a.GetType());
+    }
+    static void Compare(GrassSimulationPool current,GrassReferenceSimulationPool reference,List<Vector2Int> a,List<Vector2Int> b)
+    {
+        Require(current.Selected.Count==reference.Selected.Count,"Selected.Count");
+        for(int i=0;i<current.Selected.Count;i++)
+        {
+            var x=current.Selected[i];var y=reference.Selected[i];
+            if(!(x.GridId==y.GridId && x.BladeOffset==y.BladeOffset && x.PoolOffset==y.PoolOffset &&
+                x.Padding0==y.Padding0 && x.Padding1==y.Padding1 && SameFloat(x.Position.x,y.Position.x) &&
+                SameFloat(x.Position.y,y.Position.y) && SameFloat(x.Position.z,y.Position.z)))throw new Exception("Selected["+i+"]");
+        }
+        Require(a.Count==b.Count,"initialization callback count");
+        for(int i=0;i<a.Count;i++)if(a[i]!=b[i])throw new Exception("initialization callback["+i+"]");
+        Require(current.InitializedSlots.Count==reference.InitializedSlots.Count,"InitializedSlots.Count");
+        for(int i=0;i<current.InitializedSlots.Count;i++)if(current.InitializedSlots[i]!=reference.InitializedSlots[i])throw new Exception("InitializedSlots["+i+"]");
+        Require(current.Capacity==reference.Capacity,"Capacity");
+        Require(current.ActiveBlades==reference.ActiveBlades,"ActiveBlades");
+        Require(current.InitializationCount==reference.InitializationCount,"InitializationCount");
+        Require(current.BudgetRejectedGrids==reference.BudgetRejectedGrids,"BudgetRejectedGrids");
+        Require(current.ContactDriven==reference.ContactDriven,"ContactDriven");
+        Require(current.InteractionBlades==reference.InteractionBlades,"InteractionBlades");
+        Require(current.SettlingBlades==reference.SettlingBlades,"SettlingBlades");
+        Require(current.FadingBlades==reference.FadingBlades,"FadingBlades");
+        foreach(string field in Fields)CompareArray((Array)CurrentFields[field].GetValue(current),(Array)ReferenceFields[field].GetValue(reference),field);
+    }
+    static GrassGridStruct[] StaticGrids(bool ties)
+    {
+        int count=ties?128:33*33;var grids=new GrassGridStruct[count];
+        for(int g=0;g<count;g++)
+        {
+            Vector3 p=ties?new Vector3(g%4==0?5:g%4==1?-5:0,0,g%4==2?5:g%4==3?-5:0):
+                new Vector3(g%33-16,g%7==0?.125f:0,g/33-16);
+            grids[g]=new GrassGridStruct{Pos=p,IdOffset=g*32};
+        }
+        return grids;
+    }
+    static GrassGridStruct[] WorldGrids(GrassWorldLayout world)
+    {
+        var grids=new GrassGridStruct[world.Cells.Length];
+        for(int g=0;g<grids.Length;g++)grids[g]=new GrassGridStruct{Pos=new Vector3(world.Cells[g].x+.5f,world.Ground,world.Cells[g].y+.5f),IdOffset=g*32};
+        return grids;
+    }
+    static object NewPool(Type type,GrassGridStruct[] grids,int capacity,GrassWorldLayout world)
+    {
+        if(world==null)return Activator.CreateInstance(type,new object[]{grids,capacity*32});
+        Type queryType=typeof(GrassSimulationPool).Assembly.GetType("GrassFinal.PBDGrass.GrassGridQuery",true);
+        object query=Activator.CreateInstance(queryType,new object[]{grids,world});
+        return type.GetConstructor(BindingFlags.Instance|BindingFlags.NonPublic,null,new[]{typeof(GrassGridStruct[]),typeof(int),queryType},null)
+            .Invoke(new object[]{grids,capacity*32,query});
+    }
+    static void Recenter(GrassWorldLayout world,GrassGridStruct[] grids,Vector3 focus,GrassSimulationPool current,GrassReferenceSimulationPool reference)
+    {
+        var center=new Vector3(Mathf.Floor(focus.x/8)*8,world.Ground,Mathf.Floor(focus.z/8)*8);
+        if(center==world.Center)return;
+        // Exercise the actual ring identity/replacement logic without allocating grass geometry
+        // or creating GPU resources merely to test the pool's CPU state.
+        typeof(GrassWorldLayout).GetField("<Center>k__BackingField",BindingFlags.Instance|BindingFlags.NonPublic).SetValue(world,center);
+        typeof(GrassWorldLayout).GetMethod("RecenterCells",BindingFlags.Instance|BindingFlags.NonPublic).Invoke(world,new object[]{false});
+        current.ForgetGrids(world.Changed);reference.ForgetGrids(world.Changed);
+        foreach(int g in world.Changed)grids[g].Pos=new Vector3(world.Cells[g].x+.5f,world.Ground,world.Cells[g].y+.5f);
+    }
+    static CaseResult Exercise(string name,int seed,int capacity,bool streaming,bool ties,int steps)
+    {
+        var result=new CaseResult{name=name,seed=seed,capacity=capacity};
+        var random=new System.Random(seed);var world=streaming?new GrassWorldLayout(64,Vector3.zero,0):null;
+        var grids=streaming?WorldGrids(world):StaticGrids(ties);
+        var current=(GrassSimulationPool)NewPool(typeof(GrassSimulationPool),grids,capacity,world);
+        var reference=(GrassReferenceSimulationPool)NewPool(typeof(GrassReferenceSimulationPool),grids,capacity,world);
+        var settings=new XPBDGrassSettings();var regions=new List<Vector4>();var forget=new List<int>();
+        var actualInit=new List<Vector2Int>();var expectedInit=new List<Vector2Int>();
+        Action<int,int> initializeActual=(slot,g)=>actualInit.Add(new Vector2Int(slot,g));
+        Action<int,int> initializeExpected=(slot,g)=>expectedInit.Add(new Vector2Int(slot,g));
+        Vector3 focus=Vector3.zero;
+        try
+        {
+            for(int step=0;step<steps;step++)
+            {
+                // Long stationary intervals hit the rank-cache path. Moving/teleported intervals
+                // invalidate it, including a nonzero center.y for the non-stable score rule.
+                int phase=step/120%8;
+                if(ties)focus=phase%2==0?Vector3.zero:new Vector3(phase%4==1?5:-5,0,0);
+                else if(streaming)
+                {
+                    if(step%120==0)focus=new Vector3((step/120%5-2)*24,0,(step/360%3-1)*24);
+                    if(phase>=4)focus+=new Vector3(.0625f,0,-.03125f);
+                }
+                else if(phase<3)focus=new Vector3(phase*3-3,phase==2?.5f:0,phase-1);
+                else focus=new Vector3(Mathf.Sin(step*.021f)*17,step%17==0?.5f:0,Mathf.Cos(step*.017f)*17);
+                if(streaming)Recenter(world,grids,focus,current,reference);
+                if(step%47==0 || step%211==0)
+                {
+                    forget.Clear();int count=step%211==0?Math.Min(128,grids.Length):1+random.Next(12);
+                    for(int i=0;i<count;i++)forget.Add(random.Next(grids.Length));
+                    current.ForgetGrids(forget);reference.ForgetGrids(forget);
+                    // Slot and activity state must also agree between Select calls.
+                    foreach(string field in Fields)CompareArray((Array)CurrentFields[field].GetValue(current),(Array)ReferenceFields[field].GetValue(reference),field);
+                }
+                settings.ContactDrivenSimulation=phase==2 || phase==3 || phase==5 || phase==6;
+                settings.ContactSettleSeconds=phase==5?0:2;
+                settings.ContactFadeSeconds=phase==6?0:1;
+                bool stable=phase%2==0;
+                float radius=ties?(phase%2==0?10:.25f):phase==7?48:6+phase*2;
+                float hysteresis=ties?0:phase==4?-.25f:.35f;
+                regions.Clear();
+                int regionCount=step%240>=170?0:phase==7?24:1+seed%7;
+                for(int i=0;i<regionCount;i++)
+                {
+                    float angle=step*.019f+i*2.399963f;
+                    float reach=ties?.25f:phase==7?12:1.5f+i%3;
+                    Vector3 p=ties?new Vector3((step/24+i)%2==0?5:-5,0,0):
+                        focus+new Vector3(Mathf.Sin(angle)*(8+i),0,Mathf.Cos(angle*.71f)*(9+i));
+                    regions.Add(new Vector4(p.x,p.z,(i%5==0?-1:1)*reach,0));
+                    if(i%3==0)regions.Add(regions[regions.Count-1]); // Duplicate/overlapping queries.
+                }
+                if(step%137==0)regions.Add(new Vector4(10000,-10000,0,0));
+                IReadOnlyList<Vector4> contacts=step%173==0?null:regions;
+                Vector4 coverage=phase%3==0?Vector4.zero:new Vector4(focus.x+1,focus.z-2,phase==7?5:18,0);
+                bool radial=phase%2==0;
+                int tick=step/2+1; // Repeated ticks deliberately create equal-age eviction ties.
+                float time=step/60f;
+                XPBDGrassSettings lifecycle=phase==0?null:settings;
+                actualInit.Clear();expectedInit.Clear();
+                current.Select(focus,radius,hysteresis,tick,initializeActual,stable,contacts,coverage,radial,lifecycle,time);
+                reference.Select(focus,radius,hysteresis,tick,initializeExpected,stable,contacts,coverage,radial,lifecycle,time);
+                Compare(current,reference,actualInit,expectedInit);
+                for(int g=0;g<grids.Length;g++)
+                {
+                    if(current.SlotForGrid(g)!=reference.SlotForGrid(g))throw new Exception("SlotForGrid["+g+"]");
+                    if(current.IsActive(g)!=reference.IsActive(g))throw new Exception("IsActive["+g+"]");
+                    if(!SameFloat(current.ExitStartedAt(g),reference.ExitStartedAt(g)))throw new Exception("ExitStartedAt["+g+"]");
+                }
+                result.steps++;result.maxRejected=Math.Max(result.maxRejected,current.BudgetRejectedGrids);
+            }
+            result.initializations=current.InitializationCount;result.passed=true;return result;
+        }
+        catch(Exception error)
+        {
+            throw new Exception(name+" seed="+seed+" capacity="+capacity+" step="+result.steps+": "+error.Message,error);
+        }
+    }
+    public static void Run()
+    {
+        var report=new Report();string output=Environment.GetEnvironmentVariable("GRASS_LOW_BUDGET_OUTPUT");
+        if(string.IsNullOrEmpty(output))throw new Exception("GRASS_LOW_BUDGET_OUTPUT must specify an output directory.");
+        Directory.CreateDirectory(output);
+        try
+        {
+            foreach(int seed in new[]{7,31,673})foreach(int capacity in new[]{1,16,128})
+                report.cases.Add(Exercise("static-random",seed,capacity,false,false,1920));
+            foreach(int seed in new[]{19,773})foreach(int capacity in new[]{1,7,64})
+                report.cases.Add(Exercise("equal-score-lru",seed,capacity,false,true,1920));
+            foreach(int seed in new[]{11,107})foreach(int capacity in new[]{32,1024})
+                report.cases.Add(Exercise("stream-ring",seed,capacity,true,false,960));
+            foreach(var result in report.cases)report.steps+=result.steps;
+            report.passed=true;
+        }
+        catch(Exception error){report.error=error.ToString();Debug.LogException(error);}
+        File.WriteAllText(Path.Combine(output,"Results.json"),JsonUtility.ToJson(report,true));
+        EditorApplication.Exit(report.passed?0:1);
+    }
+}

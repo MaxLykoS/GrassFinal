@@ -1,0 +1,150 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using UnityEditor;
+using UnityEngine;
+using GrassFinal.PBDGrass;
+
+// Pure CPU coverage oracle. Runs in the isolated Editor assembly, with no scene,
+// geometry allocation, GPU dispatch, or GPU readback.
+public static class GrassEventCpuValidation
+{
+    [Serializable] public sealed class CaseResult
+    {public string name;public int steps,resets,recenters,contactChanges,warmChanges;public bool passed;}
+    [Serializable] public sealed class Report
+    {public bool passed;public string error;public List<CaseResult> cases=new List<CaseResult>();}
+    const BindingFlags Private=BindingFlags.Instance|BindingFlags.NonPublic;
+    static readonly Type PoolType=typeof(GrassSimulationPool);
+    static void Require(bool condition,string text) {if(!condition)throw new Exception(text);}
+    static T Value<T>(object instance,string property)=>(T)instance.GetType().GetProperty(property,BindingFlags.Instance|BindingFlags.Public|BindingFlags.NonPublic).GetValue(instance);
+    static void Same(IReadOnlyList<int> actual,HashSet<int> expected,string name)
+    {
+        var found=new HashSet<int>();
+        for(int i=0;i<actual.Count;i++)if(!found.Add(actual[i]))throw new Exception(name+" duplicate "+actual[i]);
+        Require(found.SetEquals(expected),name+" differs, actual="+found.Count+", expected="+expected.Count);
+    }
+    static HashSet<int> Difference(HashSet<int> a,HashSet<int> b)
+    {var result=new HashSet<int>(a);result.ExceptWith(b);return result;}
+    static void Oracle(GrassGridStruct[] grids,IReadOnlyList<Vector4> input,Vector4 coverage,bool radial,Vector3 center,float band,
+        HashSet<int> contacts,HashSet<int> warm)
+    {
+        contacts.Clear();warm.Clear();if(input==null)return;
+        for(int g=0;g<grids.Length;g++)
+        {
+            Vector3 p=grids[g].Pos;float cx=Mathf.Abs(p.x-coverage.x),cz=Mathf.Abs(p.z-coverage.y),cr=coverage.z+.71f;
+            bool compatible=coverage.z<=0 || (radial?cx*cx+cz*cz<=cr*cr:Mathf.Max(cx,cz)<=cr);
+            for(int i=0;i<input.Count;i++)
+            {
+                var shape=input[i];float dx=p.x-shape.x,dz=p.z-shape.y;
+                if(compatible && dx*dx+dz*dz<=shape.z*shape.z)contacts.Add(g);
+                // Same arithmetic as the public display contract, including subcell focus.
+                dx=(p.x-center.x)+center.x-shape.x;dz=(p.z-center.z)+center.z-shape.y;
+                float reach=shape.z+band;if(dx*dx+dz*dz<=reach*reach)warm.Add(g);
+            }
+        }
+    }
+    static CaseResult Exercise(bool streaming)
+    {
+        var row=new CaseResult{name=streaming?"stream-ring":"static-buckets"};
+        var world=streaming?new GrassWorldLayout(64,Vector3.zero,0):null;
+        var grids=new GrassGridStruct[streaming?64*64:33*33];
+        for(int g=0;g<grids.Length;g++)grids[g]=new GrassGridStruct
+        {Pos=streaming?new Vector3(world.Cells[g].x+.5f,0,world.Cells[g].y+.5f):new Vector3(g%33-16,0,g/33-16),IdOffset=g*32};
+        GrassSimulationPool pool;
+        if(streaming)
+        {
+            Type queryType=PoolType.Assembly.GetType("GrassFinal.PBDGrass.GrassGridQuery",true);
+            object query=Activator.CreateInstance(queryType,new object[]{grids,world});
+            pool=(GrassSimulationPool)PoolType.GetConstructor(Private,null,new[]{typeof(GrassGridStruct[]),typeof(int),queryType},null)
+                .Invoke(new object[]{grids,32768,query});
+        }
+        else pool=new GrassSimulationPool(grids,32768);
+        object service=PoolType.GetProperty("Coverage",Private).GetValue(pool);
+        Type serviceType=service.GetType();MethodInfo update=serviceType.GetMethod("Update"),reset=serviceType.GetMethod("Reset");
+        var references=(int[])serviceType.GetField("contactReferences",Private).GetValue(service);
+        var warmReferences=(int[])serviceType.GetField("warmReferences",Private).GetValue(service);
+        var expectedContact=new HashSet<int>();var expectedWarm=new HashSet<int>();
+        var previousContact=new HashSet<int>();var previousWarm=new HashSet<int>();
+        var input=new List<Vector4>();var random=new System.Random(streaming?731:119);
+        var containsContact=serviceType.GetMethod("ContainsContact");var containsWarm=serviceType.GetMethod("ContainsWarm");
+        try
+        {
+            for(int step=0;step<512;step++)
+            {
+                Vector3 focus=new Vector3((float)Math.Sin(step*.031)*7+.001f*(step%3),.2f,(float)Math.Cos(step*.017)*9);
+                if(streaming && step%47==0)
+                {
+                    var target=new Vector3((step/47%5-2)*24,0,(step/94%3-1)*32);
+                    typeof(GrassWorldLayout).GetField("<Center>k__BackingField",Private).SetValue(world,target);
+                    typeof(GrassWorldLayout).GetMethod("RecenterCells",Private).Invoke(world,new object[]{false});
+                    foreach(int g in world.Changed)grids[g].Pos=new Vector3(world.Cells[g].x+.5f,0,world.Cells[g].y+.5f);
+                    var revision=typeof(GrassWorldLayout).GetField("<Version>k__BackingField",Private);
+                    revision.SetValue(world,world.Version+1);row.recenters++;
+                }
+                if(streaming)focus+=world.Center;
+                if(step%83==0)
+                {
+                    int cv=Value<int>(service,"ContactVersion"),wv=Value<int>(service,"WarmVersion");reset.Invoke(service,null);
+                    Same(Value<IReadOnlyList<int>>(service,"Contacts"),new HashSet<int>(),"reset contacts");
+                    Same(Value<IReadOnlyList<int>>(service,"Warm"),new HashSet<int>(),"reset warm");
+                    Require(Value<int>(service,"ContactVersion")==cv+1 && Value<int>(service,"WarmVersion")==wv+1,"reset versions");
+                    previousContact.Clear();previousWarm.Clear();row.resets++;
+                }
+                input.Clear();int count=step%71>=56?0:1+step/19%9;
+                for(int i=0;i<count;i++)
+                {
+                    float x=(float)Math.Sin(step*.023+i)*10,z=(float)Math.Cos(step*.029+i*.9)*11;
+                    if(streaming) {x+=world.Center.x;z+=world.Center.z;}
+                    input.Add(new Vector4(x,z,i%4==0?-2:1.25f+i%3,.5f));
+                    if(i%3==0)input.Add(input[input.Count-1]);
+                }
+                if(input.Count>2 && step%2==0)input.RemoveAt(1); // Actor removal shifts subsequent identities.
+                if(input.Count>3 && step%5==0)input.Reverse();
+                float band=step/23%2==0?.1f:2.25f;
+                Vector4 coverage=step/37%3==0?Vector4.zero:new Vector4(focus.x+1,focus.z-2,step/61%2==0?5:16,0);
+                bool radial=step/17%2==0;IReadOnlyList<Vector4> contacts=step%59==0?null:input;
+                Oracle(grids,contacts,coverage,radial,focus,band,expectedContact,expectedWarm);
+                int oldContact=Value<int>(service,"ContactVersion"),oldWarm=Value<int>(service,"WarmVersion");
+                update.Invoke(service,new object[]{contacts,coverage,radial,focus,band});
+                Same(Value<IReadOnlyList<int>>(service,"Contacts"),expectedContact,"contacts");
+                Same(Value<IReadOnlyList<int>>(service,"Warm"),expectedWarm,"warm");
+                Same(Value<IReadOnlyList<int>>(service,"ContactAdded"),Difference(expectedContact,previousContact),"contact added");
+                Same(Value<IReadOnlyList<int>>(service,"ContactRemoved"),Difference(previousContact,expectedContact),"contact removed");
+                Same(Value<IReadOnlyList<int>>(service,"WarmAdded"),Difference(expectedWarm,previousWarm),"warm added");
+                Same(Value<IReadOnlyList<int>>(service,"WarmRemoved"),Difference(previousWarm,expectedWarm),"warm removed");
+                bool contactChanged=!expectedContact.SetEquals(previousContact),warmChanged=!expectedWarm.SetEquals(previousWarm);
+                Require(Value<int>(service,"ContactVersion")==oldContact+(contactChanged?1:0),"contact version semantics");
+                Require(Value<int>(service,"WarmVersion")==oldWarm+(warmChanged?1:0),"warm version semantics");
+                for(int g=0;g<grids.Length;g++)
+                {
+                    if((references[g]>0)!=expectedContact.Contains(g))throw new Exception("contact references "+g);
+                    if((warmReferences[g]>0)!=expectedWarm.Contains(g))throw new Exception("warm references "+g);
+                }
+                for(int sample=0;sample<8;sample++)
+                {
+                    int g=random.Next(grids.Length);
+                    Require((bool)containsContact.Invoke(service,new object[]{g})==expectedContact.Contains(g),"ContainsContact");
+                    Require((bool)containsWarm.Invoke(service,new object[]{g})==expectedWarm.Contains(g),"ContainsWarm");
+                }
+                previousContact.Clear();previousContact.UnionWith(expectedContact);previousWarm.Clear();previousWarm.UnionWith(expectedWarm);
+                // Identical calls must publish empty deltas and preserve version numbers.
+                oldContact=Value<int>(service,"ContactVersion");oldWarm=Value<int>(service,"WarmVersion");
+                update.Invoke(service,new object[]{contacts,coverage,radial,focus,band});
+                Require(Value<int>(service,"ContactVersion")==oldContact && Value<int>(service,"WarmVersion")==oldWarm,"identical call versions");
+                Require(Value<IReadOnlyList<int>>(service,"ContactAdded").Count+Value<IReadOnlyList<int>>(service,"ContactRemoved").Count+
+                    Value<IReadOnlyList<int>>(service,"WarmAdded").Count+Value<IReadOnlyList<int>>(service,"WarmRemoved").Count==0,"identical call deltas");
+                row.steps++;if(contactChanged)row.contactChanges++;if(warmChanged)row.warmChanges++;
+            }
+            row.passed=true;return row;
+        }
+        catch(Exception error){throw new Exception(row.name+" step="+row.steps+": "+error.Message,error);}
+    }
+    public static void Run()
+    {
+        string output=Environment.GetEnvironmentVariable("GRASS_LOW_BUDGET_OUTPUT");Directory.CreateDirectory(output);var report=new Report();
+        try {report.cases.Add(Exercise(false));report.cases.Add(Exercise(true));report.passed=true;}
+        catch(Exception error){report.error=error.ToString();Debug.LogException(error);}
+        File.WriteAllText(Path.Combine(output,"Results.json"),JsonUtility.ToJson(report,true));EditorApplication.Exit(report.passed?0:1);
+    }
+}

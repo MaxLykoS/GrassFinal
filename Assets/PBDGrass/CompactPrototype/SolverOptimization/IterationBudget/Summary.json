@@ -1,0 +1,4056 @@
+{
+  "date": "2026-10-22",
+  "performance": [
+    {
+      "caseName": "q4x1_fixedA",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "api": "Direct3D11",
+      "substeps": 4,
+      "iterations": 1,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "Performance",
+      "samples": 300,
+      "metrics": {
+        "solveGpu": {
+          "mean": 1.58828864,
+          "median": 1.4033920000000002,
+          "p95": 2.4586240000000004
+        },
+        "displayGpu": {
+          "mean": 1.0733533866666667,
+          "median": 0.9861119999999999,
+          "p95": 1.908736
+        },
+        "coreCullGpu": {
+          "mean": 0.008417280000000013,
+          "median": 0.008192000000000199,
+          "p95": 0.009216000000000335
+        },
+        "outerGpu": {
+          "mean": 0.03748362666666666,
+          "median": 0.03686400000000001,
+          "p95": 0.03686400000000045
+        },
+        "renderGpu": {
+          "mean": 1.1817761066666668,
+          "median": 1.0752,
+          "p95": 1.954816
+        },
+        "totalGpu": {
+          "mean": 3.9479566933333334,
+          "median": 3.800576,
+          "p95": 5.400576
+        },
+        "advanceCpu": {
+          "mean": 2.175457,
+          "median": 2.1041499999999997,
+          "p95": 2.5145
+        },
+        "poolCpu": {
+          "mean": 0.6706646666666667,
+          "median": 0.6383,
+          "p95": 0.7938
+        },
+        "handoffCpu": {
+          "mean": 1.3331783333333334,
+          "median": 1.2903,
+          "p95": 1.548
+        },
+        "totalCpu": {
+          "mean": 2.5411593333333333,
+          "median": 2.4743000000000004,
+          "p95": 2.9206
+        }
+      }
+    },
+    {
+      "caseName": "q4x1_fixedB",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "api": "Direct3D11",
+      "substeps": 4,
+      "iterations": 1,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "Performance",
+      "samples": 300,
+      "metrics": {
+        "solveGpu": {
+          "mean": 1.61152,
+          "median": 1.388544,
+          "p95": 2.6716159999999998
+        },
+        "displayGpu": {
+          "mean": 1.0417698133333333,
+          "median": 0.7260160000000002,
+          "p95": 1.8821120000000002
+        },
+        "coreCullGpu": {
+          "mean": 0.011359573333333317,
+          "median": 0.008191999999999977,
+          "p95": 0.009215999999999891
+        },
+        "outerGpu": {
+          "mean": 0.04384128000000001,
+          "median": 0.036863999999999564,
+          "p95": 0.03686400000000045
+        },
+        "renderGpu": {
+          "mean": 1.20344192,
+          "median": 1.102848,
+          "p95": 2.064384
+        },
+        "totalGpu": {
+          "mean": 3.9666586666666666,
+          "median": 3.801072,
+          "p95": 5.407488
+        },
+        "advanceCpu": {
+          "mean": 2.223894666666667,
+          "median": 2.1516,
+          "p95": 2.5371
+        },
+        "poolCpu": {
+          "mean": 0.6889093333333334,
+          "median": 0.63975,
+          "p95": 0.977
+        },
+        "handoffCpu": {
+          "mean": 1.3573356666666667,
+          "median": 1.3075,
+          "p95": 1.5817
+        },
+        "totalCpu": {
+          "mean": 2.604573,
+          "median": 2.5423,
+          "p95": 2.9845
+        }
+      }
+    },
+    {
+      "caseName": "q4x2_fixedA",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "api": "Direct3D11",
+      "substeps": 4,
+      "iterations": 2,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "Performance",
+      "samples": 300,
+      "metrics": {
+        "solveGpu": {
+          "mean": 1.8415752533333334,
+          "median": 1.7715200000000002,
+          "p95": 2.84672
+        },
+        "displayGpu": {
+          "mean": 1.0103671466666666,
+          "median": 0.722944,
+          "p95": 1.8698240000000002
+        },
+        "coreCullGpu": {
+          "mean": 0.01033216,
+          "median": 0.008192000000000199,
+          "p95": 0.009216000000000335
+        },
+        "outerGpu": {
+          "mean": 0.04384842666666666,
+          "median": 0.035968,
+          "p95": 0.03686400000000001
+        },
+        "renderGpu": {
+          "mean": 1.1975331200000001,
+          "median": 1.082368,
+          "p95": 2.057216
+        },
+        "totalGpu": {
+          "mean": 4.20340832,
+          "median": 4.0932960000000005,
+          "p95": 5.707776
+        },
+        "advanceCpu": {
+          "mean": 2.167808,
+          "median": 2.1003,
+          "p95": 2.4907
+        },
+        "poolCpu": {
+          "mean": 0.6761846666666667,
+          "median": 0.6373500000000001,
+          "p95": 0.8896
+        },
+        "handoffCpu": {
+          "mean": 1.3179393333333334,
+          "median": 1.28465,
+          "p95": 1.4927
+        },
+        "totalCpu": {
+          "mean": 2.5283116666666667,
+          "median": 2.4626,
+          "p95": 2.8606
+        }
+      }
+    },
+    {
+      "caseName": "q4x2_fixedB",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "api": "Direct3D11",
+      "substeps": 4,
+      "iterations": 2,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "Performance",
+      "samples": 300,
+      "metrics": {
+        "solveGpu": {
+          "mean": 1.88486912,
+          "median": 1.801216,
+          "p95": 2.993152
+        },
+        "displayGpu": {
+          "mean": 0.9934404266666667,
+          "median": 0.7075840000000002,
+          "p95": 1.8892799999999998
+        },
+        "coreCullGpu": {
+          "mean": 0.010055680000000016,
+          "median": 0.008192000000000199,
+          "p95": 0.009216000000000335
+        },
+        "outerGpu": {
+          "mean": 0.041105173333333335,
+          "median": 0.035840000000000316,
+          "p95": 0.03686400000000001
+        },
+        "renderGpu": {
+          "mean": 1.1877733333333333,
+          "median": 1.0751359999999999,
+          "p95": 2.09408
+        },
+        "totalGpu": {
+          "mean": 4.201399253333333,
+          "median": 3.99768,
+          "p95": 5.73952
+        },
+        "advanceCpu": {
+          "mean": 2.2380066666666667,
+          "median": 2.1772,
+          "p95": 2.6014
+        },
+        "poolCpu": {
+          "mean": 0.687061,
+          "median": 0.64755,
+          "p95": 0.9325
+        },
+        "handoffCpu": {
+          "mean": 1.363176,
+          "median": 1.3191,
+          "p95": 1.6875
+        },
+        "totalCpu": {
+          "mean": 2.630406333333333,
+          "median": 2.5736,
+          "p95": 3.1408
+        }
+      }
+    },
+    {
+      "caseName": "q6x1_fixedA",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "api": "Direct3D11",
+      "substeps": 6,
+      "iterations": 1,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "Performance",
+      "samples": 300,
+      "metrics": {
+        "solveGpu": {
+          "mean": 2.29065728,
+          "median": 2.131456,
+          "p95": 3.617792
+        },
+        "displayGpu": {
+          "mean": 1.0928674133333334,
+          "median": 0.9978880000000001,
+          "p95": 1.974272
+        },
+        "coreCullGpu": {
+          "mean": 0.008314879999999995,
+          "median": 0.008192000000000199,
+          "p95": 0.009216000000000335
+        },
+        "outerGpu": {
+          "mean": 0.049680959999999996,
+          "median": 0.035871999999999904,
+          "p95": 0.03686400000000045
+        },
+        "renderGpu": {
+          "mean": 1.1751834666666667,
+          "median": 1.0869280000000001,
+          "p95": 2.030592
+        },
+        "totalGpu": {
+          "mean": 4.6731117866666665,
+          "median": 4.6428,
+          "p95": 6.217728
+        },
+        "advanceCpu": {
+          "mean": 2.248212666666667,
+          "median": 2.1536999999999997,
+          "p95": 2.7396
+        },
+        "poolCpu": {
+          "mean": 0.6935246666666667,
+          "median": 0.64175,
+          "p95": 1.0284
+        },
+        "handoffCpu": {
+          "mean": 1.3643726666666667,
+          "median": 1.30035,
+          "p95": 1.8794
+        },
+        "totalCpu": {
+          "mean": 2.633103333333333,
+          "median": 2.53905,
+          "p95": 3.2133
+        }
+      }
+    },
+    {
+      "caseName": "q6x1_fixedB",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "api": "Direct3D11",
+      "substeps": 6,
+      "iterations": 1,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "Performance",
+      "samples": 300,
+      "metrics": {
+        "solveGpu": {
+          "mean": 2.262830826666667,
+          "median": 2.151424,
+          "p95": 3.321856
+        },
+        "displayGpu": {
+          "mean": 1.0616046933333334,
+          "median": 0.7285760000000001,
+          "p95": 1.9159039999999994
+        },
+        "coreCullGpu": {
+          "mean": 0.008290986666666668,
+          "median": 0.008192000000000199,
+          "p95": 0.009216000000000335
+        },
+        "outerGpu": {
+          "mean": 0.04983157333333335,
+          "median": 0.035840000000000316,
+          "p95": 0.03686400000000045
+        },
+        "renderGpu": {
+          "mean": 1.18365152,
+          "median": 1.0813439999999999,
+          "p95": 2.0018559999999996
+        },
+        "totalGpu": {
+          "mean": 4.64178208,
+          "median": 4.496816,
+          "p95": 6.070272
+        },
+        "advanceCpu": {
+          "mean": 2.2089103333333333,
+          "median": 2.1431,
+          "p95": 2.5705
+        },
+        "poolCpu": {
+          "mean": 0.680358,
+          "median": 0.6388,
+          "p95": 0.8497
+        },
+        "handoffCpu": {
+          "mean": 1.3394183333333334,
+          "median": 1.29995,
+          "p95": 1.6104
+        },
+        "totalCpu": {
+          "mean": 2.5925416666666665,
+          "median": 2.53465,
+          "p95": 3.0414
+        }
+      }
+    },
+    {
+      "caseName": "q8x1_fixedA",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "api": "Direct3D11",
+      "substeps": 8,
+      "iterations": 1,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "Performance",
+      "samples": 300,
+      "metrics": {
+        "solveGpu": {
+          "mean": 2.9021866666666667,
+          "median": 2.69824,
+          "p95": 4.334592
+        },
+        "displayGpu": {
+          "mean": 1.07552768,
+          "median": 0.9830400000000001,
+          "p95": 1.9496959999999994
+        },
+        "coreCullGpu": {
+          "mean": 0.016831146666666665,
+          "median": 0.008192000000000199,
+          "p95": 0.009216000000000335
+        },
+        "outerGpu": {
+          "mean": 0.04874965333333334,
+          "median": 0.035840000000000316,
+          "p95": 0.03686400000000045
+        },
+        "renderGpu": {
+          "mean": 1.17998208,
+          "median": 1.071616,
+          "p95": 2.0520959999999997
+        },
+        "totalGpu": {
+          "mean": 5.2816768,
+          "median": 5.2736,
+          "p95": 6.915072
+        },
+        "advanceCpu": {
+          "mean": 2.2714193333333332,
+          "median": 2.1887,
+          "p95": 2.7369
+        },
+        "poolCpu": {
+          "mean": 0.7080773333333333,
+          "median": 0.6486000000000001,
+          "p95": 0.9799
+        },
+        "handoffCpu": {
+          "mean": 1.3608913333333332,
+          "median": 1.31125,
+          "p95": 1.671
+        },
+        "totalCpu": {
+          "mean": 2.674005,
+          "median": 2.60635,
+          "p95": 3.3166
+        }
+      }
+    },
+    {
+      "caseName": "q8x1_fixedB",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "api": "Direct3D11",
+      "substeps": 8,
+      "iterations": 1,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "Performance",
+      "samples": 300,
+      "metrics": {
+        "solveGpu": {
+          "mean": 2.9380327466666665,
+          "median": 2.8185599999999997,
+          "p95": 4.187136000000001
+        },
+        "displayGpu": {
+          "mean": 1.0740872533333332,
+          "median": 0.9891840000000003,
+          "p95": 1.8554879999999998
+        },
+        "coreCullGpu": {
+          "mean": 0.010045439999999989,
+          "median": 0.008192000000000199,
+          "p95": 0.009216000000000335
+        },
+        "outerGpu": {
+          "mean": 0.04447210666666668,
+          "median": 0.035840000000000316,
+          "p95": 0.03686400000000045
+        },
+        "renderGpu": {
+          "mean": 1.2037770666666667,
+          "median": 1.0880000000000003,
+          "p95": 2.09408
+        },
+        "totalGpu": {
+          "mean": 5.3329664,
+          "median": 5.321728,
+          "p95": 6.665216
+        },
+        "advanceCpu": {
+          "mean": 2.2258873333333336,
+          "median": 2.16895,
+          "p95": 2.5081
+        },
+        "poolCpu": {
+          "mean": 0.6873986666666667,
+          "median": 0.64585,
+          "p95": 0.8377
+        },
+        "handoffCpu": {
+          "mean": 1.3410553333333333,
+          "median": 1.3054000000000001,
+          "p95": 1.537
+        },
+        "totalCpu": {
+          "mean": 2.616028,
+          "median": 2.5629999999999997,
+          "p95": 3.1349
+        }
+      }
+    },
+    {
+      "caseName": "q8x2_fixedA",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "api": "Direct3D11",
+      "substeps": 8,
+      "iterations": 2,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "Performance",
+      "samples": 300,
+      "metrics": {
+        "solveGpu": {
+          "mean": 3.554655573333333,
+          "median": 3.3617920000000003,
+          "p95": 4.927487999999999
+        },
+        "displayGpu": {
+          "mean": 1.0351991466666666,
+          "median": 0.7162880000000003,
+          "p95": 1.953792
+        },
+        "coreCullGpu": {
+          "mean": 0.009058986666666668,
+          "median": 0.008192000000000199,
+          "p95": 0.009216000000000335
+        },
+        "outerGpu": {
+          "mean": 0.039423253333333345,
+          "median": 0.035840000000000316,
+          "p95": 0.03686400000000045
+        },
+        "renderGpu": {
+          "mean": 1.1306366933333334,
+          "median": 1.0117119999999997,
+          "p95": 1.901504
+        },
+        "totalGpu": {
+          "mean": 5.841977813333333,
+          "median": 5.853696,
+          "p95": 7.523328
+        },
+        "advanceCpu": {
+          "mean": 2.275917333333333,
+          "median": 2.2294,
+          "p95": 2.5504
+        },
+        "poolCpu": {
+          "mean": 0.6980506666666667,
+          "median": 0.6689,
+          "p95": 0.8293
+        },
+        "handoffCpu": {
+          "mean": 1.3723996666666667,
+          "median": 1.3352,
+          "p95": 1.5549
+        },
+        "totalCpu": {
+          "mean": 2.6793596666666666,
+          "median": 2.64105,
+          "p95": 3.0226
+        }
+      }
+    },
+    {
+      "caseName": "q8x2_fixedB",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "api": "Direct3D11",
+      "substeps": 8,
+      "iterations": 2,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "Performance",
+      "samples": 300,
+      "metrics": {
+        "solveGpu": {
+          "mean": 3.53785856,
+          "median": 3.3976319999999998,
+          "p95": 4.92544
+        },
+        "displayGpu": {
+          "mean": 1.07500544,
+          "median": 0.9722879999999998,
+          "p95": 1.9793919999999998
+        },
+        "coreCullGpu": {
+          "mean": 0.008273920000000044,
+          "median": 0.008192000000000199,
+          "p95": 0.009216000000000335
+        },
+        "outerGpu": {
+          "mean": 0.04325919999999996,
+          "median": 0.035840000000000316,
+          "p95": 0.03686400000000001
+        },
+        "renderGpu": {
+          "mean": 1.17384672,
+          "median": 1.0818559999999997,
+          "p95": 1.9630079999999999
+        },
+        "totalGpu": {
+          "mean": 5.912491093333333,
+          "median": 5.9622399999999995,
+          "p95": 7.373824
+        },
+        "advanceCpu": {
+          "mean": 2.23848,
+          "median": 2.1784,
+          "p95": 2.5743
+        },
+        "poolCpu": {
+          "mean": 0.696157,
+          "median": 0.6501,
+          "p95": 0.8243
+        },
+        "handoffCpu": {
+          "mean": 1.3420816666666666,
+          "median": 1.3066499999999999,
+          "p95": 1.5778
+        },
+        "totalCpu": {
+          "mean": 2.628098666666667,
+          "median": 2.5709,
+          "p95": 3.0092
+        }
+      }
+    },
+    {
+      "caseName": "q8x3_fixedA",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "api": "Direct3D11",
+      "substeps": 8,
+      "iterations": 3,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "Performance",
+      "samples": 300,
+      "metrics": {
+        "solveGpu": {
+          "mean": 4.027982186666667,
+          "median": 3.885568,
+          "p95": 5.6309759999999995
+        },
+        "displayGpu": {
+          "mean": 0.9704209066666667,
+          "median": 0.7075840000000002,
+          "p95": 1.722368
+        },
+        "coreCullGpu": {
+          "mean": 0.008202240000000001,
+          "median": 0.008192000000000199,
+          "p95": 0.009216000000000335
+        },
+        "outerGpu": {
+          "mean": 0.04502944000000002,
+          "median": 0.035840000000000316,
+          "p95": 0.03686400000000045
+        },
+        "renderGpu": {
+          "mean": 1.15860064,
+          "median": 1.05728,
+          "p95": 1.8922559999999997
+        },
+        "totalGpu": {
+          "mean": 6.281252586666667,
+          "median": 6.304768,
+          "p95": 7.624704
+        },
+        "advanceCpu": {
+          "mean": 2.271735,
+          "median": 2.23085,
+          "p95": 2.5155
+        },
+        "poolCpu": {
+          "mean": 0.7001586666666667,
+          "median": 0.6673,
+          "p95": 0.8539
+        },
+        "handoffCpu": {
+          "mean": 1.351886,
+          "median": 1.3186,
+          "p95": 1.5225
+        },
+        "totalCpu": {
+          "mean": 2.680698,
+          "median": 2.63565,
+          "p95": 3.03
+        }
+      }
+    },
+    {
+      "caseName": "q8x3_fixedB",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "api": "Direct3D11",
+      "substeps": 8,
+      "iterations": 3,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "Performance",
+      "samples": 300,
+      "metrics": {
+        "solveGpu": {
+          "mean": 4.07006208,
+          "median": 3.93216,
+          "p95": 5.57056
+        },
+        "displayGpu": {
+          "mean": 1.0353800533333333,
+          "median": 0.9630719999999999,
+          "p95": 2.0080639999999996
+        },
+        "coreCullGpu": {
+          "mean": 0.010864639999999986,
+          "median": 0.008192000000000199,
+          "p95": 0.009216000000000335
+        },
+        "outerGpu": {
+          "mean": 0.04773461333333335,
+          "median": 0.03591999999999995,
+          "p95": 0.03686400000000045
+        },
+        "renderGpu": {
+          "mean": 1.1894656,
+          "median": 1.097216,
+          "p95": 2.08896
+        },
+        "totalGpu": {
+          "mean": 6.420277226666666,
+          "median": 6.553599999999999,
+          "p95": 7.937024
+        },
+        "advanceCpu": {
+          "mean": 2.294950666666667,
+          "median": 2.2276499999999997,
+          "p95": 2.6948
+        },
+        "poolCpu": {
+          "mean": 0.7073633333333333,
+          "median": 0.6712,
+          "p95": 0.9021
+        },
+        "handoffCpu": {
+          "mean": 1.375333,
+          "median": 1.33,
+          "p95": 1.6547
+        },
+        "totalCpu": {
+          "mean": 2.707786666666667,
+          "median": 2.6370500000000003,
+          "p95": 3.2067
+        }
+      }
+    },
+    {
+      "caseName": "q2x1_fixedA",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "api": "Direct3D11",
+      "substeps": 2,
+      "iterations": 1,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "PerformanceLow",
+      "samples": 300,
+      "metrics": {
+        "solveGpu": {
+          "mean": 0.643696,
+          "median": 0.6184959999999999,
+          "p95": 0.857088
+        },
+        "displayGpu": {
+          "mean": 0.7405738666666667,
+          "median": 0.7055359999999999,
+          "p95": 0.9984000000000002
+        },
+        "coreCullGpu": {
+          "mean": 0.008024746666666664,
+          "median": 0.008191999999999977,
+          "p95": 0.008192000000000199
+        },
+        "outerGpu": {
+          "mean": 0.037502400000000005,
+          "median": 0.035840000000000094,
+          "p95": 0.03686400000000001
+        },
+        "renderGpu": {
+          "mean": 0.87118496,
+          "median": 0.82688,
+          "p95": 1.0936320000000002
+        },
+        "totalGpu": {
+          "mean": 2.34823424,
+          "median": 2.252592,
+          "p95": 2.709504
+        },
+        "advanceCpu": {
+          "mean": 2.009981333333333,
+          "median": 1.99265,
+          "p95": 2.1851
+        },
+        "poolCpu": {
+          "mean": 0.630691,
+          "median": 0.6071,
+          "p95": 0.7388
+        },
+        "handoffCpu": {
+          "mean": 1.2558823333333333,
+          "median": 1.2335500000000001,
+          "p95": 1.3835
+        },
+        "totalCpu": {
+          "mean": 2.2727056666666665,
+          "median": 2.25455,
+          "p95": 2.4627
+        }
+      }
+    },
+    {
+      "caseName": "q2x1_fixedB",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "api": "Direct3D11",
+      "substeps": 2,
+      "iterations": 1,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "PerformanceLow",
+      "samples": 300,
+      "metrics": {
+        "solveGpu": {
+          "mean": 0.6519214933333333,
+          "median": 0.620544,
+          "p95": 0.859136
+        },
+        "displayGpu": {
+          "mean": 0.7349828266666667,
+          "median": 0.7034880000000001,
+          "p95": 0.9943040000000001
+        },
+        "coreCullGpu": {
+          "mean": 0.00799744,
+          "median": 0.008191999999999977,
+          "p95": 0.008192000000000199
+        },
+        "outerGpu": {
+          "mean": 0.036838933333333324,
+          "median": 0.035840000000000094,
+          "p95": 0.03686400000000001
+        },
+        "renderGpu": {
+          "mean": 0.86038304,
+          "median": 0.82944,
+          "p95": 1.0915839999999999
+        },
+        "totalGpu": {
+          "mean": 2.3392917333333334,
+          "median": 2.250752,
+          "p95": 2.698944
+        },
+        "advanceCpu": {
+          "mean": 1.9952773333333333,
+          "median": 1.9684,
+          "p95": 2.1737
+        },
+        "poolCpu": {
+          "mean": 0.633798,
+          "median": 0.60785,
+          "p95": 0.7664
+        },
+        "handoffCpu": {
+          "mean": 1.237295,
+          "median": 1.2221,
+          "p95": 1.3715
+        },
+        "totalCpu": {
+          "mean": 2.2528076666666665,
+          "median": 2.2257,
+          "p95": 2.4374
+        }
+      }
+    },
+    {
+      "caseName": "q3x1_fixedA",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "api": "Direct3D11",
+      "substeps": 3,
+      "iterations": 1,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "PerformanceLow",
+      "samples": 300,
+      "metrics": {
+        "solveGpu": {
+          "mean": 0.9175108266666667,
+          "median": 0.872448,
+          "p95": 1.125376
+        },
+        "displayGpu": {
+          "mean": 0.73782272,
+          "median": 0.7055359999999999,
+          "p95": 0.980992
+        },
+        "coreCullGpu": {
+          "mean": 0.00880981333333333,
+          "median": 0.008191999999999977,
+          "p95": 0.008192000000000199
+        },
+        "outerGpu": {
+          "mean": 0.03899658666666668,
+          "median": 0.03583999999999987,
+          "p95": 0.03686400000000001
+        },
+        "renderGpu": {
+          "mean": 0.84959648,
+          "median": 0.822256,
+          "p95": 1.08032
+        },
+        "totalGpu": {
+          "mean": 2.600118613333333,
+          "median": 2.503104,
+          "p95": 2.972544
+        },
+        "advanceCpu": {
+          "mean": 2.012871666666667,
+          "median": 1.9938500000000001,
+          "p95": 2.1776
+        },
+        "poolCpu": {
+          "mean": 0.636951,
+          "median": 0.6094,
+          "p95": 0.7569
+        },
+        "handoffCpu": {
+          "mean": 1.251467,
+          "median": 1.23485,
+          "p95": 1.3683
+        },
+        "totalCpu": {
+          "mean": 2.272192,
+          "median": 2.25425,
+          "p95": 2.4422
+        }
+      }
+    },
+    {
+      "caseName": "q3x1_fixedB",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "api": "Direct3D11",
+      "substeps": 3,
+      "iterations": 1,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "PerformanceLow",
+      "samples": 300,
+      "metrics": {
+        "solveGpu": {
+          "mean": 0.9086974933333334,
+          "median": 0.868352,
+          "p95": 1.122304
+        },
+        "displayGpu": {
+          "mean": 0.7312247466666667,
+          "median": 0.704512,
+          "p95": 0.984064
+        },
+        "coreCullGpu": {
+          "mean": 0.008034986666666669,
+          "median": 0.008191999999999977,
+          "p95": 0.008192000000000199
+        },
+        "outerGpu": {
+          "mean": 0.047242133333333325,
+          "median": 0.035840000000000094,
+          "p95": 0.03891200000000006
+        },
+        "renderGpu": {
+          "mean": 0.8702960000000001,
+          "median": 0.82944,
+          "p95": 1.10592
+        },
+        "totalGpu": {
+          "mean": 2.608944,
+          "median": 2.522112,
+          "p95": 2.985984
+        },
+        "advanceCpu": {
+          "mean": 1.9673163333333334,
+          "median": 1.94435,
+          "p95": 2.1282
+        },
+        "poolCpu": {
+          "mean": 0.6258626666666667,
+          "median": 0.60795,
+          "p95": 0.7545
+        },
+        "handoffCpu": {
+          "mean": 1.2181666666666666,
+          "median": 1.20995,
+          "p95": 1.2767
+        },
+        "totalCpu": {
+          "mean": 2.2261896666666665,
+          "median": 2.2007,
+          "p95": 2.3908
+        }
+      }
+    },
+    {
+      "caseName": "q4x1_fixedA",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "api": "Direct3D11",
+      "substeps": 4,
+      "iterations": 1,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "PerformanceLow",
+      "samples": 300,
+      "metrics": {
+        "solveGpu": {
+          "mean": 1.1540411733333333,
+          "median": 1.113088,
+          "p95": 1.369088
+        },
+        "displayGpu": {
+          "mean": 0.7413725866666666,
+          "median": 0.7014400000000001,
+          "p95": 0.9994240000000001
+        },
+        "coreCullGpu": {
+          "mean": 0.008963413333333344,
+          "median": 0.008191999999999977,
+          "p95": 0.009215999999999891
+        },
+        "outerGpu": {
+          "mean": 0.03592458666666666,
+          "median": 0.035840000000000094,
+          "p95": 0.03686400000000001
+        },
+        "renderGpu": {
+          "mean": 0.8498391466666667,
+          "median": 0.8238080000000001,
+          "p95": 1.0752
+        },
+        "totalGpu": {
+          "mean": 2.83347968,
+          "median": 2.742272,
+          "p95": 3.248128
+        },
+        "advanceCpu": {
+          "mean": 1.959216,
+          "median": 1.9268,
+          "p95": 2.1785
+        },
+        "poolCpu": {
+          "mean": 0.6183093333333334,
+          "median": 0.6061,
+          "p95": 0.7193
+        },
+        "handoffCpu": {
+          "mean": 1.2183406666666667,
+          "median": 1.2021,
+          "p95": 1.3335
+        },
+        "totalCpu": {
+          "mean": 2.2315023333333333,
+          "median": 2.2001,
+          "p95": 2.4379
+        }
+      }
+    },
+    {
+      "caseName": "q4x1_fixedB",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "api": "Direct3D11",
+      "substeps": 4,
+      "iterations": 1,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "PerformanceLow",
+      "samples": 300,
+      "metrics": {
+        "solveGpu": {
+          "mean": 1.1818461866666667,
+          "median": 1.1284480000000001,
+          "p95": 1.391616
+        },
+        "displayGpu": {
+          "mean": 0.75421696,
+          "median": 0.7116799999999999,
+          "p95": 1.0086400000000002
+        },
+        "coreCullGpu": {
+          "mean": 0.008178346666666673,
+          "median": 0.008191999999999977,
+          "p95": 0.009215999999999891
+        },
+        "outerGpu": {
+          "mean": 0.03626528,
+          "median": 0.035871999999999904,
+          "p95": 0.03686400000000001
+        },
+        "renderGpu": {
+          "mean": 0.86434272,
+          "median": 0.833536,
+          "p95": 1.084416
+        },
+        "totalGpu": {
+          "mean": 2.8856129066666667,
+          "median": 2.794928,
+          "p95": 3.257344
+        },
+        "advanceCpu": {
+          "mean": 1.962109,
+          "median": 1.9475500000000001,
+          "p95": 2.1218
+        },
+        "poolCpu": {
+          "mean": 0.6207196666666667,
+          "median": 0.6066,
+          "p95": 0.7325
+        },
+        "handoffCpu": {
+          "mean": 1.2165376666666667,
+          "median": 1.20905,
+          "p95": 1.2797
+        },
+        "totalCpu": {
+          "mean": 2.22115,
+          "median": 2.1993,
+          "p95": 2.39
+        }
+      }
+    },
+    {
+      "caseName": "q8x3_fixedA",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "api": "Direct3D11",
+      "substeps": 8,
+      "iterations": 3,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "PerformanceLow",
+      "samples": 300,
+      "metrics": {
+        "solveGpu": {
+          "mean": 2.9944215466666666,
+          "median": 2.89024,
+          "p95": 3.3413120000000003
+        },
+        "displayGpu": {
+          "mean": 0.7339076266666666,
+          "median": 0.7075840000000002,
+          "p95": 0.9861119999999999
+        },
+        "coreCullGpu": {
+          "mean": 0.008895146666666652,
+          "median": 0.008191999999999755,
+          "p95": 0.009215999999999891
+        },
+        "outerGpu": {
+          "mean": 0.03715242666666666,
+          "median": 0.03583999999999987,
+          "p95": 0.036863999999999564
+        },
+        "renderGpu": {
+          "mean": 0.84561408,
+          "median": 0.8181760000000002,
+          "p95": 1.0782720000000001
+        },
+        "totalGpu": {
+          "mean": 4.66275008,
+          "median": 4.670816,
+          "p95": 5.015552
+        },
+        "advanceCpu": {
+          "mean": 2.062928,
+          "median": 2.04085,
+          "p95": 2.2545
+        },
+        "poolCpu": {
+          "mean": 0.673706,
+          "median": 0.6373,
+          "p95": 0.7808
+        },
+        "handoffCpu": {
+          "mean": 1.234247,
+          "median": 1.22005,
+          "p95": 1.3115
+        },
+        "totalCpu": {
+          "mean": 2.35294,
+          "median": 2.3385499999999997,
+          "p95": 2.5924
+        }
+      }
+    },
+    {
+      "caseName": "q8x3_fixedB",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "api": "Direct3D11",
+      "substeps": 8,
+      "iterations": 3,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "PerformanceLow",
+      "samples": 300,
+      "metrics": {
+        "solveGpu": {
+          "mean": 3.0310570666666665,
+          "median": 2.906112,
+          "p95": 3.369984
+        },
+        "displayGpu": {
+          "mean": 0.7379933866666667,
+          "median": 0.7034880000000001,
+          "p95": 1.0014719999999997
+        },
+        "coreCullGpu": {
+          "mean": 0.008861013333333306,
+          "median": 0.008191999999999755,
+          "p95": 0.008192000000000199
+        },
+        "outerGpu": {
+          "mean": 0.03786453333333335,
+          "median": 0.03587200000000035,
+          "p95": 0.03686400000000045
+        },
+        "renderGpu": {
+          "mean": 0.86763136,
+          "median": 0.8314880000000002,
+          "p95": 1.091584
+        },
+        "totalGpu": {
+          "mean": 4.72401184,
+          "median": 4.729343999999999,
+          "p95": 5.04912
+        },
+        "advanceCpu": {
+          "mean": 2.0369463333333333,
+          "median": 2.0202,
+          "p95": 2.2239
+        },
+        "poolCpu": {
+          "mean": 0.6783263333333334,
+          "median": 0.6515500000000001,
+          "p95": 0.7921
+        },
+        "handoffCpu": {
+          "mean": 1.2182233333333334,
+          "median": 1.2081,
+          "p95": 1.2952
+        },
+        "totalCpu": {
+          "mean": 2.304296,
+          "median": 2.2942,
+          "p95": 2.5147
+        }
+      }
+    },
+    {
+      "caseName": "q2x1_fixedA",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "api": "Direct3D11",
+      "substeps": 2,
+      "iterations": 1,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "FinalPerformance",
+      "samples": 300,
+      "metrics": {
+        "solveGpu": {
+          "mean": 0.69402208,
+          "median": 0.624128,
+          "p95": 1.158144
+        },
+        "displayGpu": {
+          "mean": 0.81032192,
+          "median": 0.703488,
+          "p95": 1.34144
+        },
+        "coreCullGpu": {
+          "mean": 0.008212480000000001,
+          "median": 0.008191999999999977,
+          "p95": 0.009215999999999891
+        },
+        "outerGpu": {
+          "mean": 0.03635584,
+          "median": 0.03590400000000005,
+          "p95": 0.03686400000000001
+        },
+        "renderGpu": {
+          "mean": 0.95190656,
+          "median": 0.8437760000000001,
+          "p95": 1.475584
+        },
+        "totalGpu": {
+          "mean": 2.5544203733333335,
+          "median": 2.462128,
+          "p95": 3.44144
+        },
+        "advanceCpu": {
+          "mean": 2.065336,
+          "median": 2.0008999999999997,
+          "p95": 2.4175
+        },
+        "poolCpu": {
+          "mean": 0.647624,
+          "median": 0.6224000000000001,
+          "p95": 0.811
+        },
+        "handoffCpu": {
+          "mean": 1.277847,
+          "median": 1.24615,
+          "p95": 1.4257
+        },
+        "totalCpu": {
+          "mean": 2.368196,
+          "median": 2.2878499999999997,
+          "p95": 2.7913
+        }
+      }
+    },
+    {
+      "caseName": "q2x1_fixedB",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "api": "Direct3D11",
+      "substeps": 2,
+      "iterations": 1,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "FinalPerformance",
+      "samples": 300,
+      "metrics": {
+        "solveGpu": {
+          "mean": 0.71429408,
+          "median": 0.626688,
+          "p95": 1.194976
+        },
+        "displayGpu": {
+          "mean": 0.8143018666666667,
+          "median": 0.7147519999999999,
+          "p95": 1.3598720000000002
+        },
+        "coreCullGpu": {
+          "mean": 0.008236373333333328,
+          "median": 0.008191999999999977,
+          "p95": 0.009215999999999891
+        },
+        "outerGpu": {
+          "mean": 0.03987776,
+          "median": 0.035840000000000094,
+          "p95": 0.03686400000000001
+        },
+        "renderGpu": {
+          "mean": 0.9587884799999999,
+          "median": 0.8437760000000001,
+          "p95": 1.47648
+        },
+        "totalGpu": {
+          "mean": 2.58990336,
+          "median": 2.46768,
+          "p95": 3.549184
+        },
+        "advanceCpu": {
+          "mean": 2.0653186666666667,
+          "median": 1.99275,
+          "p95": 2.4822
+        },
+        "poolCpu": {
+          "mean": 0.649255,
+          "median": 0.6182,
+          "p95": 0.7817
+        },
+        "handoffCpu": {
+          "mean": 1.2749593333333333,
+          "median": 1.23395,
+          "p95": 1.4521
+        },
+        "totalCpu": {
+          "mean": 2.374436333333333,
+          "median": 2.2807,
+          "p95": 3.1074
+        }
+      }
+    },
+    {
+      "caseName": "q3x1_fixedA",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "api": "Direct3D11",
+      "substeps": 3,
+      "iterations": 1,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "FinalPerformance",
+      "samples": 300,
+      "metrics": {
+        "solveGpu": {
+          "mean": 1.0086460800000001,
+          "median": 0.88064,
+          "p95": 1.516544
+        },
+        "displayGpu": {
+          "mean": 0.80990208,
+          "median": 0.7116799999999999,
+          "p95": 1.333248
+        },
+        "coreCullGpu": {
+          "mean": 0.008263680000000002,
+          "median": 0.008191999999999977,
+          "p95": 0.009216000000000113
+        },
+        "outerGpu": {
+          "mean": 0.057686506666666665,
+          "median": 0.035840000000000316,
+          "p95": 0.2836480000000001
+        },
+        "renderGpu": {
+          "mean": 0.9230085333333333,
+          "median": 0.841216,
+          "p95": 1.296384
+        },
+        "totalGpu": {
+          "mean": 2.8555499733333334,
+          "median": 2.7476960000000004,
+          "p95": 3.792896
+        },
+        "advanceCpu": {
+          "mean": 2.104066,
+          "median": 2.0302,
+          "p95": 2.4789
+        },
+        "poolCpu": {
+          "mean": 0.6650903333333333,
+          "median": 0.62505,
+          "p95": 0.7885
+        },
+        "handoffCpu": {
+          "mean": 1.288321,
+          "median": 1.24985,
+          "p95": 1.5474
+        },
+        "totalCpu": {
+          "mean": 2.427044,
+          "median": 2.3562,
+          "p95": 2.8888
+        }
+      }
+    },
+    {
+      "caseName": "q3x1_fixedB",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "api": "Direct3D11",
+      "substeps": 3,
+      "iterations": 1,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "FinalPerformance",
+      "samples": 300,
+      "metrics": {
+        "solveGpu": {
+          "mean": 0.9879688533333334,
+          "median": 0.8837119999999999,
+          "p95": 1.4417920000000002
+        },
+        "displayGpu": {
+          "mean": 0.81639424,
+          "median": 0.714752,
+          "p95": 1.342464
+        },
+        "coreCullGpu": {
+          "mean": 0.008202240000000003,
+          "median": 0.008191999999999977,
+          "p95": 0.009215999999999891
+        },
+        "outerGpu": {
+          "mean": 0.047458240000000006,
+          "median": 0.035840000000000094,
+          "p95": 0.03891200000000006
+        },
+        "renderGpu": {
+          "mean": 0.9396538666666666,
+          "median": 0.8376319999999999,
+          "p95": 1.452032
+        },
+        "totalGpu": {
+          "mean": 2.8584859733333334,
+          "median": 2.760192,
+          "p95": 3.765248
+        },
+        "advanceCpu": {
+          "mean": 2.0966416666666667,
+          "median": 2.0391,
+          "p95": 2.386
+        },
+        "poolCpu": {
+          "mean": 0.6691226666666666,
+          "median": 0.63135,
+          "p95": 0.8008
+        },
+        "handoffCpu": {
+          "mean": 1.285179,
+          "median": 1.2504499999999998,
+          "p95": 1.4654
+        },
+        "totalCpu": {
+          "mean": 2.3899433333333335,
+          "median": 2.3295,
+          "p95": 2.7787
+        }
+      }
+    },
+    {
+      "caseName": "q4x1_fixedA",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "api": "Direct3D11",
+      "substeps": 4,
+      "iterations": 1,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "FinalPerformance",
+      "samples": 300,
+      "metrics": {
+        "solveGpu": {
+          "mean": 1.26646272,
+          "median": 1.129472,
+          "p95": 1.898496
+        },
+        "displayGpu": {
+          "mean": 0.8022254933333334,
+          "median": 0.7055360000000002,
+          "p95": 1.2922879999999999
+        },
+        "coreCullGpu": {
+          "mean": 0.010393600000000005,
+          "median": 0.008191999999999977,
+          "p95": 0.009216000000000113
+        },
+        "outerGpu": {
+          "mean": 0.03921344,
+          "median": 0.035840000000000316,
+          "p95": 0.03686400000000001
+        },
+        "renderGpu": {
+          "mean": 0.93126208,
+          "median": 0.836608,
+          "p95": 1.4284799999999997
+        },
+        "totalGpu": {
+          "mean": 3.09318304,
+          "median": 2.980128,
+          "p95": 4.166656
+        },
+        "advanceCpu": {
+          "mean": 2.5788013333333333,
+          "median": 2.32235,
+          "p95": 3.7034
+        },
+        "poolCpu": {
+          "mean": 0.7999856666666667,
+          "median": 0.6777,
+          "p95": 1.2182
+        },
+        "handoffCpu": {
+          "mean": 1.5589396666666666,
+          "median": 1.39555,
+          "p95": 2.2279
+        },
+        "totalCpu": {
+          "mean": 3.08101,
+          "median": 2.80115,
+          "p95": 4.3914
+        }
+      }
+    },
+    {
+      "caseName": "q4x1_fixedB",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "api": "Direct3D11",
+      "substeps": 4,
+      "iterations": 1,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "FinalPerformance",
+      "samples": 300,
+      "metrics": {
+        "solveGpu": {
+          "mean": 1.2873045333333333,
+          "median": 1.140736,
+          "p95": 1.8800640000000002
+        },
+        "displayGpu": {
+          "mean": 0.8168789333333334,
+          "median": 0.714752,
+          "p95": 1.3015039999999998
+        },
+        "coreCullGpu": {
+          "mean": 0.012509866666666664,
+          "median": 0.008191999999999977,
+          "p95": 0.009216000000000113
+        },
+        "outerGpu": {
+          "mean": 0.042616320000000006,
+          "median": 0.03686400000000001,
+          "p95": 0.0378879999999997
+        },
+        "renderGpu": {
+          "mean": 0.9629038933333334,
+          "median": 0.8463360000000001,
+          "p95": 1.458176
+        },
+        "totalGpu": {
+          "mean": 3.1662740266666667,
+          "median": 3.0385280000000003,
+          "p95": 4.110336
+        },
+        "advanceCpu": {
+          "mean": 2.3005566666666666,
+          "median": 2.181,
+          "p95": 2.9274
+        },
+        "poolCpu": {
+          "mean": 0.728247,
+          "median": 0.6766000000000001,
+          "p95": 0.9471
+        },
+        "handoffCpu": {
+          "mean": 1.4123523333333334,
+          "median": 1.3273,
+          "p95": 1.7778
+        },
+        "totalCpu": {
+          "mean": 2.6389503333333333,
+          "median": 2.4986499999999996,
+          "p95": 3.4308
+        }
+      }
+    },
+    {
+      "caseName": "q4x2_fixedA",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "api": "Direct3D11",
+      "substeps": 4,
+      "iterations": 2,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "FinalPerformance",
+      "samples": 300,
+      "metrics": {
+        "solveGpu": {
+          "mean": 1.5002965333333333,
+          "median": 1.340416,
+          "p95": 2.1770240000000003
+        },
+        "displayGpu": {
+          "mean": 0.79557632,
+          "median": 0.7116800000000003,
+          "p95": 1.155072
+        },
+        "coreCullGpu": {
+          "mean": 0.010062506666666672,
+          "median": 0.008192000000000199,
+          "p95": 0.009215999999999891
+        },
+        "outerGpu": {
+          "mean": 0.03865941333333334,
+          "median": 0.03587200000000035,
+          "p95": 0.03686400000000001
+        },
+        "renderGpu": {
+          "mean": 0.9322769066666666,
+          "median": 0.8448000000000002,
+          "p95": 1.3281280000000004
+        },
+        "totalGpu": {
+          "mean": 3.3336993066666665,
+          "median": 3.200432,
+          "p95": 4.555776
+        },
+        "advanceCpu": {
+          "mean": 2.3660113333333332,
+          "median": 2.16075,
+          "p95": 3.4633
+        },
+        "poolCpu": {
+          "mean": 0.733701,
+          "median": 0.64945,
+          "p95": 1.1041
+        },
+        "handoffCpu": {
+          "mean": 1.4429996666666667,
+          "median": 1.31505,
+          "p95": 2.1211
+        },
+        "totalCpu": {
+          "mean": 2.77676,
+          "median": 2.53805,
+          "p95": 4.0959
+        }
+      }
+    },
+    {
+      "caseName": "q4x2_fixedB",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "api": "Direct3D11",
+      "substeps": 4,
+      "iterations": 2,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "FinalPerformance",
+      "samples": 300,
+      "metrics": {
+        "solveGpu": {
+          "mean": 1.5324910933333333,
+          "median": 1.338368,
+          "p95": 2.291712
+        },
+        "displayGpu": {
+          "mean": 0.8201523199999999,
+          "median": 0.709632,
+          "p95": 1.3977600000000001
+        },
+        "coreCullGpu": {
+          "mean": 0.010567680000000006,
+          "median": 0.008192000000000199,
+          "p95": 0.009216000000000335
+        },
+        "outerGpu": {
+          "mean": 0.044405973333333335,
+          "median": 0.03686400000000001,
+          "p95": 0.03689600000000004
+        },
+        "renderGpu": {
+          "mean": 0.9458327466666666,
+          "median": 0.8478240000000001,
+          "p95": 1.3957119999999996
+        },
+        "totalGpu": {
+          "mean": 3.4051111466666666,
+          "median": 3.229696,
+          "p95": 4.538368
+        },
+        "advanceCpu": {
+          "mean": 2.1183413333333334,
+          "median": 2.0832,
+          "p95": 2.3969
+        },
+        "poolCpu": {
+          "mean": 0.6695926666666666,
+          "median": 0.63545,
+          "p95": 0.8028
+        },
+        "handoffCpu": {
+          "mean": 1.2990906666666666,
+          "median": 1.26545,
+          "p95": 1.4872
+        },
+        "totalCpu": {
+          "mean": 2.43016,
+          "median": 2.3861,
+          "p95": 2.8046
+        }
+      }
+    },
+    {
+      "caseName": "q6x1_fixedA",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "api": "Direct3D11",
+      "substeps": 6,
+      "iterations": 1,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "FinalPerformance",
+      "samples": 300,
+      "metrics": {
+        "solveGpu": {
+          "mean": 1.8409984,
+          "median": 1.6486399999999999,
+          "p95": 2.598912
+        },
+        "displayGpu": {
+          "mean": 0.8171895466666667,
+          "median": 0.7080960000000001,
+          "p95": 1.3434880000000002
+        },
+        "coreCullGpu": {
+          "mean": 0.008277333333333343,
+          "median": 0.008192000000000199,
+          "p95": 0.009215999999999891
+        },
+        "outerGpu": {
+          "mean": 0.04093013333333334,
+          "median": 0.035840000000000316,
+          "p95": 0.03686400000000001
+        },
+        "renderGpu": {
+          "mean": 0.93346048,
+          "median": 0.838144,
+          "p95": 1.3465599999999998
+        },
+        "totalGpu": {
+          "mean": 3.6851064533333333,
+          "median": 3.528064,
+          "p95": 4.704256
+        },
+        "advanceCpu": {
+          "mean": 2.2754586666666667,
+          "median": 2.12445,
+          "p95": 3.3181
+        },
+        "poolCpu": {
+          "mean": 0.7083233333333333,
+          "median": 0.6453,
+          "p95": 1.1284
+        },
+        "handoffCpu": {
+          "mean": 1.3819273333333333,
+          "median": 1.2920500000000001,
+          "p95": 2.0428
+        },
+        "totalCpu": {
+          "mean": 2.677332,
+          "median": 2.5016,
+          "p95": 3.8954
+        }
+      }
+    },
+    {
+      "caseName": "q6x1_fixedB",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "api": "Direct3D11",
+      "substeps": 6,
+      "iterations": 1,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "FinalPerformance",
+      "samples": 300,
+      "metrics": {
+        "solveGpu": {
+          "mean": 1.8469512533333334,
+          "median": 1.646592,
+          "p95": 2.528256
+        },
+        "displayGpu": {
+          "mean": 0.84831232,
+          "median": 0.714752,
+          "p95": 1.345536
+        },
+        "coreCullGpu": {
+          "mean": 0.009038506666666677,
+          "median": 0.008192000000000199,
+          "p95": 0.009215999999999891
+        },
+        "outerGpu": {
+          "mean": 0.04533194666666668,
+          "median": 0.03686400000000001,
+          "p95": 0.0378879999999997
+        },
+        "renderGpu": {
+          "mean": 0.96376544,
+          "median": 0.8478720000000002,
+          "p95": 1.6762879999999996
+        },
+        "totalGpu": {
+          "mean": 3.75553472,
+          "median": 3.599872,
+          "p95": 4.791296
+        },
+        "advanceCpu": {
+          "mean": 2.0972116666666665,
+          "median": 2.0535,
+          "p95": 2.3516
+        },
+        "poolCpu": {
+          "mean": 0.667883,
+          "median": 0.6375500000000001,
+          "p95": 0.8037
+        },
+        "handoffCpu": {
+          "mean": 1.275539,
+          "median": 1.2488000000000001,
+          "p95": 1.4381
+        },
+        "totalCpu": {
+          "mean": 2.4027903333333334,
+          "median": 2.35755,
+          "p95": 2.6908
+        }
+      }
+    },
+    {
+      "caseName": "q8x1_fixedA",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "api": "Direct3D11",
+      "substeps": 8,
+      "iterations": 1,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "FinalPerformance",
+      "samples": 300,
+      "metrics": {
+        "solveGpu": {
+          "mean": 2.46227968,
+          "median": 2.3567359999999997,
+          "p95": 3.27168
+        },
+        "displayGpu": {
+          "mean": 0.824064,
+          "median": 0.7055359999999999,
+          "p95": 1.2564479999999998
+        },
+        "coreCullGpu": {
+          "mean": 0.008512853333333325,
+          "median": 0.008192000000000199,
+          "p95": 0.009216000000000335
+        },
+        "outerGpu": {
+          "mean": 0.03968394666666669,
+          "median": 0.035840000000000316,
+          "p95": 0.03686400000000001
+        },
+        "renderGpu": {
+          "mean": 0.9783256533333333,
+          "median": 0.8386559999999998,
+          "p95": 1.465344
+        },
+        "totalGpu": {
+          "mean": 4.36974816,
+          "median": 4.276496,
+          "p95": 5.269504
+        },
+        "advanceCpu": {
+          "mean": 3.4725983333333335,
+          "median": 3.5259,
+          "p95": 4.4127
+        },
+        "poolCpu": {
+          "mean": 1.0470243333333333,
+          "median": 1.08775,
+          "p95": 1.3431
+        },
+        "handoffCpu": {
+          "mean": 2.0393403333333335,
+          "median": 2.0864000000000003,
+          "p95": 2.4981
+        },
+        "totalCpu": {
+          "mean": 4.316349333333333,
+          "median": 4.33015,
+          "p95": 5.583
+        }
+      }
+    },
+    {
+      "caseName": "q8x1_fixedB",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "api": "Direct3D11",
+      "substeps": 8,
+      "iterations": 1,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "FinalPerformance",
+      "samples": 300,
+      "metrics": {
+        "solveGpu": {
+          "mean": 2.401437013333333,
+          "median": 2.351616,
+          "p95": 3.178496
+        },
+        "displayGpu": {
+          "mean": 0.85572608,
+          "median": 0.715776,
+          "p95": 1.4233600000000002
+        },
+        "coreCullGpu": {
+          "mean": 0.01031168,
+          "median": 0.008192000000000199,
+          "p95": 0.009216000000000335
+        },
+        "outerGpu": {
+          "mean": 0.03804906666666666,
+          "median": 0.03596799999999978,
+          "p95": 0.03686400000000045
+        },
+        "renderGpu": {
+          "mean": 0.9382734933333333,
+          "median": 0.8386560000000003,
+          "p95": 1.5001600000000002
+        },
+        "totalGpu": {
+          "mean": 4.287785706666667,
+          "median": 4.193792,
+          "p95": 5.452768
+        },
+        "advanceCpu": {
+          "mean": 2.1031863333333334,
+          "median": 2.0553,
+          "p95": 2.3452
+        },
+        "poolCpu": {
+          "mean": 0.6703496666666666,
+          "median": 0.63305,
+          "p95": 0.792
+        },
+        "handoffCpu": {
+          "mean": 1.2717443333333334,
+          "median": 1.24545,
+          "p95": 1.4306
+        },
+        "totalCpu": {
+          "mean": 2.407475333333333,
+          "median": 2.36485,
+          "p95": 2.689
+        }
+      }
+    },
+    {
+      "caseName": "q8x2_fixedA",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "api": "Direct3D11",
+      "substeps": 8,
+      "iterations": 2,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "FinalPerformance",
+      "samples": 300,
+      "metrics": {
+        "solveGpu": {
+          "mean": 3.0296098133333333,
+          "median": 2.960896,
+          "p95": 4.013056000000001
+        },
+        "displayGpu": {
+          "mean": 0.8432366933333333,
+          "median": 0.7014399999999998,
+          "p95": 1.379328
+        },
+        "coreCullGpu": {
+          "mean": 0.00855722666666671,
+          "median": 0.008192000000000199,
+          "p95": 0.009216000000000335
+        },
+        "outerGpu": {
+          "mean": 0.038076373333333295,
+          "median": 0.03583999999999987,
+          "p95": 0.03686400000000001
+        },
+        "renderGpu": {
+          "mean": 0.9673755733333333,
+          "median": 0.8345599999999997,
+          "p95": 1.4673919999999998
+        },
+        "totalGpu": {
+          "mean": 4.938001173333333,
+          "median": 4.8343039999999995,
+          "p95": 6.017952
+        },
+        "advanceCpu": {
+          "mean": 4.156285666666666,
+          "median": 3.8507,
+          "p95": 5.5558
+        },
+        "poolCpu": {
+          "mean": 1.2222036666666667,
+          "median": 1.1718,
+          "p95": 1.6102
+        },
+        "handoffCpu": {
+          "mean": 2.2688526666666666,
+          "median": 2.20635,
+          "p95": 2.8501
+        },
+        "totalCpu": {
+          "mean": 5.152566333333334,
+          "median": 4.813549999999999,
+          "p95": 6.9498
+        }
+      }
+    },
+    {
+      "caseName": "q8x2_fixedB",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "api": "Direct3D11",
+      "substeps": 8,
+      "iterations": 2,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "FinalPerformance",
+      "samples": 300,
+      "metrics": {
+        "solveGpu": {
+          "mean": 2.90412544,
+          "median": 2.7750399999999997,
+          "p95": 3.892224
+        },
+        "displayGpu": {
+          "mean": 0.8244736,
+          "median": 0.711168,
+          "p95": 1.308672
+        },
+        "coreCullGpu": {
+          "mean": 0.010120533333333332,
+          "median": 0.008192000000000199,
+          "p95": 0.009215999999999891
+        },
+        "outerGpu": {
+          "mean": 0.03909344,
+          "median": 0.036863999999999564,
+          "p95": 0.03686400000000045
+        },
+        "renderGpu": {
+          "mean": 0.9674746666666667,
+          "median": 0.8386560000000003,
+          "p95": 1.4766079999999997
+        },
+        "totalGpu": {
+          "mean": 4.797500266666667,
+          "median": 4.645888,
+          "p95": 5.90336
+        },
+        "advanceCpu": {
+          "mean": 2.1666213333333335,
+          "median": 2.10955,
+          "p95": 2.5652
+        },
+        "poolCpu": {
+          "mean": 0.6882133333333333,
+          "median": 0.6472,
+          "p95": 0.8408
+        },
+        "handoffCpu": {
+          "mean": 1.305489,
+          "median": 1.26605,
+          "p95": 1.4843
+        },
+        "totalCpu": {
+          "mean": 2.4986523333333333,
+          "median": 2.435,
+          "p95": 3.0573
+        }
+      }
+    },
+    {
+      "caseName": "q8x3_fixedA",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "api": "Direct3D11",
+      "substeps": 8,
+      "iterations": 3,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "FinalPerformance",
+      "samples": 300,
+      "metrics": {
+        "solveGpu": {
+          "mean": 3.48809216,
+          "median": 3.247104,
+          "p95": 5.20704
+        },
+        "displayGpu": {
+          "mean": 0.8731818666666666,
+          "median": 0.7004160000000001,
+          "p95": 1.7018880000000003
+        },
+        "coreCullGpu": {
+          "mean": 0.007464959999999998,
+          "median": 0.007168000000000063,
+          "p95": 0.008192000000000199
+        },
+        "outerGpu": {
+          "mean": 0.03904511999999996,
+          "median": 0.03481600000000018,
+          "p95": 0.035840000000000316
+        },
+        "renderGpu": {
+          "mean": 1.0084727466666668,
+          "median": 0.836608,
+          "p95": 1.705984
+        },
+        "totalGpu": {
+          "mean": 5.4629802666666665,
+          "median": 5.1456,
+          "p95": 7.793312
+        },
+        "advanceCpu": {
+          "mean": 2.5513149999999998,
+          "median": 2.3457999999999997,
+          "p95": 3.6496
+        },
+        "poolCpu": {
+          "mean": 0.7800746666666667,
+          "median": 0.6891,
+          "p95": 1.1831
+        },
+        "handoffCpu": {
+          "mean": 1.5060786666666666,
+          "median": 1.37825,
+          "p95": 2.1916
+        },
+        "totalCpu": {
+          "mean": 3.1071506666666666,
+          "median": 2.8872999999999998,
+          "p95": 4.3945
+        }
+      }
+    },
+    {
+      "caseName": "q8x3_fixedB",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "api": "Direct3D11",
+      "substeps": 8,
+      "iterations": 3,
+      "gpuBufferBytes": 224852832,
+      "dropped": 0,
+      "failed": 0,
+      "run": "FinalPerformance",
+      "samples": 300,
+      "metrics": {
+        "solveGpu": {
+          "mean": 3.31648,
+          "median": 3.152896,
+          "p95": 4.1994240000000005
+        },
+        "displayGpu": {
+          "mean": 0.8134621866666667,
+          "median": 0.7045119999999998,
+          "p95": 1.34144
+        },
+        "coreCullGpu": {
+          "mean": 0.008192000000000015,
+          "median": 0.008192000000000199,
+          "p95": 0.009215999999999447
+        },
+        "outerGpu": {
+          "mean": 0.037906239999999994,
+          "median": 0.03587199999999946,
+          "p95": 0.03686400000000045
+        },
+        "renderGpu": {
+          "mean": 0.93775072,
+          "median": 0.8401600000000005,
+          "p95": 1.4151360000000004
+        },
+        "totalGpu": {
+          "mean": 5.1592631466666665,
+          "median": 5.052928,
+          "p95": 6.261344
+        },
+        "advanceCpu": {
+          "mean": 2.1168716666666665,
+          "median": 2.08325,
+          "p95": 2.3876
+        },
+        "poolCpu": {
+          "mean": 0.686344,
+          "median": 0.6663,
+          "p95": 0.7946
+        },
+        "handoffCpu": {
+          "mean": 1.2717713333333334,
+          "median": 1.23915,
+          "p95": 1.4685
+        },
+        "totalCpu": {
+          "mean": 2.415542,
+          "median": 2.37765,
+          "p95": 2.7547
+        }
+      }
+    }
+  ],
+  "quality": {
+    "passed": true,
+    "error": "",
+    "gpu": "NVIDIA GeForce RTX 3080 Ti",
+    "active": 32768,
+    "sampleStride": 8,
+    "cases": [
+      {
+        "name": "8x3",
+        "substeps": 8,
+        "iterations": 3,
+        "rows": [
+          {
+            "phase": "wind",
+            "tick": 180,
+            "sampledBlades": 4096,
+            "nearContactBlades": 0,
+            "penetratingSegments": 0,
+            "segments": 28672,
+            "lengthErrorMean": 3.001309414685238e-05,
+            "lengthErrorP95": 8.071313641266897e-05,
+            "lengthErrorMax": 9.006472828332335e-05,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.0,
+            "capsulePenetrationP95": 0.0,
+            "tipDifferenceRms": 0.0,
+            "tipDifferenceP95": 0.0,
+            "tipDifferenceMax": 0.0,
+            "nearContactTipDifferenceRms": 0.0,
+            "plasticMean": 0.0,
+            "plasticMax": 0.0,
+            "speedMean": 0.038344211876392365,
+            "speedP95": 0.10980457067489624
+          },
+          {
+            "phase": "contact",
+            "tick": 240,
+            "sampledBlades": 4096,
+            "nearContactBlades": 742,
+            "penetratingSegments": 45,
+            "segments": 28672,
+            "lengthErrorMean": 0.0008886191062629223,
+            "lengthErrorP95": 8.4498300566338e-05,
+            "lengthErrorMax": 2.4505696296691895,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.10823267698287964,
+            "capsulePenetrationP95": 0.04593139886856079,
+            "tipDifferenceRms": 0.0,
+            "tipDifferenceP95": 0.0,
+            "tipDifferenceMax": 0.0,
+            "nearContactTipDifferenceRms": 0.0,
+            "plasticMean": 0.017958560958504677,
+            "plasticMax": 1.0878874063491821,
+            "speedMean": 0.16289614140987396,
+            "speedP95": 0.6339023113250732
+          },
+          {
+            "phase": "contact",
+            "tick": 360,
+            "sampledBlades": 4096,
+            "nearContactBlades": 841,
+            "penetratingSegments": 26,
+            "segments": 28672,
+            "lengthErrorMean": 0.00021304286201484501,
+            "lengthErrorP95": 8.394166070502251e-05,
+            "lengthErrorMax": 0.7864246964454651,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.15375390648841858,
+            "capsulePenetrationP95": 0.15374159812927246,
+            "tipDifferenceRms": 0.0,
+            "tipDifferenceP95": 0.0,
+            "tipDifferenceMax": 0.0,
+            "nearContactTipDifferenceRms": 0.0,
+            "plasticMean": 0.021535798907279968,
+            "plasticMax": 1.0878875255584717,
+            "speedMean": 0.10536125302314758,
+            "speedP95": 0.1672317087650299
+          },
+          {
+            "phase": "contact",
+            "tick": 480,
+            "sampledBlades": 4096,
+            "nearContactBlades": 948,
+            "penetratingSegments": 31,
+            "segments": 28672,
+            "lengthErrorMean": 0.00021810774342156947,
+            "lengthErrorP95": 7.804125198163092e-05,
+            "lengthErrorMax": 0.7864246964454651,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.13948553800582886,
+            "capsulePenetrationP95": 0.10823267698287964,
+            "tipDifferenceRms": 0.0,
+            "tipDifferenceP95": 0.0,
+            "tipDifferenceMax": 0.0,
+            "nearContactTipDifferenceRms": 0.0,
+            "plasticMean": 0.0239424891769886,
+            "plasticMax": 1.0878874063491821,
+            "speedMean": 0.09940814226865768,
+            "speedP95": 0.15842270851135254
+          },
+          {
+            "phase": "released",
+            "tick": 540,
+            "sampledBlades": 4096,
+            "nearContactBlades": 590,
+            "penetratingSegments": 0,
+            "segments": 28672,
+            "lengthErrorMean": 3.37158162437845e-05,
+            "lengthErrorP95": 8.115844684652984e-05,
+            "lengthErrorMax": 0.0167273860424757,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.0,
+            "capsulePenetrationP95": 0.0,
+            "tipDifferenceRms": 0.0,
+            "tipDifferenceP95": 0.0,
+            "tipDifferenceMax": 0.0,
+            "nearContactTipDifferenceRms": 0.0,
+            "plasticMean": 0.016386669129133224,
+            "plasticMax": 1.0878965854644775,
+            "speedMean": 0.038664381951093674,
+            "speedP95": 0.10188131034374237
+          },
+          {
+            "phase": "released",
+            "tick": 600,
+            "sampledBlades": 4096,
+            "nearContactBlades": 590,
+            "penetratingSegments": 0,
+            "segments": 28672,
+            "lengthErrorMean": 3.4057848097290844e-05,
+            "lengthErrorP95": 8.09357879916206e-05,
+            "lengthErrorMax": 0.016727710142731667,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.0,
+            "capsulePenetrationP95": 0.0,
+            "tipDifferenceRms": 0.0,
+            "tipDifferenceP95": 0.0,
+            "tipDifferenceMax": 0.0,
+            "nearContactTipDifferenceRms": 0.0,
+            "plasticMean": 0.01640079915523529,
+            "plasticMax": 1.0878965854644775,
+            "speedMean": 0.024326318874955177,
+            "speedP95": 0.07118890434503555
+          },
+          {
+            "phase": "released",
+            "tick": 660,
+            "sampledBlades": 4096,
+            "nearContactBlades": 590,
+            "penetratingSegments": 0,
+            "segments": 28672,
+            "lengthErrorMean": 3.394211671547964e-05,
+            "lengthErrorP95": 8.104711741907522e-05,
+            "lengthErrorMax": 0.016727818176150322,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.0,
+            "capsulePenetrationP95": 0.0,
+            "tipDifferenceRms": 0.0,
+            "tipDifferenceP95": 0.0,
+            "tipDifferenceMax": 0.0,
+            "nearContactTipDifferenceRms": 0.0,
+            "plasticMean": 0.016400815919041634,
+            "plasticMax": 1.0878965854644775,
+            "speedMean": 0.011151325888931751,
+            "speedP95": 0.03383708745241165
+          },
+          {
+            "phase": "released",
+            "tick": 720,
+            "sampledBlades": 4096,
+            "nearContactBlades": 590,
+            "penetratingSegments": 0,
+            "segments": 28672,
+            "lengthErrorMean": 3.398447370273061e-05,
+            "lengthErrorP95": 7.893188012531027e-05,
+            "lengthErrorMax": 0.0167283583432436,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.0,
+            "capsulePenetrationP95": 0.0,
+            "tipDifferenceRms": 0.0,
+            "tipDifferenceP95": 0.0,
+            "tipDifferenceMax": 0.0,
+            "nearContactTipDifferenceRms": 0.0,
+            "plasticMean": 0.016400819644331932,
+            "plasticMax": 1.0878965854644775,
+            "speedMean": 0.05766211822628975,
+            "speedP95": 0.1562286913394928
+          }
+        ]
+      },
+      {
+        "name": "8x2",
+        "substeps": 8,
+        "iterations": 2,
+        "rows": [
+          {
+            "phase": "wind",
+            "tick": 180,
+            "sampledBlades": 4096,
+            "nearContactBlades": 0,
+            "penetratingSegments": 0,
+            "segments": 28672,
+            "lengthErrorMean": 5.376923581934534e-05,
+            "lengthErrorP95": 0.00015240866923704743,
+            "lengthErrorMax": 0.0001599789975443855,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.0,
+            "capsulePenetrationP95": 0.0,
+            "tipDifferenceRms": 0.0013544880785048008,
+            "tipDifferenceP95": 0.002137718489393592,
+            "tipDifferenceMax": 0.003520408645272255,
+            "nearContactTipDifferenceRms": 0.0,
+            "plasticMean": 0.0,
+            "plasticMax": 0.0,
+            "speedMean": 0.038741983473300934,
+            "speedP95": 0.1104632243514061
+          },
+          {
+            "phase": "contact",
+            "tick": 240,
+            "sampledBlades": 4096,
+            "nearContactBlades": 742,
+            "penetratingSegments": 36,
+            "segments": 28672,
+            "lengthErrorMean": 0.0009350241743959486,
+            "lengthErrorP95": 0.00015441256982740015,
+            "lengthErrorMax": 2.8707966804504395,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.08655798435211182,
+            "capsulePenetrationP95": 0.045662522315979004,
+            "tipDifferenceRms": 0.21576665341854095,
+            "tipDifferenceP95": 0.19438998401165009,
+            "tipDifferenceMax": 2.3693113327026367,
+            "nearContactTipDifferenceRms": 0.45783260464668274,
+            "plasticMean": 0.017897887155413628,
+            "plasticMax": 1.0878874063491821,
+            "speedMean": 0.16275914013385773,
+            "speedP95": 0.7418196201324463
+          },
+          {
+            "phase": "contact",
+            "tick": 360,
+            "sampledBlades": 4096,
+            "nearContactBlades": 841,
+            "penetratingSegments": 31,
+            "segments": 28672,
+            "lengthErrorMean": 0.0002926583983935416,
+            "lengthErrorP95": 0.00015318796795327216,
+            "lengthErrorMax": 0.8976269960403442,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.15386483073234558,
+            "capsulePenetrationP95": 0.15386483073234558,
+            "tipDifferenceRms": 0.21208564937114716,
+            "tipDifferenceP95": 0.18397724628448486,
+            "tipDifferenceMax": 2.423729658126831,
+            "nearContactTipDifferenceRms": 0.4485578238964081,
+            "plasticMean": 0.021334903314709663,
+            "plasticMax": 1.0878874063491821,
+            "speedMean": 0.0990866869688034,
+            "speedP95": 0.1701948642730713
+          },
+          {
+            "phase": "contact",
+            "tick": 480,
+            "sampledBlades": 4096,
+            "nearContactBlades": 948,
+            "penetratingSegments": 26,
+            "segments": 28672,
+            "lengthErrorMean": 0.0002548322663642466,
+            "lengthErrorP95": 0.00015096139395609498,
+            "lengthErrorMax": 0.8976256847381592,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.140225350856781,
+            "capsulePenetrationP95": 0.11103630065917969,
+            "tipDifferenceRms": 0.24255290627479553,
+            "tipDifferenceP95": 0.23141711950302124,
+            "tipDifferenceMax": 2.38075852394104,
+            "nearContactTipDifferenceRms": 0.4883287847042084,
+            "plasticMean": 0.0237879678606987,
+            "plasticMax": 1.0878874063491821,
+            "speedMean": 0.10210254043340683,
+            "speedP95": 0.16043823957443237
+          },
+          {
+            "phase": "released",
+            "tick": 540,
+            "sampledBlades": 4096,
+            "nearContactBlades": 590,
+            "penetratingSegments": 0,
+            "segments": 28672,
+            "lengthErrorMean": 5.474922727444209e-05,
+            "lengthErrorP95": 0.00015240866923704743,
+            "lengthErrorMax": 0.01627233624458313,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.0,
+            "capsulePenetrationP95": 0.0,
+            "tipDifferenceRms": 0.21417005360126495,
+            "tipDifferenceP95": 0.06895896792411804,
+            "tipDifferenceMax": 2.432708978652954,
+            "nearContactTipDifferenceRms": 0.5469229817390442,
+            "plasticMean": 0.01639055646955967,
+            "plasticMax": 1.0878874063491821,
+            "speedMean": 0.038869839161634445,
+            "speedP95": 0.10275188833475113
+          },
+          {
+            "phase": "released",
+            "tick": 600,
+            "sampledBlades": 4096,
+            "nearContactBlades": 590,
+            "penetratingSegments": 0,
+            "segments": 28672,
+            "lengthErrorMean": 5.5172804422909394e-05,
+            "lengthErrorP95": 0.00015240866923704743,
+            "lengthErrorMax": 0.016272444278001785,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.0,
+            "capsulePenetrationP95": 0.0,
+            "tipDifferenceRms": 0.21648205816745758,
+            "tipDifferenceP95": 0.0728294849395752,
+            "tipDifferenceMax": 2.3692069053649902,
+            "nearContactTipDifferenceRms": 0.5533545613288879,
+            "plasticMean": 0.016400747001171112,
+            "plasticMax": 1.0878874063491821,
+            "speedMean": 0.02384047769010067,
+            "speedP95": 0.07086585462093353
+          },
+          {
+            "phase": "released",
+            "tick": 660,
+            "sampledBlades": 4096,
+            "nearContactBlades": 590,
+            "penetratingSegments": 0,
+            "segments": 28672,
+            "lengthErrorMean": 5.5089629313442856e-05,
+            "lengthErrorP95": 0.00015251999138854444,
+            "lengthErrorMax": 0.016272660344839096,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.0,
+            "capsulePenetrationP95": 0.0,
+            "tipDifferenceRms": 0.21607057750225067,
+            "tipDifferenceP95": 0.06722275167703629,
+            "tipDifferenceMax": 2.37406587600708,
+            "nearContactTipDifferenceRms": 0.551676869392395,
+            "plasticMean": 0.01640094257891178,
+            "plasticMax": 1.0878874063491821,
+            "speedMean": 0.011608768254518509,
+            "speedP95": 0.034932948648929596
+          },
+          {
+            "phase": "released",
+            "tick": 720,
+            "sampledBlades": 4096,
+            "nearContactBlades": 590,
+            "penetratingSegments": 0,
+            "segments": 28672,
+            "lengthErrorMean": 5.5159856856334955e-05,
+            "lengthErrorP95": 0.00015129537496250123,
+            "lengthErrorMax": 0.01627212017774582,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.0,
+            "capsulePenetrationP95": 0.0,
+            "tipDifferenceRms": 0.21601609885692596,
+            "tipDifferenceP95": 0.06840318441390991,
+            "tipDifferenceMax": 2.3797178268432617,
+            "nearContactTipDifferenceRms": 0.5508283376693726,
+            "plasticMean": 0.016401048749685287,
+            "plasticMax": 1.0878874063491821,
+            "speedMean": 0.05790577828884125,
+            "speedP95": 0.15635578334331512
+          }
+        ]
+      },
+      {
+        "name": "8x1",
+        "substeps": 8,
+        "iterations": 1,
+        "rows": [
+          {
+            "phase": "wind",
+            "tick": 180,
+            "sampledBlades": 4096,
+            "nearContactBlades": 0,
+            "penetratingSegments": 0,
+            "segments": 28672,
+            "lengthErrorMean": 0.0001275412505492568,
+            "lengthErrorP95": 0.0003723936970345676,
+            "lengthErrorMax": 0.0003777374804485589,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.0,
+            "capsulePenetrationP95": 0.0,
+            "tipDifferenceRms": 0.028646498918533325,
+            "tipDifferenceP95": 0.030957259237766266,
+            "tipDifferenceMax": 0.03471149504184723,
+            "nearContactTipDifferenceRms": 0.0,
+            "plasticMean": 0.0,
+            "plasticMax": 0.0,
+            "speedMean": 0.04119320958852768,
+            "speedP95": 0.1192680224776268
+          },
+          {
+            "phase": "contact",
+            "tick": 240,
+            "sampledBlades": 4096,
+            "nearContactBlades": 742,
+            "penetratingSegments": 41,
+            "segments": 28672,
+            "lengthErrorMean": 0.0010423061903566122,
+            "lengthErrorP95": 0.0003713917394634336,
+            "lengthErrorMax": 2.9206345081329346,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.07828789949417114,
+            "capsulePenetrationP95": 0.04347139596939087,
+            "tipDifferenceRms": 0.2850736081600189,
+            "tipDifferenceP95": 0.40319201350212097,
+            "tipDifferenceMax": 2.3881542682647705,
+            "nearContactTipDifferenceRms": 0.6031767129898071,
+            "plasticMean": 0.01855054497718811,
+            "plasticMax": 1.0878874063491821,
+            "speedMean": 0.16255660355091095,
+            "speedP95": 0.7359368801116943
+          },
+          {
+            "phase": "contact",
+            "tick": 360,
+            "sampledBlades": 4096,
+            "nearContactBlades": 841,
+            "penetratingSegments": 40,
+            "segments": 28672,
+            "lengthErrorMean": 0.00035357385058887303,
+            "lengthErrorP95": 0.0003705011331476271,
+            "lengthErrorMax": 0.8635402321815491,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.15378040075302124,
+            "capsulePenetrationP95": 0.14312678575515747,
+            "tipDifferenceRms": 0.2917954623699188,
+            "tipDifferenceP95": 0.36808091402053833,
+            "tipDifferenceMax": 2.4536421298980713,
+            "nearContactTipDifferenceRms": 0.6043296456336975,
+            "plasticMean": 0.021908007562160492,
+            "plasticMax": 1.0878875255584717,
+            "speedMean": 0.09272836148738861,
+            "speedP95": 0.1692647635936737
+          },
+          {
+            "phase": "contact",
+            "tick": 480,
+            "sampledBlades": 4096,
+            "nearContactBlades": 948,
+            "penetratingSegments": 29,
+            "segments": 28672,
+            "lengthErrorMean": 0.0003284742415416986,
+            "lengthErrorP95": 0.0003722823748830706,
+            "lengthErrorMax": 0.8635402321815491,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.14034312963485718,
+            "capsulePenetrationP95": 0.1127203106880188,
+            "tipDifferenceRms": 0.3131360113620758,
+            "tipDifferenceP95": 0.45950353145599365,
+            "tipDifferenceMax": 2.5803098678588867,
+            "nearContactTipDifferenceRms": 0.6193926930427551,
+            "plasticMean": 0.024176020175218582,
+            "plasticMax": 1.0878874063491821,
+            "speedMean": 0.09924932569265366,
+            "speedP95": 0.15871912240982056
+          },
+          {
+            "phase": "released",
+            "tick": 540,
+            "sampledBlades": 4096,
+            "nearContactBlades": 590,
+            "penetratingSegments": 0,
+            "segments": 28672,
+            "lengthErrorMean": 0.0001289752108277753,
+            "lengthErrorP95": 0.0003722823748830706,
+            "lengthErrorMax": 0.00627761660143733,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.0,
+            "capsulePenetrationP95": 0.0,
+            "tipDifferenceRms": 0.269439160823822,
+            "tipDifferenceP95": 0.11871274560689926,
+            "tipDifferenceMax": 2.4572391510009766,
+            "nearContactTipDifferenceRms": 0.672457754611969,
+            "plasticMean": 0.0166790708899498,
+            "plasticMax": 1.0878874063491821,
+            "speedMean": 0.0426785908639431,
+            "speedP95": 0.11896257102489471
+          },
+          {
+            "phase": "released",
+            "tick": 600,
+            "sampledBlades": 4096,
+            "nearContactBlades": 590,
+            "penetratingSegments": 0,
+            "segments": 28672,
+            "lengthErrorMean": 0.0001287488266825676,
+            "lengthErrorP95": 0.00037150306161493063,
+            "lengthErrorMax": 0.006368762347847223,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.0,
+            "capsulePenetrationP95": 0.0,
+            "tipDifferenceRms": 0.26743701100349426,
+            "tipDifferenceP95": 0.12192009389400482,
+            "tipDifferenceMax": 2.429877758026123,
+            "nearContactTipDifferenceRms": 0.6682647466659546,
+            "plasticMean": 0.016691651195287704,
+            "plasticMax": 1.0878874063491821,
+            "speedMean": 0.0251607745885849,
+            "speedP95": 0.07306476682424545
+          },
+          {
+            "phase": "released",
+            "tick": 660,
+            "sampledBlades": 4096,
+            "nearContactBlades": 590,
+            "penetratingSegments": 0,
+            "segments": 28672,
+            "lengthErrorMean": 0.0001287238410441205,
+            "lengthErrorP95": 0.0003718370571732521,
+            "lengthErrorMax": 0.006656039971858263,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.0,
+            "capsulePenetrationP95": 0.0,
+            "tipDifferenceRms": 0.2680889368057251,
+            "tipDifferenceP95": 0.11296635121107101,
+            "tipDifferenceMax": 2.4438674449920654,
+            "nearContactTipDifferenceRms": 0.6692302823066711,
+            "plasticMean": 0.01669173315167427,
+            "plasticMax": 1.0878874063491821,
+            "speedMean": 0.012217122130095959,
+            "speedP95": 0.03645196557044983
+          },
+          {
+            "phase": "released",
+            "tick": 720,
+            "sampledBlades": 4096,
+            "nearContactBlades": 590,
+            "penetratingSegments": 0,
+            "segments": 28672,
+            "lengthErrorMean": 0.00012861317372880876,
+            "lengthErrorP95": 0.0003722823748830706,
+            "lengthErrorMax": 0.006820525974035263,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.0,
+            "capsulePenetrationP95": 0.0,
+            "tipDifferenceRms": 0.2669857442378998,
+            "tipDifferenceP95": 0.11827326565980911,
+            "tipDifferenceMax": 2.4573636054992676,
+            "nearContactTipDifferenceRms": 0.666354775428772,
+            "plasticMean": 0.016691796481609344,
+            "plasticMax": 1.0878874063491821,
+            "speedMean": 0.058516208082437515,
+            "speedP95": 0.15646164119243622
+          }
+        ]
+      },
+      {
+        "name": "6x1",
+        "substeps": 6,
+        "iterations": 1,
+        "rows": [
+          {
+            "phase": "wind",
+            "tick": 180,
+            "sampledBlades": 4096,
+            "nearContactBlades": 0,
+            "penetratingSegments": 0,
+            "segments": 28672,
+            "lengthErrorMean": 0.00022432753758039325,
+            "lengthErrorP95": 0.0006608457188121974,
+            "lengthErrorMax": 0.0006703086546622217,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.0,
+            "capsulePenetrationP95": 0.0,
+            "tipDifferenceRms": 0.04962245747447014,
+            "tipDifferenceP95": 0.05530324578285217,
+            "tipDifferenceMax": 0.05773497000336647,
+            "nearContactTipDifferenceRms": 0.0,
+            "plasticMean": 0.0,
+            "plasticMax": 0.0,
+            "speedMean": 0.04440871998667717,
+            "speedP95": 0.12414278090000153
+          },
+          {
+            "phase": "contact",
+            "tick": 240,
+            "sampledBlades": 4096,
+            "nearContactBlades": 742,
+            "penetratingSegments": 46,
+            "segments": 28672,
+            "lengthErrorMean": 0.0009119986789301038,
+            "lengthErrorP95": 0.000659175799228251,
+            "lengthErrorMax": 1.4924968481063843,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.2640206217765808,
+            "capsulePenetrationP95": 0.09168624877929688,
+            "tipDifferenceRms": 0.3158532977104187,
+            "tipDifferenceP95": 0.5799981951713562,
+            "tipDifferenceMax": 2.6409645080566406,
+            "nearContactTipDifferenceRms": 0.657416045665741,
+            "plasticMean": 0.015722161158919334,
+            "plasticMax": 1.0878874063491821,
+            "speedMean": 0.15520893037319183,
+            "speedP95": 0.6046349406242371
+          },
+          {
+            "phase": "contact",
+            "tick": 360,
+            "sampledBlades": 4096,
+            "nearContactBlades": 841,
+            "penetratingSegments": 49,
+            "segments": 28672,
+            "lengthErrorMean": 0.0004761017917189747,
+            "lengthErrorP95": 0.000657171884085983,
+            "lengthErrorMax": 0.8765309453010559,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.1535918414592743,
+            "capsulePenetrationP95": 0.14634257555007935,
+            "tipDifferenceRms": 0.3316376805305481,
+            "tipDifferenceP95": 0.520793080329895,
+            "tipDifferenceMax": 2.5605711936950684,
+            "nearContactTipDifferenceRms": 0.6790518760681152,
+            "plasticMean": 0.01935870759189129,
+            "plasticMax": 1.0878874063491821,
+            "speedMean": 0.0895368829369545,
+            "speedP95": 0.16093923151493073
+          },
+          {
+            "phase": "contact",
+            "tick": 480,
+            "sampledBlades": 4096,
+            "nearContactBlades": 948,
+            "penetratingSegments": 30,
+            "segments": 28672,
+            "lengthErrorMean": 0.000540160050150007,
+            "lengthErrorP95": 0.0006608457188121974,
+            "lengthErrorMax": 0.8765309453010559,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.13682717084884644,
+            "capsulePenetrationP95": 0.11628556251525879,
+            "tipDifferenceRms": 0.3524591624736786,
+            "tipDifferenceP95": 0.6195935606956482,
+            "tipDifferenceMax": 2.5645034313201904,
+            "nearContactTipDifferenceRms": 0.6942291855812073,
+            "plasticMean": 0.022009186446666718,
+            "plasticMax": 1.0878874063491821,
+            "speedMean": 0.09122796356678009,
+            "speedP95": 0.15524739027023315
+          },
+          {
+            "phase": "released",
+            "tick": 540,
+            "sampledBlades": 4096,
+            "nearContactBlades": 590,
+            "penetratingSegments": 0,
+            "segments": 28672,
+            "lengthErrorMean": 0.00022665927826892585,
+            "lengthErrorP95": 0.0006609570700675249,
+            "lengthErrorMax": 0.006798841524869204,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.0,
+            "capsulePenetrationP95": 0.0,
+            "tipDifferenceRms": 0.31209856271743774,
+            "tipDifferenceP95": 0.21843256056308746,
+            "tipDifferenceMax": 2.671876907348633,
+            "nearContactTipDifferenceRms": 0.7670527696609497,
+            "plasticMean": 0.015221918001770973,
+            "plasticMax": 1.0878874063491821,
+            "speedMean": 0.04339497163891792,
+            "speedP95": 0.1284543126821518
+          },
+          {
+            "phase": "released",
+            "tick": 600,
+            "sampledBlades": 4096,
+            "nearContactBlades": 590,
+            "penetratingSegments": 0,
+            "segments": 28672,
+            "lengthErrorMean": 0.00022602146782446653,
+            "lengthErrorP95": 0.0006590645061805844,
+            "lengthErrorMax": 0.006345755886286497,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.0,
+            "capsulePenetrationP95": 0.0,
+            "tipDifferenceRms": 0.3081147372722626,
+            "tipDifferenceP95": 0.21124222874641418,
+            "tipDifferenceMax": 2.586095094680786,
+            "nearContactTipDifferenceRms": 0.7593456506729126,
+            "plasticMean": 0.015223827213048935,
+            "plasticMax": 1.0878874063491821,
+            "speedMean": 0.02521604858338833,
+            "speedP95": 0.06992854923009872
+          },
+          {
+            "phase": "released",
+            "tick": 660,
+            "sampledBlades": 4096,
+            "nearContactBlades": 590,
+            "penetratingSegments": 0,
+            "segments": 28672,
+            "lengthErrorMean": 0.00022597356291953474,
+            "lengthErrorP95": 0.0006600664346478879,
+            "lengthErrorMax": 0.0061207115650177,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.0,
+            "capsulePenetrationP95": 0.0,
+            "tipDifferenceRms": 0.3092641532421112,
+            "tipDifferenceP95": 0.21137802302837372,
+            "tipDifferenceMax": 2.586627721786499,
+            "nearContactTipDifferenceRms": 0.7609891295433044,
+            "plasticMean": 0.015223857946693897,
+            "plasticMax": 1.0878874063491821,
+            "speedMean": 0.012279131449759007,
+            "speedP95": 0.036204997450113297
+          },
+          {
+            "phase": "released",
+            "tick": 720,
+            "sampledBlades": 4096,
+            "nearContactBlades": 590,
+            "penetratingSegments": 0,
+            "segments": 28672,
+            "lengthErrorMean": 0.00022571600857190788,
+            "lengthErrorP95": 0.0006607344257645309,
+            "lengthErrorMax": 0.004742061719298363,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.0,
+            "capsulePenetrationP95": 0.0,
+            "tipDifferenceRms": 0.30902644991874695,
+            "tipDifferenceP95": 0.2173977643251419,
+            "tipDifferenceMax": 2.573396921157837,
+            "nearContactTipDifferenceRms": 0.7606253623962402,
+            "plasticMean": 0.015223934315145016,
+            "plasticMax": 1.0878874063491821,
+            "speedMean": 0.058802369982004166,
+            "speedP95": 0.15535739064216614
+          }
+        ]
+      },
+      {
+        "name": "4x2",
+        "substeps": 4,
+        "iterations": 2,
+        "rows": [
+          {
+            "phase": "wind",
+            "tick": 180,
+            "sampledBlades": 4096,
+            "nearContactBlades": 0,
+            "penetratingSegments": 0,
+            "segments": 28672,
+            "lengthErrorMean": 0.00021540545276366174,
+            "lengthErrorP95": 0.0006238846690393984,
+            "lengthErrorMax": 0.0006461503799073398,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.0,
+            "capsulePenetrationP95": 0.0,
+            "tipDifferenceRms": 0.009742715395987034,
+            "tipDifferenceP95": 0.015954680740833282,
+            "tipDifferenceMax": 0.018115108832716942,
+            "nearContactTipDifferenceRms": 0.0,
+            "plasticMean": 0.0,
+            "plasticMax": 0.0,
+            "speedMean": 0.041464224457740784,
+            "speedP95": 0.11571395397186279
+          },
+          {
+            "phase": "contact",
+            "tick": 240,
+            "sampledBlades": 4096,
+            "nearContactBlades": 742,
+            "penetratingSegments": 46,
+            "segments": 28672,
+            "lengthErrorMean": 0.0009986256482079625,
+            "lengthErrorP95": 0.0006267792196013033,
+            "lengthErrorMax": 2.2316792011260986,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.18178719282150269,
+            "capsulePenetrationP95": 0.05736541748046875,
+            "tipDifferenceRms": 0.3312790095806122,
+            "tipDifferenceP95": 0.7029733061790466,
+            "tipDifferenceMax": 2.984670877456665,
+            "nearContactTipDifferenceRms": 0.72188800573349,
+            "plasticMean": 0.011732200160622597,
+            "plasticMax": 1.0878874063491821,
+            "speedMean": 0.13110709190368652,
+            "speedP95": 0.3486712872982025
+          },
+          {
+            "phase": "contact",
+            "tick": 360,
+            "sampledBlades": 4096,
+            "nearContactBlades": 841,
+            "penetratingSegments": 48,
+            "segments": 28672,
+            "lengthErrorMean": 0.0011321306228637695,
+            "lengthErrorP95": 0.000621992105152458,
+            "lengthErrorMax": 9.959257125854492,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.1536208689212799,
+            "capsulePenetrationP95": 0.1439969539642334,
+            "tipDifferenceRms": 0.34682685136795044,
+            "tipDifferenceP95": 0.6297913789749146,
+            "tipDifferenceMax": 2.499342203140259,
+            "nearContactTipDifferenceRms": 0.7174324989318848,
+            "plasticMean": 0.015144974924623966,
+            "plasticMax": 1.0878874063491821,
+            "speedMean": 0.10777490586042404,
+            "speedP95": 0.16145206987857819
+          },
+          {
+            "phase": "contact",
+            "tick": 480,
+            "sampledBlades": 4096,
+            "nearContactBlades": 948,
+            "penetratingSegments": 32,
+            "segments": 28672,
+            "lengthErrorMean": 0.0004569024604279548,
+            "lengthErrorP95": 0.0006200995412655175,
+            "lengthErrorMax": 0.8990259766578674,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.1415897011756897,
+            "capsulePenetrationP95": 0.11612439155578613,
+            "tipDifferenceRms": 0.36590251326560974,
+            "tipDifferenceP95": 0.6314728260040283,
+            "tipDifferenceMax": 2.5628511905670166,
+            "nearContactTipDifferenceRms": 0.7288462519645691,
+            "plasticMean": 0.017157426103949547,
+            "plasticMax": 1.0878874063491821,
+            "speedMean": 0.08777137100696564,
+            "speedP95": 0.15561611950397491
+          },
+          {
+            "phase": "released",
+            "tick": 540,
+            "sampledBlades": 4096,
+            "nearContactBlades": 590,
+            "penetratingSegments": 0,
+            "segments": 28672,
+            "lengthErrorMean": 0.00021386824664659798,
+            "lengthErrorP95": 0.0006225487450137734,
+            "lengthErrorMax": 0.0201224684715271,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.0,
+            "capsulePenetrationP95": 0.0,
+            "tipDifferenceRms": 0.30512484908103943,
+            "tipDifferenceP95": 0.2480556219816208,
+            "tipDifferenceMax": 2.6602981090545654,
+            "nearContactTipDifferenceRms": 0.769263744354248,
+            "plasticMean": 0.011684359982609749,
+            "plasticMax": 1.0878874063491821,
+            "speedMean": 0.040054235607385635,
+            "speedP95": 0.10686814039945602
+          },
+          {
+            "phase": "released",
+            "tick": 600,
+            "sampledBlades": 4096,
+            "nearContactBlades": 590,
+            "penetratingSegments": 0,
+            "segments": 28672,
+            "lengthErrorMean": 0.0002149530773749575,
+            "lengthErrorP95": 0.000622214749455452,
+            "lengthErrorMax": 0.020120743662118912,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.0,
+            "capsulePenetrationP95": 0.0,
+            "tipDifferenceRms": 0.30473989248275757,
+            "tipDifferenceP95": 0.24838288128376007,
+            "tipDifferenceMax": 2.5486257076263428,
+            "nearContactTipDifferenceRms": 0.7687771916389465,
+            "plasticMean": 0.011687085963785648,
+            "plasticMax": 1.0878874063491821,
+            "speedMean": 0.02428327314555645,
+            "speedP95": 0.06893053650856018
+          },
+          {
+            "phase": "released",
+            "tick": 660,
+            "sampledBlades": 4096,
+            "nearContactBlades": 590,
+            "penetratingSegments": 0,
+            "segments": 28672,
+            "lengthErrorMean": 0.00021494308020919561,
+            "lengthErrorP95": 0.0006228827405720949,
+            "lengthErrorMax": 0.020119663327932358,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.0,
+            "capsulePenetrationP95": 0.0,
+            "tipDifferenceRms": 0.30516722798347473,
+            "tipDifferenceP95": 0.24846407771110535,
+            "tipDifferenceMax": 2.5517032146453857,
+            "nearContactTipDifferenceRms": 0.7696309089660645,
+            "plasticMean": 0.011687316931784153,
+            "plasticMax": 1.0878874063491821,
+            "speedMean": 0.011829154565930367,
+            "speedP95": 0.03456977754831314
+          },
+          {
+            "phase": "released",
+            "tick": 720,
+            "sampledBlades": 4096,
+            "nearContactBlades": 590,
+            "penetratingSegments": 0,
+            "segments": 28672,
+            "lengthErrorMean": 0.00021502685558516532,
+            "lengthErrorP95": 0.0006207674741744995,
+            "lengthErrorMax": 0.020114917308092117,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.0,
+            "capsulePenetrationP95": 0.0,
+            "tipDifferenceRms": 0.30506017804145813,
+            "tipDifferenceP95": 0.25804927945137024,
+            "tipDifferenceMax": 2.5297915935516357,
+            "nearContactTipDifferenceRms": 0.7693745493888855,
+            "plasticMean": 0.011687412858009338,
+            "plasticMax": 1.0878874063491821,
+            "speedMean": 0.058396387845277786,
+            "speedP95": 0.1549500674009323
+          }
+        ]
+      },
+      {
+        "name": "4x1",
+        "substeps": 4,
+        "iterations": 1,
+        "rows": [
+          {
+            "phase": "wind",
+            "tick": 180,
+            "sampledBlades": 4096,
+            "nearContactBlades": 0,
+            "penetratingSegments": 0,
+            "segments": 28672,
+            "lengthErrorMean": 0.0004910168936476111,
+            "lengthErrorP95": 0.001480779843404889,
+            "lengthErrorMax": 0.0015041588339954615,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.0,
+            "capsulePenetrationP95": 0.0,
+            "tipDifferenceRms": 0.11276102811098099,
+            "tipDifferenceP95": 0.13309964537620544,
+            "tipDifferenceMax": 0.14192461967468262,
+            "nearContactTipDifferenceRms": 0.0,
+            "plasticMean": 0.0,
+            "plasticMax": 0.0,
+            "speedMean": 0.05053625628352165,
+            "speedP95": 0.13752388954162598
+          },
+          {
+            "phase": "contact",
+            "tick": 240,
+            "sampledBlades": 4096,
+            "nearContactBlades": 742,
+            "penetratingSegments": 45,
+            "segments": 28672,
+            "lengthErrorMean": 0.0011652664979919791,
+            "lengthErrorP95": 0.0014783305814489722,
+            "lengthErrorMax": 1.4707032442092896,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.26707810163497925,
+            "capsulePenetrationP95": 0.09555912017822266,
+            "tipDifferenceRms": 0.34811437129974365,
+            "tipDifferenceP95": 0.6672177910804749,
+            "tipDifferenceMax": 2.8177802562713623,
+            "nearContactTipDifferenceRms": 0.7195651531219482,
+            "plasticMean": 0.012549418024718761,
+            "plasticMax": 1.0878874063491821,
+            "speedMean": 0.13039609789848328,
+            "speedP95": 0.48655492067337036
+          },
+          {
+            "phase": "contact",
+            "tick": 360,
+            "sampledBlades": 4096,
+            "nearContactBlades": 841,
+            "penetratingSegments": 50,
+            "segments": 28672,
+            "lengthErrorMean": 0.0007359420415014029,
+            "lengthErrorP95": 0.0014708716189488769,
+            "lengthErrorMax": 0.7535500526428223,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.1534442901611328,
+            "capsulePenetrationP95": 0.1412702202796936,
+            "tipDifferenceRms": 0.3604014813899994,
+            "tipDifferenceP95": 0.6013328433036804,
+            "tipDifferenceMax": 2.5802927017211914,
+            "nearContactTipDifferenceRms": 0.7145143747329712,
+            "plasticMean": 0.015945227816700935,
+            "plasticMax": 1.0878874063491821,
+            "speedMean": 0.0829010009765625,
+            "speedP95": 0.15843425691127777
+          },
+          {
+            "phase": "contact",
+            "tick": 480,
+            "sampledBlades": 4096,
+            "nearContactBlades": 948,
+            "penetratingSegments": 41,
+            "segments": 28672,
+            "lengthErrorMean": 0.0007113930187188089,
+            "lengthErrorP95": 0.0014789985725656152,
+            "lengthErrorMax": 0.7535500526428223,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.1409618854522705,
+            "capsulePenetrationP95": 0.10404598712921143,
+            "tipDifferenceRms": 0.37618908286094666,
+            "tipDifferenceP95": 0.6715000867843628,
+            "tipDifferenceMax": 2.5989842414855957,
+            "nearContactTipDifferenceRms": 0.7244417071342468,
+            "plasticMean": 0.017915621399879456,
+            "plasticMax": 1.0878874063491821,
+            "speedMean": 0.09011290967464447,
+            "speedP95": 0.1491008847951889
+          },
+          {
+            "phase": "released",
+            "tick": 540,
+            "sampledBlades": 4096,
+            "nearContactBlades": 590,
+            "penetratingSegments": 0,
+            "segments": 28672,
+            "lengthErrorMean": 0.0004979929071851075,
+            "lengthErrorP95": 0.001483674393966794,
+            "lengthErrorMax": 0.02346939593553543,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.0,
+            "capsulePenetrationP95": 0.0,
+            "tipDifferenceRms": 0.3301178216934204,
+            "tipDifferenceP95": 0.23245257139205933,
+            "tipDifferenceMax": 2.608304023742676,
+            "nearContactTipDifferenceRms": 0.7853457927703857,
+            "plasticMean": 0.0122667346149683,
+            "plasticMax": 1.0878874063491821,
+            "speedMean": 0.04237029328942299,
+            "speedP95": 0.11417223513126373
+          },
+          {
+            "phase": "released",
+            "tick": 600,
+            "sampledBlades": 4096,
+            "nearContactBlades": 590,
+            "penetratingSegments": 0,
+            "segments": 28672,
+            "lengthErrorMean": 0.0004957023193128407,
+            "lengthErrorP95": 0.0014766607200726867,
+            "lengthErrorMax": 0.024883395060896873,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.0,
+            "capsulePenetrationP95": 0.0,
+            "tipDifferenceRms": 0.3234873414039612,
+            "tipDifferenceP95": 0.2181302309036255,
+            "tipDifferenceMax": 2.6075098514556885,
+            "nearContactTipDifferenceRms": 0.7802079319953918,
+            "plasticMean": 0.01227464247494936,
+            "plasticMax": 1.0878874063491821,
+            "speedMean": 0.02724270336329937,
+            "speedP95": 0.07171319425106049
+          },
+          {
+            "phase": "released",
+            "tick": 660,
+            "sampledBlades": 4096,
+            "nearContactBlades": 590,
+            "penetratingSegments": 0,
+            "segments": 28672,
+            "lengthErrorMean": 0.0004944925894960761,
+            "lengthErrorP95": 0.0014788872795179486,
+            "lengthErrorMax": 0.024625999853014946,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.0,
+            "capsulePenetrationP95": 0.0,
+            "tipDifferenceRms": 0.3246878385543823,
+            "tipDifferenceP95": 0.21956980228424072,
+            "tipDifferenceMax": 2.6079866886138916,
+            "nearContactTipDifferenceRms": 0.778719425201416,
+            "plasticMean": 0.012275679968297482,
+            "plasticMax": 1.0878874063491821,
+            "speedMean": 0.013818415813148022,
+            "speedP95": 0.03947163373231888
+          },
+          {
+            "phase": "released",
+            "tick": 720,
+            "sampledBlades": 4096,
+            "nearContactBlades": 590,
+            "penetratingSegments": 0,
+            "segments": 28672,
+            "lengthErrorMean": 0.0004935198230668902,
+            "lengthErrorP95": 0.001479889266192913,
+            "lengthErrorMax": 0.025166792795062065,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.0,
+            "capsulePenetrationP95": 0.0,
+            "tipDifferenceRms": 0.323163241147995,
+            "tipDifferenceP95": 0.2215646654367447,
+            "tipDifferenceMax": 2.6037027835845947,
+            "nearContactTipDifferenceRms": 0.7759277820587158,
+            "plasticMean": 0.012275692075490952,
+            "plasticMax": 1.0878874063491821,
+            "speedMean": 0.05904439464211464,
+            "speedP95": 0.1507231742143631
+          }
+        ]
+      },
+      {
+        "name": "3x1",
+        "substeps": 3,
+        "iterations": 1,
+        "rows": [
+          {
+            "phase": "wind",
+            "tick": 180,
+            "sampledBlades": 4096,
+            "nearContactBlades": 0,
+            "penetratingSegments": 0,
+            "segments": 28672,
+            "lengthErrorMean": 0.0008407640270888805,
+            "lengthErrorP95": 0.0026175547391176224,
+            "lengthErrorMax": 0.002666761865839362,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.0,
+            "capsulePenetrationP95": 0.0,
+            "tipDifferenceRms": 0.2078697234392166,
+            "tipDifferenceP95": 0.2502761483192444,
+            "tipDifferenceMax": 0.3531583249568939,
+            "nearContactTipDifferenceRms": 0.0,
+            "plasticMean": 0.0,
+            "plasticMax": 0.0,
+            "speedMean": 0.05465203523635864,
+            "speedP95": 0.14666494727134705
+          },
+          {
+            "phase": "contact",
+            "tick": 240,
+            "sampledBlades": 4096,
+            "nearContactBlades": 742,
+            "penetratingSegments": 42,
+            "segments": 28672,
+            "lengthErrorMean": 0.0014749496476724744,
+            "lengthErrorP95": 0.002615439472720027,
+            "lengthErrorMax": 1.4608418941497803,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.26867377758026123,
+            "capsulePenetrationP95": 0.0961310863494873,
+            "tipDifferenceRms": 0.38847512006759644,
+            "tipDifferenceP95": 0.6752287149429321,
+            "tipDifferenceMax": 2.708075523376465,
+            "nearContactTipDifferenceRms": 0.7317034006118774,
+            "plasticMean": 0.008399921469390392,
+            "plasticMax": 1.0878872871398926,
+            "speedMean": 0.11514725536108017,
+            "speedP95": 0.3616673946380615
+          },
+          {
+            "phase": "contact",
+            "tick": 360,
+            "sampledBlades": 4096,
+            "nearContactBlades": 841,
+            "penetratingSegments": 43,
+            "segments": 28672,
+            "lengthErrorMean": 0.0010621981928125024,
+            "lengthErrorP95": 0.0025959571357816458,
+            "lengthErrorMax": 0.8345065712928772,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.15392500162124634,
+            "capsulePenetrationP95": 0.08558642864227295,
+            "tipDifferenceRms": 0.39205601811408997,
+            "tipDifferenceP95": 0.585952639579773,
+            "tipDifferenceMax": 2.6207170486450195,
+            "nearContactTipDifferenceRms": 0.720735490322113,
+            "plasticMean": 0.011472336947917938,
+            "plasticMax": 1.0878874063491821,
+            "speedMean": 0.08495353162288666,
+            "speedP95": 0.15975557267665863
+          },
+          {
+            "phase": "contact",
+            "tick": 480,
+            "sampledBlades": 4096,
+            "nearContactBlades": 948,
+            "penetratingSegments": 38,
+            "segments": 28672,
+            "lengthErrorMean": 0.0010147037683054805,
+            "lengthErrorP95": 0.002611876931041479,
+            "lengthErrorMax": 0.8345065712928772,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.14273595809936523,
+            "capsulePenetrationP95": 0.11530190706253052,
+            "tipDifferenceRms": 0.4106234610080719,
+            "tipDifferenceP95": 0.6795368790626526,
+            "tipDifferenceMax": 2.6334986686706543,
+            "nearContactTipDifferenceRms": 0.7370590567588806,
+            "plasticMean": 0.013782274909317493,
+            "plasticMax": 1.0878874063491821,
+            "speedMean": 0.09100186079740524,
+            "speedP95": 0.1507420390844345
+          },
+          {
+            "phase": "released",
+            "tick": 540,
+            "sampledBlades": 4096,
+            "nearContactBlades": 590,
+            "penetratingSegments": 0,
+            "segments": 28672,
+            "lengthErrorMean": 0.0008406644919887185,
+            "lengthErrorP95": 0.002630914095789194,
+            "lengthErrorMax": 0.017122583463788033,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.0,
+            "capsulePenetrationP95": 0.0,
+            "tipDifferenceRms": 0.3767443299293518,
+            "tipDifferenceP95": 0.3313884437084198,
+            "tipDifferenceMax": 2.634817123413086,
+            "nearContactTipDifferenceRms": 0.8040869235992432,
+            "plasticMean": 0.009792317636311054,
+            "plasticMax": 1.0878872871398926,
+            "speedMean": 0.044349417090415955,
+            "speedP95": 0.11862917989492416
+          },
+          {
+            "phase": "released",
+            "tick": 600,
+            "sampledBlades": 4096,
+            "nearContactBlades": 590,
+            "penetratingSegments": 0,
+            "segments": 28672,
+            "lengthErrorMean": 0.0008377520134672523,
+            "lengthErrorP95": 0.0026104296557605267,
+            "lengthErrorMax": 0.011816544458270073,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.0,
+            "capsulePenetrationP95": 0.0,
+            "tipDifferenceRms": 0.36644643545150757,
+            "tipDifferenceP95": 0.3071316182613373,
+            "tipDifferenceMax": 2.63616943359375,
+            "nearContactTipDifferenceRms": 0.8032588362693787,
+            "plasticMean": 0.009792317636311054,
+            "plasticMax": 1.0878872871398926,
+            "speedMean": 0.027644388377666473,
+            "speedP95": 0.07224193215370178
+          },
+          {
+            "phase": "released",
+            "tick": 660,
+            "sampledBlades": 4096,
+            "nearContactBlades": 590,
+            "penetratingSegments": 0,
+            "segments": 28672,
+            "lengthErrorMean": 0.0008342094370163977,
+            "lengthErrorP95": 0.002612990327179432,
+            "lengthErrorMax": 0.012530375272035599,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.0,
+            "capsulePenetrationP95": 0.0,
+            "tipDifferenceRms": 0.36965852975845337,
+            "tipDifferenceP95": 0.2974715828895569,
+            "tipDifferenceMax": 2.635969400405884,
+            "nearContactTipDifferenceRms": 0.8044074773788452,
+            "plasticMean": 0.009792317636311054,
+            "plasticMax": 1.0878872871398926,
+            "speedMean": 0.014889808371663094,
+            "speedP95": 0.042884428054094315
+          },
+          {
+            "phase": "released",
+            "tick": 720,
+            "sampledBlades": 4096,
+            "nearContactBlades": 590,
+            "penetratingSegments": 0,
+            "segments": 28672,
+            "lengthErrorMean": 0.0008327196119353175,
+            "lengthErrorP95": 0.002615884877741337,
+            "lengthErrorMax": 0.014988761395215988,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.0,
+            "capsulePenetrationP95": 0.0,
+            "tipDifferenceRms": 0.36879926919937134,
+            "tipDifferenceP95": 0.28643661737442017,
+            "tipDifferenceMax": 2.6353867053985596,
+            "nearContactTipDifferenceRms": 0.8033154606819153,
+            "plasticMean": 0.009792318567633629,
+            "plasticMax": 1.0878872871398926,
+            "speedMean": 0.05742429196834564,
+            "speedP95": 0.13965679705142975
+          }
+        ]
+      },
+      {
+        "name": "2x1",
+        "substeps": 2,
+        "iterations": 1,
+        "rows": [
+          {
+            "phase": "wind",
+            "tick": 180,
+            "sampledBlades": 4096,
+            "nearContactBlades": 0,
+            "penetratingSegments": 0,
+            "segments": 28672,
+            "lengthErrorMean": 0.0016542262164875865,
+            "lengthErrorP95": 0.005741320084780455,
+            "lengthErrorMax": 0.0059093148447573185,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.0,
+            "capsulePenetrationP95": 0.0,
+            "tipDifferenceRms": 0.4914323091506958,
+            "tipDifferenceP95": 0.6736564040184021,
+            "tipDifferenceMax": 0.7427623867988586,
+            "nearContactTipDifferenceRms": 0.0,
+            "plasticMean": 0.0,
+            "plasticMax": 0.0,
+            "speedMean": 0.06093331053853035,
+            "speedP95": 0.151889368891716
+          },
+          {
+            "phase": "contact",
+            "tick": 240,
+            "sampledBlades": 4096,
+            "nearContactBlades": 742,
+            "penetratingSegments": 44,
+            "segments": 28672,
+            "lengthErrorMean": 0.0022982312366366386,
+            "lengthErrorP95": 0.005762917920947075,
+            "lengthErrorMax": 1.4477118253707886,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.27050989866256714,
+            "capsulePenetrationP95": 0.09933745861053467,
+            "tipDifferenceRms": 0.5960145592689514,
+            "tipDifferenceP95": 0.7426640391349792,
+            "tipDifferenceMax": 2.743358850479126,
+            "nearContactTipDifferenceRms": 0.8644470572471619,
+            "plasticMean": 0.0059289028868079185,
+            "plasticMax": 1.0878872871398926,
+            "speedMean": 0.13581019639968872,
+            "speedP95": 0.5634350776672363
+          },
+          {
+            "phase": "contact",
+            "tick": 360,
+            "sampledBlades": 4096,
+            "nearContactBlades": 841,
+            "penetratingSegments": 48,
+            "segments": 28672,
+            "lengthErrorMean": 0.001932979328557849,
+            "lengthErrorP95": 0.0057218377478420734,
+            "lengthErrorMax": 0.7909489274024963,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.15241235494613647,
+            "capsulePenetrationP95": 0.10693475604057312,
+            "tipDifferenceRms": 0.6020597815513611,
+            "tipDifferenceP95": 0.797233521938324,
+            "tipDifferenceMax": 2.678605318069458,
+            "nearContactTipDifferenceRms": 0.8667458295822144,
+            "plasticMean": 0.00873009767383337,
+            "plasticMax": 1.0878872871398926,
+            "speedMean": 0.08881907165050507,
+            "speedP95": 0.16251076757907867
+          },
+          {
+            "phase": "contact",
+            "tick": 480,
+            "sampledBlades": 4096,
+            "nearContactBlades": 948,
+            "penetratingSegments": 51,
+            "segments": 28672,
+            "lengthErrorMean": 0.0018794761272147298,
+            "lengthErrorP95": 0.005744771100580692,
+            "lengthErrorMax": 0.7729219198226929,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.14013123512268066,
+            "capsulePenetrationP95": 0.11788612604141235,
+            "tipDifferenceRms": 0.6152622103691101,
+            "tipDifferenceP95": 0.7848833203315735,
+            "tipDifferenceMax": 2.6916191577911377,
+            "nearContactTipDifferenceRms": 0.8949089050292969,
+            "plasticMean": 0.010992390103638172,
+            "plasticMax": 1.0878872871398926,
+            "speedMean": 0.09254276752471924,
+            "speedP95": 0.1685376763343811
+          },
+          {
+            "phase": "released",
+            "tick": 540,
+            "sampledBlades": 4096,
+            "nearContactBlades": 590,
+            "penetratingSegments": 0,
+            "segments": 28672,
+            "lengthErrorMean": 0.0016445923829451203,
+            "lengthErrorP95": 0.0057554589584469795,
+            "lengthErrorMax": 0.02486594021320343,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.0,
+            "capsulePenetrationP95": 0.0,
+            "tipDifferenceRms": 0.5900787115097046,
+            "tipDifferenceP95": 0.7074423432350159,
+            "tipDifferenceMax": 2.68668270111084,
+            "nearContactTipDifferenceRms": 0.928350031375885,
+            "plasticMean": 0.007964760065078735,
+            "plasticMax": 1.0878872871398926,
+            "speedMean": 0.07430005818605423,
+            "speedP95": 0.3706166446208954
+          },
+          {
+            "phase": "released",
+            "tick": 600,
+            "sampledBlades": 4096,
+            "nearContactBlades": 590,
+            "penetratingSegments": 0,
+            "segments": 28672,
+            "lengthErrorMean": 0.0016460675979033113,
+            "lengthErrorP95": 0.0057364217936992645,
+            "lengthErrorMax": 0.022785184904932976,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.0,
+            "capsulePenetrationP95": 0.0,
+            "tipDifferenceRms": 0.5808242559432983,
+            "tipDifferenceP95": 0.7390339374542236,
+            "tipDifferenceMax": 2.702268123626709,
+            "nearContactTipDifferenceRms": 0.9328744411468506,
+            "plasticMean": 0.00797230750322342,
+            "plasticMax": 1.0878872871398926,
+            "speedMean": 0.033763956278562546,
+            "speedP95": 0.12296640127897263
+          },
+          {
+            "phase": "released",
+            "tick": 660,
+            "sampledBlades": 4096,
+            "nearContactBlades": 590,
+            "penetratingSegments": 0,
+            "segments": 28672,
+            "lengthErrorMean": 0.0016452550189569592,
+            "lengthErrorP95": 0.005743769463151693,
+            "lengthErrorMax": 0.023347310721874237,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.0,
+            "capsulePenetrationP95": 0.0,
+            "tipDifferenceRms": 0.5806682109832764,
+            "tipDifferenceP95": 0.7528093457221985,
+            "tipDifferenceMax": 2.6800808906555176,
+            "nearContactTipDifferenceRms": 0.9309141635894775,
+            "plasticMean": 0.007972311228513718,
+            "plasticMax": 1.0878872871398926,
+            "speedMean": 0.01608511619269848,
+            "speedP95": 0.047464631497859955
+          },
+          {
+            "phase": "released",
+            "tick": 720,
+            "sampledBlades": 4096,
+            "nearContactBlades": 590,
+            "penetratingSegments": 0,
+            "segments": 28672,
+            "lengthErrorMean": 0.0016419338062405586,
+            "lengthErrorP95": 0.005760913714766502,
+            "lengthErrorMax": 0.025021877139806747,
+            "groundPenetrationMax": 0.0,
+            "capsulePenetrationMax": 0.0,
+            "capsulePenetrationP95": 0.0,
+            "tipDifferenceRms": 0.5818659067153931,
+            "tipDifferenceP95": 0.7689715623855591,
+            "tipDifferenceMax": 2.6727981567382812,
+            "nearContactTipDifferenceRms": 0.931843101978302,
+            "plasticMean": 0.007972311228513718,
+            "plasticMax": 1.0878872871398926,
+            "speedMean": 0.061740826815366745,
+            "speedP95": 0.11227267980575562
+          }
+        ]
+      }
+    ]
+  },
+  "validation": {
+    "Combined8x1": {
+      "passed": true,
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "unity": "2022.3.62f2c1",
+      "error": "",
+      "totalBlades": 131072,
+      "minActiveBlades": 32768,
+      "maxActiveBlades": 32768,
+      "bezierBlades": 98304,
+      "exitedGrids": 1972,
+      "reenteredGrids": 1082,
+      "evictions": 1972,
+      "simulationTicks": 1440,
+      "visibleGrids": 1963,
+      "seedChecks": 4,
+      "maxSeedPositionError": 0.0,
+      "maxSeedVelocityError": 0.0,
+      "maxSeedRotationError": 0.0,
+      "maxSeedAngularError": 0.0,
+      "retainedPlasticError": 0.0,
+      "peakPlastic": 1.0878874063491821,
+      "lodgedGridEvicted": true,
+      "lodgedGridReturned": true,
+      "sceneViewPreserved": true,
+      "acceptedBankUnchanged": true,
+      "rebakes": [
+        {
+          "type": "Short / Narrow / Firm",
+          "maxNodeDifference": 0.01957767829298973,
+          "maxControlDifference": 0.01957767829298973,
+          "maxFrameDifferenceDegrees": 1.6929954290390015,
+          "frequencyDifference": 5.147815227508545,
+          "dampingDifference": 0.11999998241662979,
+          "maxTerminalSpeed": 0.0015639748889952898
+        },
+        {
+          "type": "Short / Narrow / Soft",
+          "maxNodeDifference": 0.021912431344389915,
+          "maxControlDifference": 0.021912431344389915,
+          "maxFrameDifferenceDegrees": 1.8679598569869995,
+          "frequencyDifference": 1.6007810831069946,
+          "dampingDifference": 0.03999999910593033,
+          "maxTerminalSpeed": 0.0018596785375848413
+        },
+        {
+          "type": "Short / Wide / Firm",
+          "maxNodeDifference": 0.021726040169596672,
+          "maxControlDifference": 0.021726040169596672,
+          "maxFrameDifferenceDegrees": 1.856611728668213,
+          "frequencyDifference": 1.6007810831069946,
+          "dampingDifference": 0.03999999910593033,
+          "maxTerminalSpeed": 0.001852015033364296
+        },
+        {
+          "type": "Short / Wide / Soft",
+          "maxNodeDifference": 0.025190314278006554,
+          "maxControlDifference": 0.025190314278006554,
+          "maxFrameDifferenceDegrees": 2.151855707168579,
+          "frequencyDifference": 0.7071067690849304,
+          "dampingDifference": 0.03999999165534973,
+          "maxTerminalSpeed": 0.0015780589310452342
+        },
+        {
+          "type": "Tall / Narrow / Firm",
+          "maxNodeDifference": 0.024885104969143867,
+          "maxControlDifference": 0.024885104969143867,
+          "maxFrameDifferenceDegrees": 1.3533282279968262,
+          "frequencyDifference": 0.25,
+          "dampingDifference": 0.03999999165534973,
+          "maxTerminalSpeed": 0.0019622528925538063
+        },
+        {
+          "type": "Tall / Narrow / Soft",
+          "maxNodeDifference": 0.02953352779150009,
+          "maxControlDifference": 0.02963588759303093,
+          "maxFrameDifferenceDegrees": 1.7332024574279785,
+          "frequencyDifference": 0.25,
+          "dampingDifference": 0.03999999165534973,
+          "maxTerminalSpeed": 0.001939385081641376
+        },
+        {
+          "type": "Tall / Wide / Firm",
+          "maxNodeDifference": 0.029082173481583595,
+          "maxControlDifference": 0.029082173481583595,
+          "maxFrameDifferenceDegrees": 1.662672996520996,
+          "frequencyDifference": 0.3535533845424652,
+          "dampingDifference": 0.05656852945685387,
+          "maxTerminalSpeed": 0.001859499723650515
+        },
+        {
+          "type": "Tall / Wide / Soft",
+          "maxNodeDifference": 0.04976138100028038,
+          "maxControlDifference": 0.061103109270334244,
+          "maxFrameDifferenceDegrees": 3.310570240020752,
+          "frequencyDifference": 1.5811388492584229,
+          "dampingDifference": 0.720000147819519,
+          "maxTerminalSpeed": 0.0019072137074545026
+        }
+      ]
+    },
+    "Combined4x2": {
+      "passed": true,
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "unity": "2022.3.62f2c1",
+      "error": "",
+      "totalBlades": 131072,
+      "minActiveBlades": 32768,
+      "maxActiveBlades": 32768,
+      "bezierBlades": 98304,
+      "exitedGrids": 1972,
+      "reenteredGrids": 1082,
+      "evictions": 1972,
+      "simulationTicks": 1440,
+      "visibleGrids": 1963,
+      "seedChecks": 4,
+      "maxSeedPositionError": 0.0,
+      "maxSeedVelocityError": 0.0,
+      "maxSeedRotationError": 0.0,
+      "maxSeedAngularError": 0.0,
+      "retainedPlasticError": 0.0,
+      "peakPlastic": 1.0878874063491821,
+      "lodgedGridEvicted": true,
+      "lodgedGridReturned": true,
+      "sceneViewPreserved": true,
+      "acceptedBankUnchanged": true,
+      "rebakes": [
+        {
+          "type": "Short / Narrow / Firm",
+          "maxNodeDifference": 0.03126255050301552,
+          "maxControlDifference": 0.03126255050301552,
+          "maxFrameDifferenceDegrees": 2.4692771434783936,
+          "frequencyDifference": 3.758324146270752,
+          "dampingDifference": 0.03999999910593033,
+          "maxTerminalSpeed": 0.0016064975643530488
+        },
+        {
+          "type": "Short / Narrow / Soft",
+          "maxNodeDifference": 0.029252290725708008,
+          "maxControlDifference": 0.029252290725708008,
+          "maxFrameDifferenceDegrees": 2.2437405586242676,
+          "frequencyDifference": 4.506938934326172,
+          "dampingDifference": 0.11999998241662979,
+          "maxTerminalSpeed": 0.0019511409336701035
+        },
+        {
+          "type": "Short / Wide / Firm",
+          "maxNodeDifference": 0.029590170830488205,
+          "maxControlDifference": 0.029590170830488205,
+          "maxFrameDifferenceDegrees": 2.2793891429901123,
+          "frequencyDifference": 4.1382365226745605,
+          "dampingDifference": 0.11999998241662979,
+          "maxTerminalSpeed": 0.0019723945297300816
+        },
+        {
+          "type": "Short / Wide / Soft",
+          "maxNodeDifference": 0.02778882347047329,
+          "maxControlDifference": 0.02778882347047329,
+          "maxFrameDifferenceDegrees": 2.0947165489196777,
+          "frequencyDifference": 0.7905694246292114,
+          "dampingDifference": 0.07999998331069946,
+          "maxTerminalSpeed": 0.0012369012692943215
+        },
+        {
+          "type": "Tall / Narrow / Firm",
+          "maxNodeDifference": 0.023526016622781754,
+          "maxControlDifference": 0.023526016622781754,
+          "maxFrameDifferenceDegrees": 1.0957387685775757,
+          "frequencyDifference": 0.25,
+          "dampingDifference": 0.03999999165534973,
+          "maxTerminalSpeed": 0.0016114696627482772
+        },
+        {
+          "type": "Tall / Narrow / Soft",
+          "maxNodeDifference": 0.021537741646170616,
+          "maxControlDifference": 0.021537741646170616,
+          "maxFrameDifferenceDegrees": 1.068250298500061,
+          "frequencyDifference": 0.0,
+          "dampingDifference": 0.03999999165534973,
+          "maxTerminalSpeed": 0.001840876997448504
+        },
+        {
+          "type": "Tall / Wide / Firm",
+          "maxNodeDifference": 0.02063716948032379,
+          "maxControlDifference": 0.02063716948032379,
+          "maxFrameDifferenceDegrees": 1.0094844102859497,
+          "frequencyDifference": 0.3535533845424652,
+          "dampingDifference": 0.03999999165534973,
+          "maxTerminalSpeed": 0.0019155102781951427
+        },
+        {
+          "type": "Tall / Wide / Soft",
+          "maxNodeDifference": 0.013872125186026096,
+          "maxControlDifference": 0.015710076317191124,
+          "maxFrameDifferenceDegrees": 1.0842496156692505,
+          "frequencyDifference": 0.9013878107070923,
+          "dampingDifference": 0.05656851455569267,
+          "maxTerminalSpeed": 0.0016104623209685087
+        }
+      ]
+    },
+    "Lifecycle8x1": {
+      "passed": true,
+      "idleZero": true,
+      "heldTwoSeconds": true,
+      "liveDuringFade": true,
+      "recontactPreservesSolver": true,
+      "releasedAfterThreeSeconds": true,
+      "plasticRetained": true,
+      "streamRetained": true,
+      "unloadClears": true,
+      "finiteState": true,
+      "capRespected": true,
+      "outerCoverageContinuous": true,
+      "error": "",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "ticks": 1805,
+      "maxActive": 32768,
+      "maxHistoryResident": 32768,
+      "historyCapacity": 65536,
+      "outerCoverageChecks": 6,
+      "firstFadeAt": 2.016693353652954,
+      "releasedAt": 3.0333099365234375,
+      "physicalMotionDuringFade": 0.4808298349380493,
+      "recontactNodeError": 0.0,
+      "maxTipStep": 1.5796953439712524,
+      "releaseTipStep": 0.0011384342797100544,
+      "peakPlastic": 0.8726646900177002,
+      "maxTipStepAt": 0.033333778381347656,
+      "maxTipStepPhase": 0.0,
+      "maxPhysicalTipStep": 1.5796953439712524,
+      "maxFadeTipStep": 0.03904755041003227,
+      "gpuBufferBytes": 224852832
+    },
+    "Lifecycle4x2": {
+      "passed": true,
+      "idleZero": true,
+      "heldTwoSeconds": true,
+      "liveDuringFade": true,
+      "recontactPreservesSolver": true,
+      "releasedAfterThreeSeconds": true,
+      "plasticRetained": true,
+      "streamRetained": true,
+      "unloadClears": true,
+      "finiteState": true,
+      "capRespected": true,
+      "outerCoverageContinuous": true,
+      "error": "",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "ticks": 1805,
+      "maxActive": 32768,
+      "maxHistoryResident": 32768,
+      "historyCapacity": 65536,
+      "outerCoverageChecks": 6,
+      "firstFadeAt": 2.016693353652954,
+      "releasedAt": 3.0333099365234375,
+      "physicalMotionDuringFade": 0.4565860629081726,
+      "recontactNodeError": 0.0,
+      "maxTipStep": 1.208289384841919,
+      "releaseTipStep": 0.0011445730924606323,
+      "peakPlastic": 0.8726646900177002,
+      "maxTipStepAt": 0.033333778381347656,
+      "maxTipStepPhase": 0.0,
+      "maxPhysicalTipStep": 1.2644342184066772,
+      "maxFadeTipStep": 0.03104272112250328,
+      "gpuBufferBytes": 224852832
+    },
+    "Scene": {
+      "passed": true,
+      "scene": "Assets/PBDGrass/Scenes/PBDGrassIterationBudget.unity"
+    }
+  },
+  "scope": "Experimental accuracy tradeoff; original scenes, solver equations and bake assets unchanged.",
+  "validationMeaning": "Combined passes LOD/plastic/bank-integrity assertions; the isolated copy collects all 8 rebake deviations without the original near-identity thresholds. These reports do NOT establish identical bake compatibility."
+}

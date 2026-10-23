@@ -1,0 +1,53 @@
+{
+  "profile": "60Hz,2 substeps,1 iteration,SoftBendCompliance x0.5",
+  "types": [
+    {
+      "index": 1,
+      "path": "Assets/PBDGrass/ResponsePrototype/LowBudget/Baked/GrassResponse1.asset",
+      "guid": "9ca7476b8fcc07842a76bd45d1950723",
+      "sha256": "0d1373461f07ec78ad32b631897cf568026806642d9829485fa709b7e52dd1c9"
+    },
+    {
+      "index": 2,
+      "path": "Assets/PBDGrass/ResponsePrototype/LowBudget/Baked/GrassResponse2.asset",
+      "guid": "92d12750c19605344a9435cbf237f5ee",
+      "sha256": "bb9ead071fe19f3035fab9ab468c088ebdb82f5930bc297c8465ebd40d90a6f0"
+    },
+    {
+      "index": 3,
+      "path": "Assets/PBDGrass/ResponsePrototype/LowBudget/Baked/GrassResponse3.asset",
+      "guid": "2c1b0dc65f0acc74fbc48aed034dcf04",
+      "sha256": "88c9a71b4e5069ed6a0747fe23e94409660fd8b386a6e4dab845ed104425f9a9"
+    },
+    {
+      "index": 4,
+      "path": "Assets/PBDGrass/ResponsePrototype/LowBudget/Baked/GrassResponse4.asset",
+      "guid": "ca78ea544e5a2d345a7ab4e168d42b07",
+      "sha256": "950d09b486622e6fb4e893d4e066ade0bb4c7140b68572f9e17dbb1ac8bdd774"
+    },
+    {
+      "index": 5,
+      "path": "Assets/PBDGrass/ResponsePrototype/LowBudget/Baked/GrassResponse5.asset",
+      "guid": "857a1e287e1e08b49a32cfc9ec7affc5",
+      "sha256": "cf88fee425e7802f9c11f53ea051574a2719bb776c60fdaa2479e10cdc6ad3bd"
+    },
+    {
+      "index": 6,
+      "path": "Assets/PBDGrass/ResponsePrototype/LowBudget/Baked/GrassResponse6.asset",
+      "guid": "9b972d9abc46ecb4faa737c815a211af",
+      "sha256": "fa5638f468110e5ba8ddc83b6d386f948ebc28f65db15c0bdf53a1aca75d8f86"
+    },
+    {
+      "index": 7,
+      "path": "Assets/PBDGrass/ResponsePrototype/LowBudget/Baked/GrassResponse7.asset",
+      "guid": "79a08d3c86b1f3a41a698156a229e5dc",
+      "sha256": "f2c89a15b0c850ba31050bfbd6df22eafee4c57fbb1f6e7336e6fa72aa10686a"
+    },
+    {
+      "index": 8,
+      "path": "Assets/PBDGrass/ResponsePrototype/LowBudget/Baked/GrassResponse8.asset",
+      "guid": "4dea1377a46740345bf702037cfae3b5",
+      "sha256": "de1231a3ad7ea82372f1fdd0061834c199cb43d88cda089133ccdfd44e2e5f91"
+    }
+  ]
+}

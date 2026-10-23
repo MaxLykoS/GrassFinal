@@ -1,0 +1,54 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using UnityEngine;
+using GrassFinal.PBDGrass;
+namespace GrassFinal.PBDGrass {
+ public struct GrassGridStruct { public Vector3 Pos;public int IdOffset; }
+ public sealed class GrassWorldLayout {
+ public readonly int Size; public readonly Vector2Int[] Cells;public Vector3 Center {get;private set;} public int Version {get;private set;}
+ public readonly List<int> Changed=new List<int>();
+ public GrassWorldLayout(int size,Vector3 focus,float ground){Size=size;Cells=new Vector2Int[size*size];Center=new Vector3(Mathf.FloorToInt(focus.x/8)*8,ground,Mathf.FloorToInt(focus.z/8)*8);RecenterCells(true);}
+ private void RecenterCells(bool initial){Changed.Clear();int minX=(int)Center.x-Size/2,minZ=(int)Center.z-Size/2;
+ for(int s=0;s<Cells.Length;s++){var cell=new Vector2Int(minX+GrassWorldIdentity.Mod(s%Size-minX,Size),minZ+GrassWorldIdentity.Mod(s/Size-minZ,Size));if(!initial && cell==Cells[s])continue;Cells[s]=cell;Changed.Add(s);}}
+ }
+ public static class GrassWorldIdentity {public static int Mod(int a,int b)=>(a%b+b)%b; }
+}
+public static class Program {
+ static void Check(bool b,string m) {if(!b)throw new Exception(m);}
+ public static void Main(string[] args) {
+ if(args.Length>0) {foreach(bool stream in new[]{false,true}){try {var r=typeof(GrassEventCpuValidation).GetMethod("Exercise",BindingFlags.NonPublic|BindingFlags.Static).Invoke(null,new object[]{stream});Console.WriteLine("Coverage PASS "+stream);}catch(Exception e){Console.WriteLine(e.ToString());Environment.Exit(1);}}return;}
+
+  foreach(int cap in new[]{1,16,128,1024})foreach(int seed in new[]{1,2,7,8,31,32}) {
+   var grids=new GrassGridStruct[33*33];for(int g=0;g<grids.Length;g++)grids[g]=new GrassGridStruct{Pos=new Vector3(g%33-16,0,g/33-16),IdOffset=g*32};
+   var a=new GrassSimulationPool(grids,cap*32);var b=new GrassReferenceSimulationPool(grids,cap*32);
+   var regions=new List<Vector4>();var life=new XPBDGrassSettings();var random=new System.Random(seed);var forgotten=new List<int>();
+   var oldSlots=new Dictionary<int,int>();int version=0;
+   for(int tick=0;tick<10000;tick++) {
+    life.ContactDrivenSimulation=seed%2==1;life.ContactSettleSeconds=tick/1800%2==0?2:.5f;life.ContactFadeSeconds=tick/1500%2==0?1:.25f;
+    regions.Clear();if(tick%600<180||tick%600>=450)for(int i=0;i<seed;i++)regions.Add(new Vector4((float)Math.Sin(tick*.01+i)*12,(float)Math.Cos(tick*.013+i)*12,1.5f+i%3,0));
+    if(tick%173==0) {forgotten.Clear();for(int i=0;i<7;i++)forgotten.Add(random.Next(grids.Length));a.ForgetGrids(forgotten);b.ForgetGrids(forgotten);}
+    var center=new Vector3(tick/2000%2==0?0:(float)Math.Sin(tick*.001)*3,0,0);bool stable=tick/900%2==0;
+    float radius=8;float hysteresis=.35f;float time=tick/60f;
+    oldSlots.Clear();foreach(var e in a.Selected)oldSlots[e.GridId]=e.PoolOffset;
+    version=a.SelectionVersion;
+    a.Select(center,radius,hysteresis,tick,(s,g)=>{},stable,regions,default,false,life,time);
+    b.Select(center,radius,hysteresis,tick,(s,g)=>{},stable,regions,default,false,life,time);
+    Check(a.Selected.Count<=cap,"capacity");Check(a.InteractionBlades+a.SettlingBlades+a.FadingBlades<=(a.Selected.Count*32),"phase sum");
+    var slots=new HashSet<int>();var ids=new HashSet<int>();
+    foreach(var e in a.Selected) {
+     Check(ids.Add(e.GridId),"duplicate grid");Check(slots.Add(e.PoolOffset),"duplicate slot");Check(a.IsActive(e.GridId),"inactive selected");Check(a.SlotForGrid(e.GridId)*32==e.PoolOffset,"mapping");
+     if(oldSlots.TryGetValue(e.GridId,out var oldSlot))Check(oldSlot==e.PoolOffset,"unstable retained slot");
+    }
+    if(true) {
+     var expected=new HashSet<int>(b.Selected.Select(x=>x.GridId));
+     if(!ids.SetEquals(expected))throw new Exception($"identity mismatch cap={cap} seed={seed} tick={tick} contact={life.ContactDrivenSimulation},a={a.Selected.Count},b={b.Selected.Count},extra={string.Join(',',ids.Except(expected))},missing={string.Join(',',expected.Except(ids))}");
+     Check(a.InteractionBlades==b.InteractionBlades,$"contact count {tick}");Check(a.SettlingBlades==b.SettlingBlades,$"settle count {tick}");Check(a.FadingBlades==b.FadingBlades,$"fade count {tick}");
+     foreach(var e in a.Selected)Check(a.ExitStartedAt(e.GridId)==b.ExitStartedAt(e.GridId),"exit time "+tick);
+    }
+   }
+   Console.WriteLine($"PASS cap={cap} seed={seed} 10000 ticks");
+  }
+ }
+}

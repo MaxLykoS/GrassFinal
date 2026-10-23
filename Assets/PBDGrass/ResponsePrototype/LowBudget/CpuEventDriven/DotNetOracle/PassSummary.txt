@@ -1,0 +1,27 @@
+PASS cap=1 seed=1 10000 ticks
+PASS cap=1 seed=2 10000 ticks
+PASS cap=1 seed=7 10000 ticks
+PASS cap=1 seed=8 10000 ticks
+PASS cap=1 seed=31 10000 ticks
+PASS cap=1 seed=32 10000 ticks
+PASS cap=16 seed=1 10000 ticks
+PASS cap=16 seed=2 10000 ticks
+PASS cap=16 seed=7 10000 ticks
+PASS cap=16 seed=8 10000 ticks
+PASS cap=16 seed=31 10000 ticks
+PASS cap=16 seed=32 10000 ticks
+PASS cap=128 seed=1 10000 ticks
+PASS cap=128 seed=2 10000 ticks
+PASS cap=128 seed=7 10000 ticks
+PASS cap=128 seed=8 10000 ticks
+PASS cap=128 seed=31 10000 ticks
+PASS cap=128 seed=32 10000 ticks
+PASS cap=1024 seed=1 10000 ticks
+PASS cap=1024 seed=2 10000 ticks
+PASS cap=1024 seed=7 10000 ticks
+PASS cap=1024 seed=8 10000 ticks
+PASS cap=1024 seed=31 10000 ticks
+PASS cap=1024 seed=32 10000 ticks
+Total: 24 cases / 240000 ticks PASS
+Coverage PASS False
+Coverage PASS True

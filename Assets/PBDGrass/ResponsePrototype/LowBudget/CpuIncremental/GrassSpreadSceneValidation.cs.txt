@@ -1,0 +1,193 @@
+// Install in the isolated project's Editor folder. All readbacks are offline
+// diagnostics; this does not add runtime readbacks or modify scene assets.
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using GrassFinal.PBDGrass;
+using Object=UnityEngine.Object;
+
+public static class GrassSpreadSceneValidation
+{
+    [Serializable] public sealed class ActorPath
+    {
+        public string name,movement;
+        public Vector3 origin,axis,minPosition,maxPosition;
+        public float travel,period,phase,minRadius,maxRadius,maxPlanarSpeed,conservativeExtent;
+        public int uniqueOneMetreCells;
+        public bool planar,crossesNearBoundary;
+    }
+    [Serializable] public sealed class Report
+    {
+        public bool passed,eventDriven,acceptedProfile,savedCameraPreserved,finiteNearState;
+        public bool fixed32768Diagnostic; // False: this probe exercises actual contact-driven occupancy.
+        public string error,scene,workload,gpu,api,initialScreenshot,eightSecondScreenshot;
+        public int width=1600,height=900,actors,planarActors,nearBoundaryCrossers;
+        public int ticks,minActive=int.MaxValue,maxActive,capacity,maxContact,maxSettling,maxFading;
+        public float middleFull,middleOuter,pathSampleSeconds,pathSampleRate,minPathX,maxPathX,minPathZ,maxPathZ,maxNearReach;
+        public Vector3 cameraPosition,cameraEuler,focus;
+        public float cameraFov;
+        public long gpuBufferBytes;
+        public List<ActorPath> paths=new List<ActorPath>();
+    }
+    private static Report report;
+    private static void Require(bool condition,string message) {if(!condition)throw new Exception(message);}
+    private static void ReleaseDemo(GrassHandoffDemo demo)
+    {
+        if(demo!=null)typeof(GrassHandoffDemo).GetMethod("Release",BindingFlags.NonPublic|BindingFlags.Instance).Invoke(demo,null);
+    }
+    private static void Log(string message,string stack,LogType type)
+    {
+        if(report!=null && string.IsNullOrEmpty(report.error) && (type==LogType.Error || type==LogType.Exception || type==LogType.Assert))
+            report.error=message;
+    }
+    public static void Run()
+    {
+        string output=Environment.GetEnvironmentVariable("GRASS_LOW_BUDGET_OUTPUT");
+        if(string.IsNullOrEmpty(output))throw new Exception("Set GRASS_LOW_BUDGET_OUTPUT to a new diagnostic directory.");
+        Directory.CreateDirectory(output);
+        report=new Report {scene="Assets/PBDGrass/Scenes/PBDGrassIterationBudget.unity",workload="Contact-driven 32768 ceiling; not a forced full-pool performance measurement",
+            gpu=SystemInfo.graphicsDeviceName,api=SystemInfo.graphicsDeviceType.ToString(),fixed32768Diagnostic=false,
+            initialScreenshot="Spread_t0.png",eightSecondScreenshot="Spread_t8.png",pathSampleSeconds=60,pathSampleRate=60};
+        GrassHandoffDemo demo=null;RenderTexture target=null;Camera camera=null;RenderTexture previousTarget=null;
+        Application.logMessageReceived+=Log;
+        try
+        {
+            EditorSceneManager.OpenScene(report.scene);
+            demo=Object.FindObjectOfType<GrassHandoffDemo>();
+            var lab=Object.FindObjectOfType<GrassShowcaseController>();
+            var budget=Object.FindObjectOfType<GrassIterationBudgetDemo>();
+            Require(demo!=null && lab!=null && budget!=null,"Missing iteration demo, choreography or quality component.");
+            camera=demo.Cam;previousTarget=camera.targetTexture;
+            Vector3 savedPosition=camera.transform.position;Quaternion savedRotation=camera.transform.rotation;
+            float savedFov=camera.fieldOfView;
+            // Prevent automatic ticks, streaming or drawing while manually advancing.
+            // Keep the serialized high camera; do not call lab.SetView here.
+            demo.enabled=false;lab.enabled=false;demo.OuterCoverage.enabled=false;camera.enabled=false;
+            budget.enabled=false;ReleaseDemo(demo);
+            budget.Quality=GrassIterationBudgetDemo.Budget.Minimum2x1;
+            budget.TuneMinimumBudget=true;budget.MinimumSoftComplianceScale=.5f;budget.Apply();
+            demo.AutoTour=false;demo.ContactEnabled=true;
+            report.capacity=demo.Physics.MaxActiveBlades;report.eventDriven=demo.Physics.ContactDrivenSimulation;
+            report.acceptedProfile=demo.Physics.NearSubsteps==2 && demo.Physics.ConstraintIterations==1 &&
+                Mathf.Abs(demo.Physics.SoftBendCompliance-1.95f)<.00001f && demo.Handoff.BakedResponse==budget.MinimumResponse;
+            report.middleFull=demo.OuterCoverage.MiddleFullDistance;report.middleOuter=demo.OuterCoverage.MiddleOuterDistance;
+            report.cameraPosition=savedPosition;report.cameraEuler=savedRotation.eulerAngles;report.cameraFov=savedFov;
+            report.focus=demo.SimulationFocus!=null?demo.SimulationFocus.position:savedPosition;
+            report.focus=new Vector3(report.focus.x,demo.transform.position.y,report.focus.z);
+            Require(report.acceptedProfile && report.capacity==32768 && report.eventDriven,"Accepted 2x1/F10/matched bank or contact-driven ceiling changed.");
+            Require(report.middleFull==52 && report.middleOuter==64,"Compatible middle range changed.");
+            Require(savedPosition.y>=60,"Saved elevated camera was replaced.");
+            InspectPaths(lab);
+            lab.ApplyActors(0,true);demo.Initialize();demo.OuterCoverage.Initialize();
+            var renderer=demo.Renderer;renderer.SimulationCenter=report.focus;
+            renderer.SetOuterCoverage(demo.OuterCoverage.CoverageTransition,demo.OuterCoverage.RadialMiddle);
+            renderer.StreamTo(report.focus);
+            target=new RenderTexture(report.width,report.height,24,RenderTextureFormat.ARGB32);
+            target.antiAliasing=1;target.Create();camera.targetTexture=target;camera.aspect=(float)report.width/report.height;
+            foreach(var label in lab.Labels)if(label!=null)label.rotation=camera.transform.rotation;
+            Capture(demo,target,Path.Combine(output,report.initialScreenshot));
+            int startTicks=renderer.SimulationTicks;
+            for(int tick=1;tick<=600;tick++)
+            {
+                float time=(tick-1)/60f;lab.ApplyActors(time,true);
+                renderer.SimulationCenter=report.focus;
+                renderer.SetWind(GrassResponseDemo.WindAt(time,true)*(demo.Wind.magnitude/6),.1f,new Vector4(.01f,.01f,0,1));
+                renderer.Advance(1f/60);
+                report.minActive=Math.Min(report.minActive,renderer.ActiveBladeCount);report.maxActive=Math.Max(report.maxActive,renderer.ActiveBladeCount);
+                report.maxContact=Math.Max(report.maxContact,renderer.Pool.InteractionBlades);
+                report.maxSettling=Math.Max(report.maxSettling,renderer.Pool.SettlingBlades);
+                report.maxFading=Math.Max(report.maxFading,renderer.Pool.FadingBlades);
+                Require(renderer.ActiveBladeCount<=report.capacity,"Contact-driven XPBD capacity exceeded.");
+                if(tick==480)Capture(demo,target,Path.Combine(output,report.eightSecondScreenshot));
+            }
+            report.ticks=renderer.SimulationTicks-startTicks;
+            report.gpuBufferBytes=renderer.AllocatedGpuBytes+demo.OuterCoverage.AllocatedGpuBytes;
+            report.savedCameraPreserved=camera.transform.position==savedPosition && Quaternion.Angle(camera.transform.rotation,savedRotation)<.0001f && camera.fieldOfView==savedFov;
+            // One diagnostic readback at the end; none inside the simulation loop.
+            var buffer=(ComputeBuffer)typeof(PBDGrassPatchRenderer).GetField("bones",BindingFlags.NonPublic|BindingFlags.Instance).GetValue(renderer);
+            var nodes=new BoneInfo[buffer.count];buffer.GetData(nodes);report.finiteNearState=true;
+            foreach(var grid in renderer.Pool.Selected)
+                for(int node=grid.PoolOffset*8;node<(grid.PoolOffset+32)*8;node++)
+                {
+                    var p=nodes[node].Position;float reach=p.magnitude;
+                    report.finiteNearState&=Finite(p.x)&&Finite(p.y)&&Finite(p.z);
+                    report.maxNearReach=Mathf.Max(report.maxNearReach,reach);
+                }
+            Require(report.ticks==600 && report.maxActive>0,"Incomplete manual simulation or no XPBD wakeup.");
+            Require(report.savedCameraPreserved && report.finiteNearState,"Camera changed or nonfinite active state.");
+            Require(string.IsNullOrEmpty(report.error),"Unity reported an error: "+report.error);
+            report.passed=true;
+        }
+        catch(Exception e){report.error=e.ToString();Debug.LogException(e);}
+        finally
+        {
+            Application.logMessageReceived-=Log;
+            if(camera!=null)camera.targetTexture=previousTarget;
+            if(target!=null){target.Release();Object.DestroyImmediate(target);}
+            ReleaseDemo(demo);
+            if(demo!=null && demo.OuterCoverage!=null)
+                typeof(GrassOuterCoverage).GetMethod("Release",BindingFlags.NonPublic|BindingFlags.Instance).Invoke(demo.OuterCoverage,null);
+            File.WriteAllText(Path.Combine(output,"Results.json"),JsonUtility.ToJson(report,true));
+        }
+        Debug.Log("SPREAD_SCENE "+report.passed+" "+report.error);
+        EditorApplication.Exit(report.passed?0:1);
+    }
+    private static bool Finite(float value)=>!float.IsNaN(value)&&!float.IsInfinity(value);
+    private static void InspectPaths(GrassShowcaseController lab)
+    {
+        report.actors=lab.Actors.Length;Require(report.actors==12,"Expected twelve stations.");
+        var cells=new HashSet<long>[report.actors];var previous=new Vector3[report.actors];
+        report.minPathX=report.minPathZ=float.PositiveInfinity;report.maxPathX=report.maxPathZ=float.NegativeInfinity;
+        for(int i=0;i<report.actors;i++)
+        {
+            var actor=lab.Actors[i];cells[i]=new HashSet<long>();
+            bool planar=actor.Movement==GrassShowcaseController.Motion.Sweep || actor.Movement==GrassShowcaseController.Motion.Circle;
+            var path=new ActorPath {name=actor.Collider.name,movement=actor.Movement.ToString(),origin=actor.Origin,axis=actor.Axis,
+                travel=actor.Travel,period=actor.Period,phase=actor.Phase,planar=planar,minRadius=float.PositiveInfinity,
+                minPosition=Vector3.one*float.PositiveInfinity,maxPosition=Vector3.one*float.NegativeInfinity,
+                conservativeExtent=actor.Collider.Radius+actor.Collider.HalfSegment};
+            report.paths.Add(path);if(planar)report.planarActors++;
+        }
+        for(int step=0;step<=3600;step++)
+        {
+            lab.ApplyActors(step/60f,true);
+            for(int i=0;i<report.actors;i++)
+            {
+                var p=lab.Actors[i].Collider.transform.position;var path=report.paths[i];
+                path.minPosition=Vector3.Min(path.minPosition,p);path.maxPosition=Vector3.Max(path.maxPosition,p);
+                var offset=p-report.focus;offset.y=0;float radius=offset.magnitude;
+                path.minRadius=Mathf.Min(path.minRadius,radius);path.maxRadius=Mathf.Max(path.maxRadius,radius);
+                int x=Mathf.FloorToInt(p.x),z=Mathf.FloorToInt(p.z);cells[i].Add(((long)x<<32)^(uint)z);
+                if(step>0){var delta=p-previous[i];delta.y=0;path.maxPlanarSpeed=Mathf.Max(path.maxPlanarSpeed,delta.magnitude*60);}
+                previous[i]=p;
+                report.minPathX=Mathf.Min(report.minPathX,p.x);report.maxPathX=Mathf.Max(report.maxPathX,p.x);
+                report.minPathZ=Mathf.Min(report.minPathZ,p.z);report.maxPathZ=Mathf.Max(report.maxPathZ,p.z);
+            }
+        }
+        for(int i=0;i<report.actors;i++)
+        {
+            var path=report.paths[i];path.uniqueOneMetreCells=cells[i].Count;
+            path.crossesNearBoundary=path.planar && path.minRadius<lab.Demo.Physics.NearDistance && path.maxRadius>lab.Demo.Physics.NearDistance;
+            if(path.crossesNearBoundary)report.nearBoundaryCrossers++;
+            if(path.planar){Require(path.uniqueOneMetreCells>=20,"Planar path still confined: "+path.name);Require(path.maxPlanarSpeed<6,"Excessive test speed: "+path.name);}
+            Require(path.maxRadius+path.conservativeExtent<report.middleOuter,"Path leaves compatible middle: "+path.name);
+        }
+        Require(report.planarActors==7 && report.nearBoundaryCrossers>=4,"Insufficient movers or near/middle crossings.");
+        Require(report.maxPathX-report.minPathX>=80 && report.maxPathZ-report.minPathZ>=70,"Stations remain clustered.");
+    }
+    private static void Capture(GrassHandoffDemo demo,RenderTexture target,string path)
+    {
+        demo.Renderer.Draw(demo.Cam);demo.OuterCoverage.PrepareVisible();demo.OuterCoverage.RenderPrepared(demo.Cam);demo.Cam.Render();
+        var previous=RenderTexture.active;Texture2D pixels=null;
+        try
+        {
+            RenderTexture.active=target;pixels=new Texture2D(target.width,target.height,TextureFormat.RGB24,false);
+            pixels.ReadPixels(new Rect(0,0,target.width,target.height),0,0);pixels.Apply();File.WriteAllBytes(path,pixels.EncodeToPNG());
+        }
+        finally{RenderTexture.active=previous;if(pixels!=null)Object.DestroyImmediate(pixels);}
+    }
+}

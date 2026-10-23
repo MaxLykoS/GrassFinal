@@ -1,0 +1,1238 @@
+{
+  "date": "2026-10-23",
+  "profile": {
+    "budget": "2x1",
+    "softComplianceMultiplier": 0.5,
+    "rootDampingPlasticParameters": "unchanged"
+  },
+  "performance": [
+    {
+      "caseName": "q2x1_raw_fixedA",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "api": "Direct3D11",
+      "substeps": 2,
+      "iterations": 1,
+      "gpuBufferBytes": 224852832,
+      "metrics": {
+        "solveGpu": {
+          "mean": 0.6599162666666667,
+          "p95": 0.87552
+        },
+        "displayGpu": {
+          "mean": 0.76843008,
+          "p95": 1.021952
+        },
+        "coreCullGpu": {
+          "mean": 0.00813397333333333,
+          "p95": 0.009215999999999891
+        },
+        "outerGpu": {
+          "mean": 0.03696480000000001,
+          "p95": 0.03686400000000001
+        },
+        "renderGpu": {
+          "mean": 0.9010100266666666,
+          "p95": 1.338368
+        },
+        "totalGpu": {
+          "mean": 2.41940608,
+          "p95": 3.186688
+        },
+        "advanceCpu": {
+          "mean": 2.1935303333333334,
+          "p95": 2.6249
+        },
+        "poolCpu": {
+          "mean": 0.6916396666666667,
+          "p95": 0.8475
+        },
+        "handoffCpu": {
+          "mean": 1.3553613333333334,
+          "p95": 1.6631
+        },
+        "totalCpu": {
+          "mean": 2.4964986666666666,
+          "p95": 2.9901
+        }
+      }
+    },
+    {
+      "caseName": "q2x1_raw_fixedB",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "api": "Direct3D11",
+      "substeps": 2,
+      "iterations": 1,
+      "gpuBufferBytes": 224852832,
+      "metrics": {
+        "solveGpu": {
+          "mean": 0.67552224,
+          "p95": 0.902144
+        },
+        "displayGpu": {
+          "mean": 0.8044202666666667,
+          "p95": 1.303552
+        },
+        "coreCullGpu": {
+          "mean": 0.009018026666666663,
+          "p95": 0.008192000000000199
+        },
+        "outerGpu": {
+          "mean": 0.03596448000000001,
+          "p95": 0.03686400000000001
+        },
+        "renderGpu": {
+          "mean": 0.8889498666666666,
+          "p95": 1.108832
+        },
+        "totalGpu": {
+          "mean": 2.4601432533333334,
+          "p95": 3.28192
+        },
+        "advanceCpu": {
+          "mean": 2.0027963333333334,
+          "p95": 2.1837
+        },
+        "poolCpu": {
+          "mean": 0.6395663333333333,
+          "p95": 0.7683
+        },
+        "handoffCpu": {
+          "mean": 1.2356183333333333,
+          "p95": 1.3367
+        },
+        "totalCpu": {
+          "mean": 2.2801026666666666,
+          "p95": 2.4841
+        }
+      }
+    },
+    {
+      "caseName": "q2x1_tuned_fixedA",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "api": "Direct3D11",
+      "substeps": 2,
+      "iterations": 1,
+      "gpuBufferBytes": 224852832,
+      "metrics": {
+        "solveGpu": {
+          "mean": 0.66176288,
+          "p95": 0.8796160000000001
+        },
+        "displayGpu": {
+          "mean": 0.7850734933333333,
+          "p95": 1.065984
+        },
+        "coreCullGpu": {
+          "mean": 0.008034986666666674,
+          "p95": 0.008192000000000199
+        },
+        "outerGpu": {
+          "mean": 0.03827850666666667,
+          "p95": 0.03600000000000003
+        },
+        "renderGpu": {
+          "mean": 0.8831303466666667,
+          "p95": 1.115136
+        },
+        "totalGpu": {
+          "mean": 2.4290906666666667,
+          "p95": 3.065856
+        },
+        "advanceCpu": {
+          "mean": 2.034696333333333,
+          "p95": 2.2616
+        },
+        "poolCpu": {
+          "mean": 0.6519696666666667,
+          "p95": 0.7805
+        },
+        "handoffCpu": {
+          "mean": 1.253089,
+          "p95": 1.3787
+        },
+        "totalCpu": {
+          "mean": 2.3109693333333334,
+          "p95": 2.5537
+        }
+      }
+    },
+    {
+      "caseName": "q2x1_tuned_fixedB",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "api": "Direct3D11",
+      "substeps": 2,
+      "iterations": 1,
+      "gpuBufferBytes": 224852832,
+      "metrics": {
+        "solveGpu": {
+          "mean": 0.7193386666666667,
+          "p95": 1.378304
+        },
+        "displayGpu": {
+          "mean": 0.81815552,
+          "p95": 1.4243839999999999
+        },
+        "coreCullGpu": {
+          "mean": 0.008181760000000007,
+          "p95": 0.009215999999999891
+        },
+        "outerGpu": {
+          "mean": 0.035724053333333325,
+          "p95": 0.03686400000000001
+        },
+        "renderGpu": {
+          "mean": 0.9271124266666667,
+          "p95": 1.387424
+        },
+        "totalGpu": {
+          "mean": 2.5587137066666665,
+          "p95": 3.514368
+        },
+        "advanceCpu": {
+          "mean": 2.026682666666667,
+          "p95": 2.2234
+        },
+        "poolCpu": {
+          "mean": 0.6410063333333333,
+          "p95": 0.7652
+        },
+        "handoffCpu": {
+          "mean": 1.2526103333333334,
+          "p95": 1.3558
+        },
+        "totalCpu": {
+          "mean": 2.3091393333333334,
+          "p95": 2.5409
+        }
+      }
+    }
+  ],
+  "checks": {
+    "TuningSweep1": {
+      "passed": true,
+      "error": "",
+      "rows": [
+        {
+          "name": "reference",
+          "substeps": 8,
+          "iterations": 3,
+          "rootScale": 1.0,
+          "softScale": 1.0,
+          "angularDamping": 3.0,
+          "calmTip": {
+            "x": -0.9100459218025208,
+            "y": 0.8609859943389893,
+            "z": -0.3510972559452057
+          },
+          "windTip": {
+            "x": -0.8210580945014954,
+            "y": 1.0274572372436523,
+            "z": -0.3147905170917511
+          },
+          "releasedTip": {
+            "x": -0.9173727631568909,
+            "y": 0.7538130283355713,
+            "z": -0.35142284631729126
+          },
+          "plasticTip": {
+            "x": -0.44152310490608215,
+            "y": 0.18844455480575562,
+            "z": -0.18954968452453613
+          },
+          "calmNodeRms": 0.0,
+          "windNodeRms": 0.0,
+          "calmSpeed": 0.0002847613941412419,
+          "windSpeed": 0.0004014408332295716,
+          "rootAngle": 0.1724584698677063,
+          "elasticRecoveryRms": 0.2568006217479706,
+          "releaseMaxStep": 0.08411144465208054,
+          "releaseMeanStep": 0.008183763362467289,
+          "releaseMeanAcceleration": 0.002700730226933956,
+          "tailSpeed": 0.0037734799552708864,
+          "plasticMean": 0.3825528919696808,
+          "plasticMax": 1.0878874063491821
+        },
+        {
+          "name": "raw",
+          "substeps": 2,
+          "iterations": 1,
+          "rootScale": 1.0,
+          "softScale": 1.0,
+          "angularDamping": 3.0,
+          "calmTip": {
+            "x": -1.0756075382232666,
+            "y": 0.3704850971698761,
+            "z": -0.41810083389282227
+          },
+          "windTip": {
+            "x": -1.0487878322601318,
+            "y": 0.48723483085632324,
+            "z": -0.39520737528800964
+          },
+          "releasedTip": {
+            "x": -1.0756129026412964,
+            "y": 0.3711563050746918,
+            "z": -0.41800686717033386
+          },
+          "plasticTip": {
+            "x": -1.1343785524368286,
+            "y": 0.23946599662303925,
+            "z": -0.44242948293685913
+          },
+          "calmNodeRms": 0.34075209498405457,
+          "windNodeRms": 0.37360918521881104,
+          "calmSpeed": 3.290937820565887e-05,
+          "windSpeed": 3.221907536499202e-05,
+          "rootAngle": 8.428155899047852,
+          "elasticRecoveryRms": 0.0005109935882501304,
+          "releaseMaxStep": 0.046194545924663544,
+          "releaseMeanStep": 0.0035018103662878275,
+          "releaseMeanAcceleration": 0.0007525142864324152,
+          "tailSpeed": 0.0009232568554580212,
+          "plasticMean": 0.04395872727036476,
+          "plasticMax": 0.6764259338378906
+        },
+        {
+          "name": "root50",
+          "substeps": 2,
+          "iterations": 1,
+          "rootScale": 0.5,
+          "softScale": 1.0,
+          "angularDamping": 3.0,
+          "calmTip": {
+            "x": -1.0749670267105103,
+            "y": 0.37282678484916687,
+            "z": -0.4178539216518402
+          },
+          "windTip": {
+            "x": -1.0479540824890137,
+            "y": 0.4900820255279541,
+            "z": -0.3949107825756073
+          },
+          "releasedTip": {
+            "x": -1.074985146522522,
+            "y": 0.3734312653541565,
+            "z": -0.4177549183368683
+          },
+          "plasticTip": {
+            "x": -1.1338956356048584,
+            "y": 0.24082212150096893,
+            "z": -0.44232597947120667
+          },
+          "calmNodeRms": 0.3390507698059082,
+          "windNodeRms": 0.37161093950271606,
+          "calmSpeed": 3.6173845728626475e-05,
+          "windSpeed": 5.476166552398354e-05,
+          "rootAngle": 8.340795516967773,
+          "elasticRecoveryRms": 0.0004628538736142218,
+          "releaseMaxStep": 0.04642394557595253,
+          "releaseMeanStep": 0.0035190097987651825,
+          "releaseMeanAcceleration": 0.0007576743955723941,
+          "tailSpeed": 0.0009515082347206771,
+          "plasticMean": 0.04405931383371353,
+          "plasticMax": 0.6764259934425354
+        },
+        {
+          "name": "root25",
+          "substeps": 2,
+          "iterations": 1,
+          "rootScale": 0.25,
+          "softScale": 1.0,
+          "angularDamping": 3.0,
+          "calmTip": {
+            "x": -1.074662685394287,
+            "y": 0.37392520904541016,
+            "z": -0.4177376925945282
+          },
+          "windTip": {
+            "x": -1.0475316047668457,
+            "y": 0.49149972200393677,
+            "z": -0.39477530121803284
+          },
+          "releasedTip": {
+            "x": -1.0746707916259766,
+            "y": 0.3745472729206085,
+            "z": -0.4176297187805176
+          },
+          "plasticTip": {
+            "x": -1.1336473226547241,
+            "y": 0.2414826601743698,
+            "z": -0.44227728247642517
+          },
+          "calmNodeRms": 0.33825093507766724,
+          "windNodeRms": 0.37061506509780884,
+          "calmSpeed": 3.376594395376742e-05,
+          "windSpeed": 4.201334377285093e-05,
+          "rootAngle": 8.29842472076416,
+          "elasticRecoveryRms": 0.00048053188947960734,
+          "releaseMaxStep": 0.0465334914624691,
+          "releaseMeanStep": 0.0035273979883641005,
+          "releaseMeanAcceleration": 0.0007602500263601542,
+          "tailSpeed": 0.0009662829106673598,
+          "plasticMean": 0.04409448057413101,
+          "plasticMax": 0.6764259934425354
+        },
+        {
+          "name": "soft75",
+          "substeps": 2,
+          "iterations": 1,
+          "rootScale": 1.0,
+          "softScale": 0.75,
+          "angularDamping": 3.0,
+          "calmTip": {
+            "x": -1.0395560264587402,
+            "y": 0.6376692652702332,
+            "z": -0.4039456844329834
+          },
+          "windTip": {
+            "x": -0.9605156779289246,
+            "y": 0.826079249382019,
+            "z": -0.35940125584602356
+          },
+          "releasedTip": {
+            "x": -1.0393201112747192,
+            "y": 0.638530433177948,
+            "z": -0.4037841558456421
+          },
+          "plasticTip": {
+            "x": -1.105055809020996,
+            "y": 0.4616340696811676,
+            "z": -0.4361315369606018
+          },
+          "calmNodeRms": 0.1791350096464157,
+          "windNodeRms": 0.16087836027145386,
+          "calmSpeed": 3.844431557809003e-05,
+          "windSpeed": 0.00011334113514749333,
+          "rootAngle": 7.352097511291504,
+          "elasticRecoveryRms": 0.0006646926049143076,
+          "releaseMaxStep": 0.05400606244802475,
+          "releaseMeanStep": 0.004114964045584202,
+          "releaseMeanAcceleration": 0.0008742266218177974,
+          "tailSpeed": 0.0010440254118293524,
+          "plasticMean": 0.03087683580815792,
+          "plasticMax": 0.5862429141998291
+        },
+        {
+          "name": "soft50",
+          "substeps": 2,
+          "iterations": 1,
+          "rootScale": 1.0,
+          "softScale": 0.5,
+          "angularDamping": 3.0,
+          "calmTip": {
+            "x": -0.9513380527496338,
+            "y": 0.8818097710609436,
+            "z": -0.3693343997001648
+          },
+          "windTip": {
+            "x": -0.8425422310829163,
+            "y": 1.0422396659851074,
+            "z": -0.31275811791419983
+          },
+          "releasedTip": {
+            "x": -0.9516947269439697,
+            "y": 0.8811713457107544,
+            "z": -0.3695131242275238
+          },
+          "plasticTip": {
+            "x": -1.0410208702087402,
+            "y": 0.6877437233924866,
+            "z": -0.41933509707450867
+          },
+          "calmNodeRms": 0.03888246417045593,
+          "windNodeRms": 0.02089492790400982,
+          "calmSpeed": 2.9633283702423796e-05,
+          "windSpeed": 0.00019624987908173352,
+          "rootAngle": 6.110489845275879,
+          "elasticRecoveryRms": 0.000573520315811038,
+          "releaseMaxStep": 0.06006244197487831,
+          "releaseMeanStep": 0.004639946855604649,
+          "releaseMeanAcceleration": 0.0009380700066685677,
+          "tailSpeed": 0.0007026828243397176,
+          "plasticMean": 0.021809032186865807,
+          "plasticMax": 0.4948277175426483
+        },
+        {
+          "name": "root50soft75",
+          "substeps": 2,
+          "iterations": 1,
+          "rootScale": 0.5,
+          "softScale": 0.75,
+          "angularDamping": 3.0,
+          "calmTip": {
+            "x": -1.0385007858276367,
+            "y": 0.6399422883987427,
+            "z": -0.4035218358039856
+          },
+          "windTip": {
+            "x": -0.9592268466949463,
+            "y": 0.8282335996627808,
+            "z": -0.35895413160324097
+          },
+          "releasedTip": {
+            "x": -1.0382742881774902,
+            "y": 0.6407729387283325,
+            "z": -0.403361976146698
+          },
+          "plasticTip": {
+            "x": -1.1042804718017578,
+            "y": 0.4634484052658081,
+            "z": -0.4358987510204315
+          },
+          "calmNodeRms": 0.17740651965141296,
+          "windNodeRms": 0.15920542180538177,
+          "calmSpeed": 3.249727524234913e-05,
+          "windSpeed": 0.00015121734759304672,
+          "rootAngle": 7.272730827331543,
+          "elasticRecoveryRms": 0.0006445173057727516,
+          "releaseMaxStep": 0.054329998791217804,
+          "releaseMeanStep": 0.00413453858345747,
+          "releaseMeanAcceleration": 0.0008808648562990129,
+          "tailSpeed": 0.0010559306247159839,
+          "plasticMean": 0.030923902988433838,
+          "plasticMax": 0.5847051739692688
+        },
+        {
+          "name": "root50soft50",
+          "substeps": 2,
+          "iterations": 1,
+          "rootScale": 0.5,
+          "softScale": 0.5,
+          "angularDamping": 3.0,
+          "calmTip": {
+            "x": -0.9500975608825684,
+            "y": 0.8835107088088989,
+            "z": -0.36885249614715576
+          },
+          "windTip": {
+            "x": -0.8415310382843018,
+            "y": 1.043304204940796,
+            "z": -0.31242525577545166
+          },
+          "releasedTip": {
+            "x": -0.9504788517951965,
+            "y": 0.8828427195549011,
+            "z": -0.3690173327922821
+          },
+          "plasticTip": {
+            "x": -1.040021300315857,
+            "y": 0.6893624067306519,
+            "z": -0.41902124881744385
+          },
+          "calmNodeRms": 0.03798915073275566,
+          "windNodeRms": 0.020343651995062828,
+          "calmSpeed": 2.22320177272195e-05,
+          "windSpeed": 0.0002535110979806632,
+          "rootAngle": 6.042707920074463,
+          "elasticRecoveryRms": 0.0005944006843492389,
+          "releaseMaxStep": 0.06042195111513138,
+          "releaseMeanStep": 0.004656568169593811,
+          "releaseMeanAcceleration": 0.0009450500947423279,
+          "tailSpeed": 0.0006524323835037649,
+          "plasticMean": 0.02176428958773613,
+          "plasticMax": 0.49517014622688293
+        }
+      ]
+    },
+    "TuningQuality": {
+      "passed": true,
+      "error": "",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "active": 32768,
+      "sampleStride": 8,
+      "cases": [
+        {
+          "name": "8x3",
+          "substeps": 8,
+          "iterations": 3,
+          "rows": [
+            {
+              "phase": "wind",
+              "tick": 180,
+              "sampledBlades": 4096,
+              "nearContactBlades": 0,
+              "penetratingSegments": 0,
+              "segments": 28672,
+              "lengthErrorMean": 3.001309414685238e-05,
+              "lengthErrorP95": 8.071313641266897e-05,
+              "lengthErrorMax": 9.006472828332335e-05,
+              "groundPenetrationMax": 0.0,
+              "capsulePenetrationMax": 0.0,
+              "capsulePenetrationP95": 0.0,
+              "tipDifferenceRms": 0.0,
+              "tipDifferenceP95": 0.0,
+              "tipDifferenceMax": 0.0,
+              "nearContactTipDifferenceRms": 0.0,
+              "plasticMean": 0.0,
+              "plasticMax": 0.0,
+              "speedMean": 0.038344211876392365,
+              "speedP95": 0.10980457067489624
+            },
+            {
+              "phase": "contact",
+              "tick": 240,
+              "sampledBlades": 4096,
+              "nearContactBlades": 742,
+              "penetratingSegments": 45,
+              "segments": 28672,
+              "lengthErrorMean": 0.0008886191062629223,
+              "lengthErrorP95": 8.4498300566338e-05,
+              "lengthErrorMax": 2.4505696296691895,
+              "groundPenetrationMax": 0.0,
+              "capsulePenetrationMax": 0.10823267698287964,
+              "capsulePenetrationP95": 0.04593139886856079,
+              "tipDifferenceRms": 0.0,
+              "tipDifferenceP95": 0.0,
+              "tipDifferenceMax": 0.0,
+              "nearContactTipDifferenceRms": 0.0,
+              "plasticMean": 0.017958560958504677,
+              "plasticMax": 1.0878874063491821,
+              "speedMean": 0.16289614140987396,
+              "speedP95": 0.6339023113250732
+            },
+            {
+              "phase": "contact",
+              "tick": 360,
+              "sampledBlades": 4096,
+              "nearContactBlades": 841,
+              "penetratingSegments": 26,
+              "segments": 28672,
+              "lengthErrorMean": 0.00021304286201484501,
+              "lengthErrorP95": 8.394166070502251e-05,
+              "lengthErrorMax": 0.7864246964454651,
+              "groundPenetrationMax": 0.0,
+              "capsulePenetrationMax": 0.15375390648841858,
+              "capsulePenetrationP95": 0.15374159812927246,
+              "tipDifferenceRms": 0.0,
+              "tipDifferenceP95": 0.0,
+              "tipDifferenceMax": 0.0,
+              "nearContactTipDifferenceRms": 0.0,
+              "plasticMean": 0.021535798907279968,
+              "plasticMax": 1.0878875255584717,
+              "speedMean": 0.10536125302314758,
+              "speedP95": 0.1672317087650299
+            },
+            {
+              "phase": "contact",
+              "tick": 480,
+              "sampledBlades": 4096,
+              "nearContactBlades": 948,
+              "penetratingSegments": 31,
+              "segments": 28672,
+              "lengthErrorMean": 0.00021810774342156947,
+              "lengthErrorP95": 7.804125198163092e-05,
+              "lengthErrorMax": 0.7864246964454651,
+              "groundPenetrationMax": 0.0,
+              "capsulePenetrationMax": 0.13948553800582886,
+              "capsulePenetrationP95": 0.10823267698287964,
+              "tipDifferenceRms": 0.0,
+              "tipDifferenceP95": 0.0,
+              "tipDifferenceMax": 0.0,
+              "nearContactTipDifferenceRms": 0.0,
+              "plasticMean": 0.0239424891769886,
+              "plasticMax": 1.0878874063491821,
+              "speedMean": 0.09940814226865768,
+              "speedP95": 0.15842270851135254
+            },
+            {
+              "phase": "released",
+              "tick": 540,
+              "sampledBlades": 4096,
+              "nearContactBlades": 590,
+              "penetratingSegments": 0,
+              "segments": 28672,
+              "lengthErrorMean": 3.37158162437845e-05,
+              "lengthErrorP95": 8.115844684652984e-05,
+              "lengthErrorMax": 0.0167273860424757,
+              "groundPenetrationMax": 0.0,
+              "capsulePenetrationMax": 0.0,
+              "capsulePenetrationP95": 0.0,
+              "tipDifferenceRms": 0.0,
+              "tipDifferenceP95": 0.0,
+              "tipDifferenceMax": 0.0,
+              "nearContactTipDifferenceRms": 0.0,
+              "plasticMean": 0.016386669129133224,
+              "plasticMax": 1.0878965854644775,
+              "speedMean": 0.038664381951093674,
+              "speedP95": 0.10188131034374237
+            },
+            {
+              "phase": "released",
+              "tick": 600,
+              "sampledBlades": 4096,
+              "nearContactBlades": 590,
+              "penetratingSegments": 0,
+              "segments": 28672,
+              "lengthErrorMean": 3.4057848097290844e-05,
+              "lengthErrorP95": 8.09357879916206e-05,
+              "lengthErrorMax": 0.016727710142731667,
+              "groundPenetrationMax": 0.0,
+              "capsulePenetrationMax": 0.0,
+              "capsulePenetrationP95": 0.0,
+              "tipDifferenceRms": 0.0,
+              "tipDifferenceP95": 0.0,
+              "tipDifferenceMax": 0.0,
+              "nearContactTipDifferenceRms": 0.0,
+              "plasticMean": 0.01640079915523529,
+              "plasticMax": 1.0878965854644775,
+              "speedMean": 0.024326318874955177,
+              "speedP95": 0.07118890434503555
+            },
+            {
+              "phase": "released",
+              "tick": 660,
+              "sampledBlades": 4096,
+              "nearContactBlades": 590,
+              "penetratingSegments": 0,
+              "segments": 28672,
+              "lengthErrorMean": 3.394211671547964e-05,
+              "lengthErrorP95": 8.104711741907522e-05,
+              "lengthErrorMax": 0.016727818176150322,
+              "groundPenetrationMax": 0.0,
+              "capsulePenetrationMax": 0.0,
+              "capsulePenetrationP95": 0.0,
+              "tipDifferenceRms": 0.0,
+              "tipDifferenceP95": 0.0,
+              "tipDifferenceMax": 0.0,
+              "nearContactTipDifferenceRms": 0.0,
+              "plasticMean": 0.016400815919041634,
+              "plasticMax": 1.0878965854644775,
+              "speedMean": 0.011151325888931751,
+              "speedP95": 0.03383708745241165
+            },
+            {
+              "phase": "released",
+              "tick": 720,
+              "sampledBlades": 4096,
+              "nearContactBlades": 590,
+              "penetratingSegments": 0,
+              "segments": 28672,
+              "lengthErrorMean": 3.398447370273061e-05,
+              "lengthErrorP95": 7.893188012531027e-05,
+              "lengthErrorMax": 0.0167283583432436,
+              "groundPenetrationMax": 0.0,
+              "capsulePenetrationMax": 0.0,
+              "capsulePenetrationP95": 0.0,
+              "tipDifferenceRms": 0.0,
+              "tipDifferenceP95": 0.0,
+              "tipDifferenceMax": 0.0,
+              "nearContactTipDifferenceRms": 0.0,
+              "plasticMean": 0.016400819644331932,
+              "plasticMax": 1.0878965854644775,
+              "speedMean": 0.05766211822628975,
+              "speedP95": 0.1562286913394928
+            }
+          ]
+        },
+        {
+          "name": "2x1",
+          "substeps": 2,
+          "iterations": 1,
+          "rows": [
+            {
+              "phase": "wind",
+              "tick": 180,
+              "sampledBlades": 4096,
+              "nearContactBlades": 0,
+              "penetratingSegments": 0,
+              "segments": 28672,
+              "lengthErrorMean": 0.0016542262164875865,
+              "lengthErrorP95": 0.005741320084780455,
+              "lengthErrorMax": 0.0059093148447573185,
+              "groundPenetrationMax": 0.0,
+              "capsulePenetrationMax": 0.0,
+              "capsulePenetrationP95": 0.0,
+              "tipDifferenceRms": 0.4914323091506958,
+              "tipDifferenceP95": 0.6736564040184021,
+              "tipDifferenceMax": 0.7427623867988586,
+              "nearContactTipDifferenceRms": 0.0,
+              "plasticMean": 0.0,
+              "plasticMax": 0.0,
+              "speedMean": 0.06093331053853035,
+              "speedP95": 0.151889368891716
+            },
+            {
+              "phase": "contact",
+              "tick": 240,
+              "sampledBlades": 4096,
+              "nearContactBlades": 742,
+              "penetratingSegments": 44,
+              "segments": 28672,
+              "lengthErrorMean": 0.0022982312366366386,
+              "lengthErrorP95": 0.005762917920947075,
+              "lengthErrorMax": 1.4477118253707886,
+              "groundPenetrationMax": 0.0,
+              "capsulePenetrationMax": 0.27050989866256714,
+              "capsulePenetrationP95": 0.09933745861053467,
+              "tipDifferenceRms": 0.5960145592689514,
+              "tipDifferenceP95": 0.7426640391349792,
+              "tipDifferenceMax": 2.743358850479126,
+              "nearContactTipDifferenceRms": 0.8644470572471619,
+              "plasticMean": 0.0059289028868079185,
+              "plasticMax": 1.0878872871398926,
+              "speedMean": 0.13581019639968872,
+              "speedP95": 0.5634350776672363
+            },
+            {
+              "phase": "contact",
+              "tick": 360,
+              "sampledBlades": 4096,
+              "nearContactBlades": 841,
+              "penetratingSegments": 48,
+              "segments": 28672,
+              "lengthErrorMean": 0.001932979328557849,
+              "lengthErrorP95": 0.0057218377478420734,
+              "lengthErrorMax": 0.7909489274024963,
+              "groundPenetrationMax": 0.0,
+              "capsulePenetrationMax": 0.15241235494613647,
+              "capsulePenetrationP95": 0.10693475604057312,
+              "tipDifferenceRms": 0.6020597219467163,
+              "tipDifferenceP95": 0.797233521938324,
+              "tipDifferenceMax": 2.678605318069458,
+              "nearContactTipDifferenceRms": 0.8667458295822144,
+              "plasticMean": 0.00873009767383337,
+              "plasticMax": 1.0878872871398926,
+              "speedMean": 0.08881907165050507,
+              "speedP95": 0.16251076757907867
+            },
+            {
+              "phase": "contact",
+              "tick": 480,
+              "sampledBlades": 4096,
+              "nearContactBlades": 948,
+              "penetratingSegments": 51,
+              "segments": 28672,
+              "lengthErrorMean": 0.0018794761272147298,
+              "lengthErrorP95": 0.005744771100580692,
+              "lengthErrorMax": 0.7729219198226929,
+              "groundPenetrationMax": 0.0,
+              "capsulePenetrationMax": 0.14013123512268066,
+              "capsulePenetrationP95": 0.11788612604141235,
+              "tipDifferenceRms": 0.6152622103691101,
+              "tipDifferenceP95": 0.7848833203315735,
+              "tipDifferenceMax": 2.6916191577911377,
+              "nearContactTipDifferenceRms": 0.8949089050292969,
+              "plasticMean": 0.010992390103638172,
+              "plasticMax": 1.0878872871398926,
+              "speedMean": 0.09254276007413864,
+              "speedP95": 0.1685376763343811
+            },
+            {
+              "phase": "released",
+              "tick": 540,
+              "sampledBlades": 4096,
+              "nearContactBlades": 590,
+              "penetratingSegments": 0,
+              "segments": 28672,
+              "lengthErrorMean": 0.0016445923829451203,
+              "lengthErrorP95": 0.0057554589584469795,
+              "lengthErrorMax": 0.02486594021320343,
+              "groundPenetrationMax": 0.0,
+              "capsulePenetrationMax": 0.0,
+              "capsulePenetrationP95": 0.0,
+              "tipDifferenceRms": 0.5900787115097046,
+              "tipDifferenceP95": 0.7074423432350159,
+              "tipDifferenceMax": 2.68668270111084,
+              "nearContactTipDifferenceRms": 0.928350031375885,
+              "plasticMean": 0.007964760065078735,
+              "plasticMax": 1.0878872871398926,
+              "speedMean": 0.07430006563663483,
+              "speedP95": 0.3706166446208954
+            },
+            {
+              "phase": "released",
+              "tick": 600,
+              "sampledBlades": 4096,
+              "nearContactBlades": 590,
+              "penetratingSegments": 0,
+              "segments": 28672,
+              "lengthErrorMean": 0.0016460675979033113,
+              "lengthErrorP95": 0.0057364217936992645,
+              "lengthErrorMax": 0.022785184904932976,
+              "groundPenetrationMax": 0.0,
+              "capsulePenetrationMax": 0.0,
+              "capsulePenetrationP95": 0.0,
+              "tipDifferenceRms": 0.5808242559432983,
+              "tipDifferenceP95": 0.7390339374542236,
+              "tipDifferenceMax": 2.702268123626709,
+              "nearContactTipDifferenceRms": 0.9328744411468506,
+              "plasticMean": 0.00797230750322342,
+              "plasticMax": 1.0878872871398926,
+              "speedMean": 0.033763960003852844,
+              "speedP95": 0.12296640127897263
+            },
+            {
+              "phase": "released",
+              "tick": 660,
+              "sampledBlades": 4096,
+              "nearContactBlades": 590,
+              "penetratingSegments": 0,
+              "segments": 28672,
+              "lengthErrorMean": 0.0016452550189569592,
+              "lengthErrorP95": 0.005743769463151693,
+              "lengthErrorMax": 0.023347310721874237,
+              "groundPenetrationMax": 0.0,
+              "capsulePenetrationMax": 0.0,
+              "capsulePenetrationP95": 0.0,
+              "tipDifferenceRms": 0.5806682109832764,
+              "tipDifferenceP95": 0.7528093457221985,
+              "tipDifferenceMax": 2.6800808906555176,
+              "nearContactTipDifferenceRms": 0.9309141635894775,
+              "plasticMean": 0.007972311228513718,
+              "plasticMax": 1.0878872871398926,
+              "speedMean": 0.016085121780633926,
+              "speedP95": 0.047464631497859955
+            },
+            {
+              "phase": "released",
+              "tick": 720,
+              "sampledBlades": 4096,
+              "nearContactBlades": 590,
+              "penetratingSegments": 0,
+              "segments": 28672,
+              "lengthErrorMean": 0.0016419336898252368,
+              "lengthErrorP95": 0.005760913714766502,
+              "lengthErrorMax": 0.025021877139806747,
+              "groundPenetrationMax": 0.0,
+              "capsulePenetrationMax": 0.0,
+              "capsulePenetrationP95": 0.0,
+              "tipDifferenceRms": 0.5818659067153931,
+              "tipDifferenceP95": 0.7689715623855591,
+              "tipDifferenceMax": 2.6727981567382812,
+              "nearContactTipDifferenceRms": 0.931843101978302,
+              "plasticMean": 0.007972311228513718,
+              "plasticMax": 1.0878872871398926,
+              "speedMean": 0.061740826815366745,
+              "speedP95": 0.11227267980575562
+            }
+          ]
+        },
+        {
+          "name": "tuned2x1",
+          "substeps": 2,
+          "iterations": 1,
+          "rows": [
+            {
+              "phase": "wind",
+              "tick": 180,
+              "sampledBlades": 4096,
+              "nearContactBlades": 0,
+              "penetratingSegments": 0,
+              "segments": 28672,
+              "lengthErrorMean": 0.002021982567384839,
+              "lengthErrorP95": 0.005806892644613981,
+              "lengthErrorMax": 0.005933472886681557,
+              "groundPenetrationMax": 0.0,
+              "capsulePenetrationMax": 0.0,
+              "capsulePenetrationP95": 0.0,
+              "tipDifferenceRms": 0.08106084913015366,
+              "tipDifferenceP95": 0.10242918133735657,
+              "tipDifferenceMax": 0.11527847498655319,
+              "nearContactTipDifferenceRms": 0.0,
+              "plasticMean": 0.0,
+              "plasticMax": 0.0,
+              "speedMean": 0.06790833175182343,
+              "speedP95": 0.14507639408111572
+            },
+            {
+              "phase": "contact",
+              "tick": 240,
+              "sampledBlades": 4096,
+              "nearContactBlades": 742,
+              "penetratingSegments": 50,
+              "segments": 28672,
+              "lengthErrorMean": 0.0027270803693681955,
+              "lengthErrorP95": 0.0058281561359763145,
+              "lengthErrorMax": 1.4494175910949707,
+              "groundPenetrationMax": 0.0,
+              "capsulePenetrationMax": 0.2716798782348633,
+              "capsulePenetrationP95": 0.09902232885360718,
+              "tipDifferenceRms": 0.3496284484863281,
+              "tipDifferenceP95": 0.8018455505371094,
+              "tipDifferenceMax": 2.726897716522217,
+              "nearContactTipDifferenceRms": 0.735462486743927,
+              "plasticMean": 0.004323270171880722,
+              "plasticMax": 1.0179669857025146,
+              "speedMean": 0.11104856431484222,
+              "speedP95": 0.251048743724823
+            },
+            {
+              "phase": "contact",
+              "tick": 360,
+              "sampledBlades": 4096,
+              "nearContactBlades": 841,
+              "penetratingSegments": 46,
+              "segments": 28672,
+              "lengthErrorMean": 0.0021987920626997948,
+              "lengthErrorP95": 0.005765589885413647,
+              "lengthErrorMax": 0.8596229553222656,
+              "groundPenetrationMax": 0.0,
+              "capsulePenetrationMax": 0.10627272725105286,
+              "capsulePenetrationP95": 0.034373342990875244,
+              "tipDifferenceRms": 0.36662304401397705,
+              "tipDifferenceP95": 0.719211220741272,
+              "tipDifferenceMax": 2.603659152984619,
+              "nearContactTipDifferenceRms": 0.7460591793060303,
+              "plasticMean": 0.006553527899086475,
+              "plasticMax": 1.0878872871398926,
+              "speedMean": 0.10402537137269974,
+              "speedP95": 0.16837595403194427
+            },
+            {
+              "phase": "contact",
+              "tick": 480,
+              "sampledBlades": 4096,
+              "nearContactBlades": 948,
+              "penetratingSegments": 32,
+              "segments": 28672,
+              "lengthErrorMean": 0.0022420345339924097,
+              "lengthErrorP95": 0.0057867420837283134,
+              "lengthErrorMax": 0.8596229553222656,
+              "groundPenetrationMax": 0.0,
+              "capsulePenetrationMax": 0.13481366634368896,
+              "capsulePenetrationP95": 0.11826866865158081,
+              "tipDifferenceRms": 0.385807067155838,
+              "tipDifferenceP95": 0.8777273893356323,
+              "tipDifferenceMax": 2.6023151874542236,
+              "nearContactTipDifferenceRms": 0.7680602073669434,
+              "plasticMean": 0.007868819870054722,
+              "plasticMax": 1.0878872871398926,
+              "speedMean": 0.1059231385588646,
+              "speedP95": 0.16066423058509827
+            },
+            {
+              "phase": "released",
+              "tick": 540,
+              "sampledBlades": 4096,
+              "nearContactBlades": 590,
+              "penetratingSegments": 0,
+              "segments": 28672,
+              "lengthErrorMean": 0.002024018205702305,
+              "lengthErrorP95": 0.005824705120176077,
+              "lengthErrorMax": 0.02122098207473755,
+              "groundPenetrationMax": 0.0,
+              "capsulePenetrationMax": 0.0,
+              "capsulePenetrationP95": 0.0,
+              "tipDifferenceRms": 0.31976690888404846,
+              "tipDifferenceP95": 0.3623654842376709,
+              "tipDifferenceMax": 2.523918390274048,
+              "nearContactTipDifferenceRms": 0.7923850417137146,
+              "plasticMean": 0.005549091845750809,
+              "plasticMax": 1.0878872871398926,
+              "speedMean": 0.04492145776748657,
+              "speedP95": 0.11515369266271591
+            },
+            {
+              "phase": "released",
+              "tick": 600,
+              "sampledBlades": 4096,
+              "nearContactBlades": 590,
+              "penetratingSegments": 0,
+              "segments": 28672,
+              "lengthErrorMean": 0.002013281686231494,
+              "lengthErrorP95": 0.005796873010694981,
+              "lengthErrorMax": 0.02157719060778618,
+              "groundPenetrationMax": 0.0,
+              "capsulePenetrationMax": 0.0,
+              "capsulePenetrationP95": 0.0,
+              "tipDifferenceRms": 0.3155319094657898,
+              "tipDifferenceP95": 0.3778156340122223,
+              "tipDifferenceMax": 2.509748935699463,
+              "nearContactTipDifferenceRms": 0.7843731045722961,
+              "plasticMean": 0.005549091845750809,
+              "plasticMax": 1.0878872871398926,
+              "speedMean": 0.02710130251944065,
+              "speedP95": 0.06506222486495972
+            },
+            {
+              "phase": "released",
+              "tick": 660,
+              "sampledBlades": 4096,
+              "nearContactBlades": 590,
+              "penetratingSegments": 0,
+              "segments": 28672,
+              "lengthErrorMean": 0.002008770825341344,
+              "lengthErrorP95": 0.005800546612590551,
+              "lengthErrorMax": 0.022414430975914,
+              "groundPenetrationMax": 0.0,
+              "capsulePenetrationMax": 0.0,
+              "capsulePenetrationP95": 0.0,
+              "tipDifferenceRms": 0.3157554864883423,
+              "tipDifferenceP95": 0.35223716497421265,
+              "tipDifferenceMax": 2.506756067276001,
+              "nearContactTipDifferenceRms": 0.7849521040916443,
+              "plasticMean": 0.005549091845750809,
+              "plasticMax": 1.0878872871398926,
+              "speedMean": 0.012633184902369976,
+              "speedP95": 0.03383227810263634
+            },
+            {
+              "phase": "released",
+              "tick": 720,
+              "sampledBlades": 4096,
+              "nearContactBlades": 590,
+              "penetratingSegments": 0,
+              "segments": 28672,
+              "lengthErrorMean": 0.002004276728257537,
+              "lengthErrorP95": 0.005795648321509361,
+              "lengthErrorMax": 0.022515449672937393,
+              "groundPenetrationMax": 0.0,
+              "capsulePenetrationMax": 0.0,
+              "capsulePenetrationP95": 0.0,
+              "tipDifferenceRms": 0.3150955140590668,
+              "tipDifferenceP95": 0.34166815876960754,
+              "tipDifferenceMax": 2.5070531368255615,
+              "nearContactTipDifferenceRms": 0.7830855250358582,
+              "plasticMean": 0.005549091845750809,
+              "plasticMax": 1.0878872871398926,
+              "speedMean": 0.0824141874909401,
+              "speedP95": 0.1543281078338623
+            }
+          ]
+        }
+      ]
+    },
+    "TuningLifecycle": {
+      "passed": true,
+      "idleZero": true,
+      "heldTwoSeconds": true,
+      "liveDuringFade": true,
+      "recontactPreservesSolver": true,
+      "releasedAfterThreeSeconds": true,
+      "plasticRetained": true,
+      "streamRetained": true,
+      "unloadClears": true,
+      "finiteState": true,
+      "capRespected": true,
+      "outerCoverageContinuous": true,
+      "error": "",
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "ticks": 1805,
+      "maxActive": 32768,
+      "maxHistoryResident": 32768,
+      "historyCapacity": 65536,
+      "outerCoverageChecks": 6,
+      "firstFadeAt": 2.016693353652954,
+      "releasedAt": 3.0333099365234375,
+      "physicalMotionDuringFade": 0.48911014199256897,
+      "recontactNodeError": 0.0,
+      "maxTipStep": 0.5119816660881042,
+      "releaseTipStep": 0.0010267016477882862,
+      "peakPlastic": 0.8726646900177002,
+      "maxTipStepAt": 0.050000667572021484,
+      "maxTipStepPhase": 0.0,
+      "maxPhysicalTipStep": 0.9546512961387634,
+      "maxFadeTipStep": 0.06446420401334763,
+      "gpuBufferBytes": 224852832
+    },
+    "TuningCombined": {
+      "passed": true,
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "unity": "2022.3.62f2c1",
+      "error": "",
+      "totalBlades": 131072,
+      "minActiveBlades": 32768,
+      "maxActiveBlades": 32768,
+      "bezierBlades": 98304,
+      "exitedGrids": 1972,
+      "reenteredGrids": 1082,
+      "evictions": 1972,
+      "simulationTicks": 1440,
+      "visibleGrids": 1963,
+      "seedChecks": 4,
+      "maxSeedPositionError": 0.0,
+      "maxSeedVelocityError": 0.0,
+      "maxSeedRotationError": 0.0,
+      "maxSeedAngularError": 0.0,
+      "retainedPlasticError": 0.0,
+      "peakPlastic": 0.6986739039421082,
+      "lodgedGridEvicted": true,
+      "lodgedGridReturned": true,
+      "sceneViewPreserved": true,
+      "acceptedBankUnchanged": true,
+      "rebakes": [
+        {
+          "type": "Short / Narrow / Firm",
+          "maxNodeDifference": 0.4443055987358093,
+          "maxControlDifference": 0.4443055987358093,
+          "maxFrameDifferenceDegrees": 37.17188262939453,
+          "frequencyDifference": 15.909902572631836,
+          "dampingDifference": 0.25612491369247437,
+          "maxTerminalSpeed": 0.0017027300782501698
+        },
+        {
+          "type": "Short / Narrow / Soft",
+          "maxNodeDifference": 0.4361680746078491,
+          "maxControlDifference": 0.4361680746078491,
+          "maxFrameDifferenceDegrees": 34.478939056396484,
+          "frequencyDifference": 9.19918441772461,
+          "dampingDifference": 0.22627411782741547,
+          "maxTerminalSpeed": 0.001981929410248995
+        },
+        {
+          "type": "Short / Wide / Firm",
+          "maxNodeDifference": 0.43772202730178833,
+          "maxControlDifference": 0.43772202730178833,
+          "maxFrameDifferenceDegrees": 34.94593048095703,
+          "frequencyDifference": 9.905806541442871,
+          "dampingDifference": 0.22627411782741547,
+          "maxTerminalSpeed": 0.0018433486111462116
+        },
+        {
+          "type": "Short / Wide / Soft",
+          "maxNodeDifference": 0.42463573813438416,
+          "maxControlDifference": 0.42463573813438416,
+          "maxFrameDifferenceDegrees": 33.300357818603516,
+          "frequencyDifference": 4.962358474731445,
+          "dampingDifference": 0.14422202110290527,
+          "maxTerminalSpeed": 0.0019541701767593622
+        },
+        {
+          "type": "Tall / Narrow / Firm",
+          "maxNodeDifference": 0.3124908208847046,
+          "maxControlDifference": 0.3124908208847046,
+          "maxFrameDifferenceDegrees": 14.648368835449219,
+          "frequencyDifference": 1.9039433002471924,
+          "dampingDifference": 0.08944270014762878,
+          "maxTerminalSpeed": 0.0018303453689441085
+        },
+        {
+          "type": "Tall / Narrow / Soft",
+          "maxNodeDifference": 0.26132580637931824,
+          "maxControlDifference": 0.26132580637931824,
+          "maxFrameDifferenceDegrees": 14.181103706359863,
+          "frequencyDifference": 1.0307763814926147,
+          "dampingDifference": 0.05656852945685387,
+          "maxTerminalSpeed": 0.0016145025147125125
+        },
+        {
+          "type": "Tall / Wide / Firm",
+          "maxNodeDifference": 0.2510007619857788,
+          "maxControlDifference": 0.2510007619857788,
+          "maxFrameDifferenceDegrees": 12.957977294921875,
+          "frequencyDifference": 0.9013878107070923,
+          "dampingDifference": 0.03999999165534973,
+          "maxTerminalSpeed": 0.001934043481014669
+        },
+        {
+          "type": "Tall / Wide / Soft",
+          "maxNodeDifference": 1.47429358959198,
+          "maxControlDifference": 1.47429358959198,
+          "maxFrameDifferenceDegrees": 113.1080551147461,
+          "frequencyDifference": 9.617691993713379,
+          "dampingDifference": 0.6118825078010559,
+          "maxTerminalSpeed": 0.0017319528851658106
+        }
+      ]
+    },
+    "TuningControls1": {
+      "passed": true,
+      "originalSoft": 3.9,
+      "tunedSoft": 1.95,
+      "sameRenderer": true
+    }
+  },
+  "quality": {},
+  "combinedMeaning": "Runtime handoff/plastic/state assertions passed. All 8 transient rebakes are reported without the old near-equality thresholds; bank equivalence failed and is NOT implied by passed.",
+  "acceptedBankUnchanged": true
+}

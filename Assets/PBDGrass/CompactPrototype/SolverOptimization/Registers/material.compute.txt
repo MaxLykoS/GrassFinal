@@ -1,0 +1,355 @@
+// Generated storage variant; equations come from the accepted source.
+// Regenerate with CompactPrototype/Editor/generate_compact_shaders.py.
+#pragma kernel XPBDSolverLOD0
+#pragma kernel InitializePool
+#pragma kernel GridCulling
+#define NODES 8
+#define SEGMENTS 7
+#define VERTICES 15
+#define EPS 1e-8
+struct BoneInfo { float3 Position, Predicted, Velocities, OriginPos; };
+struct Blade { float3 Root; float Length; uint Id; float Width, Height, Seed; };
+struct Rod { float4 Rotation, Relative; float Length, HalfWidth, InverseInertia, SoftScale; float HardScale, TwistScale, Padding0, Padding1; };
+struct Frame { float4 Rotation; float3 AngularVelocity; float Padding; };
+struct ColliderMotion { float3 A; float Radius; float3 B; float Friction; float3 PreviousA; float Padding0; float3 PreviousB; float Padding1; };
+struct ActiveGrid { float3 Position; int BladeOffset; int PoolOffset; int GridId, Padding0, Padding1; };
+struct PBDGrid { float3 pos; int idOffset; };
+RWStructuredBuffer<BoneInfo> BonesBuffer;
+RWStructuredBuffer<Frame> FramesBuffer;
+// Full precision active plastic belongs to the simulation slot; packed history uses world identity.
+RWStructuredBuffer<float4> PlasticBendsBuffer;
+RWStructuredBuffer<uint> CompactPlastic;
+#include "GrassCompactPacking.cginc"
+StructuredBuffer<BoneInfo> RestNodesBuffer;
+StructuredBuffer<Blade> BladesBuffer;
+StructuredBuffer<Rod> RodsBuffer;
+StructuredBuffer<float> InverseMassBuffer;
+StructuredBuffer<ColliderMotion> ColliderBuffer;
+StructuredBuffer<ActiveGrid> ActiveGridsBuffer;
+StructuredBuffer<int2> InitializationBuffer;
+RWStructuredBuffer<float3> ResultPosBuffer, NormalBuffer;
+RWStructuredBuffer<PBDGrid> GridsVisibleBuffer;
+RWStructuredBuffer<uint> bufferWithArgsDrawIndirect;
+Texture2D<float4> WindForceMap;
+SamplerState sampler_linear_repeat;
+Texture2D<float> _DepthTex;
+float TickDt, SimulationTime, InverseBladeMass, VelocityDamping, AngularDamping;
+float StretchCompliance, AlignmentCompliance, SoftBendCompliance, HardBendCompliance, TwistCompliance, BaseBendCompliance;
+float CollisionMargin, GroundFriction;
+float PlasticYieldCurvature, PlasticFlowRate, PlasticMaxCurvature, BaseYieldAngle, BaseMaxPlasticAngle, GrassReach;
+float3 Gravity, WindForce, camPos, camDir;
+float _WindFrequency;
+float4 _WindForceMap_ST;
+float MaxDistance;
+int SubstepIndex, NearSubsteps, ConstraintIterations, ColliderCount, GroundCollision, ActiveGridCount, InitializationCount;
+int EnableOcclusionCulling, ReversedZ;
+int EnablePlasticity;
+float4 FrustumPlanes[6];
+float4x4 _Matrix_VP;
+float3 SafeNormal(float3 v, float3 fallback) { float l=dot(v,v); return l>EPS*EPS?v*rsqrt(l):fallback; }
+float4 QMul(float4 a,float4 b) { return float4(a.w*b.xyz+b.w*a.xyz+cross(a.xyz,b.xyz),a.w*b.w-dot(a.xyz,b.xyz)); }
+float4 QInv(float4 q) { return float4(-q.xyz,q.w); }
+float3 QRotate(float4 q,float3 v) { return v+2*cross(q.xyz,cross(q.xyz,v)+q.w*v); }
+float4 QNormalize(float4 q) { return q*rsqrt(max(dot(q,q),EPS)); }
+float4 Rotate(float4 q,float3 delta)
+{
+    float angle=length(delta); if(angle<1e-10)return q;
+    float4 dq=float4(delta*(angle>1e-6?sin(angle*.5)/max(angle,1e-6):.5),cos(angle*.5));
+    return QNormalize(QMul(dq,q));
+}
+float3 QLog(float4 q)
+{
+    if(q.w<0)q=-q;
+    float l=length(q.xyz); return q.xyz*(l>1e-6?2*atan2(l,q.w)/max(l,1e-6):2);
+}
+#include "GrassCompactTemplates.cginc"
+float3 Axis(int k) { return k==0?float3(1,0,0):(k==1?float3(0,1,0):float3(0,0,1)); }
+float4 PlasticRest(float4 original,float2 plastic)
+{
+    return QMul(Rotate(float4(0,0,0,1),float3(plastic,0)),original);
+}
+float2 EvolvePlasticBend(float4 relative,float4 original,float2 plastic,float jointLength,bool basal,float h)
+{
+    // Bounded, rate-dependent bending plasticity in the parent material axes; twist stays elastic.
+    float2 total=QLog(QMul(relative,QInv(original))).xy;
+    float2 elastic=total-plastic;
+    float magnitude=length(elastic);
+    float yieldAngle=basal?BaseYieldAngle:PlasticYieldCurvature*jointLength;
+    if(magnitude<=yieldAngle || PlasticFlowRate<=0)return plastic;
+    float2 next=plastic+elastic*((1-yieldAngle/max(magnitude,EPS))*(1-exp(-PlasticFlowRate*h)));
+    float limit=basal?BaseMaxPlasticAngle:min(1.2,PlasticMaxCurvature*jointLength);
+    return next*min(1.0,limit/max(length(next),EPS));
+}
+void WriteGeometry(uint blade,uint pool,float3 p[NODES],float4 q[SEGMENTS])
+{
+    float3 root=BladesBuffer[blade].Root;
+    [unroll] for(int s=0;s<SEGMENTS;s++)
+    {
+        float3 tangent=SafeNormal(p[s+1]-p[s],float3(0,1,0));
+        float3 width=QRotate(q[s],float3(1,0,0));
+        width=SafeNormal(width-tangent*dot(width,tangent),SafeNormal(cross(tangent,float3(0,0,1)),float3(1,0,0)));
+        width*=CompactRod(blade*SEGMENTS+s).HalfWidth;
+        uint vertex=pool*VERTICES+s*2;
+        ResultPosBuffer[vertex]=root+p[s]+width; ResultPosBuffer[vertex+1]=root+p[s]-width;
+        // TriangleBuffer winds the front surface along width x tangent.
+        float3 normal=SafeNormal(cross(width,tangent),float3(0,0,1));
+        NormalBuffer[vertex]=normal; NormalBuffer[vertex+1]=normal;
+    }
+    ResultPosBuffer[pool*VERTICES+VERTICES-1]=root+p[NODES-1];
+    NormalBuffer[pool*VERTICES+VERTICES-1]=NormalBuffer[pool*VERTICES+VERTICES-2];
+}
+[numthreads(64,1,1)]
+void InitializePool(uint3 id:SV_DispatchThreadID)
+{
+    if(id.x>=(uint)InitializationCount*32)return;
+    int2 init=InitializationBuffer[id.x/32]; uint blade=init.y+id.x%32, pool=init.x*32+id.x%32;
+    float3 p[NODES]; float4 q[SEGMENTS];
+    p[0]=0;
+    float4 parent=CompactRod(blade*SEGMENTS).Rotation;
+    [unroll] for(int s=0;s<SEGMENTS;s++)
+    {
+        Rod rod=CompactRod(blade*SEGMENTS+s);
+        float2 plastic=EnablePlasticity!=0?PlasticBendsBuffer[pool*SEGMENTS+s].xy:float2(0,0);
+        q[s]=QNormalize(QMul(parent,PlasticRest(rod.Relative,plastic)));
+        p[s+1]=p[s]+QRotate(q[s],float3(0,0,rod.Length)); parent=q[s];
+        Frame f; f.Rotation=q[s]; f.AngularVelocity=0; f.Padding=0; FramesBuffer[pool*SEGMENTS+s]=f;
+    }
+    [unroll] for(int n=0;n<NODES;n++)
+    { BoneInfo b=CompactRest(blade*NODES+n); b.Position=p[n]; b.Predicted=p[n]; b.Velocities=0; BonesBuffer[pool*NODES+n]=b; }
+    WriteGeometry(blade,pool,p,q);
+}
+void Stretch(inout float3 pa,inout float3 pb,float length0,float wa,float wb,float h,inout float lambda)
+{
+    float3 d=pb-pa; float len=length(d); if(len<EPS || abs(len-length0)<1e-7)return;
+    float alpha=StretchCompliance/(h*h), dl=(-(len-length0)-alpha*lambda)/(wa+wb+alpha);
+    float3 g=d/len; pa-=wa*g*dl; pb+=wb*g*dl; lambda+=dl;
+}
+void AlignAxis(inout float3 pa,inout float3 pb,inout float4 q,float3 e,float wa,float wb,float wr,float h,inout float lambda)
+{
+    float3 d=pb-pa; float len=length(d); if(len<EPS)return;
+    float3 t=d/len,director=QRotate(q,float3(0,0,1));
+    float C=dot(t-director,e); if(abs(C)<1e-6)return;
+    float3 gp=(e-t*dot(t,e))/len,gr=cross(e,director); float alpha=AlignmentCompliance/(h*h);
+    float dl=(-C-alpha*lambda)/max((wa+wb)*dot(gp,gp)+wr*dot(gr,gr)+alpha,EPS);
+    pa-=wa*gp*dl; pb+=wb*gp*dl; q=Rotate(q,wr*gr*dl); lambda+=dl;
+}
+void Align(inout float3 pa,inout float3 pb,inout float4 q,float wa,float wb,float wr,float h,inout float3 lambda)
+{
+    AlignAxis(pa,pb,q,float3(1,0,0),wa,wb,wr,h,lambda.x);
+    AlignAxis(pa,pb,q,float3(0,1,0),wa,wb,wr,h,lambda.y);
+    AlignAxis(pa,pb,q,float3(0,0,1),wa,wb,wr,h,lambda.z);
+}
+void BendAxis(inout float4 qp,inout float4 qc,float4 rest,float3 e,float wp,float wc,float compliance,float h,inout float lambda)
+{
+    // Angular gradients of C=2 vec(conj(qp)*qc*conj(rest)), for WORLD-space rotation increments.
+    float4 error=QMul(QMul(QInv(qp),qc),QInv(rest)); if(error.w<0)error=-error;
+    float C=2*dot(error.xyz,e); if(abs(C)<1e-6)return;
+    float3 g=QRotate(qp,error.w*e+cross(error.xyz,e)); float alpha=compliance/(h*h);
+    float dl=(-C-alpha*lambda)/max((wp+wc)*dot(g,g)+alpha,EPS);
+    qp=Rotate(qp,-wp*g*dl); qc=Rotate(qc,wc*g*dl); lambda+=dl;
+}
+void BendTwist(inout float4 qp,inout float4 qc,Rod rod,float wp,float wc,bool basal,float h,inout float3 lambda)
+{
+    BendAxis(qp,qc,rod.Relative,float3(1,0,0),wp,wc,basal?BaseBendCompliance:SoftBendCompliance*rod.SoftScale,h,lambda.x);
+    BendAxis(qp,qc,rod.Relative,float3(0,1,0),wp,wc,basal?BaseBendCompliance:HardBendCompliance*rod.HardScale,h,lambda.y);
+    BendAxis(qp,qc,rod.Relative,float3(0,0,1),wp,wc,basal?BaseBendCompliance:TwistCompliance*rod.TwistScale,h,lambda.z);
+}
+void ClosestSegments(float3 p,float3 q,float3 a,float3 b,out float t,out float u)
+{
+    float3 d=q-p,e=b-a,r=p-a;
+    float dd=dot(d,d),ee=dot(e,e),de=dot(d,e),dr=dot(d,r),er=dot(e,r);
+    if(dd<EPS) { t=0; u=ee>EPS?saturate(er/ee):0; return; }
+    if(ee<EPS) { u=0; t=saturate(-dr/dd); return; }
+    float denom=dd*ee-de*de;
+    t=denom>EPS?saturate((de*er-dr*ee)/denom):0;
+    u=(de*t+er)/ee;
+    if(u<0) { u=0; t=saturate(-dr/dd); } else if(u>1) { u=1; t=saturate((de-dr)/dd); }
+}
+void SegmentContact(inout float3 pa,inout float3 pb,float3 oldPa,float3 oldPb,float wa,float wb,float3 root,float fraction,float previousFraction)
+{
+    [loop] for(int c=0;c<ColliderCount;c++)
+    {
+        ColliderMotion shape=ColliderBuffer[c]; if(shape.Radius<=0)continue;
+        float3 a=lerp(shape.PreviousA,shape.A,fraction)-root,b=lerp(shape.PreviousB,shape.B,fraction)-root;
+        // Cheap conservative rejection before solving closest points.
+        float reach=length(pb-pa)*.5+length(b-a)*.5+shape.Radius+CollisionMargin;
+        if(dot((pa+pb-a-b)*.5,(pa+pb-a-b)*.5)>reach*reach)continue;
+        float t,u; ClosestSegments(pa,pb,a,b,t,u);
+        float3 contactPoint=lerp(pa,pb,t),center=lerp(a,b,u),d=contactPoint-center;
+        float dist=length(d),radius=shape.Radius+CollisionMargin; if(dist>=radius)continue;
+        float ga=1-t,gb=t,den=wa*ga*ga+wb*gb*gb; if(den<EPS)continue;
+        float3 normal=SafeNormal(d,SafeNormal(cross(pb-pa,b-a),float3(1,0,0)));
+        float penetration=radius-dist; float3 correction=normal*penetration;
+        pa+=wa*ga*correction/den; pb+=wb*gb*correction/den;
+        float3 oldA=lerp(shape.PreviousA,shape.A,previousFraction)-root,oldB=lerp(shape.PreviousB,shape.B,previousFraction)-root;
+        float3 relative=lerp(pa,pb,t)-lerp(oldPa,oldPb,t)-(center-lerp(oldA,oldB,u));
+        float3 tangent=relative-normal*dot(relative,normal); float slip=length(tangent);
+        float3 friction=-tangent*min(1.0,shape.Friction*penetration/max(slip,EPS));
+        pa+=wa*ga*friction/den; pb+=wb*gb*friction/den;
+    }
+}
+void GroundContact(inout float3 p,float3 previous)
+{
+    if(GroundCollision==0 || p.y>=CollisionMargin)return;
+    float penetration=CollisionMargin-p.y; p.y=CollisionMargin;
+    float2 delta=p.xz-previous.xz;
+    p.xz-=delta*min(1.0,GroundFriction*penetration/max(length(delta),EPS));
+}
+Rod LiveRestRod(uint pool,uint segment)
+{
+    Rod rod=RodsBuffer[segment];
+    float2 plastic=EnablePlasticity!=0?PlasticBendsBuffer[pool*SEGMENTS+segment].xy:float2(0,0);
+    rod.Relative=PlasticRest(rod.Relative,plastic);
+    return rod;
+}
+void SimulateBlade(uint blade,uint pool)
+{
+    float3 p[NODES],v[NODES]; float mass[NODES]; float4 q[SEGMENTS]; float3 omega[SEGMENTS];
+    float3 root=BladesBuffer[blade].Root;
+    [unroll] for(int load=0;load<NODES;load++) { BoneInfo bone=BonesBuffer[pool*NODES+load]; p[load]=bone.Position;
+        v[load]=bone.Velocities; mass[load]=InverseMassBuffer[(blade*NODES+load)%8]*InverseBladeMass; }
+    [unroll] for(int loadFrame=0;loadFrame<SEGMENTS;loadFrame++) { Frame frame=FramesBuffer[pool*SEGMENTS+loadFrame];
+        q[loadFrame]=frame.Rotation; omega[loadFrame]=frame.AngularVelocity; }
+    float h=TickDt/NearSubsteps; float4 anchor=CompactAnchors[blade/32];
+    float2 scroll=SafeNormal(float3(WindForce.x,0,WindForce.z),float3(1,0,0)).xz;
+    {
+        int step=SubstepIndex;
+        float3 previous[NODES]; float4 previousQ[SEGMENTS];
+        float stretchLambda[SEGMENTS]; float3 bendLambda[SEGMENTS],alignLambda[SEGMENTS];
+        float fraction=(step+1.0)/NearSubsteps,oldFraction=step/(float)NearSubsteps;
+        float2 uv=root.xz*_WindForceMap_ST.xy+_WindForceMap_ST.zw+scroll*_WindFrequency*(SimulationTime+fraction*TickDt);
+        float2 noise=WindForceMap.SampleLevel(sampler_linear_repeat,uv,0).rg;
+        float3 wind=WindForce*lerp(.55,1.45,noise.x)+cross(float3(0,1,0),WindForce)*(noise.y*2-1)*.2;
+        [unroll] for(int node=0;node<NODES;node++)
+        {
+            previous[node]=p[node];
+            if(node==0) { p[node]=0; v[node]=0; }
+            else { float height=node/(NODES-1.0); v[node]=(v[node]+(Gravity+wind*height*height)*h)*exp(-VelocityDamping*h); p[node]+=v[node]*h; }
+        }
+        [unroll] for(int segment=0;segment<SEGMENTS;segment++) { previousQ[segment]=q[segment];
+            omega[segment]*=exp(-AngularDamping*h); q[segment]=Rotate(q[segment],omega[segment]*h);
+            stretchLambda[segment]=0; bendLambda[segment]=0; alignLambda[segment]=0; }
+        // Fixed indices keep FXC's inout arguments natively addressable. The loops over iterations
+        // and substeps remain bounded; this is the same seven-joint solve, not another model.
+        [loop] for(int iteration=0;iteration<ConstraintIterations;iteration++)
+        {
+            SegmentContact(p[0],p[1],previous[0],previous[1],mass[0],mass[1],root,fraction,oldFraction);
+            SegmentContact(p[1],p[2],previous[1],previous[2],mass[1],mass[2],root,fraction,oldFraction);
+            SegmentContact(p[2],p[3],previous[2],previous[3],mass[2],mass[3],root,fraction,oldFraction);
+            SegmentContact(p[3],p[4],previous[3],previous[4],mass[3],mass[4],root,fraction,oldFraction);
+            SegmentContact(p[4],p[5],previous[4],previous[5],mass[4],mass[5],root,fraction,oldFraction);
+            SegmentContact(p[5],p[6],previous[5],previous[6],mass[5],mass[6],root,fraction,oldFraction);
+            SegmentContact(p[6],p[7],previous[6],previous[7],mass[6],mass[7],root,fraction,oldFraction);
+            GroundContact(p[1],previous[1]);
+            GroundContact(p[2],previous[2]);
+            GroundContact(p[3],previous[3]);
+            GroundContact(p[4],previous[4]);
+            GroundContact(p[5],previous[5]);
+            GroundContact(p[6],previous[6]);
+            GroundContact(p[7],previous[7]);
+            BendTwist(anchor,q[0],LiveRestRod(pool,0),0,RodsBuffer[0].InverseInertia*InverseBladeMass,true,h,bendLambda[0]);
+            BendTwist(q[0],q[1],LiveRestRod(pool,1),RodsBuffer[0].InverseInertia*InverseBladeMass,RodsBuffer[1].InverseInertia*InverseBladeMass,false,h,bendLambda[1]);
+            BendTwist(q[1],q[2],LiveRestRod(pool,2),RodsBuffer[1].InverseInertia*InverseBladeMass,RodsBuffer[2].InverseInertia*InverseBladeMass,false,h,bendLambda[2]);
+            BendTwist(q[2],q[3],LiveRestRod(pool,3),RodsBuffer[2].InverseInertia*InverseBladeMass,RodsBuffer[3].InverseInertia*InverseBladeMass,false,h,bendLambda[3]);
+            BendTwist(q[3],q[4],LiveRestRod(pool,4),RodsBuffer[3].InverseInertia*InverseBladeMass,RodsBuffer[4].InverseInertia*InverseBladeMass,false,h,bendLambda[4]);
+            BendTwist(q[4],q[5],LiveRestRod(pool,5),RodsBuffer[4].InverseInertia*InverseBladeMass,RodsBuffer[5].InverseInertia*InverseBladeMass,false,h,bendLambda[5]);
+            BendTwist(q[5],q[6],LiveRestRod(pool,6),RodsBuffer[5].InverseInertia*InverseBladeMass,RodsBuffer[6].InverseInertia*InverseBladeMass,false,h,bendLambda[6]);
+            Align(p[0],p[1],q[0],mass[0],mass[1],RodsBuffer[0].InverseInertia*InverseBladeMass,h,alignLambda[0]);
+            Stretch(p[0],p[1],RodsBuffer[0].Length,mass[0],mass[1],h,stretchLambda[0]);
+            Align(p[1],p[2],q[1],mass[1],mass[2],RodsBuffer[1].InverseInertia*InverseBladeMass,h,alignLambda[1]);
+            Stretch(p[1],p[2],RodsBuffer[1].Length,mass[1],mass[2],h,stretchLambda[1]);
+            Align(p[2],p[3],q[2],mass[2],mass[3],RodsBuffer[2].InverseInertia*InverseBladeMass,h,alignLambda[2]);
+            Stretch(p[2],p[3],RodsBuffer[2].Length,mass[2],mass[3],h,stretchLambda[2]);
+            Align(p[3],p[4],q[3],mass[3],mass[4],RodsBuffer[3].InverseInertia*InverseBladeMass,h,alignLambda[3]);
+            Stretch(p[3],p[4],RodsBuffer[3].Length,mass[3],mass[4],h,stretchLambda[3]);
+            Align(p[4],p[5],q[4],mass[4],mass[5],RodsBuffer[4].InverseInertia*InverseBladeMass,h,alignLambda[4]);
+            Stretch(p[4],p[5],RodsBuffer[4].Length,mass[4],mass[5],h,stretchLambda[4]);
+            Align(p[5],p[6],q[5],mass[5],mass[6],RodsBuffer[5].InverseInertia*InverseBladeMass,h,alignLambda[5]);
+            Stretch(p[5],p[6],RodsBuffer[5].Length,mass[5],mass[6],h,stretchLambda[5]);
+            Align(p[6],p[7],q[6],mass[6],mass[7],RodsBuffer[6].InverseInertia*InverseBladeMass,h,alignLambda[6]);
+            Stretch(p[6],p[7],RodsBuffer[6].Length,mass[6],mass[7],h,stretchLambda[6]);
+        }
+            SegmentContact(p[0],p[1],previous[0],previous[1],mass[0],mass[1],root,fraction,oldFraction);
+            SegmentContact(p[1],p[2],previous[1],previous[2],mass[1],mass[2],root,fraction,oldFraction);
+            SegmentContact(p[2],p[3],previous[2],previous[3],mass[2],mass[3],root,fraction,oldFraction);
+            SegmentContact(p[3],p[4],previous[3],previous[4],mass[3],mass[4],root,fraction,oldFraction);
+            SegmentContact(p[4],p[5],previous[4],previous[5],mass[4],mass[5],root,fraction,oldFraction);
+            SegmentContact(p[5],p[6],previous[5],previous[6],mass[5],mass[6],root,fraction,oldFraction);
+            SegmentContact(p[6],p[7],previous[6],previous[7],mass[6],mass[7],root,fraction,oldFraction);
+            GroundContact(p[1],previous[1]);
+            GroundContact(p[2],previous[2]);
+            GroundContact(p[3],previous[3]);
+            GroundContact(p[4],previous[4]);
+            GroundContact(p[5],previous[5]);
+            GroundContact(p[6],previous[6]);
+            GroundContact(p[7],previous[7]);
+        [unroll] for(int velocity=1;velocity<NODES;velocity++)v[velocity]=(p[velocity]-previous[velocity])/h;
+        [unroll] for(int angular=0;angular<SEGMENTS;angular++)omega[angular]=QLog(QMul(q[angular],QInv(previousQ[angular])))/h;
+    }
+    [unroll] for(int save=0;save<NODES;save++) { uint n=pool*NODES+save;
+        BonesBuffer[n].Position=p[save]; BonesBuffer[n].Predicted=p[save]; BonesBuffer[n].Velocities=save==0?float3(0,0,0):v[save]; }
+    [unroll] for(int saveFrame=0;saveFrame<SEGMENTS;saveFrame++) { uint s=pool*SEGMENTS+saveFrame;
+        FramesBuffer[s].Rotation=q[saveFrame]; FramesBuffer[s].AngularVelocity=omega[saveFrame]; }
+    if(EnablePlasticity!=0)
+    {
+        // Material evolution runs once per physical substep, after the elastic/contact solve.
+        // Never accumulate plastic flow once per constraint iteration.
+        float2 basal=EvolvePlasticBend(QMul(QInv(anchor),q[0]),CompactRod(blade*SEGMENTS).Relative,
+            PlasticBendsBuffer[pool*SEGMENTS+0].xy,RodsBuffer[0].Length,true,h);
+        PlasticBendsBuffer[pool*SEGMENTS]=float4(basal,0,0);
+        [unroll] for(int joint=1;joint<SEGMENTS;joint++)
+        {
+            float jointLength=.5*(RodsBuffer[joint-1].Length+RodsBuffer[joint].Length);
+            float2 next=EvolvePlasticBend(QMul(QInv(q[joint-1]),q[joint]),CompactRod(blade*SEGMENTS+joint).Relative,
+                PlasticBendsBuffer[pool*SEGMENTS+joint].xy,jointLength,false,h);
+            PlasticBendsBuffer[pool*SEGMENTS+joint]=float4(next,0,0);
+        }
+    }
+    
+    if(SubstepIndex==NearSubsteps-1)
+    {
+        WriteGeometry(blade,pool,p,q);
+        // Cache only. Simulation always reloads float32 active plastic, never this quantized copy.
+        [unroll] for(int s=0;s<7;s++)CompactPlastic[blade*8+s]=CompactPackPlastic(PlasticBendsBuffer[pool*7+s].xy);
+    }
+}
+[numthreads(32,1,1)]
+void XPBDSolverLOD0(uint3 group:SV_GroupID,uint3 lane:SV_GroupThreadID)
+{
+    ActiveGrid grid=ActiveGridsBuffer[group.x]; SimulateBlade(grid.BladeOffset+lane.x,grid.PoolOffset+lane.x);
+}
+bool Occluded(float3 center, float radius)
+{
+    if (EnableOcclusionCulling == 0) return false;
+    float4 clip = mul(_Matrix_VP, float4(center, 1));
+    if (clip.w <= radius) return false;
+    float2 uv = clip.xy / clip.w * 0.5 + 0.5;
+    float4 edge = mul(_Matrix_VP, float4(center + float3(radius, radius, 0), 1));
+    float footprint = max(2.0 * radius / clip.w, max(abs(edge.x - clip.x), abs(edge.y - clip.y)) / clip.w);
+    float2 low = uv - footprint, high = uv + footprint;
+    if (any(low < 0) || any(high > 1)) return false;
+    uint width, height, mipCount;
+    _DepthTex.GetDimensions(0, width, height, mipCount);
+    uint mip = (uint)clamp(ceil(log2(max(1.0, footprint * 2 * width))), 0.0, mipCount - 1.0);
+    uint side = max(1, width >> mip);
+    int2 a = min((int2)(low * side), (int2)(side - 1));
+    int2 b = min((int2)(high * side), (int2)(side - 1));
+    float4 d = float4(_DepthTex.Load(int3(a, mip)), _DepthTex.Load(int3(b.x, a.y, mip)),
+        _DepthTex.Load(int3(a.x, b.y, mip)), _DepthTex.Load(int3(b, mip)));
+    float4 closest = mul(_Matrix_VP, float4(center - camDir * radius, 1));
+    float nearDepth = closest.z / closest.w;
+    return ReversedZ != 0 ? min(min(d.x, d.y), min(d.z, d.w)) > nearDepth + 0.0001
+                         : max(max(d.x, d.y), max(d.z, d.w)) < nearDepth - 0.0001;
+}
+
+[numthreads(32,1,1)]
+void GridCulling(uint3 id:SV_DispatchThreadID)
+{
+    if(id.x>=(uint)ActiveGridCount)return;
+    ActiveGrid grid=ActiveGridsBuffer[id.x]; float3 center=grid.Position; float radius=.707107+GrassReach;
+    if(distance(center,camPos)>MaxDistance)return;
+    [unroll] for(int i=0;i<6;i++)if(dot(FrustumPlanes[i].xyz,center)+FrustumPlanes[i].w < -radius)return;
+    if(Occluded(center,radius))return;
+    uint slot; InterlockedAdd(bufferWithArgsDrawIndirect[1],1,slot);
+    PBDGrid visible; visible.pos=grid.Position; visible.idOffset=grid.BladeOffset; GridsVisibleBuffer[slot]=visible;
+}

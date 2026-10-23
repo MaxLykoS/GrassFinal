@@ -1,0 +1,24 @@
+using System;
+using System.IO;
+using UnityEditor;
+using UnityEditor.Build.Reporting;
+using UnityEngine.Rendering;
+public static class BuildCapture
+{
+    public static void Run()
+    {
+        PlayerSettings.SetUseDefaultGraphicsAPIs(BuildTarget.StandaloneWindows64,false);
+        PlayerSettings.SetGraphicsAPIs(BuildTarget.StandaloneWindows64,new[]{GraphicsDeviceType.Direct3D12,GraphicsDeviceType.Direct3D11});
+        // Never load the D3D11 timestamp plugin in a D3D12 capture.
+        foreach(var importer in PluginImporter.GetAllImporters())
+            if(importer.assetPath.Contains("ContactProfileTemporary/Plugins/"))
+            {importer.SetCompatibleWithAnyPlatform(false);importer.SetCompatibleWithEditor(true);
+                importer.SetCompatibleWithPlatform(BuildTarget.StandaloneWindows64,false);importer.SaveAndReimport();}
+        string output=Environment.GetEnvironmentVariable("GRASS_CAPTURE_PLAYER");
+        Directory.CreateDirectory(Path.GetDirectoryName(output));
+        var result=BuildPipeline.BuildPlayer(new BuildPlayerOptions {
+            scenes=new[]{"Assets/PBDGrass/Scenes/PBDGrassContactLab.unity"},locationPathName=output,
+            target=BuildTarget.StandaloneWindows64,options=BuildOptions.None});
+        EditorApplication.Exit(result.summary.result==BuildResult.Succeeded?0:1);
+    }
+}

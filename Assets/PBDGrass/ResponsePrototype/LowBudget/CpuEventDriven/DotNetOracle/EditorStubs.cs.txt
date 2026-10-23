@@ -1,0 +1,2 @@
+namespace UnityEditor {public static class EditorApplication {public static void Exit(int code)=>System.Environment.Exit(code);}}
+namespace UnityEngine {public static class JsonUtility {public static string ToJson(object value,bool pretty)=>System.Text.Json.JsonSerializer.Serialize(value,new System.Text.Json.JsonSerializerOptions{IncludeFields=true,WriteIndented=pretty});}}

@@ -56,11 +56,13 @@ renderer = target / "Runtime/PBDGrassPatchRenderer.cs"
 text = renderer.read_text(encoding="utf-8-sig")
 text = replace(text, "private void SelectPool()\n        {\n", "private void SelectPool()\n        {\n            long selectionStart=ContactGpuHooks.Stamp();ContactGpuHooks.SelectCalls++;\n")
 text = replace(text, "            Pool.Select(SimulationCenter,", "            long poolStart=ContactGpuHooks.Stamp();\n            Pool.Select(SimulationCenter,")
-text = replace(text, "            for (int i=0; i<Pool.Selected.Count; i++)", "            ContactGpuHooks.PoolCpu+=ContactGpuHooks.Ms(poolStart);\n            for (int i=0; i<Pool.Selected.Count; i++)")
+pool_end = "            if(uploadedSelectionVersion!=Pool.SelectionVersion)" if "if(uploadedSelectionVersion!=Pool.SelectionVersion)" in text else "            for (int i=0; i<Pool.Selected.Count; i++)"
+text = replace(text, pool_end, "            ContactGpuHooks.PoolCpu+=ContactGpuHooks.Ms(poolStart);\n" + pool_end)
 text = replace(text, "if (Handoff != null) Handoff.Select(Pool.Selected,SimulationTime,SimulationCenter,interactionRegions);",
     "if (Handoff != null) {long h=ContactGpuHooks.Stamp(); Handoff.Select(Pool.Selected,SimulationTime,SimulationCenter,interactionRegions);ContactGpuHooks.HandoffCpu+=ContactGpuHooks.Ms(h);}")
 text = replace(text, "        }\n        private void ReadShape", "            ContactGpuHooks.SelectionCpu+=ContactGpuHooks.Ms(selectionStart);\n        }\n        private void ReadShape")
-text = replace(text, "            SelectPool();\n            for (int i=0;i<shapes.Length;i++)", "            SelectPool();ContactGpuHooks.Event(2);\n            for (int i=0;i<shapes.Length;i++)")
+after_select = "            int liveColliderCount=0;" if "int liveColliderCount=0;" in text else "            for (int i=0;i<shapes.Length;i++)"
+text = replace(text, "            SelectPool();\n" + after_select, "            SelectPool();ContactGpuHooks.Event(2);\n" + after_select)
 text = replace(text, "            if (Pool.Selected.Count>0) for(int substep", "            ContactGpuHooks.Event(3);\n            if (Pool.Selected.Count>0) for(int substep")
 text = replace(text, "            SimulationTime+=tick; SimulationTicks++;", "            ContactGpuHooks.Event(4);\n            SimulationTime+=tick; SimulationTicks++;")
 text = replace(text, "            Handoff?.UpdateDisplay(SimulationTime,tick);", "            Handoff?.UpdateDisplay(SimulationTime,tick);ContactGpuHooks.Event(6);")
